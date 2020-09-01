@@ -2,6 +2,6 @@
 /PAW/models/target/
 /PAW/services/target/
 /PAW/webapp/target/
-/PAW/persistence/
+/PAW/persistence/target/
 /PAW/.idea
 /PAW/PAW.iml
