@@ -12,6 +12,7 @@
 
 </head>
 <body>
+<jsp:include page="../components/navbar.jsp"/>
 este es un framework especifico
 </body>
 </html>
