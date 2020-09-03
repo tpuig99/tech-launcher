@@ -19,11 +19,15 @@
 
             <div class="content">
 
-                <div class="title"> <h2>Nombre</h2> </div>
-                <div>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</div>
+                <div class="framework-name">
+                    <h2>Nombre</h2>
+                </div>
+                <div class="framework-description">
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                </div>
 
                 <div>
-                   <h4>Bibliografía</h4>
+                   <h4 class="title">Bibliografía</h4>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">Cras justo odio</li>
                         <li class="list-group-item">Dapibus ac facilisis in</li>
@@ -33,7 +37,7 @@
                     </ul>
                 </div>
                 <div>
-                   <h4> Videos</h4>
+                   <h4 class="title"> Videos</h4>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">Cras justo odio</li>
                         <li class="list-group-item">Dapibus ac facilisis in</li>
@@ -43,7 +47,9 @@
                     </ul>
                 </div>
 
-                <div><h3>Quizás también te interese</h3></div>
+                <div>
+                    <h4 class="title">Quizás también te interese</h4>
+                </div>
 
                 <div class="card" style="width:100px; box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);">
                     <div class="card-body">
@@ -52,7 +58,9 @@
                     </div>
                 </div>
 
-                <div><h4>Dejá tu comentario </h4></div>
+                <div>
+                    <h4 class="title">Dejá tu comentario </h4>
+                </div>
                 <div><textarea class="form-control" aria-label="With textarea"></textarea></div>
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

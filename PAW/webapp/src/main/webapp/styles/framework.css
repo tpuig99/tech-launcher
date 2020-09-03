@@ -1,9 +1,14 @@
-.title {
-    font-size: 20px;
-
+.framework-name {
+    font-size: 5em;
+    border-bottom: 0.01em solid black;
 }
 
 .subtitle {
     font-size: 15px;
     color: grey;
+}
+
+.title {
+    padding-top: 1em;
+    border-bottom: 0.1em solid black;
 }
