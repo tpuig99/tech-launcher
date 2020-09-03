@@ -1,11 +1,14 @@
 nav {
     background: #49B6FF;
     height: 4em;
-
 }
 
 nav a {
     color: aliceblue;
+}
+
+nav a:hover {
+    color: #f1f1f1;
 }
 
 .sidenav {
