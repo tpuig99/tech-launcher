@@ -1,12 +1,15 @@
 <!--NavBar -->
 
 <nav class="navbar fixed-top navbar-expand-lg">
-    <a class="navbar-brand" href="#">TECH LAUNCHER</a>
+    <a class="navbar-brand" href="/webapp_war_exploded/">TECH LAUNCHER</a>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" href="/webapp_war_exploded/">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/webapp_war_exploded/framework">Framework (se va este boton)</a>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
