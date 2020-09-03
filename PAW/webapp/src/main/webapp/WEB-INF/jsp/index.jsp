@@ -19,43 +19,61 @@
     <jsp:include page="components/sidebar.jsp"/>
 
     <div class="content">
-        <div class="containter-fluid">
-            <div class="row">
-                <div class="card" style="box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);">
+        <div class="row equal">
+            <div class="col-md-3 d-flex pb-3">
+                <div class="card">
                     <div class="card-body">
-                        <div><img width="40px" height="40px" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        <img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt="">
                     </div>
                     <div class="card-footer">Angular</div>
                 </div>
-                <div class="card" style="box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);">
+            </div>
+            <div class="col-md-3 d-flex pb-3">
+                <div class="card">
                     <div class="card-body">
-                        <div><img width="40px" height="40px" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                     </div>
-                    <div class="card-footer">React</div>
+                    <div class="card-footer">Angular</div>
                 </div>
-                <div class="card" style="box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);">
+            </div>
+            <div class="col-md-3 d-flex pb-3">
+                <div class="card">
                     <div class="card-body">
-                        <div><img width="40px" height="40px" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                     </div>
-                    <div class="card-footer">HTML5</div>
+                    <div class="card-footer">Angular</div>
                 </div>
-                <div class="card" style="box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);">
+            </div>
+            <div class="col-md-3 d-flex pb-3">
+                <div class="card">
                     <div class="card-body">
-                        <div><img width="40px" height="40px" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                     </div>
-                    <div class="card-footer">D3</div>
+                    <div class="card-footer">Angular</div>
                 </div>
-                <div class="card" style="box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);">
+            </div>
+            <div class="col-md-3 d-flex pb-3">
+                <div class="card">
                     <div class="card-body">
-                        <div><img width="40px" height="40px" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                     </div>
-                    <div class="card-footer">jQuery</div>
+                    <div class="card-footer">Angular</div>
                 </div>
-                <div class="card" style="box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);">
+            </div>
+            <div class="col-md-3 d-flex pb-3">
+                <div class="card">
                     <div class="card-body">
-                        <div><img width="40px" height="40px" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                     </div>
-                    <div class="card-footer">CSS</div>
+                    <div class="card-footer">Angular</div>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex pb-3">
+                <div class="card card-block">
+                    <div class="card-body">
+                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                    </div>
+                    <div class="card-footer">Angular</div>
                 </div>
             </div>
         </div>

@@ -50,11 +50,12 @@
                 <div>
                     <h4 class="title">Quizás también te interese</h4>
                 </div>
-
-                <div class="card" style="width:100px; box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);">
-                    <div class="card-body">
-                        <div><img width="40px" height="40px" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                        <div>Angular</div>
+                <div class="col-md-3 d-flex pb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        </div>
+                        <div class="card-footer">Angular</div>
                     </div>
                 </div>
 
