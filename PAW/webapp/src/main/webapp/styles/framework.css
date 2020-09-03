@@ -1,4 +1,4 @@
-.framework-name {
+.page-title {
     font-size: 5em;
     border-bottom: 0.01em solid black;
 }
@@ -11,4 +11,10 @@
 .title {
     padding-top: 1em;
     border-bottom: 0.1em solid black;
+}
+
+.card {
+    width: 10em;
+    margin-left: 2em;
+    margin-right: 2em;
 }
