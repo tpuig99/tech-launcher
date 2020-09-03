@@ -6,9 +6,8 @@
     <head>
         <title>Framework</title>
 
-        <link rel="stylesheet" type="text/css" href="<c:url value="/styles/framework.css"/>"/>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="<c:url value="/styles/navigation.css"/>"/>
+        <link rel="stylesheet" type="text/css" href="<c:url value="/styles/base_page.css"/>"/>
     </head>
 
     <body>
@@ -28,7 +27,7 @@
 
                 <div>
                    <h4 class="title">Bibliografía</h4>
-                    <ul class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush description">
                         <li class="list-group-item">Cras justo odio</li>
                         <li class="list-group-item">Dapibus ac facilisis in</li>
                         <li class="list-group-item">Morbi leo risus</li>
@@ -38,7 +37,7 @@
                 </div>
                 <div>
                    <h4 class="title"> Videos</h4>
-                    <ul class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush description">
                         <li class="list-group-item">Cras justo odio</li>
                         <li class="list-group-item">Dapibus ac facilisis in</li>
                         <li class="list-group-item">Morbi leo risus</li>
@@ -50,7 +49,7 @@
                 <div>
                     <h4 class="title">Quizás también te interese</h4>
                 </div>
-                <div class="col-md-3 d-flex pb-3">
+                <div class="col-md-3 d-flex pb-3 description">
                     <div class="card">
                         <div class="card-body">
                             <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
@@ -62,7 +61,7 @@
                 <div>
                     <h4 class="title">Dejá tu comentario </h4>
                 </div>
-                <div><textarea class="form-control" aria-label="With textarea"></textarea></div>
+                <div class="description"><textarea class="form-control" aria-label="With textarea"></textarea></div>
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

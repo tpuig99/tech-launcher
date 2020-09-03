@@ -1,5 +1,5 @@
 nav {
-    background: #58C2E8;
+    background: #49B6FF;
     height: 4em;
 
 }
@@ -16,7 +16,7 @@ nav a {
     top: 4em;
     left: 0;
     border-top: 0.2em solid white;
-    background-color: #58C2E8;
+    background-color: #49B6FF;
     overflow-x: hidden;
     padding-top: 20px;
 }
@@ -37,6 +37,38 @@ nav a {
     position: absolute;
     top: 4.5em;
     left: 13.5em;
+    margin-right: 1em;
     padding-left: 10px;
     padding-top: 10px;
+}
+
+.page-title {
+    font-size: 5em;
+    border-bottom: 0.01em solid black;
+}
+
+.page-description {
+    text-align: center;
+    font-size: 1em;
+    padding-top: 0.5em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+}
+
+.title {
+    padding-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 2em;
+    border-bottom: 0.1em solid black;
+}
+
+.description {
+    margin-right: 3em;
+    margin-left: 3em;
+}
+
+img {
+    width: 10em;
 }
