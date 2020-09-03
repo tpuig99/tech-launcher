@@ -6,12 +6,13 @@ nav {
 nav a {
     color: aliceblue;
 }
+
 .sidenav {
-    position: relative;
+    position: fixed;
     height: 100%;
     width: 13em;
     z-index: 1;
-    top: 0;
+    top: 4em;
     left: 0;
     border-top: 0.2em solid white;
     background-color: #0fa2a2;
