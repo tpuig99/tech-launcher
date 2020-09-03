@@ -31,3 +31,9 @@ nav a {
 .sidenav a:hover {
     color: #f1f1f1;
 }
+
+content {
+    position: absolute;
+    top: 4em;
+    left: 13em;
+}

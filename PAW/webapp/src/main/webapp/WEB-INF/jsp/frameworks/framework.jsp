@@ -3,64 +3,63 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
-<head>
-    <title>Framework</title>
-    <link rel="stylesheet" type="text/css" href="<c:url value="/styles/navigation.css"/>"/>
-    <link rel="stylesheet" type="text/css" href="<c:url value="/styles/framework.css"/>"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <head>
+        <title>Framework</title>
 
-</head>
-<body>
-<jsp:include page="../components/navbar.jsp"/>
+        <link rel="stylesheet" type="text/css" href="<c:url value="/styles/framework.css"/>"/>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="<c:url value="/styles/navigation.css"/>"/>
+    </head>
 
-<div class="title"> <h2>Nombre</h2> </div>
-<div>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</div>
-<div id="accordion">
-    <div class="card">
-        <div class="card-header" id="headingOne">
-            <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    Bibliografía
-                </button>
-            </h5>
-        </div>
+    <body>
+        <div class="wrapper">
 
-        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-            <div class="card-body">
-                <div> Libro 1 </div>
-                <div> Libro 2 </div>
-                <div> Libro 3 </div>
-                <div> Libro 4 </div>
+            <jsp:include page="../components/navbar.jsp"/>
+            <jsp:include page="../components/sidebar.jsp"/>
+
+            <div class="content">
+
+                <div class="title"> <h2>Nombre</h2> </div>
+                <div>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</div>
+
+                <div>
+                   <h4>Bibliografía</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Cras justo odio</li>
+                        <li class="list-group-item">Dapibus ac facilisis in</li>
+                        <li class="list-group-item">Morbi leo risus</li>
+                        <li class="list-group-item">Porta ac consectetur ac</li>
+                        <li class="list-group-item">Vestibulum at eros</li>
+                    </ul>
+                </div>
+                <div>
+                   <h4> Videos</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Cras justo odio</li>
+                        <li class="list-group-item">Dapibus ac facilisis in</li>
+                        <li class="list-group-item">Morbi leo risus</li>
+                        <li class="list-group-item">Porta ac consectetur ac</li>
+                        <li class="list-group-item">Vestibulum at eros</li>
+                    </ul>
+                </div>
+
+                <div><h3>Quizás también te interese</h3></div>
+
+                <div class="card" style="width:100px; box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);">
+                    <div class="card-body">
+                        <div><img width="40px" height="40px" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        <div>Angular</div>
+                    </div>
+                </div>
+
+                <div><h4>Dejá tu comentario </h4></div>
+                <div><textarea class="form-control" aria-label="With textarea"></textarea></div>
+
+                <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+            </div>
             </div>
         </div>
-    </div>
-    <div class="card">
-        <div class="card-header" id="headingTwo">
-            <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Tutoriales
-                </button>
-            </h5>
-        </div>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-            <div class="card-body">
-                <div> Tuto 1 </div>
-                <div> Tuto 2 </div>
-                <div> Tuto 3 </div>
-                <div> Tuto 4 </div>
-            </div>
-        </div>
-    </div>
-
-
-</div>
-
-<div><h3>Quizás también te interese</h3></div>
-
-<div><h3>Deja tu comentario </h3></div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+    </body>
 </html>
