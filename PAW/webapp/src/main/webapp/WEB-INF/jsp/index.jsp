@@ -17,6 +17,12 @@
     <jsp:include page="components/sidebar.jsp"/>
 
     <div class="content">
+        <div class="page-title">
+            <h2>Tipo de Frameworks</h2>
+        </div>
+        <div class="page-description">
+
+        </div>
         <div class="row equal">
             <div class="col-md-3 d-flex pb-3">
                 <div class="card">
@@ -31,7 +37,7 @@
                     <div class="card-body">
                         <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                     </div>
-                    <div class="card-footer">Angular</div>
+                    <div class="card-footer">CSS</div>
                 </div>
             </div>
             <div class="col-md-3 d-flex pb-3">
@@ -39,7 +45,7 @@
                     <div class="card-body">
                         <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                     </div>
-                    <div class="card-footer">Angular</div>
+                    <div class="card-footer">HTML5</div>
                 </div>
             </div>
             <div class="col-md-3 d-flex pb-3">
@@ -47,7 +53,7 @@
                     <div class="card-body">
                         <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                     </div>
-                    <div class="card-footer">Angular</div>
+                    <div class="card-footer">jQuery</div>
                 </div>
             </div>
             <div class="col-md-3 d-flex pb-3">
@@ -55,7 +61,7 @@
                     <div class="card-body">
                         <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                     </div>
-                    <div class="card-footer">Angular</div>
+                    <div class="card-footer">React</div>
                 </div>
             </div>
             <div class="col-md-3 d-flex pb-3">
@@ -63,15 +69,7 @@
                     <div class="card-body">
                         <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                     </div>
-                    <div class="card-footer">Angular</div>
-                </div>
-            </div>
-            <div class="col-md-3 d-flex pb-3">
-                <div class="card card-block">
-                    <div class="card-body">
-                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                    </div>
-                    <div class="card-footer">Angular</div>
+                    <div class="card-footer">D3</div>
                 </div>
             </div>
         </div>
