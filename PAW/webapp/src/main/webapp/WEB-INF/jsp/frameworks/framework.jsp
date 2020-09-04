@@ -26,13 +26,15 @@
                             <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                         </div>
                         <div class="col">
-                            <div class="framework-title">
-                                <span><h2>${framework.frameworkname}</h2></span>
-                                <span class="fa fa-star checked"></span>
-                                <span class="fa fa-star checked"></span>
-                                <span class="fa fa-star checked"></span>
-                                <span class="fa fa-star checked"></span>
+
+                            <div class="row">
+                                <div class="col">
+                                <span class="framework-title"><h2>${framework.frameworkname}</h2></span>
+                                </div>
+                                <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star"></span>
+                                <span>4.5 | 10M</span>
+                                </div>
                             </div>
                             <div class="description">
                                 ${framework.description}
@@ -130,8 +132,6 @@
                     <h4 class="title">Comentarios </h4>
                 </div>
 
-
-
                 <div class="container d-flex">
                     <div class="card comment-card margin-left">
                         <div class="card-body">
@@ -162,14 +162,39 @@
                     </div>
                 </div>
 
-
+                <!-- User Interaction -->
+                <div>
+                    <h4 class="title">Da tu opinión a los demás</h4>
+                </div>
 
                 <div class="margin-left">
-                    <h5>Dejá tu comentario </h5>
+                    <div class="row">
+                        <div class="col-8">
+                            <h5>Deja tu comentario </h5>
+                            <div class="margin-bottom">
+                                <textarea class="form-control" aria-label="With textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5>Valora este framework</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-star fa-lg checked"></span>
+                                        <span class="fa fa-star fa-lg checked"></span>
+                                        <span class="fa fa-star fa-lg checked"></span>
+                                        <span class="fa fa-star fa-lg checked"></span>
+                                        <span class="fa fa-star fa-lg checked"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
-                <div class="description margin-left">
-                    <textarea class="form-control" aria-label="With textarea"></textarea>
-                </div>
+
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
