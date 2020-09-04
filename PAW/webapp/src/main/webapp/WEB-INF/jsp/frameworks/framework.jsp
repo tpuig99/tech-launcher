@@ -137,7 +137,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
-                                <span class="fa fa-arrow-up margin-left"></span><span class="padding-left fa fa-arrow-down"></span>
+                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
                             </div>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         </div>
@@ -146,7 +146,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
-                                <span class="fa fa-arrow-up margin-left"></span><span class="padding-left fa fa-arrow-down"></span>
+                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
                             </div>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         </div>
@@ -154,8 +154,8 @@
                     <div class="card comment-card margin-left">
                         <div class="card-body">
                             <div class="row">
-                                <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
-                                <span class="fa fa-arrow-up margin-left"></span><span class="padding-left fa fa-arrow-down"></span>
+                                <span><h6 class="card-subtitle mb-2 text-muted ">Nombre del user</h6></span>
+                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
                             </div>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         </div>

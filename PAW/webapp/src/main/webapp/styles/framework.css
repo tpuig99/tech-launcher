@@ -21,7 +21,7 @@
 }
 
 .comment-card{
-    padding-bottom: 1em;
+    margin-bottom: 1em;
 }
 
 .padding-left{
@@ -35,4 +35,12 @@
 
 .margin-bottom {
     margin-bottom: 3em;
+}
+
+.arrow {
+    color: grey;
+}
+
+.arrow:hover{
+    color: black;
 }
