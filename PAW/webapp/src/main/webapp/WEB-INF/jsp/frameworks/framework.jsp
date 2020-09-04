@@ -74,7 +74,16 @@
                         <div class="card-body">
                             <div class="row">
                                 <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
-                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
+                                <span>
+                                    <button class="btn" data-toggle="modal" data-target="#exampleModal">
+                                        <i class="fa fa-arrow-up arrow"></i>
+                                    </button>
+                                </span>
+                                <span class="padding-left d-flex align-items-center justify-content-end ">
+                                    <button class="btn" data-toggle="modal" data-target="#exampleModal">
+                                        <i class="fa fa-arrow-down arrow"></i>
+                                    </button>
+                                </span>
                             </div>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         </div>
