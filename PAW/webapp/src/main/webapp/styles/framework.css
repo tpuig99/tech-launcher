@@ -44,3 +44,10 @@
 .arrow:hover{
     color: black;
 }
+
+.list-group{
+    max-height: 13em;
+    margin-bottom: 1em;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+}

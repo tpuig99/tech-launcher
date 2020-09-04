@@ -11,7 +11,6 @@
         <link rel="stylesheet" type="text/css" href="<c:url value="/styles/framework.css"/>"/>
         <link rel="stylesheet" type="text/css" href="<c:url value="/styles/base_page.css"/>"/>
     </head>
-
     <body>
         <div>
 
@@ -59,6 +58,7 @@
                         <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Aprender Angular</a></li>
                         <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Aca va un tutorial</a></li>
                         <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Este es un video</a></li>
+                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Dummy data</a></li>
                         <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Dummy data</a></li>
                     </ul>
                 </div>
