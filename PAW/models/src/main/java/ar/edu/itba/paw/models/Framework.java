@@ -1,12 +1,16 @@
 package ar.edu.itba.paw.models;
 
+import java.util.List;
+
 public class Framework {
     private long id;
     private String frameworkname;
-    private String category;
+    private FrameworkCategories category;
     private String description;
+    private List<Votes> votes;
+    private int stars;
 
-    public Framework(long id, String name, String category, String description) {
+    public Framework(long id, String name, FrameworkCategories category, String description) {
         this.id = id;
         this.frameworkname = name;
         this.category = category;
@@ -22,7 +26,7 @@ public class Framework {
     }
 
     public String getCategory() {
-        return category;
+        return category.name();
     }
 
     public String getDescription() {

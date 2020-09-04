@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.FrameworkCategories;
 import ar.edu.itba.paw.persistence.FrameworkDao;
 import ar.edu.itba.paw.service.FrameworkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> getFrameworks(String category) {
+    public List<Framework> getFrameworks(FrameworkCategories category) {
         return frameworkDao.getFrameworks(category);
     }
 }

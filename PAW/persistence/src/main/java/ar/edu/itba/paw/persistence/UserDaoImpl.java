@@ -11,6 +11,10 @@ public class UserDaoImpl implements UserDao {
         return new User(id, "PAW from DAO");
     }
 
+    @Override
+    public User create(String username) {
+        return null;
+    }
 
 
 }
