@@ -67,24 +67,22 @@ nav a:hover {
     border-bottom: 0.1em solid black;
 }
 
-.description {
-    margin-right: 3em;
-    margin-left: 3em;
-}
+
 
 img {
     width: 8em;
+}
+
+
+.container {
+    flex-wrap: wrap;
 }
 
 .mini-img
 {
     width: 5em;
 }
-.container {
-    flex-wrap: wrap;
-}
 
-.mini-card{
-    margin-right: 1em;
-    margin-top: 1em;
+.margin-left{
+    margin-left: 3em;
 }
