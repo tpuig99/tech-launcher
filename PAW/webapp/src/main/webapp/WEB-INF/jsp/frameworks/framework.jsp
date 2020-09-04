@@ -6,8 +6,9 @@
     <head>
         <title>Framework</title>
 
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="<c:url value="/styles/base_page.css"/>"/>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
 
     <body>
@@ -18,12 +19,16 @@
 
             <div class="content">
 
-                <div class="title"> <h2>${framework.frameworkname}</h2> </div>
-                <div>${framework.description}</div>
+                <div class="page-title">
+                    <h2>Nombre</h2>
+                </div>
+                <div class="page-description">
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                </div>
 
                 <div>
-                   <h4>Bibliografía</h4>
-                    <ul class="list-group list-group-flush">
+                   <h4 class="title">Bibliografía</h4>
+                    <ul class="list-group list-group-flush description">
                         <li class="list-group-item">Cras justo odio</li>
                         <li class="list-group-item">Dapibus ac facilisis in</li>
                         <li class="list-group-item">Morbi leo risus</li>
@@ -32,8 +37,8 @@
                     </ul>
                 </div>
                 <div>
-                   <h4> Videos</h4>
-                    <ul class="list-group list-group-flush">
+                   <h4 class="title"> Videos</h4>
+                    <ul class="list-group list-group-flush description">
                         <li class="list-group-item">Cras justo odio</li>
                         <li class="list-group-item">Dapibus ac facilisis in</li>
                         <li class="list-group-item">Morbi leo risus</li>
@@ -42,17 +47,22 @@
                     </ul>
                 </div>
 
-                <div><h3>Quizás también te interese</h3></div>
-
-                <div class="card" style="width:100px; box-shadow:0 4px 8px 0 rgba(0,0,0,0.2);">
-                    <div class="card-body">
-                        <div><img width="40px" height="40px" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                        <div>Angular</div>
+                <div>
+                    <h4 class="title">Quizás también te interese</h4>
+                </div>
+                <div class="col-md-3 d-flex pb-3 description">
+                    <div class="card">
+                        <div class="card-body">
+                            <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        </div>
+                        <div class="card-footer">Angular</div>
                     </div>
                 </div>
 
-                <div><h4>Dejá tu comentario </h4></div>
-                <div><textarea class="form-control" aria-label="With textarea"></textarea></div>
+                <div>
+                    <h4 class="title">Dejá tu comentario </h4>
+                </div>
+                <div class="description"><textarea class="form-control" aria-label="With textarea"></textarea></div>
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
