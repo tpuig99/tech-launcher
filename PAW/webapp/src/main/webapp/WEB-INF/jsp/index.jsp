@@ -18,7 +18,7 @@
 
     <div class="content">
         <div class="page-title">
-            <h2>Tipo de Frameworks</h2>
+            <h2>${framework.category}</h2>
         </div>
         <div class="page-description">
 
@@ -29,7 +29,7 @@
                     <div class="card-body">
                         <img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt="">
                     </div>
-                    <div class="card-footer">Angular</div>
+                    <div class="card-footer">F</div>
                 </div>
             </div>
             <div class="col-md-3 d-flex pb-3">
