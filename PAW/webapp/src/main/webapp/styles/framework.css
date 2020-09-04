@@ -51,3 +51,11 @@
     overflow: scroll;
     -webkit-overflow-scrolling: touch;
 }
+
+textarea {
+    resize: none;
+}
+
+.margin-top{
+    margin-top: 1em;
+}

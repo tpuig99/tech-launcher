@@ -21,10 +21,10 @@
 
                 <div class="container d-flex">
                     <div class="row">
-                        <div class="col-4">
+                        <div class="col">
                             <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                         </div>
-                        <div class="col">
+                        <div class="col-8">
 
                             <div class="row">
                                 <div class="col">
@@ -63,14 +63,84 @@
                     </ul>
                 </div>
 
+
+                <!-- Comments -->
                 <div>
-                    <h4 class="title">Quizás también te interese</h4>
+                    <h4 class="title">Comentarios </h4>
+                </div>
+
+                <div class="container d-flex">
+                    <div class="card comment-card margin-left">
+                        <div class="card-body">
+                            <div class="row">
+                                <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
+                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
+                            </div>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                    <div class="card comment-card margin-left">
+                        <div class="card-body">
+                            <div class="row">
+                                <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
+                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
+                            </div>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                    <div class="card comment-card margin-left">
+                        <div class="card-body">
+                            <div class="row">
+                                <span><h6 class="card-subtitle mb-2 text-muted ">Nombre del user</h6></span>
+                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
+                            </div>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Interaction -->
+                <div>
+                    <h4 class="title">Da tu opinión a los demás</h4>
+                </div>
+
+                <div class="margin-left">
+                    <div class="row">
+                        <div class="col-8">
+                            <h5>Deja tu comentario </h5>
+                            <div>
+                                <textarea class="form-control" aria-label="With textarea"></textarea>
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary margin-top d-flex justify-content-flex-end">PUBLICAR</button>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5>Valora este framework</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="fa fa-star fa-lg checked"></span>
+                                        <span class="fa fa-star fa-lg checked"></span>
+                                        <span class="fa fa-star fa-lg checked"></span>
+                                        <span class="fa fa-star fa-lg checked"></span>
+                                        <span class="fa fa-star fa-lg checked"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
                 <!-- Competition Cards -->
 
+                <div>
+                    <h4 class="title">Quizás también te interese</h4>
+                </div>
+
                 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
+                    <div class="carousel-inner margin-bottom">
                         <div class="carousel-item active">
                             <div class="container d-flex">
                                 <div class="card mini-card margin-left">
@@ -126,73 +196,27 @@
                     </a>
                 </div>
 
-
-                <!-- Comments -->
-                <div>
-                    <h4 class="title">Comentarios </h4>
-                </div>
-
-                <div class="container d-flex">
-                    <div class="card comment-card margin-left">
-                        <div class="card-body">
-                            <div class="row">
-                                <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
-                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Dejanos tu email</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                    </div>
-                    <div class="card comment-card margin-left">
-                        <div class="card-body">
-                            <div class="row">
-                                <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
-                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
-                            </div>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                    </div>
-                    <div class="card comment-card margin-left">
-                        <div class="card-body">
-                            <div class="row">
-                                <span><h6 class="card-subtitle mb-2 text-muted ">Nombre del user</h6></span>
-                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
-                            </div>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- User Interaction -->
-                <div>
-                    <h4 class="title">Da tu opinión a los demás</h4>
-                </div>
-
-                <div class="margin-left">
-                    <div class="row">
-                        <div class="col-8">
-                            <h5>Deja tu comentario </h5>
-                            <div class="margin-bottom">
-                                <textarea class="form-control" aria-label="With textarea"></textarea>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <h5>Valora este framework</h5>
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <span class="fa fa-star fa-lg checked"></span>
-                                        <span class="fa fa-star fa-lg checked"></span>
-                                        <span class="fa fa-star fa-lg checked"></span>
-                                        <span class="fa fa-star fa-lg checked"></span>
-                                        <span class="fa fa-star fa-lg checked"></span>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Email address</label>
+                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                                     </div>
-                                </div>
+                                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">Submit</button>
+                                </form>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
 
