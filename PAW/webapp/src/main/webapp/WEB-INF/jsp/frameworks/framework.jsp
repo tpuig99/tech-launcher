@@ -66,19 +66,106 @@
                 </div>
 
                 <!-- Competition Cards -->
-                <div class="container d-flex">
 
-                    <div class="card mini-card margin-left">
-                        <div class="card-body">
-                            <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="container d-flex">
+                                <div class="card mini-card margin-left">
+                                    <div class="card-body">
+                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                                    </div>
+                                    <div class="card-footer">Angular</div>
+                                </div>
+                                <div class="card mini-card margin-left">
+                                    <div class="card-body">
+                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                                    </div>
+                                    <div class="card-footer">CSS</div>
+                                </div>
+                                <div class="card mini-card margin-left">
+                                    <div class="card-body">
+                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                                    </div>
+                                    <div class="card-footer">html</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-footer">Angular</div>
+                        <div class="carousel-item">
+                            <div class="container d-flex">
+                                <div class="card mini-card margin-left">
+                                    <div class="card-body">
+                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                                    </div>
+                                    <div class="card-footer">Angular</div>
+                                </div>
+                                <div class="card mini-card margin-left">
+                                    <div class="card-body">
+                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                                    </div>
+                                    <div class="card-footer">CSS</div>
+                                </div>
+                                <div class="card mini-card margin-left">
+                                    <div class="card-body">
+                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                                    </div>
+                                    <div class="card-footer">html</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon carousel-color" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
+
 
                 <!-- Comments -->
                 <div>
-                    <h4 class="title">Dejá tu comentario </h4>
+                    <h4 class="title">Comentarios </h4>
+                </div>
+
+
+
+                <div class="container d-flex">
+                    <div class="card comment-card margin-left">
+                        <div class="card-body">
+                            <div class="row">
+                                <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
+                                <span class="fa fa-arrow-up margin-left"></span><span class="padding-left fa fa-arrow-down"></span>
+                            </div>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                    <div class="card comment-card margin-left">
+                        <div class="card-body">
+                            <div class="row">
+                                <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
+                                <span class="fa fa-arrow-up margin-left"></span><span class="padding-left fa fa-arrow-down"></span>
+                            </div>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                    <div class="card comment-card margin-left">
+                        <div class="card-body">
+                            <div class="row">
+                                <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
+                                <span class="fa fa-arrow-up margin-left"></span><span class="padding-left fa fa-arrow-down"></span>
+                            </div>
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="margin-left">
+                    <h5>Dejá tu comentario </h5>
                 </div>
                 <div class="description margin-left">
                     <textarea class="form-control" aria-label="With textarea"></textarea>
