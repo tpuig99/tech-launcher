@@ -210,7 +210,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Dejanos tu email</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Completa los datos</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -218,10 +218,14 @@
                             <div class="modal-body">
                                 <form>
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Email address</label>
-                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                        <label for="inputName">Nombre</label>
+                                        <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp">
                                     </div>
-                                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">Submit</button>
+                                    <div class="form-group">
+                                        <label for="inputEmail1">Email</label>
+                                        <input type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">PUBLICAR</button>
                                 </form>
                             </div>
                         </div>
