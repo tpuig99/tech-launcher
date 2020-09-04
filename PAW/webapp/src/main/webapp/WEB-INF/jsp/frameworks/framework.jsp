@@ -19,13 +19,23 @@
 
             <div class="content">
 
-                <div class="page-title">
-                    <h2>${framework.frameworkname}</h2>
-                </div>
-                <div class="page-description">
-                    ${framework.description}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-4">
+                            <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        </div>
+                        <div class="col-8">
+                            <div class="page-title">
+                                <h2>${framework.frameworkname}</h2>
+                            </div>
+                            <div class="page-description">
+                                ${framework.description}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Bibliography -->
                 <div>
                    <h4 class="title">Bibliografía</h4>
                     <ul class="list-group list-group-flush description">
@@ -36,6 +46,7 @@
                         <li class="list-group-item">Vestibulum at eros</li>
                     </ul>
                 </div>
+                <!-- Tutorials -->
                 <div>
                    <h4 class="title"> Videos</h4>
                     <ul class="list-group list-group-flush description">
@@ -50,6 +61,8 @@
                 <div>
                     <h4 class="title">Quizás también te interese</h4>
                 </div>
+
+                <!-- Competition Cards -->
                 <div class="container d-flex">
 
                     <div class="card mini-card">
@@ -58,24 +71,15 @@
                         </div>
                         <div class="card-footer">Angular</div>
                     </div>
-                    <div class="card mini-card">
-                        <div class="card-body">
-                            <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                        </div>
-                        <div class="card-footer">Angular</div>
-                    </div>
-                    <div class="card mini-card">
-                        <div class="card-body">
-                            <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                        </div>
-                        <div class="card-footer">Angular</div>
-                    </div>
                 </div>
 
+                <!-- Comments -->
                 <div>
                     <h4 class="title">Dejá tu comentario </h4>
                 </div>
-                <div class="description"><textarea class="form-control" aria-label="With textarea"></textarea></div>
+                <div class="description">
+                    <textarea class="form-control" aria-label="With textarea"></textarea>
+                </div>
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
