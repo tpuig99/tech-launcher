@@ -27,7 +27,12 @@
                         </div>
                         <div class="col">
                             <div class="framework-title">
-                                <h2>${framework.frameworkname}</h2>
+                                <span><h2>${framework.frameworkname}</h2></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star"></span>
                             </div>
                             <div class="description">
                                 ${framework.description}
@@ -42,7 +47,7 @@
                     <ul class="list-group margin-left list-group-flush description">
                         <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Libro de Angular</a></li>
                         <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Esto es un librito</a></li>
-                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Aprender Angular</a></li>
+                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Acá Tami hubiese puesto perro</a></li>
                     </ul>
                 </div>
                 <!-- Tutorials -->
