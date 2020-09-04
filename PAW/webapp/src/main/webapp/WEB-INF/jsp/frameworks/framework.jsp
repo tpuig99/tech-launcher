@@ -50,10 +50,23 @@
                 <div>
                     <h4 class="title">Quizás también te interese</h4>
                 </div>
-                <div class="col-md-3 d-flex pb-3">
-                    <div class="card">
+                <div class="container d-flex">
+
+                    <div class="card mini-card">
                         <div class="card-body">
-                            <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                            <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        </div>
+                        <div class="card-footer">Angular</div>
+                    </div>
+                    <div class="card mini-card">
+                        <div class="card-body">
+                            <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        </div>
+                        <div class="card-footer">Angular</div>
+                    </div>
+                    <div class="card mini-card">
+                        <div class="card-body">
+                            <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                         </div>
                         <div class="card-footer">Angular</div>
                     </div>

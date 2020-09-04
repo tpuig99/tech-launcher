@@ -75,3 +75,16 @@ nav a:hover {
 img {
     width: 10em;
 }
+
+.mini-img
+{
+    width: 5em;
+}
+.container {
+    flex-wrap: wrap;
+}
+
+.mini-card{
+    margin-right: 1em;
+    margin-top: 1em;
+}
