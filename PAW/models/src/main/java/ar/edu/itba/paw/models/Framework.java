@@ -7,8 +7,6 @@ public class Framework {
     private String frameworkname;
     private FrameworkCategories category;
     private String description;
-    private List<Votes> votes;
-    private int stars;
 
     public Framework(long id, String name, FrameworkCategories category, String description) {
         this.id = id;
@@ -32,4 +30,5 @@ public class Framework {
     public String getDescription() {
         return description;
     }
+
 }

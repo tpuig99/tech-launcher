@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.FrameworkCategories;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -32,9 +30,11 @@ public class FrameworkDaoImpl implements FrameworkDao {
     @Autowired
     public FrameworkDaoImpl(final DataSource ds) {
         this.jdbcTemplate = new JdbcTemplate(ds);
+
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("frameworks")
                 .usingGeneratedKeyColumns("frameworkid");
+
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS frameworks ("
                 + "frameworkid SERIAL PRIMARY KEY,"
                 + "frameworkname varchar(50),"
@@ -53,13 +53,23 @@ public class FrameworkDaoImpl implements FrameworkDao {
         }
 
     @Override
-    public List<Framework> getFrameworks(FrameworkCategories category) {
+    public List<Framework> getByCategory(FrameworkCategories category) {
         final List<Framework> toReturn = jdbcTemplate.query("SELECT * FROM frameworks WHERE category = ?", ROW_MAPPER, category.name());
         if (toReturn.isEmpty()) {
             toReturn.add(new Framework(1, "Angular", FrameworkCategories.WEB, "Angular is a framework for dynamic websited." ));
         }
         return toReturn;
     }
+
+    @Override
+    public List<Framework> getAll() {
+        final List<Framework> toReturn = jdbcTemplate.query("SELECT * FROM frameworks", ROW_MAPPER);
+        if (toReturn.isEmpty()) {
+            toReturn.add(new Framework(1, "Angular", FrameworkCategories.WEB, "Angular is a framework for dynamic websited." ));
+        }
+        return toReturn;
+    }
+
 
     private Framework create(String frameworkname,FrameworkCategories category,String description) {
         final Map<String, Object> args = new HashMap<>();
