@@ -8,7 +8,17 @@ public class Framework {
     private FrameworkCategories category;
     private String description;
     private String introduction;
+    private String logo;
     private double stars;
+
+    public Framework(long id, String name, FrameworkCategories category, String description, String introduction, String logo) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.description = description;
+        this.introduction = introduction;
+        this.logo = logo;
+    }
 
     @Override
     public String toString() {
@@ -17,6 +27,8 @@ public class Framework {
                 ", name='" + name + '\'' +
                 ", category=" + category +
                 ", description='" + description + '\'' +
+                ", introduction='" + introduction + '\'' +
+                ", logo='" + logo + '\'' +
                 ", stars=" + stars +
                 '}';
     }
@@ -29,13 +41,6 @@ public class Framework {
         this.stars = stars;
     }
 
-    public Framework(long id, String name, FrameworkCategories category, String description,String introduction) {
-        this.id = id;
-        this.name = name;
-        this.category = category;
-        this.description = description;
-        this.introduction = introduction;
-    }
 
     public long getId() {
         return id;

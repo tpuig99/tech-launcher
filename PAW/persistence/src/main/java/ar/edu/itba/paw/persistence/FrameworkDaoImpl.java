@@ -23,7 +23,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
             RowMapper<Framework>() {
                 @Override
                 public Framework mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new Framework(rs.getInt("framework_id"), rs.getString("framework_name"),FrameworkCategories.valueOf(rs.getString("category")),rs.getString("description"),rs.getString("introduction"));
+                    return new Framework(rs.getInt("framework_id"), rs.getString("framework_name"),FrameworkCategories.valueOf(rs.getString("category")),rs.getString("description"),rs.getString("introduction"),rs.getString("logo"));
                 }
             };
 
@@ -40,7 +40,8 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 + "framework_name varchar(50),"
                 + "category varchar(50),"
                 + "description varchar(500),"
-                + "introduction varchar(5000)"
+                + "introduction varchar(5000),"
+                + "logo varchar(100)"
                 + ")");
     }
 
@@ -75,13 +76,14 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
 
-    private Framework create(String framework_name,FrameworkCategories category,String description,String introduction) {
+    private Framework create(String framework_name,FrameworkCategories category,String description,String introduction,String logo) {
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_name", framework_name); // la key es el nombre de la columna
         args.put("category", category.name()); // la key es el nombre de la columna
         args.put("description", description); // la key es el nombre de la columna
         args.put("introduction",introduction);
+        args.put("logo",logo);
         final Number frameworkId = jdbcInsert.executeAndReturnKey(args);
-        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction);
+        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction,logo);
     }
 }
