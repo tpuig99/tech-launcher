@@ -37,6 +37,8 @@ public class FrameworkController {
 
         mav.addObject("comments", commentService.getCommentsByFramework(id));
 
+        //mav.addObject("competitor", fs.getCompetitors(fs.findById(id).getCategory(), id));
+
         return mav;
     }
 }
