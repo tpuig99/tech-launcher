@@ -149,7 +149,7 @@
                 </div>
 
                 <!-- Competition Cards -->
-
+                <c:if test="${not empty competitors}">
                 <div>
                     <h4 class="title">You may also like</h4>
                 </div>
@@ -200,7 +200,8 @@
                         <span class="sr-only">Next</span>
                     </a>
                 </div>
-
+                </c:if>
+                
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
