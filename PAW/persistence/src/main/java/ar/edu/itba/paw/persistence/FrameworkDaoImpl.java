@@ -37,11 +37,11 @@ public class FrameworkDaoImpl implements FrameworkDao {
 
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS frameworks ("
                 + "framework_id SERIAL PRIMARY KEY,"
-                + "framework_name varchar(50),"
-                + "category varchar(50),"
-                + "description varchar(500),"
-                + "introduction varchar(5000),"
-                + "logo varchar(100)"
+                + "framework_name varchar(50) NOT NULL,"
+                + "category varchar(50) NOT NULL,"
+                + "description varchar(500) NOT NULL,"
+                + "introduction varchar(5000) NOT NULL,"
+                + "logo varchar(100) NOT NULL"
                 + ")");
     }
 
