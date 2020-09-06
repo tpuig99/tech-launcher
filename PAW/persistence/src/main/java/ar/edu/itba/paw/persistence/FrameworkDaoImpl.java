@@ -57,7 +57,8 @@ public class FrameworkDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> getByCategory(FrameworkCategories category) {
-        final List<Framework> toReturn = jdbcTemplate.query("SELECT * FROM frameworks WHERE category = ?", ROW_MAPPER, category.name());
+            //toReturn.add(new Framework(1, "Angular", FrameworkCategories.Back_End_Development, "Angular is a framework for dynamic websited." ));
+        final List<Framework> toReturn = jdbcTemplate.query("SELECT * FROM frameworks WHERE category = ?", ROW_MAPPER, category.getNameCat());
 
         return toReturn;
     }
