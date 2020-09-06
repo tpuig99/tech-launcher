@@ -31,7 +31,7 @@
                                 <span class="framework-title"><h2>${framework.name}</h2></span>
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
-                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star color-star"></span>
                                 <span> ${framework.stars}| 10M</span>
                                 </div>
                             </div>
@@ -161,7 +161,7 @@
                         <div class="card-body">
                             <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
                         </div>
-                        <div class="card-footer">${competitors.get(i).name} | ${competitors.get(i).stars}</div>
+                        <div class="card-footer">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
                     </div>
 
                     </c:forEach>
