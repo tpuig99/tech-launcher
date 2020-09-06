@@ -24,7 +24,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     @Override
     public Framework findById(long id) {
         Framework framework =frameworkDao.findById(id);
-        framework.setStars(getStars(framework.getId()));
+        // framework.setStars(getStars(framework.getId()));
         return framework;
     }
 
@@ -46,6 +46,11 @@ public class FrameworkServiceImpl implements FrameworkService {
             sum+=vote.getStars();
             count++;
         }
+
+        if (count == 0) {
+            return count;
+        }
+
         return sum/count;
     }
 
