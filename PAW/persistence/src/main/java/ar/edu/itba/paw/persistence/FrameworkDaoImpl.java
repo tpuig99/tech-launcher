@@ -23,7 +23,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
             RowMapper<Framework>() {
                 @Override
                 public Framework mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new Framework(rs.getInt("frameworkid"), rs.getString("frameworkname"),FrameworkCategories.valueOf(rs.getString("category")),rs.getString("description"));
+                    return new Framework(rs.getInt("framework_id"), rs.getString("framework_name"),FrameworkCategories.valueOf(rs.getString("category")),rs.getString("description"));
                 }
             };
 
@@ -33,11 +33,11 @@ public class FrameworkDaoImpl implements FrameworkDao {
 
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("frameworks")
-                .usingGeneratedKeyColumns("frameworkid");
+                .usingGeneratedKeyColumns("framework_id");
 
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS frameworks ("
-                + "frameworkid SERIAL PRIMARY KEY,"
-                + "frameworkname varchar(50),"
+                + "framework_id SERIAL PRIMARY KEY,"
+                + "framework_name varchar(50),"
                 + "category varchar(50),"
                 + "description varchar(500)"
                 + ")");
@@ -45,9 +45,10 @@ public class FrameworkDaoImpl implements FrameworkDao {
 
     @Override
     public Framework findById(long id) {
-        final List<Framework> list = jdbcTemplate.query("SELECT * FROM frameworks WHERE frameworkid = ?", ROW_MAPPER, id);
+        final List<Framework> list = jdbcTemplate.query("SELECT * FROM frameworks WHERE framework_id = ?", ROW_MAPPER, id);
         if (list.isEmpty()) {
-            return new Framework(id, "Angular", FrameworkCategories.Back_End_Development, "Angular is a framework for dynamic websited." );
+            //return new Framework(id, "Angular", FrameworkCategories.Back_End_Development, "Angular is a framework for dynamic websited." );
+            return null;
         }
         return list.get(0);
         }
@@ -56,7 +57,8 @@ public class FrameworkDaoImpl implements FrameworkDao {
     public List<Framework> getByCategory(FrameworkCategories category) {
         final List<Framework> toReturn = jdbcTemplate.query("SELECT * FROM frameworks WHERE category = ?", ROW_MAPPER, category.name());
         if (toReturn.isEmpty()) {
-            toReturn.add(new Framework(1, "Angular", FrameworkCategories.Back_End_Development, "Angular is a framework for dynamic websited." ));
+            //toReturn.add(new Framework(1, "Angular", FrameworkCategories.Back_End_Development, "Angular is a framework for dynamic websited." ));
+            return null;
         }
         return toReturn;
     }
@@ -65,18 +67,19 @@ public class FrameworkDaoImpl implements FrameworkDao {
     public List<Framework> getAll() {
         final List<Framework> toReturn = jdbcTemplate.query("SELECT * FROM frameworks", ROW_MAPPER);
         if (toReturn.isEmpty()) {
-            toReturn.add(new Framework(1, "Angular", FrameworkCategories.Back_End_Development, "Angular is a framework for dynamic websited." ));
+            //toReturn.add(new Framework(1, "Angular", FrameworkCategories.Back_End_Development, "Angular is a framework for dynamic websited." ));
+            return null;
         }
         return toReturn;
     }
 
 
-    private Framework create(String frameworkname,FrameworkCategories category,String description) {
+    private Framework create(String framework_name,FrameworkCategories category,String description) {
         final Map<String, Object> args = new HashMap<>();
-        args.put("frameworkname", frameworkname); // la key es el nombre de la columna
+        args.put("framework_name", framework_name); // la key es el nombre de la columna
         args.put("category", category.name()); // la key es el nombre de la columna
         args.put("description", description); // la key es el nombre de la columna
         final Number frameworkId = jdbcInsert.executeAndReturnKey(args);
-        return new Framework(frameworkId.longValue(), frameworkname,category,description);
+        return new Framework(frameworkId.longValue(), framework_name,category,description);
     }
 }

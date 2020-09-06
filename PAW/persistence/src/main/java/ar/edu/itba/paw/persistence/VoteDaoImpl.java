@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.FrameworkCategories;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.Vote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class VoteDaoImpl implements VoteDao{
@@ -22,7 +25,7 @@ public class VoteDaoImpl implements VoteDao{
             RowMapper<Vote>() {
                 @Override
                 public Vote mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new Vote(rs.getInt("voteid"),rs.getInt("frameworkid"),rs.getInt("userid"),rs.getInt("stars"));
+                    return new Vote(rs.getInt("vote_id"),rs.getInt("framework_id"),rs.getInt("user_id"),rs.getInt("stars"));
                 }
             };
 
@@ -31,38 +34,72 @@ public class VoteDaoImpl implements VoteDao{
         this.jdbcTemplate = new JdbcTemplate(ds);
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("votes")
-                .usingGeneratedKeyColumns("voteid");
+                .usingGeneratedKeyColumns("vote_id");
 
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS votes ("
-                + "voteid SERIAL PRIMARY KEY,"
-                + "userid integer,"
-                + "frameworkid integer,"
-                + "stars integer"
+                + "vote_id SERIAL PRIMARY KEY,"
+                + "user_id integer NOT NULL,"
+                + "framework_id integer NOT NULL,"
+                + "stars integer NOT NULL"
                 + ")");
     }
 
     @Override
-    public List<Vote> getVotes() {
-        return null;
+    public List<Vote> getAll() {
+        final List<Vote> toReturn = jdbcTemplate.query("SELECT * FROM votes", ROW_MAPPER);
+        if (toReturn.isEmpty()) {
+            return null;
+        }
+        return toReturn;
     }
 
     @Override
-    public Vote getVote(int frameworkId, int userId) {
-        return null;
+    public List<Vote> getByFramework(long frameworkId) {
+        final List<Vote> toReturn = jdbcTemplate.query("SELECT * FROM votes WHERE framework_id=?", ROW_MAPPER,frameworkId);
+        if (toReturn.isEmpty()) {
+            return null;
+        }
+        return toReturn;
     }
 
     @Override
-    public Vote insertVote(int frameworkId, int userId, int stars) {
-        return null;
+    public Vote getById(long voteId) {
+        final List<Vote> toReturn = jdbcTemplate.query("SELECT * FROM votes WHERE vote_id=?", ROW_MAPPER,voteId);
+        if (toReturn.isEmpty()) {
+            return null;
+        }
+        return toReturn.get(0);
     }
 
     @Override
-    public Vote deleteVote(int voteId) {
-        return null;
+    public Vote getByFrameworkAndUser(long frameworkId, long userId) {
+        final List<Vote> toReturn = jdbcTemplate.query("SELECT * FROM votes WHERE framework_id=? AND user_id=?", ROW_MAPPER,frameworkId,userId);
+        if (toReturn.isEmpty()) {
+            return null;
+        }
+        return toReturn.get(0);
     }
 
     @Override
-    public Vote changeVote(int voteId, int stars) {
-        return null;
+    public Vote insert(long frameworkId, long userId, int stars) {
+        final Map<String, Object> args = new HashMap<>();
+        args.put("framework_id", frameworkId); // la key es el nombre de la columna
+        args.put("user_id",userId);
+        args.put("stars",stars);
+        final Number voteId = jdbcInsert.executeAndReturnKey(args);
+        return new Vote(voteId.longValue(), frameworkId,userId,stars);
+    }
+
+    @Override
+    public int delete(long voteId) {
+        String sql = "DELETE FROM votes where vote_id=?";
+        return jdbcTemplate.update(sql,voteId);
+    }
+
+    @Override
+    public Vote update(long voteId, int stars) {
+        String sql = "UPDATE votes set stars=? where vote_id=?";
+        jdbcTemplate.update(sql,stars,voteId);
+        return getById(voteId);
     }
 }

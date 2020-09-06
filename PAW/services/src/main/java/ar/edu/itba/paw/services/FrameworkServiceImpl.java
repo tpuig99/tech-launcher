@@ -1,12 +1,13 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.FrameworkCategories;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.FrameworkDao;
+import ar.edu.itba.paw.persistence.VoteDao;
 import ar.edu.itba.paw.service.FrameworkService;
+import ar.edu.itba.paw.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +18,14 @@ public class FrameworkServiceImpl implements FrameworkService {
     @Autowired
     private FrameworkDao frameworkDao;
 
+    @Autowired
+    private VoteService vote;
+
     @Override
     public Framework findById(long id) {
-        return frameworkDao.findById(id);
+        Framework framework =frameworkDao.findById(id);
+        framework.setStars(getStars(framework.getId()));
+        return framework;
     }
 
     @Override
@@ -29,12 +35,18 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public List<Framework> getAll() {
-        return null;
+        return frameworkDao.getAll();
     }
 
     @Override
-    public double getStars(long id) {
-        return 0;
+    public double getStars(long frameworkId) {
+        List<Vote>votes =  vote.getByFramework(frameworkId);
+        double sum = 0,count=0;
+        for (Vote vote:votes) {
+            sum+=vote.getStars();
+            count++;
+        }
+        return sum/count;
     }
 
     @Override

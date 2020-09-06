@@ -26,12 +26,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User deleteUser(long userId) {
-        return userDao.deleteUser(userId);
+    public User create(String username, String mail, String password) {
+        return userDao.create(username,mail,password);
     }
 
     @Override
-    public User changeUser(long userId, String username, String mail, String password) {
-        return userDao.changeUser(userId,username,mail,password);
+    public int delete(long userId) {
+        return userDao.delete(userId);
+    }
+
+    @Override
+    public User update(long userId, String username, String mail, String password) {
+        return userDao.update(userId,username,mail,password);
     }
 }

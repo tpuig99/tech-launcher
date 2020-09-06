@@ -5,9 +5,11 @@ import ar.edu.itba.paw.models.Vote;
 import java.util.List;
 
 public interface VoteDao {
-     List<Vote> getVotes();
-     Vote getVote(int frameworkId,int userId);
-     Vote insertVote(int frameworkId,int userId,int stars);
-     Vote deleteVote(int voteId);
-     Vote changeVote(int voteId,int stars);
+     List<Vote> getAll();
+     List<Vote> getByFramework(long frameworkId);
+     Vote getById(long voteId);
+     Vote getByFrameworkAndUser(long frameworkId,long userId);
+     Vote insert(long frameworkId,long userId,int stars);
+     int delete(long voteId);
+     Vote update(long voteId,int stars);
 }

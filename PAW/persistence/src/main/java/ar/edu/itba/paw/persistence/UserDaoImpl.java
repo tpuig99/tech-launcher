@@ -23,7 +23,7 @@ public class UserDaoImpl implements UserDao {
             RowMapper<User>() {
                 @Override
                 public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new User(rs.getInt("userid"), rs.getString("username"),rs.getString("mail"));
+                    return new User(rs.getInt("user_id"), rs.getString("user_name"),rs.getString("mail"),rs.getString("password"));
                 }
             };
 
@@ -32,18 +32,19 @@ public class UserDaoImpl implements UserDao {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                         .withTableName("usersDao")
-                        .usingGeneratedKeyColumns("userid");
+                        .usingGeneratedKeyColumns("user_id");
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS usersDao ("
-                + "userid SERIAL PRIMARY KEY,"
-                + "username varchar(100),"
-                + "mail varchar(100)"
+                + "user_id SERIAL PRIMARY KEY,"
+                + "user_name varchar(100) NOT NULL,"
+                + "mail varchar(100) NOT NULL,"
+                + "password varchar(100)"
                 + ")");
 
 
     }
     @Override
     public User findById(final long id) {
-        final List<User> list = jdbcTemplate.query("SELECT * FROM usersDao WHERE userid = ?", ROW_MAPPER, id);
+        final List<User> list = jdbcTemplate.query("SELECT * FROM usersDao WHERE user_id = ?", ROW_MAPPER, id);
         if (list.isEmpty()) {
             return null;
         }
@@ -51,21 +52,33 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User create(String username,String mail) {
+    public User create(String user_name,String mail) {
         final Map<String, Object> args = new HashMap<>();
-        args.put("username", username); // la key es el nombre de la columna
+        args.put("user_name", user_name); // la key es el nombre de la columna
         args.put("mail",mail);
         final Number userId = jdbcInsert.executeAndReturnKey(args);
-        return new User(userId.longValue(), username,mail);
+        return new User(userId.longValue(), user_name,mail);
+    }
+    @Override
+    public User create(String user_name,String mail,String password) {
+        final Map<String, Object> args = new HashMap<>();
+        args.put("user_name", user_name); // la key es el nombre de la columna
+        args.put("mail",mail);
+        args.put("password",password);
+        final Number userId = jdbcInsert.executeAndReturnKey(args);
+        return new User(userId.longValue(), user_name,mail,password);
     }
 
     @Override
-    public User deleteUser(long userId) {
-        return null;
+    public int delete(long userId) {
+        String sql = "DELETE FROM usersdao where user_id=?";
+        return jdbcTemplate.update(sql,userId);
     }
 
     @Override
-    public User changeUser(long userId, String username, String mail, String password) {
-        return null;
+    public User update(long userId, String user_name, String mail, String password) {
+        String sql = "UPDATE usersdao set mail=?,user_name=?,password=? where user_id=?";
+        jdbcTemplate.update(sql,mail,user_name,password,userId);
+        return findById(userId);
     }
 }
