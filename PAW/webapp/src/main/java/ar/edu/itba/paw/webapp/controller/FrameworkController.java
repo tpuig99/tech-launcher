@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.ContentTypes;
-import ar.edu.itba.paw.service.ContentService;
-import ar.edu.itba.paw.service.FrameworkService;
-import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.service.VoteService;
+import ar.edu.itba.paw.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +18,9 @@ public class FrameworkController {
     private ContentService contentService;
 
     @Autowired
+    private CommentService commentService;
+
+    @Autowired
     private VoteService voteService;
 
     @RequestMapping("/frameworks/{id}")
@@ -34,6 +34,8 @@ public class FrameworkController {
         mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial));
 
         mav.addObject("votes", voteService.getByFramework(id));
+
+        mav.addObject("comments", commentService.getCommentsByFramework(id));
 
         return mav;
     }

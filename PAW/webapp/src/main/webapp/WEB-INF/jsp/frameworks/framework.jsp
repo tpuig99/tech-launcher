@@ -51,15 +51,24 @@
                         </c:forEach>
                     </ul>
                 </div>
+
+                <!-- Courses -->
+                <div>
+                    <h4 class="title ">Courses</h4>
+                    <ul class="list-group margin-left list-group-flush description">
+                        <c:forEach var="course" items="${courses}">
+                            <li class="list-group-item"><a href="${course.link}">${course.title}</a></li>
+                        </c:forEach>
+                    </ul>
+                </div>
+
                 <!-- Tutorials -->
                 <div>
                    <h4 class="title "> Tutorials</h4>
                     <ul class="list-group margin-left list-group-flush description">
-                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Aprender Angular</a></li>
-                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Aca va un tutorial</a></li>
-                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Este es un video</a></li>
-                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Dummy data</a></li>
-                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Dummy data</a></li>
+                        <c:forEach var="tutorial" items="${tutorials}">
+                            <li class="list-group-item"><a href="${tutorial.link}">${tutorial.title}</a></li>
+                        </c:forEach>
                     </ul>
                 </div>
 
@@ -70,10 +79,11 @@
                 </div>
 
                 <div class="container d-flex">
+                    <c:forEach var="comment" items="${comments}">
                     <div class="card comment-card margin-left">
                         <div class="card-body">
                             <div class="row">
-                                <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
+                                <span><h6 class="card-subtitle mb-2 text-muted">${comment.userId}</h6></span>
                                 <span>
                                     <button class="btn" data-toggle="modal" data-target="#exampleModal">
                                         <i class="fa fa-arrow-up arrow"></i>
@@ -85,27 +95,10 @@
                                     </button>
                                 </span>
                             </div>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <p class="card-text">${comment.description}</p>
                         </div>
                     </div>
-                    <div class="card comment-card margin-left">
-                        <div class="card-body">
-                            <div class="row">
-                                <span><h6 class="card-subtitle mb-2 text-muted">Nombre del user</h6></span>
-                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
-                            </div>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                    </div>
-                    <div class="card comment-card margin-left">
-                        <div class="card-body">
-                            <div class="row">
-                                <span><h6 class="card-subtitle mb-2 text-muted ">Nombre del user</h6></span>
-                                <span class="fa fa-arrow-up margin-left arrow"></span><span class="padding-left fa fa-arrow-down arrow"></span>
-                            </div>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                    </div>
+                    </c:forEach>
                 </div>
 
                 <!-- User Interaction -->
