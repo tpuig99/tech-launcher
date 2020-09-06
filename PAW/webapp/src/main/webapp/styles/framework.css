@@ -10,6 +10,7 @@
 
 .description {
     color: grey;
+    text-align: justify;
 }
 
 .checked:hover {
@@ -58,4 +59,8 @@ textarea {
 
 .margin-top{
     margin-top: 1em;
+}
+
+.justify{
+    text-align: justify;
 }

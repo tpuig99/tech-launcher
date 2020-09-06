@@ -39,7 +39,7 @@
                                 ${framework.description}
                             </div>
                         </div>
-                        <div class="margin-top mergin-left">${framework.introduction}</div>
+                        <div class="margin-top margin-left justify">${framework.introduction}</div>
                     </div>
                 </div>
 
@@ -154,52 +154,19 @@
                     <h4 class="title">You may also like</h4>
                 </div>
 
-                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner margin-bottom">
-                        <div class="carousel-item active">
-                            <div class="container d-flex">
-                                <c:forEach var="c" items="${competitors}">
-                                <div class="card mini-card margin-left">
-                                    <div class="card-body">
-                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                                    </div>
-                                    <div class="card-footer">${c.name}</div>
-                                </div>
-                                </c:forEach>
-                            </div>
+
+                <div class="container d-flex">
+                    <c:forEach var="i" begin="0" end="4">
+                    <div class="card mini-card margin-left">
+                        <div class="card-body">
+                            <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
                         </div>
-                        <div class="carousel-item">
-                            <div class="container d-flex">
-                                <div class="card mini-card margin-left">
-                                    <div class="card-body">
-                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                                    </div>
-                                    <div class="card-footer">Angular</div>
-                                </div>
-                                <div class="card mini-card margin-left">
-                                    <div class="card-body">
-                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                                    </div>
-                                    <div class="card-footer">CSS</div>
-                                </div>
-                                <div class="card mini-card margin-left">
-                                    <div class="card-body">
-                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                                    </div>
-                                    <div class="card-footer">html</div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="card-footer">${competitors.get(i).name} | ${competitors.get(i).stars}</div>
                     </div>
-                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon carousel-color" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
+
+                    </c:forEach>
                 </div>
+
                 </c:if>
                 
                 <!-- Modal -->
