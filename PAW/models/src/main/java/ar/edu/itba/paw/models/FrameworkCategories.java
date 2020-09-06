@@ -8,6 +8,7 @@ public enum FrameworkCategories {
     Computer_Science("Computer Science"),
     Big_Data("Big Data"),
     Math("Math"),
+    Artificial_Intelligence("Artificial Intelligence"),
     Books("Books"),
     Editors("Editors"),
     Gaming("Gaming"),
