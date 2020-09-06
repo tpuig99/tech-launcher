@@ -10,6 +10,7 @@ public class Framework {
     private String introduction;
     private String logo;
     private double stars;
+    private int votesCant;
 
     public Framework(long id, String name, FrameworkCategories category, String description, String introduction, String logo) {
         this.id = id;
@@ -18,6 +19,14 @@ public class Framework {
         this.description = description;
         this.introduction = introduction;
         this.logo = logo;
+    }
+
+    public int getVotesCant() {
+        return votesCant;
+    }
+
+    public void setVotesCant(int votesCant) {
+        this.votesCant = votesCant;
     }
 
     @Override
@@ -30,6 +39,7 @@ public class Framework {
                 ", introduction='" + introduction + '\'' +
                 ", logo='" + logo + '\'' +
                 ", stars=" + stars +
+                ", votesCant=" + votesCant +
                 '}';
     }
 
@@ -52,6 +62,9 @@ public class Framework {
 
     public String getCategory() {
         return category.name();
+    }
+    public FrameworkCategories getFrameCategory(){
+        return category;
     }
 
     public String getDescription() {

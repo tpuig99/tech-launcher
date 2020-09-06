@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 
 @Service
@@ -25,7 +26,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     public Framework findById(long id) {
         Framework framework =frameworkDao.findById(id);
         if(framework!=null) {
-            framework.setStars(getStars(framework.getId()));
+           getStarsAndVotes(framework);
         }
         return framework;
     }
@@ -69,5 +70,30 @@ public class FrameworkServiceImpl implements FrameworkService {
         return null;
     }
 
+    @Override
+    public int getVotesCant(long frameworkId) {
+        return vote.getByFramework(frameworkId).size();
+    }
+
+    @Override
+    public List<Framework> getCompetitors(Framework framework) {
+        List<Framework> competitors = getByCategory(framework.getFrameCategory());
+        competitors.remove(framework);
+        return competitors;
+    }
+    private void getStarsAndVotes(Framework framework){
+        List<Vote>votes =  vote.getByFramework(framework.getId());
+        if(votes==null){
+            framework.setStars(0);
+            framework.setVotesCant(0);
+        }
+        double sum = 0,count=0;
+        for (Vote vote:votes) {
+            sum+=vote.getStars();
+            count++;
+        }
+        framework.setVotesCant((int) count);
+        framework.setStars(sum/count);
+    }
 
 }

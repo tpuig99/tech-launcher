@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.ContentTypes;
+import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,8 +27,8 @@ public class FrameworkController {
     @RequestMapping("/frameworks/{id}")
     public ModelAndView framework(@PathVariable long id) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
-
-        mav.addObject("framework", fs.findById(id));
+        Framework framework = fs.findById(id);
+        mav.addObject("framework", framework);
 
         mav.addObject("books", contentService.getContentByFrameworkAndType(1, ContentTypes.book));
         mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course));

@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.FrameworkCategories;
 
+import java.awt.*;
 import java.util.List;
 
 public interface FrameworkService {
@@ -14,4 +15,6 @@ public interface FrameworkService {
     double getStars(long frameworkId);
     List<Comment> getComments(long frameworkId);
     List<Content> getContent(long frameworkId);
+    int getVotesCant(long frameworkId);
+    List<Framework> getCompetitors(Framework framework);
 }
