@@ -41,7 +41,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 + "category varchar(50) NOT NULL,"
                 + "description varchar(500) NOT NULL,"
                 + "introduction varchar(5000) NOT NULL,"
-                + "logo varchar(100) NOT NULL"
+                + "logo varchar(150) NOT NULL"
                 + ")");
     }
 

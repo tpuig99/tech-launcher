@@ -21,10 +21,10 @@
 
                 <div class="container d-flex">
                     <div class="row">
-                        <div class="col">
-                            <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
+                        <div class="col-2">
+                            <div><img src="${framework.logo}" alt=""></div>
                         </div>
-                        <div class="col-8">
+                        <div class="col-10">
 
                             <div class="row">
                                 <div class="col">
