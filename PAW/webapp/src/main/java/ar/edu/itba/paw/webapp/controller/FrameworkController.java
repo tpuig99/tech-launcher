@@ -28,17 +28,16 @@ public class FrameworkController {
     public ModelAndView framework(@PathVariable long id) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Framework framework = fs.findById(id);
+
         mav.addObject("framework", framework);
 
         mav.addObject("books", contentService.getContentByFrameworkAndType(1, ContentTypes.book));
         mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course));
         mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial));
 
-        mav.addObject("votes", voteService.getByFramework(id));
+        mav.addObject("competitors", fs.getCompetitors(framework));
 
         mav.addObject("comments", commentService.getCommentsByFramework(id));
-
-        //mav.addObject("competitor", fs.getCompetitors(fs.findById(id).getCategory(), id));
 
         return mav;
     }

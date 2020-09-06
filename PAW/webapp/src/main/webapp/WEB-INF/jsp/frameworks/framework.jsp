@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star"></span>
-                                <span>${votes.stars} | 10M</span>
+                                <span> ${framework.stars}| 10M</span>
                                 </div>
                             </div>
                             <div class="description">
@@ -158,24 +158,14 @@
                     <div class="carousel-inner margin-bottom">
                         <div class="carousel-item active">
                             <div class="container d-flex">
+                                <c:forEach var="c" items="${competitors}">
                                 <div class="card mini-card margin-left">
                                     <div class="card-body">
                                         <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
                                     </div>
-                                    <div class="card-footer">Angular</div>
+                                    <div class="card-footer">${c.name}</div>
                                 </div>
-                                <div class="card mini-card margin-left">
-                                    <div class="card-body">
-                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                                    </div>
-                                    <div class="card-footer">CSS</div>
-                                </div>
-                                <div class="card mini-card margin-left">
-                                    <div class="card-body">
-                                        <div><img class="mini-img" src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                                    </div>
-                                    <div class="card-footer">html</div>
-                                </div>
+                                </c:forEach>
                             </div>
                         </div>
                         <div class="carousel-item">

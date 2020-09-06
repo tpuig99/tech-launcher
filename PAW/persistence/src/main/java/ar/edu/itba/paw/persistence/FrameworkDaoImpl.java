@@ -58,20 +58,14 @@ public class FrameworkDaoImpl implements FrameworkDao {
     @Override
     public List<Framework> getByCategory(FrameworkCategories category) {
         final List<Framework> toReturn = jdbcTemplate.query("SELECT * FROM frameworks WHERE category = ?", ROW_MAPPER, category.name());
-        if (toReturn.isEmpty()) {
-            //toReturn.add(new Framework(1, "Angular", FrameworkCategories.Back_End_Development, "Angular is a framework for dynamic websited." ));
-            return null;
-        }
+
         return toReturn;
     }
 
     @Override
     public List<Framework> getAll() {
         final List<Framework> toReturn = jdbcTemplate.query("SELECT * FROM frameworks", ROW_MAPPER);
-        if (toReturn.isEmpty()) {
-            //toReturn.add(new Framework(1, "Angular", FrameworkCategories.Back_End_Development, "Angular is a framework for dynamic websited." ));
-            return null;
-        }
+
         return toReturn;
     }
 
