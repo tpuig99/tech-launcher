@@ -1,5 +1,5 @@
 nav {
-    background: #7500FF;
+    background: #733bce;
     height: 4em;
 }
 
@@ -19,7 +19,7 @@ nav a:hover {
     top: 4em;
     left: 0;
     border-top: 0.05em solid white;
-    background-color: #7500FF;
+    background-color: #733bce;
     overflow-x: hidden;
     padding-top: 20px;
 }
@@ -85,4 +85,9 @@ img {
 
 .margin-left{
     margin-left: 3em;
+}
+
+.primary-button{
+    background-color: #48bfe3;
+     color: white;
 }

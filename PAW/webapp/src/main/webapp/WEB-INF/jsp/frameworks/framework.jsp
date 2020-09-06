@@ -5,11 +5,11 @@
 <html>
     <head>
         <title>Framework</title>
-
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="<c:url value="/styles/framework.css"/>"/>
         <link rel="stylesheet" type="text/css" href="<c:url value="/styles/base_page.css"/>"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
     </head>
     <body>
         <div>
@@ -43,6 +43,7 @@
                 </div>
 
                 <!-- Bibliography -->
+                <c:if test="${not empty books}">
                 <div>
                    <h4 class="title ">Bibliography</h4>
                     <ul class="list-group margin-left list-group-flush description">
@@ -51,18 +52,23 @@
                         </c:forEach>
                     </ul>
                 </div>
+                </c:if>
 
                 <!-- Courses -->
+                <c:if test="${not empty courses}">
                 <div>
                     <h4 class="title ">Courses</h4>
+
                     <ul class="list-group margin-left list-group-flush description">
+
                         <c:forEach var="course" items="${courses}">
                             <li class="list-group-item"><a href="${course.link}">${course.title}</a></li>
                         </c:forEach>
                     </ul>
                 </div>
-
+                </c:if>
                 <!-- Tutorials -->
+                <c:if test="${not empty tutorials}">
                 <div>
                    <h4 class="title "> Tutorials</h4>
                     <ul class="list-group margin-left list-group-flush description">
@@ -71,9 +77,11 @@
                         </c:forEach>
                     </ul>
                 </div>
+                </c:if>
 
 
                 <!-- Comments -->
+                <c:if test="${not empty comments}">
                 <div>
                     <h4 class="title">Comments </h4>
                 </div>
@@ -100,6 +108,7 @@
                     </div>
                     </c:forEach>
                 </div>
+                </c:if>
 
                 <!-- User Interaction -->
                 <div>
@@ -112,7 +121,7 @@
                             <h5>Leave your comment</h5>
                             <div>
                                 <textarea class="form-control" aria-label="With textarea"></textarea>
-                                <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary margin-top d-flex justify-content-flex-end">SUBMIT</button>
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
                             </div>
                         </div>
                         <div class="col">
@@ -218,7 +227,7 @@
                                         <label for="inputEmail1">Email</label>
                                         <input type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp">
                                     </div>
-                                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">SUBMIT</button>
+                                    <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>
                                 </form>
                             </div>
                         </div>
