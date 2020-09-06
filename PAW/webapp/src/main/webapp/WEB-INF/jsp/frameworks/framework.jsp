@@ -28,7 +28,7 @@
 
                             <div class="row">
                                 <div class="col">
-                                <span class="framework-title"><h2>${framework.frameworkname}</h2></span>
+                                <span class="framework-title"><h2>${framework.name}</h2></span>
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star"></span>
