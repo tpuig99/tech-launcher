@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star"></span>
-                                <span>4.5 | 10M</span>
+                                <span>${votes.stars} | 10M</span>
                                 </div>
                             </div>
                             <div class="description">
@@ -46,9 +46,9 @@
                 <div>
                    <h4 class="title ">Bibliography</h4>
                     <ul class="list-group margin-left list-group-flush description">
-                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Libro de Angular</a></li>
-                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Esto es un librito</a></li>
-                        <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Acá Tami hubiese puesto perro</a></li>
+                        <c:forEach var="book" items="${books}">
+                        <li class="list-group-item"><a href="${book.link}">${book.title}</a></li>
+                        </c:forEach>
                     </ul>
                 </div>
                 <!-- Tutorials -->
