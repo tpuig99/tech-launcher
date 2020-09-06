@@ -44,7 +44,7 @@
 
                 <!-- Bibliography -->
                 <div>
-                   <h4 class="title ">Bibliografía</h4>
+                   <h4 class="title ">Bibliography</h4>
                     <ul class="list-group margin-left list-group-flush description">
                         <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Libro de Angular</a></li>
                         <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Esto es un librito</a></li>
@@ -53,7 +53,7 @@
                 </div>
                 <!-- Tutorials -->
                 <div>
-                   <h4 class="title "> Videos</h4>
+                   <h4 class="title "> Tutorials</h4>
                     <ul class="list-group margin-left list-group-flush description">
                         <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Aprender Angular</a></li>
                         <li class="list-group-item"><a href="https://tutorialesenpdf.com/angular/">Aca va un tutorial</a></li>
@@ -66,7 +66,7 @@
 
                 <!-- Comments -->
                 <div>
-                    <h4 class="title">Comentarios </h4>
+                    <h4 class="title">Comments </h4>
                 </div>
 
                 <div class="container d-flex">
@@ -110,20 +110,20 @@
 
                 <!-- User Interaction -->
                 <div>
-                    <h4 class="title">Da tu opinión a los demás</h4>
+                    <h4 class="title">Give your opinion</h4>
                 </div>
 
                 <div class="margin-left">
                     <div class="row">
                         <div class="col-8">
-                            <h5>Deja tu comentario </h5>
+                            <h5>Leave your comment</h5>
                             <div>
                                 <textarea class="form-control" aria-label="With textarea"></textarea>
-                                <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary margin-top d-flex justify-content-flex-end">PUBLICAR</button>
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary margin-top d-flex justify-content-flex-end">SUBMIT</button>
                             </div>
                         </div>
                         <div class="col">
-                            <h5>Valora este framework</h5>
+                            <h5>Rating</h5>
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-center">
@@ -145,7 +145,7 @@
                 <!-- Competition Cards -->
 
                 <div>
-                    <h4 class="title">Quizás también te interese</h4>
+                    <h4 class="title">You may also like</h4>
                 </div>
 
                 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
@@ -210,7 +210,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Completa los datos</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Please fill out your information</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -218,14 +218,14 @@
                             <div class="modal-body">
                                 <form>
                                     <div class="form-group">
-                                        <label for="inputName">Nombre</label>
+                                        <label for="inputName">Name</label>
                                         <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp">
                                     </div>
                                     <div class="form-group">
                                         <label for="inputEmail1">Email</label>
                                         <input type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp">
                                     </div>
-                                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">PUBLICAR</button>
+                                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">SUBMIT</button>
                                 </form>
                             </div>
                         </div>
