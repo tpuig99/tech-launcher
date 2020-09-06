@@ -58,7 +58,7 @@ public class ContentDaoImpl implements ContentDao {
                 + "votes_down int,"
                 + "tstamp timestamp NOT NULL,"
                 + "link text NOT NULL,"
-                + "type varchar(10),"
+                + "type varchar(10) NOT NULL,"
                 + "FOREIGN KEY(framework_id) REFERENCES frameworks,"
                 + "FOREIGN KEY(user_id) REFERENCES users"
                 + ")");
@@ -88,6 +88,17 @@ public class ContentDaoImpl implements ContentDao {
     @Override
     public List<Content> getContentByFrameworkAndUser(long frameworkId, long userId) {
         final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND user_id = ?", ROW_MAPPER, frameworkId, userId);
+
+        if (toReturn.isEmpty()) {
+            return null;
+        }
+
+        return toReturn;
+    }
+
+    @Override
+    public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type) {
+        final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND type = ?", ROW_MAPPER, frameworkId, type.name());
 
         if (toReturn.isEmpty()) {
             return null;

@@ -11,6 +11,7 @@ public interface ContentService {
     List<Content> getContentByFramework(long frameworkId);
     List<Content> getContentByFrameworkAndUser(long frameworkId, long userId);
     List<Content> getContentByUser(long userId);
+    List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type);
     Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type);
     int deleteContent(long contentId);
     Content changeContent(long contentId, String title, URL url, ContentTypes types);
