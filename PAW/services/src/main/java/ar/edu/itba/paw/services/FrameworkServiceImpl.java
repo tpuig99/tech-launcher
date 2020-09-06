@@ -86,6 +86,7 @@ public class FrameworkServiceImpl implements FrameworkService {
         if(votes==null){
             framework.setStars(0);
             framework.setVotesCant(0);
+            return;
         }
         double sum = 0,count=0;
         for (Vote vote:votes) {
