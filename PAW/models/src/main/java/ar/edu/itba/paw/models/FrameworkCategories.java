@@ -7,7 +7,7 @@ public enum FrameworkCategories {
     Back_End_Development("Back-End Development"),
     Computer_Science("Computer Science"),
     Big_Data("Big Data"),
-    Theory("Theory"),
+    Math("Math"),
     Books("Books"),
     Editors("Editors"),
     Gaming("Gaming"),
