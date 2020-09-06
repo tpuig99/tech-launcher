@@ -31,9 +31,9 @@ public class UserDaoImpl implements UserDao {
     public UserDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                        .withTableName("usersDao")
+                        .withTableName("users")
                         .usingGeneratedKeyColumns("user_id");
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS usersDao ("
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users ("
                 + "user_id SERIAL PRIMARY KEY,"
                 + "user_name varchar(100) NOT NULL,"
                 + "mail varchar(100) NOT NULL,"
@@ -44,7 +44,7 @@ public class UserDaoImpl implements UserDao {
     }
     @Override
     public User findById(final long id) {
-        final List<User> list = jdbcTemplate.query("SELECT * FROM usersDao WHERE user_id = ?", ROW_MAPPER, id);
+        final List<User> list = jdbcTemplate.query("SELECT * FROM users WHERE user_id = ?", ROW_MAPPER, id);
         if (list.isEmpty()) {
             return null;
         }
