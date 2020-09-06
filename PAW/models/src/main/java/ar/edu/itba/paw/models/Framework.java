@@ -7,6 +7,7 @@ public class Framework {
     private String name;
     private FrameworkCategories category;
     private String description;
+    private String introduction;
     private double stars;
 
     @Override
@@ -28,11 +29,12 @@ public class Framework {
         this.stars = stars;
     }
 
-    public Framework(long id, String name, FrameworkCategories category, String description) {
+    public Framework(long id, String name, FrameworkCategories category, String description,String introduction) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.description = description;
+        this.introduction = introduction;
     }
 
     public long getId() {
@@ -51,4 +53,7 @@ public class Framework {
         return description;
     }
 
+    public String getIntroduction() {
+        return introduction;
+    }
 }

@@ -24,7 +24,9 @@ public class FrameworkServiceImpl implements FrameworkService {
     @Override
     public Framework findById(long id) {
         Framework framework =frameworkDao.findById(id);
-        // framework.setStars(getStars(framework.getId()));
+        if(framework!=null) {
+            framework.setStars(getStars(framework.getId()));
+        }
         return framework;
     }
 
