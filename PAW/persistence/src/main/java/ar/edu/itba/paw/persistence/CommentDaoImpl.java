@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.Content;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,7 +11,9 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CommentDaoImpl implements CommentDao {
     private JdbcTemplate jdbcTemplate;
@@ -50,12 +53,18 @@ public class CommentDaoImpl implements CommentDao {
                 + "reference int,"
                 + "FOREIGN KEY(framework_id) REFERENCES frameworks,"
                 + "FOREIGN KEY(user_id) REFERENCES users,"
-                + "FOREIGN KEY(reference) REFERENCES comments,"
+                + "FOREIGN KEY(reference) REFERENCES comments"
                 + ")");
 
-//        insert into users values(1);
-//        insert into frameworks values(1);
-//        insert into comments values();
+    }
+
+    @Override
+    public Comment getById(long contentId) {
+        final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE comment_id = ?", ROW_MAPPER, contentId);
+        if (toReturn.isEmpty()) {
+            return null;
+        }
+        return toReturn.get(0);
     }
 
     @Override
@@ -63,7 +72,7 @@ public class CommentDaoImpl implements CommentDao {
         final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments where framework_id = ?", ROW_MAPPER, frameworkId);
 
         if (toReturn.isEmpty()) {
-            toReturn.add(new Comment(1,1,1,"Sample Comment",5,4,new Timestamp(System.currentTimeMillis()), -1));
+            return null;
         }
 
         return toReturn;
@@ -74,7 +83,7 @@ public class CommentDaoImpl implements CommentDao {
         final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND user_id = ?", ROW_MAPPER, frameworkId, userId);
 
         if (toReturn.isEmpty()) {
-            toReturn.add(new Comment(1,1,1,"Sample Comment",5,4,new Timestamp(System.currentTimeMillis()), -1));
+            return null;
         }
 
         return toReturn;
@@ -85,7 +94,7 @@ public class CommentDaoImpl implements CommentDao {
         final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE user_id = ?", ROW_MAPPER, userId);
 
         if (toReturn.isEmpty()) {
-            toReturn.add(new Comment(1,1,1,"Sample Comment",5,4,new Timestamp(System.currentTimeMillis()), -1));
+            return null;
         }
 
         return toReturn;
@@ -93,21 +102,29 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public Comment insertComment(long frameworkId, long userId, String description, long reference) {
-        Long millis = System.currentTimeMillis();
-        final List<Comment> toReturn = jdbcTemplate.query("insert into comments values(DEFAULT, ? , ? , ? , 0, 0, ? , ?);", ROW_MAPPER,
-                frameworkId, userId, description, millis, reference);
-        return toReturn.get(0);
+        long millis = System.currentTimeMillis();
+
+        final Map<String, Object> args = new HashMap<>();
+        args.put("framework_id", frameworkId);
+        args.put("user_id", userId);
+        args.put("description", description);
+        args.put("votes_up", 0);
+        args.put("votes_down", 0);
+        args.put("tstamp", millis);
+        args.put("reference", reference);
+
+        final Number voteId = jdbcInsert.executeAndReturnKey(args);
+        return new Comment (voteId.longValue(), frameworkId, userId, description, 0, 0, new Timestamp(millis), reference);
     }
 
     @Override
-    public Comment deleteComment(long commentId) {
-        final List<Comment> toReturn = jdbcTemplate.query("DELETE FROM comments WHERE comment_id = ? RETURNING *", ROW_MAPPER, commentId);
-        return toReturn.get(0);
+    public int deleteComment(long commentId) {
+        return jdbcTemplate.update("DELETE FROM content WHERE comment_id = ?", commentId);
     }
 
     @Override
     public Comment changeComment(long commentId, String description) {
-        final List<Comment> toReturn = jdbcTemplate.query("UPDATE comments SET description = ? WHERE comment_id = ? RETURNING *", ROW_MAPPER, description, commentId);
-        return toReturn.get(0);
+        jdbcTemplate.update("UPDATE comments SET description = ? WHERE comment_id = ?", description, commentId);
+        return getById(commentId);
     }
 }

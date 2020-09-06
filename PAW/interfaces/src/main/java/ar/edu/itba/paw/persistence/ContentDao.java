@@ -7,10 +7,11 @@ import java.net.URL;
 import java.util.List;
 
 public interface ContentDao {
+    Content getById(long contentId);
     List<Content> getContentByFramework(long frameworkId);
     List<Content> getContentByFrameworkAndUser(long frameworkId, long userId);
     List<Content> getContentByUser(long userId);
     Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type);
-    Content deleteContent(long contentId);
+    int deleteContent(long contentId);
     Content changeContent(long contentId, String title, URL url, ContentTypes types);
 }

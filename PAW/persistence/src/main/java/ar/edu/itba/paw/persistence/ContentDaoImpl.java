@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.ContentTypes;
+import ar.edu.itba.paw.models.Vote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,7 +14,9 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ContentDaoImpl implements ContentDao {
     private JdbcTemplate jdbcTemplate;
@@ -61,16 +64,20 @@ public class ContentDaoImpl implements ContentDao {
     }
 
     @Override
+    public Content getById(long contentId) {
+        final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE content_id = ?", ROW_MAPPER, contentId);
+        if (toReturn.isEmpty()) {
+            return null;
+        }
+        return toReturn.get(0);
+    }
+
+    @Override
     public List<Content> getContentByFramework(long frameworkId) {
         final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content where framework_id = ?", ROW_MAPPER, frameworkId);
 
         if (toReturn.isEmpty()) {
-            try {
-                toReturn.add(new Content(1, 1, 1, "Sample Comntent", 5, 4, new Timestamp(System.currentTimeMillis()), new URL("www.taringa.net"), ContentTypes.book));
-            }
-            catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            return null;
         }
 
         return toReturn;
@@ -81,12 +88,7 @@ public class ContentDaoImpl implements ContentDao {
         final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND user_id = ?", ROW_MAPPER, frameworkId, userId);
 
         if (toReturn.isEmpty()) {
-            try {
-                toReturn.add(new Content(1, 1, 1, "Sample Comntent", 5, 4, new Timestamp(System.currentTimeMillis()), new URL("www.taringa.net"), ContentTypes.book));
-            }
-            catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            return null;
         }
 
         return toReturn;
@@ -97,12 +99,7 @@ public class ContentDaoImpl implements ContentDao {
         final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE user_id = ?", ROW_MAPPER, userId);
 
         if (toReturn.isEmpty()) {
-            try {
-                toReturn.add(new Content(1, 1, 1, "Sample Comntent", 5, 4, new Timestamp(System.currentTimeMillis()), new URL("www.taringa.net"), ContentTypes.book));
-            }
-            catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            return null;
         }
 
         return toReturn;
@@ -110,22 +107,31 @@ public class ContentDaoImpl implements ContentDao {
 
     @Override
     public Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type) {
-        Long millis = System.currentTimeMillis();
-        final List<Content> toReturn = jdbcTemplate.query("INSERT INTO content values(DEFAULT, ? , ? , ? , 0, 0, ?, ? , ?);", ROW_MAPPER,
-                frameworkId, userId, title, millis, url.toString(), type.name());
-        return toReturn.get(0);
+        long millis = System.currentTimeMillis();
+
+        final Map<String, Object> args = new HashMap<>();
+        args.put("framework_id", frameworkId);
+        args.put("user_id",userId);
+        args.put("title", title);
+        args.put("votes_up", 0);
+        args.put("votes_down", 0);
+        args.put("tstamp", millis);
+        args.put("link", url.toString());
+        args.put("type", type.name());
+
+        final Number voteId = jdbcInsert.executeAndReturnKey(args);
+        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, new Timestamp(millis), url, type);
     }
 
     @Override
-    public Content deleteContent(long contentId) {
-        final List<Content> toReturn = jdbcTemplate.query("DELETE FROM content WHERE content_id = ? RETURNING *", ROW_MAPPER, contentId);
-        return toReturn.get(0);
+    public int deleteContent(long contentId) {
+        return jdbcTemplate.update("DELETE FROM content WHERE content_id = ?", contentId);
     }
 
     @Override
     public Content changeContent(long contentId, String title, URL url, ContentTypes type) {
-        final List<Content> toReturn = jdbcTemplate.query("UPDATE content SET title = ?, link = ?, type = ? WHERE content_id = ? RETURNING *", ROW_MAPPER, title, url.toString(), type.name());
-        return toReturn.get(0);
+        jdbcTemplate.update("UPDATE content SET title = ?, link = ?, type = ? WHERE content_id = ?", title, url.toString(), type.name());
+        return getById(contentId);
     }
 
 }
