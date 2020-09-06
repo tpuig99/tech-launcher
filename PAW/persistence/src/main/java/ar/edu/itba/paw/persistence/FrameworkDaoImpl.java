@@ -23,7 +23,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
             RowMapper<Framework>() {
                 @Override
                 public Framework mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new Framework(rs.getInt("framework_id"), rs.getString("framework_name"),FrameworkCategories.valueOf(rs.getString("category")),rs.getString("description"),rs.getString("introduction"),rs.getString("logo"));
+                    return new Framework(rs.getInt("framework_id"), rs.getString("framework_name"),FrameworkCategories.getByName(rs.getString("category")),rs.getString("description"),rs.getString("introduction"),rs.getString("logo"));
                 }
             };
 

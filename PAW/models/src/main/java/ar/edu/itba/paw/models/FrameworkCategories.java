@@ -28,7 +28,26 @@ public enum FrameworkCategories {
     Testing("Testing"),
     Miscellaneous("Miscellaneous"),
     Related("Related");
+    private String nameCat;
+    FrameworkCategories(String nameCat) {
+        this.nameCat=nameCat;
+    }
 
-    FrameworkCategories(String name) {}
+    FrameworkCategories() {
+    }
+
+    public String getNameCat() {
+        return nameCat;
+    }
+
+    public static FrameworkCategories getByName(String name){
+        for (FrameworkCategories fc:FrameworkCategories.values()) {
+            if(fc.nameCat.equals(name)){
+                return fc;
+            }
+        }
+        return null;
+    }
+
     
 }

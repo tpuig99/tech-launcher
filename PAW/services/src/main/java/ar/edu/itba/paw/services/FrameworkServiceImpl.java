@@ -25,7 +25,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     public Framework findById(long id) {
         Framework framework =frameworkDao.findById(id);
         if(framework!=null) {
-            framework.setStars(getStars(framework.getId()));
+            //framework.setStars(getStars(framework.getId()));
         }
         return framework;
     }
