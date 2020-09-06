@@ -39,13 +39,16 @@
                                 ${framework.description}
                             </div>
                         </div>
+                        <div class="margin-top mergin-left">${framework.introduction}</div>
                     </div>
                 </div>
+
+
 
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
                 <div>
-                   <h4 class="title ">Bibliography</h4>
+                   <h4 class="title">Bibliography</h4>
                     <ul class="list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
                         <li class="list-group-item"><a href="${book.link}">${book.title}</a></li>
@@ -67,6 +70,7 @@
                     </ul>
                 </div>
                 </c:if>
+
                 <!-- Tutorials -->
                 <c:if test="${not empty tutorials}">
                 <div>
