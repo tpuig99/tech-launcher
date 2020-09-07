@@ -34,7 +34,7 @@ public class FrameworkController {
         mav.addObject("books", contentService.getContentByFrameworkAndType(1, ContentTypes.book));
         mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course));
         mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial));
-
+        mav.addObject("category", category);
         mav.addObject("competitors", fs.getCompetitors(framework));
 
         mav.addObject("comments", commentService.getCommentsByFramework(id));
