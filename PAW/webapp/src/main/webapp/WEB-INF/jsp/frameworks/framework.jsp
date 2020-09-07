@@ -158,10 +158,12 @@
                 <div class="container d-flex">
                     <c:forEach var="i" begin="0" end="4">
                     <div class="card mini-card margin-left">
-                        <div class="card-body">
-                            <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
-                        </div>
-                        <div class="card-footer text-dark" style="height: 5em">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
+                        <a href="/frameworks/${competitors.get(i).id}">
+                            <div class="card-body">
+                                <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
+                            </div>
+                            <div class="card-footer text-dark" style="height: 5em">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
+                        </a>
                     </div>
 
                     </c:forEach>
