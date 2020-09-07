@@ -4,12 +4,13 @@
 <html>
     <head>
         <title>
-            Index Page
+            Tech Launcher
         </title>
 
-        <link rel="stylesheet" type="text/css" href="<c:url value="/styles/base_page.css"/>"/>
+        <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     </head>
     <body>
 
@@ -18,60 +19,22 @@
 
     <div class="content">
         <div class="page-title">
-            <h2>${framework.category}</h2>
+            <h2>Frameworks</h2>
         </div>
         <div class="page-description">
 
         </div>
         <div class="row equal">
-            <div class="col-md-3 d-flex pb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt="">
+            <c:forEach items="${frameworksList}" var="framework">
+                    <div class="card mx-2 mb-2">
+                        <a href="/frameworks/${framework.id}">
+                            <div class="card-body">
+                                <div><img src="${framework.logo}" alt="${framework.logo} logo" style="height: 5em"></div>
+                            </div>
+                            <div class="card-footer text-dark">${framework.name}</div>
+                        </a>
                     </div>
-                    <div class="card-footer">F</div>
-                </div>
-            </div>
-            <div class="col-md-3 d-flex pb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                    </div>
-                    <div class="card-footer">CSS</div>
-                </div>
-            </div>
-            <div class="col-md-3 d-flex pb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                    </div>
-                    <div class="card-footer">HTML5</div>
-                </div>
-            </div>
-            <div class="col-md-3 d-flex pb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                    </div>
-                    <div class="card-footer">jQuery</div>
-                </div>
-            </div>
-            <div class="col-md-3 d-flex pb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                    </div>
-                    <div class="card-footer">React</div>
-                </div>
-            </div>
-            <div class="col-md-3 d-flex pb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div><img src="https://cdn.worldvectorlogo.com/logos/angular-icon.svg" alt=""></div>
-                    </div>
-                    <div class="card-footer">D3</div>
-                </div>
-            </div>
+            </c:forEach>
         </div>
     </div>
 

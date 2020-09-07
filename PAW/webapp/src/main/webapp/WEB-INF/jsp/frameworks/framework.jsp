@@ -157,7 +157,7 @@
 
                 <div class="container d-flex">
                     <c:forEach var="i" begin="0" end="4">
-                    <div class="card mini-card margin-left">
+                    <div class="card mini-card margin-left mx-2 mb-2">
                         <a href="/frameworks/${competitors.get(i).id}">
                             <div class="card-body">
                                 <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
