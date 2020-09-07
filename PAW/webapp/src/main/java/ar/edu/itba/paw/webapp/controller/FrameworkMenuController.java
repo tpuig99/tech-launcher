@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.ContentTypes;
-import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.FrameworkCategories;
 import ar.edu.itba.paw.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
