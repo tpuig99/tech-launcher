@@ -18,7 +18,7 @@ public class HomeController {
     @RequestMapping("/")
     public ModelAndView helloWorld() {
         final ModelAndView mav = new ModelAndView("index");
-        mav.addObject("framework", fs.findById(1));
+        mav.addObject("frameworkList", fs.getAll() );
         return mav;
     }
 }
