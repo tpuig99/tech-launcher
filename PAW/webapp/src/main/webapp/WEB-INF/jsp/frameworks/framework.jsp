@@ -4,7 +4,7 @@
 
 <html>
     <head>
-        <title>Tech Launcher</title>
+        <title>Tech Launcher/${category}/${framework.name}</title>
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -158,10 +158,12 @@
                 <div class="container d-flex">
                     <c:forEach var="i" begin="0" end="4">
                     <div class="card mini-card margin-left">
-                        <div class="card-body">
-                            <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
-                        </div>
-                        <div class="card-footer">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
+                        <a href="/frameworks/${competitors.get(i).id}">
+                            <div class="card-body">
+                                <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
+                            </div>
+                            <div class="card-footer text-dark" style="height: 5em">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
+                        </a>
                     </div>
 
                     </c:forEach>

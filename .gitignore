@@ -4,9 +4,10 @@
 /PAW/webapp/target/
 /PAW/persistence/target/
 /PAW/.idea
-/PAW/PAW.iml
+/PAW/*.iml
 /PAW/services/*.iml
 /PAW/interfaces/*.iml
 /PAW/models/*.iml
 /PAW/webapp/*.iml
 /PAW/persistence/*.iml
+./idea

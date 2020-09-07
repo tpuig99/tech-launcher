@@ -28,9 +28,9 @@
             <div class="card mx-2 mb-2">
                 <a href="/${framework.category}/${framework.id}">
                     <div class="card-body">
-                        <div><img src="${framework.logo}" alt="${framework.logo} logo"></div>
+                        <div><img src="${framework.logo}" alt="${framework.logo} logo" style="height: 5em"></div>
                     </div>
-                    <div class="card-footer">${framework.name}</div>
+                    <div class="card-footer text-dark">${framework.name}</div>
                 </a>
             </div>
         </c:forEach>
