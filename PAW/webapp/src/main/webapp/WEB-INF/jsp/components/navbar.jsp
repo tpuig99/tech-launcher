@@ -8,9 +8,6 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/webapp_war_exploded/">Home</a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="/webapp_war_exploded/framework">Framework (se va este boton)</a>
-            </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">

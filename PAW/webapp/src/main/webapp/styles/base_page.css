@@ -1,5 +1,5 @@
 nav {
-    background: #49B6FF;
+    background: #733bce;
     height: 4em;
 }
 
@@ -19,7 +19,7 @@ nav a:hover {
     top: 4em;
     left: 0;
     border-top: 0.05em solid white;
-    background-color: #49B6FF;
+    background-color: #733bce;
     overflow-x: hidden;
     padding-top: 20px;
 }
@@ -63,15 +63,31 @@ nav a:hover {
     padding-top: 1em;
     margin-left: 1em;
     margin-right: 1em;
-    margin-bottom: 2em;
+    margin-bottom: 0.5em;
     border-bottom: 0.1em solid black;
 }
 
-.description {
-    margin-right: 3em;
+
+
+img {
+    width: 8em;
+}
+
+
+.container {
+    flex-wrap: wrap;
+}
+
+.mini-img
+{
+    width: 5em;
+}
+
+.margin-left{
     margin-left: 3em;
 }
 
-img {
-    width: 10em;
+.primary-button{
+    background-color: #48bfe3;
+     color: white;
 }
