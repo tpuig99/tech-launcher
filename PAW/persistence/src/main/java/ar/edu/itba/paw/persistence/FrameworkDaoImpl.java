@@ -66,7 +66,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
     @Override
     public List<Framework> getByNameOrCategory(String toSearch) {
 
-       return jdbcTemplate.query("SELECT * FROM frameworks WHERE category LIKE '%?%' OR name LIKE '%?%'", ROW_MAPPER, toSearch);
+       return jdbcTemplate.query("SELECT * FROM frameworks WHERE framework_name LIKE ?", ROW_MAPPER, toSearch);
 
     }
 

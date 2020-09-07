@@ -15,7 +15,7 @@ public class FrameworkMenuController {
     private FrameworkService fs;
 
     @RequestMapping("/{category}")
-    public ModelAndView framework(@PathVariable String category) {
+    public ModelAndView frameworkMenu(@PathVariable String category) {
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_menu");
         mav.addObject("category",category);
         mav.addObject("frameworksList", fs.getByCategory(FrameworkCategories.getByName(category)));
