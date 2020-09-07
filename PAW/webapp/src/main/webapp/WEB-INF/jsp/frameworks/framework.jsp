@@ -161,7 +161,7 @@
                         <div class="card-body">
                             <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
                         </div>
-                        <div class="card-footer">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
+                        <div class="card-footer text-dark">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
                     </div>
 
                     </c:forEach>
