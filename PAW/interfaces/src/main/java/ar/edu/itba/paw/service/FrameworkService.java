@@ -17,4 +17,5 @@ public interface FrameworkService {
     List<Content> getContent(long frameworkId);
     int getVotesCant(long frameworkId);
     List<Framework> getCompetitors(Framework framework);
+    List<Framework> getByNameOrCategory(String toSearch);
 }

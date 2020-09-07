@@ -37,6 +37,11 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
+    public List<Framework> getByNameOrCategory(String toSearch) {
+        return frameworkDao.getByNameOrCategory(toSearch);
+    }
+
+    @Override
     public List<Framework> getAll() {
         return frameworkDao.getAll();
     }
@@ -81,6 +86,9 @@ public class FrameworkServiceImpl implements FrameworkService {
         competitors.remove(framework);
         return competitors;
     }
+
+
+
     private void getStarsAndVotes(Framework framework){
         List<Vote>votes =  vote.getByFramework(framework.getId());
         if(votes==null){
