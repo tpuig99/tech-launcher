@@ -30,7 +30,7 @@
                     <div class="card-body">
                         <div><img src="${framework.logo}" alt="${framework.name} logo"></div>
                     </div>
-                    <div class="card-footer">${framework.name}</div>
+                    <div class="card-footer">${framework.name} - ${framework.category}</div>
                 </a>
             </div>
         </c:forEach>
