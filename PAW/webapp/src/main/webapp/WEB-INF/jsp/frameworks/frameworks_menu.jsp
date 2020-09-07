@@ -26,7 +26,7 @@
     <div class="row equal">
         <c:forEach items="${frameworksList}" var="framework">
             <div class="card mx-2 mb-2">
-                <a href="/frameworks/${framework.id}">
+                <a href="/${framework.category}/${framework.id}">
                     <div class="card-body">
                         <div><img src="${framework.logo}" alt="${framework.logo} logo"></div>
                     </div>
