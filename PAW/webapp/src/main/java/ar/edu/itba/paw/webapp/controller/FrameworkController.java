@@ -24,8 +24,8 @@ public class FrameworkController {
     @Autowired
     private VoteService voteService;
 
-    @RequestMapping("/frameworks/{id}")
-    public ModelAndView framework(@PathVariable long id) {
+    @RequestMapping("/{category}/{id}")
+    public ModelAndView framework(@PathVariable long id, @PathVariable String category) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Framework framework = fs.findById(id);
 
