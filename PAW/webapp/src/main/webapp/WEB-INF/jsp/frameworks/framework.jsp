@@ -124,7 +124,7 @@
                         <div class="col-8">
                             <h5>Leave your comment</h5>
                             <div>
-                                <textarea class="form-control" aria-label="With textarea"></textarea>
+                                <textarea id="commentInput" class="form-control" aria-label="With textarea"></textarea>
                                 <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
                             </div>
                         </div>
@@ -191,13 +191,26 @@
                                         <label for="inputEmail1">Email</label>
                                         <input type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp">
                                     </div>
-                                    <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <script>
+                    function publishComment() {
+                        let username = document.getElementById("inputName").value;
+                        let email = document.getElementById("inputEmail1").value;
+                        let content = document.getElementById("commentInput").value;
+                        let id= ${framework.id};
+
+                        let path = "/create?id="+id+"&content="+content+"&username="+username+"&email="+email;
+                        console.log(path);
+                        window.location.href = path;
+                        console.log(location.href);
+                    }
+                </script>
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
