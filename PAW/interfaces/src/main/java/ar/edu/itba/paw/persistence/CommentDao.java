@@ -15,4 +15,6 @@ public interface CommentDao {
     Comment insertComment(long frameworkId, long userId, String description, long reference);
     int deleteComment(long commentId);
     Comment changeComment(long commentId, String description);
+    Comment voteUp(long commentId);
+    Comment voteDown(long commentId);
 }

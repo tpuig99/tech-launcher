@@ -128,4 +128,18 @@ public class CommentDaoImpl implements CommentDao {
         jdbcTemplate.update("UPDATE comments SET description = ? WHERE comment_id = ?", description, commentId);
         return getById(commentId);
     }
+
+    @Override
+    public Comment voteUp(long commentId) {
+        Comment comment = getById(commentId);
+        jdbcTemplate.update("UPDATE comments SET votes_up = ? WHERE comment_id = ?", comment.getVotesUp()+1, commentId);
+        return getById(commentId);
+    }
+
+    @Override
+    public Comment voteDown(long commentId) {
+        Comment comment = getById(commentId);
+        jdbcTemplate.update("UPDATE comments SET votes_down = ? WHERE comment_id = ?", comment.getVotesDown()+1, commentId);
+        return getById(commentId);
+    }
 }

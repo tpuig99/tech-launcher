@@ -55,6 +55,20 @@ public class FrameworkController {
         return new ModelAndView("redirect:/frameworks/"+framework.getId());
     }
 
+    @RequestMapping(path={"/voteup"}, method= RequestMethod.GET)
+    public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId){
+        Framework framework = fs.findById(frameworkId);
+        final Comment comment = commentService.voteUp(commentId);
+        return new ModelAndView("redirect:/frameworks/"+framework.getId());
+    }
+
+    @RequestMapping(path={"/votedown"}, method= RequestMethod.GET)
+    public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId){
+        Framework framework = fs.findById(frameworkId);
+        final Comment comment = commentService.voteDown(commentId);
+        return new ModelAndView("redirect:/frameworks/"+framework.getId());
+    }
+
     @RequestMapping(path={"/rate"}, method = RequestMethod.GET)
     public ModelAndView rateComment(@RequestParam("id") final long id, @RequestParam("rating") final int rating, @RequestParam("username") final String username, @RequestParam("email") final String email){
         Framework framework = fs.findById(id);

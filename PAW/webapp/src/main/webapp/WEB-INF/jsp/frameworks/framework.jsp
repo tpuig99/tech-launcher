@@ -91,19 +91,19 @@
                 </div>
 
                 <div class="container d-flex">
-                    <c:forEach var="comment" items="${comments}">
+                    <c:forEach var="comment" items="${comments}" varStatus="loop">
                     <div class="card comment-card margin-left">
                         <div class="card-body">
                             <div class="row">
                                 <span><h6 class="card-subtitle mb-2 text-muted">${comment.userId}</h6></span>
                                 <span>
-                                    <button class="btn" data-toggle="modal" data-target="#exampleModal">
-                                        <i class="fa fa-arrow-up arrow"></i>
+                                    <button class="btn" onclick="voteUpComment(${comment.commentId})">
+                                        <i class="fa fa-arrow-up arrow">${comment.votesUp}</i>
                                     </button>
                                 </span>
                                 <span class="padding-left d-flex align-items-center justify-content-end ">
-                                    <button class="btn" data-toggle="modal" data-target="#exampleModal">
-                                        <i class="fa fa-arrow-down arrow"></i>
+                                    <button class="btn" onclick="voteDownComment(${comment.commentId})">
+                                        <i class="fa fa-arrow-down arrow">${comment.votesDown}</i>
                                     </button>
                                 </span>
                             </div>
@@ -337,6 +337,18 @@
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
+                    }
+
+                    function voteUpComment(commentId) {
+                        let frameworkId = ${framework.id};
+                        let path = "/voteup?id="+frameworkId+"&comment_id="+commentId;
+                        window.location.href = path;
+                    }
+
+                    function voteDownComment(commentId) {
+                        let frameworkId = ${framework.id};
+                        let path = "/votedown?id="+frameworkId+"&comment_id="+commentId;
+                        window.location.href = path;
                     }
 
                     function publishRating(n){
