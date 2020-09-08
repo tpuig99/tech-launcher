@@ -28,14 +28,6 @@ public class ContentDaoImpl implements ContentDao {
             RowMapper<Content>() {
                 @Override
                 public Content mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-                    URL link = null;
-                    try {
-                        link = new URL(rs.getString("link"));
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-
                     return new Content(rs.getLong("content_id"),
                             rs.getInt("framework_id"),
                             rs.getLong("user_id"),
@@ -43,7 +35,7 @@ public class ContentDaoImpl implements ContentDao {
                             rs.getLong("votes_up"),
                             rs.getLong("votes_down"),
                             rs.getTimestamp("tstamp"),
-                            link,
+                            rs.getURL("link"),
                             Enum.valueOf(ContentTypes.class, rs.getString("type"))
                     );
                 }
