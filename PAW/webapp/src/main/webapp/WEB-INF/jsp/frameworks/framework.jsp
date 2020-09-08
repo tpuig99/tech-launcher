@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star color-star"></span>
-                                <span> ${framework.stars}| 10M</span>
+                                <span> ${framework.starsFormated}| 10M</span>
                                 </div>
                             </div>
                             <div class="description">
