@@ -26,6 +26,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(String username,String mail) {
+        User user = findByUsername(username);
+        if( user != null ){
+            return user;
+        }
         return userDao.create(username,mail);
 
     }

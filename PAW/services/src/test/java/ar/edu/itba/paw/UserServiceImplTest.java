@@ -50,14 +50,4 @@ public void testCreateEmptyPassword() {
         Assert.assertEquals(USERNAME, maybeUser.getUsername());
         Assert.assertEquals(MAIL, maybeUser.getMail());
         }
-@Test
-public void testCreateAlreadyExists() {
-// 1. Setup!
-        Mockito.when(mockDao.findByUsername(Mockito.eq(USERNAME)))
-        .thenReturn(new User(1,USERNAME, MAIL,PASSWORD));
-// 2. "ejercito" la class under test
-        User maybeUser = userService.create(USERNAME, MAIL);
-// 3. Asserts!
-        Assert.assertNull(maybeUser);
-        }
 }

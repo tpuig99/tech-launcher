@@ -36,7 +36,7 @@ public class UserDaoImpl implements UserDao {
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users ("
                 + "user_id SERIAL PRIMARY KEY,"
                 + "user_name varchar(100) NOT NULL UNIQUE,"
-                + "mail varchar(100) NOT NULL,"
+                + "mail varchar(100) NOT NULL UNIQUE,"
                 + "password varchar(100)"
                 + ")");
 
