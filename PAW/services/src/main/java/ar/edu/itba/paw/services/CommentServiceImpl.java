@@ -48,4 +48,14 @@ public class CommentServiceImpl implements CommentService {
     public Comment changeComment(long commentId, String description) {
         return comment.changeComment(commentId, description);
     }
+
+    @Override
+    public Comment voteUp(long commentId) {
+        return comment.voteUp(commentId);
+    }
+
+    @Override
+    public Comment voteDown(long commentId) {
+        return comment.voteDown(commentId);
+    }
 }
