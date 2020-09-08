@@ -1,0 +1,93 @@
+nav {
+    background: #733bce;
+    height: 4em;
+}
+
+nav a {
+    color: aliceblue;
+}
+
+nav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav {
+    position: fixed;
+    height: 100%;
+    width: 13em;
+    z-index: 1;
+    top: 4em;
+    left: 0;
+    border-top: 0.05em solid white;
+    background-color: #733bce;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.sidenav a {
+    padding: 0.5em 0.5em 0.5em 1em;
+    text-decoration: none;
+    font-size: 1em;
+    color: aliceblue;
+    display: block;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.content {
+    position: absolute;
+    top: 4.5em;
+    left: 13.5em;
+    margin-right: 1em;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.page-title {
+    font-size: 5em;
+    border-bottom: 0.01em solid black;
+}
+
+.page-description {
+    text-align: center;
+    font-size: 1em;
+    padding-top: 0.5em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+}
+
+.title {
+    padding-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+    border-bottom: 0.1em solid black;
+}
+
+
+
+img {
+    height: 15em;
+}
+
+
+.container {
+    flex-wrap: wrap;
+}
+
+.mini-img
+{
+    width: 5em;
+}
+
+.margin-left{
+    margin-left: 3em;
+}
+
+.primary-button{
+    background-color: #48bfe3;
+     color: white;
+}

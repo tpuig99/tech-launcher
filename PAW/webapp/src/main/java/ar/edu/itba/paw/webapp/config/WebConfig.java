@@ -14,7 +14,7 @@ import org.springframework.web.servlet.view.JstlView;
 import javax.sql.DataSource;
 
 @EnableWebMvc
-@ComponentScan({ "ar.edu.itba.paw.webapp.controller","ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence", })
+@ComponentScan({ "ar.edu.itba.paw.webapp.controller","ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
@@ -32,8 +32,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         super.addResourceHandlers(registry);
         registry
-                .addResourceHandler("/styles/**")
-                .addResourceLocations("/styles/");
+                .addResourceHandler("/resources/**")
+                .addResourceLocations("/resources/");
     }
     @Bean
     public DataSource dataSource() {
