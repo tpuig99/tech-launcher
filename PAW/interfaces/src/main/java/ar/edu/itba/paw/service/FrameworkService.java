@@ -1,11 +1,9 @@
 package ar.edu.itba.paw.service;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.FrameworkCategories;
+import ar.edu.itba.paw.models.*;
 
 import java.awt.*;
+import java.net.URL;
 import java.util.List;
 
 public interface FrameworkService {
@@ -18,4 +16,10 @@ public interface FrameworkService {
     int getVotesCant(long frameworkId);
     List<Framework> getCompetitors(Framework framework);
     List<Framework> getByNameOrCategory(String toSearch);
+    Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type);
+    int deleteContent(long contentId);
+    Content changeContent(long contentId, String title, URL url, ContentTypes types);
+    Comment insertComment(long frameworkId, long userId, String description);
+    int deleteComment(long commentId);
+    Comment changeComment(long commentId, String description);
 }
