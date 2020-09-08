@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>
-        Tech Launcher
+        Tech Launcher/${category}
     </title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
