@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.ContentTypes;
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,6 +53,15 @@ public class FrameworkController {
         final Comment comment = commentService.insertComment(framework.getId(),user.getId(),content,1);
 
         return new ModelAndView("redirect:/frameworks/"+framework.getId());
+    }
+
+    @RequestMapping(path={"/rate"}, method = RequestMethod.GET)
+    public ModelAndView rateComment(@RequestParam("id") final long id, @RequestParam("rating") final int rating, @RequestParam("username") final String username, @RequestParam("email") final String email){
+        Framework framework = fs.findById(id);
+        final User user = us.create(username, email);
+        final Vote vote = voteService.insert(id,user.getId(),rating);
+
+        return new ModelAndView("redirect:/frameworks/"+id);
     }
 }
 
