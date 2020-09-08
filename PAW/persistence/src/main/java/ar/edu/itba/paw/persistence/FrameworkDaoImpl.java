@@ -64,11 +64,21 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
+    public List<Framework> getByNameOrCategory(String toSearch) {
+        String value = "%"+toSearch+"%";
+
+        return jdbcTemplate.query("SELECT * FROM frameworks WHERE framework_name LIKE ? OR category LIKE ?", ROW_MAPPER, value, value);
+
+    }
+
+    @Override
     public List<Framework> getAll() {
         final List<Framework> toReturn = jdbcTemplate.query("SELECT * FROM frameworks", ROW_MAPPER);
 
         return toReturn;
     }
+
+
 
 
     private Framework create(String framework_name,FrameworkCategories category,String description,String introduction,String logo) {

@@ -28,14 +28,6 @@ public class ContentDaoImpl implements ContentDao {
             RowMapper<Content>() {
                 @Override
                 public Content mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-                    URL link = null;
-                    try {
-                        link = new URL(rs.getString("link"));
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-
                     return new Content(rs.getLong("content_id"),
                             rs.getInt("framework_id"),
                             rs.getLong("user_id"),
@@ -43,7 +35,7 @@ public class ContentDaoImpl implements ContentDao {
                             rs.getLong("votes_up"),
                             rs.getLong("votes_down"),
                             rs.getTimestamp("tstamp"),
-                            link,
+                            rs.getURL("link"),
                             Enum.valueOf(ContentTypes.class, rs.getString("type"))
                     );
                 }
@@ -128,20 +120,19 @@ public class ContentDaoImpl implements ContentDao {
 
     @Override
     public Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type) {
-        long millis = System.currentTimeMillis();
-
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);
         args.put("user_id",userId);
         args.put("title", title);
         args.put("votes_up", 0);
         args.put("votes_down", 0);
-        args.put("tstamp", millis);
+        args.put("tstamp", ts);
         args.put("link", url.toString());
         args.put("type", type.name());
 
         final Number voteId = jdbcInsert.executeAndReturnKey(args);
-        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, new Timestamp(millis), url, type);
+        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, ts, url, type);
     }
 
     @Override

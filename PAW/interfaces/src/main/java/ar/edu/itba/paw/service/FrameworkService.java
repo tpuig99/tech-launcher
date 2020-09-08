@@ -15,6 +15,7 @@ public interface FrameworkService {
     List<Content> getContent(long frameworkId);
     int getVotesCant(long frameworkId);
     List<Framework> getCompetitors(Framework framework);
+    List<Framework> getByNameOrCategory(String toSearch);
     Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type);
     int deleteContent(long contentId);
     Content changeContent(long contentId, String title, URL url, ContentTypes types);

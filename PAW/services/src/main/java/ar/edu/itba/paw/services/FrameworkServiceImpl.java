@@ -44,6 +44,11 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
+    public List<Framework> getByNameOrCategory(String toSearch) {
+        return frameworkDao.getByNameOrCategory(toSearch);
+    }
+
+    @Override
     public List<Framework> getAll() {
         return frameworkDao.getAll();
     }

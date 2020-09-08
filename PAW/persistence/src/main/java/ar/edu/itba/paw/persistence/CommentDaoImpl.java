@@ -104,19 +104,18 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public Comment insertComment(long frameworkId, long userId, String description, long reference) {
-        long millis = System.currentTimeMillis();
-
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);
         args.put("user_id", userId);
         args.put("description", description);
         args.put("votes_up", 0);
         args.put("votes_down", 0);
-        args.put("tstamp", millis);
+        args.put("tstamp", ts);
         args.put("reference", reference);
 
         final Number voteId = jdbcInsert.executeAndReturnKey(args);
-        return new Comment (voteId.longValue(), frameworkId, userId, description, 0, 0, new Timestamp(millis), reference);
+        return new Comment (voteId.longValue(), frameworkId, userId, description, 0, 0, ts, reference);
     }
 
     @Override

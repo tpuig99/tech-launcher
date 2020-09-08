@@ -4,9 +4,9 @@
 
 <html>
     <head>
-        <title>Framework</title>
-        <link rel="stylesheet" type="text/css" href="<c:url value="/styles/framework.css"/>"/>
-        <link rel="stylesheet" type="text/css" href="<c:url value="/styles/base_page.css"/>"/>
+        <title>Tech Launcher/${framework.name}</title>
+        <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
+        <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star color-star"></span>
-                                <span> ${framework.stars}| 10M</span>
+                                <span> ${framework.starsFormated}| 10M</span>
                                 </div>
                             </div>
                             <div class="description">
@@ -124,7 +124,7 @@
                         <div class="col-8">
                             <h5>Leave your comment</h5>
                             <div>
-                                <textarea class="form-control" aria-label="With textarea"></textarea>
+                                <textarea id="commentInput" class="form-control" aria-label="With textarea"></textarea>
                                 <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
                             </div>
                         </div>
@@ -133,11 +133,11 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <span class="fa fa-star fa-lg checked"></span>
-                                        <span class="fa fa-star fa-lg checked"></span>
-                                        <span class="fa fa-star fa-lg checked"></span>
-                                        <span class="fa fa-star fa-lg checked"></span>
-                                        <span class="fa fa-star fa-lg checked"></span>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal1" class="btn primary-button"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal2" class="btn primary-button"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal3" class="btn primary-button"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal4" class="btn primary-button"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal5" class="btn primary-button"><span class="fa fa-star fa-lg checked"></span></button>
                                     </div>
                                 </div>
                             </div>
@@ -157,11 +157,13 @@
 
                 <div class="container d-flex">
                     <c:forEach var="i" begin="0" end="4">
-                    <div class="card mini-card margin-left">
-                        <div class="card-body">
-                            <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
-                        </div>
-                        <div class="card-footer">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
+                    <div class="card mini-card margin-left mx-5 mb-4">
+                        <a href="/frameworks/${competitors.get(i).id}">
+                            <div class="card-body">
+                                <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
+                            </div>
+                            <div class="card-footer text-dark" style="height: 5em">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
+                        </a>
                     </div>
 
                     </c:forEach>
@@ -186,16 +188,169 @@
                                         <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp">
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputEmail1">Email</label>
-                                        <input type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp">
+                                        <label for="inputEmail">Email</label>
+                                        <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp">
                                     </div>
-                                    <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
 
+
+                <div class="modal fade" id="ratingModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ratingModalLabel1">Please fill out your information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="ratingInputName1">Name</label>
+                                        <input type="text" class="form-control" id="ratingInputName1" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ratingInputEmail1">Email</label>
+                                        <input type="email" class="form-control" id="ratingInputEmail1" aria-describedby="emailHelp">
+                                    </div>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating(1)">SUBMIT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="ratingModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ratingModalLabel2">Please fill out your information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="ratingInputName2">Name</label>
+                                        <input type="text" class="form-control" id="ratingInputName2" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ratingInputEmail2">Email</label>
+                                        <input type="email" class="form-control" id="ratingInputEmail2" aria-describedby="emailHelp">
+                                    </div>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating(2)">SUBMIT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="ratingModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ratingModalLabel3">Please fill out your information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="ratingInputName3">Name</label>
+                                        <input type="text" class="form-control" id="ratingInputName3" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ratingInputEmail3">Email</label>
+                                        <input type="email" class="form-control" id="ratingInputEmail3" aria-describedby="emailHelp">
+                                    </div>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating(3)">SUBMIT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="ratingModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ratingModalLabel4">Please fill out your information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="ratingInputName4">Name</label>
+                                        <input type="text" class="form-control" id="ratingInputName4" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ratingInputEmail4">Email</label>
+                                        <input type="email" class="form-control" id="ratingInputEmail4" aria-describedby="emailHelp">
+                                    </div>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating(4)">SUBMIT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="ratingModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ratingModalLabel5">Please fill out your information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="ratingInputName5">Name</label>
+                                        <input type="text" class="form-control" id="ratingInputName5" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ratingInputEmail5">Email</label>
+                                        <input type="email" class="form-control" id="ratingInputEmail5" aria-describedby="emailHelp">
+                                    </div>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating(5)">SUBMIT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <script>
+                    function publishComment() {
+                        let username = document.getElementById("inputName").value;
+                        let email = document.getElementById("inputEmail").value;
+                        let content = document.getElementById("commentInput").value;
+                        let id= ${framework.id};
+
+                        let path = "/create?id="+id+"&content="+content+"&username="+username+"&email="+email;
+                        console.log(path);
+                        window.location.href = path;
+                        console.log(location.href);
+                    }
+
+                    function publishRating(n){
+                        let username = document.getElementById("ratingInputName" + n).value;
+                        let email = document.getElementById("ratingInputEmail" + n).value;
+                        let ratingValue = n;
+                        let id= ${framework.id};
+
+                        let path = "/rate?id="+id+"&rating="+ratingValue+"&username="+username+"&email="+email;
+                        console.log(path);
+                        window.location.href = path;
+                        console.log(location.href);
+                    }
+                </script>
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

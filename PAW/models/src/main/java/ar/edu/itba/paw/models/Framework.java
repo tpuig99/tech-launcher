@@ -43,8 +43,12 @@ public class Framework {
                 '}';
     }
 
-    public double getStars() {
+    public double getStars(){
         return stars;
+    }
+
+    public String getStarsFormated() {
+        return String.format("%.2f", stars);
     }
 
     public void setStars(double stars) {
@@ -61,7 +65,7 @@ public class Framework {
     }
 
     public String getCategory() {
-        return category.name();
+        return category.getNameCat();
     }
     public FrameworkCategories getFrameCategory(){
         return category;
