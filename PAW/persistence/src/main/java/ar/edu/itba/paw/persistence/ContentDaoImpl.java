@@ -128,20 +128,19 @@ public class ContentDaoImpl implements ContentDao {
 
     @Override
     public Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type) {
-        long millis = System.currentTimeMillis();
-
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);
         args.put("user_id",userId);
         args.put("title", title);
         args.put("votes_up", 0);
         args.put("votes_down", 0);
-        args.put("tstamp", millis);
+        args.put("tstamp", ts);
         args.put("link", url.toString());
         args.put("type", type.name());
 
         final Number voteId = jdbcInsert.executeAndReturnKey(args);
-        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, new Timestamp(millis), url, type);
+        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, ts, url, type);
     }
 
     @Override
