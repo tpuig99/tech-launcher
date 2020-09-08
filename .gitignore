@@ -10,4 +10,4 @@
 /PAW/models/*.iml
 /PAW/webapp/*.iml
 /PAW/persistence/*.iml
-./idea
+.idea/
