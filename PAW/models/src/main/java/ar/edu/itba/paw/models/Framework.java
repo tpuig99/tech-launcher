@@ -61,7 +61,7 @@ public class Framework {
     }
 
     public String getCategory() {
-        return category.name();
+        return category.getNameCat();
     }
     public FrameworkCategories getFrameCategory(){
         return category;
