@@ -50,7 +50,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ds.setUsername("gbhbqhgxqihynh");
         ds.setPassword("959523c108bbcbbf94a86d25428acea2051845a79486cc83f71163d39ee834b9");
         */
-        ds.setUrl("jdbc:postgresql://localhost:5600/paw-2020b-1");
+        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
         ds.setUsername("paw-2020b-1");
         ds.setPassword("uygwr2BX7");
         return ds;
