@@ -26,7 +26,7 @@
         <div class="row equal">
             <c:forEach items="${frameworksList}" var="framework">
                     <div class="card mx-4 mb-4">
-                        <a href="/frameworks/${framework.id}">
+                        <a href="<c:url value="/frameworks/${framework.id}"/>">
                             <div class="card-body">
                                 <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.logo} logo"></div>
                             </div>
