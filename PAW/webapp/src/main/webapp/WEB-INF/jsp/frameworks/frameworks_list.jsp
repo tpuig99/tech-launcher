@@ -18,11 +18,18 @@
 
 <div class="content">
     <div class="page-title">
-        <h2>Frameworks</h2>
+        <h2>Search Results</h2>
     </div>
-    <div class="page-description">
 
-    </div>
+
+    <c:if test="${empty matchingFrameworks}">
+        <div>
+            Nothing found
+        </div>
+
+    </c:if>
+
+    <c:if test="${not empty matchingFrameworks}">
     <div class="row equal">
         <c:forEach var="framework" items="${matchingFrameworks}" >
             <div class="card mx-2 mb-2">
@@ -35,6 +42,7 @@
             </div>
         </c:forEach>
     </div>
+        </c:if>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

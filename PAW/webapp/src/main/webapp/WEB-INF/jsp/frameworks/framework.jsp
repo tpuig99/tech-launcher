@@ -4,7 +4,7 @@
 
 <html>
     <head>
-        <title>Tech Launcher/${framework.name}</title>
+        <title>${framework.name}</title>
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star color-star"></span>
-                                <span> ${framework.starsFormated}| 10M</span>
+                                <span> ${framework.starsFormated}| ${framework.votesCant}</span>
                                 </div>
                             </div>
                             <div class="description">
