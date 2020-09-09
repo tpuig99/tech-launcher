@@ -1,0 +1,81 @@
+.mini-card{
+    margin-right: 1em;
+    margin-top: 1em;
+}
+
+.framework-title {
+    padding-top: 1em;
+    margin-bottom: 1em;
+}
+
+.description {
+    color: grey;
+    text-align: justify;
+}
+
+.checked:hover {
+    color: yellow;
+}
+
+color-star{
+    color:yellow;
+}
+
+.carousel-color{
+    color: black;
+}
+
+.comment-card{
+    margin-bottom: 1em;
+    max-width: 15em;
+}
+
+.padding-left{
+    padding-left: 0.2em;
+    margin-left: 0.2em;
+}
+
+.center{
+   justify-content: center;
+}
+
+.margin-bottom {
+    margin-bottom: 3em;
+}
+
+.arrow {
+    color: grey;
+}
+
+.arrow:hover{
+    color: black;
+}
+
+.list-group{
+    max-height: 13em;
+    margin-bottom: 1em;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+.list-group-comment{
+    max-height: 15em;
+}
+
+textarea {
+    resize: none;
+}
+
+.margin-top{
+    margin-top: 1em;
+}
+
+margin-right{
+    margin-right: 1em;
+}
+
+.justify{
+    text-align: justify;
+}
+
+
