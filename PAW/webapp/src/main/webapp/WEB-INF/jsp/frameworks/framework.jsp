@@ -33,7 +33,8 @@
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star color-star"></span>
-                                <span> ${framework.starsFormated} | ${framework.votesCant} voters</span>
+                                <span> ${framework.starsFormated} | ${framework.votesCant}</span>
+                                    <span class="fa fa-user"></span>
                                 </div>
                             </div>
                             <div class="description">
@@ -99,6 +100,7 @@
                                     <div class="card-body">
                                         <div class="row comment-card">
                                             <span><h6 class="margin-right card-subtitle mb-2 text-muted">${commentsUsernames.get(comment.commentId)}</h6></span>
+
                                             <span>
                                                 <button class=" btn upVote" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
                                                     <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
@@ -109,6 +111,7 @@
                                                     <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
                                                 </button>
                                             </span>
+
                                         </div>
                                         <p class="card-text">${comment.description}</p>
                                     </div>
@@ -162,12 +165,12 @@
 
                 <div class="container d-flex">
                     <c:forEach var="i" begin="0" end="4">
-                    <div class="card mini-card mx-5 mb-4">
+                    <div class="card mini-card mx-3 mb-4">
                         <a href="/frameworks/${competitors.get(i).id}">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitors.get(i).logo}" alt="${framework.name} logo"></div>
                             </div>
-                            <div class="card-footer text-dark">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
+                            <div class="card-footer text-dark">${competitors.get(i).name}</div>
                         </a>
                     </div>
 
