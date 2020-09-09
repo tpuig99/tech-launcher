@@ -25,10 +25,10 @@
         </div>
         <div class="row equal">
             <c:forEach items="${frameworksList}" var="framework">
-                    <div class="card mx-5 mb-4">
+                    <div class="card mx-4 mb-4">
                         <a href="/frameworks/${framework.id}">
                             <div class="card-body">
-                                <div><img src="${framework.logo}" alt="${framework.logo} logo" style="height: 5em"></div>
+                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.logo} logo"></div>
                             </div>
                             <div class="card-footer text-dark">${framework.name}</div>
                         </a>
