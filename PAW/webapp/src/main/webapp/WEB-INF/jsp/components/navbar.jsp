@@ -8,7 +8,10 @@
 <body>
 
 <nav class="navbar fixed-top navbar-expand-lg">
-    <a class="navbar-brand" href="/">TECH LAUNCHER</a>
+    <a class="navbar-brand" href="/">
+        <img src="<c:url value="/resources/assets/logo.png"/>" width="30" height="30" class="d-inline-block align-top" alt="">
+        TECH LAUNCHER
+    </a>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
