@@ -96,7 +96,7 @@
                     <div class="card comment-card margin-left">
                         <div class="card-body">
                             <div class="row">
-                                <span><h6 class="card-subtitle mb-2 text-muted">${comment.userId}</h6></span>
+                                <span><h6 class="card-subtitle mb-2 text-muted">${commentsUsernames.get(comment.commentId)}</h6></span>
                                 <span>
                                     <button class="btn upVote" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
                                         <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>

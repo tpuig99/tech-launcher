@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+import java.util.Map;
+
 @Controller
 public class FrameworkController {
 
@@ -32,6 +35,9 @@ public class FrameworkController {
     public ModelAndView framework(@PathVariable long id, @PathVariable String category) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Framework framework = fs.findById(id);
+        List<Comment> comments = commentService.getCommentsByFramework(id);
+        Map<Long, String> commentsUsernames = us.getUsernamesByComments(comments);
+
 
         mav.addObject("framework", framework);
 
@@ -41,7 +47,9 @@ public class FrameworkController {
         mav.addObject("category", category);
         mav.addObject("competitors", fs.getCompetitors(framework));
 
-        mav.addObject("comments", commentService.getCommentsByFramework(id));
+        mav.addObject("comments", comments);
+        mav.addObject("commentsUsernames", us.getUsernamesByComments(comments));
+
 
         return mav;
     }

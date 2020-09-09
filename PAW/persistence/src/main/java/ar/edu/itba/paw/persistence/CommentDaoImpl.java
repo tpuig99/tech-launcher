@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.Content;
+import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -80,6 +81,9 @@ public class CommentDaoImpl implements CommentDao {
         return toReturn;
     }
 
+
+
+
     @Override
     public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
         final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND user_id = ?", ROW_MAPPER, frameworkId, userId);
@@ -101,6 +105,8 @@ public class CommentDaoImpl implements CommentDao {
 
         return toReturn;
     }
+
+
 
     @Override
     public Comment insertComment(long frameworkId, long userId, String description, long reference) {

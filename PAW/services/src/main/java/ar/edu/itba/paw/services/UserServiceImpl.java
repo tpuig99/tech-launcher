@@ -1,11 +1,15 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.UserDao;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -47,5 +51,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(long userId, String username, String mail, String password) {
         return userDao.update(userId,username,mail,password);
+    }
+
+    @Override
+    public Map<Long, String> getUsernamesByComments(List<Comment> comments) {
+        return userDao.getUsernamesByComments(comments);
     }
 }

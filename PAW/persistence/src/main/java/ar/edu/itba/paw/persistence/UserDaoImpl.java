@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,5 +91,21 @@ public class UserDaoImpl implements UserDao {
         String sql = "UPDATE usersdao set mail=?,user_name=?,password=? where user_id=?";
         jdbcTemplate.update(sql,mail,user_name,password,userId);
         return findById(userId);
+    }
+
+    @Override
+    public Map<Long, String> getUsernamesByComments(List<Comment> comments) {
+        final List<String> usernames = new ArrayList<>();
+        final Map<Long, String> toReturn = new HashMap<>();
+        String username;
+
+        for( Comment c : comments){
+           username = findById(c.getUserId()).getUsername();
+           usernames.add(username);
+           toReturn.put(c.getCommentId(), username);
+
+        }
+
+        return toReturn;
     }
 }
