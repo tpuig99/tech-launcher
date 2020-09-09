@@ -166,7 +166,7 @@
                 <div class="container d-flex">
                     <c:forEach var="i" begin="0" end="4">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="/frameworks/${competitors.get(i).id}">
+                        <a href="<c:url value="/frameworks/${competitors.get(i).id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitors.get(i).logo}" alt="${framework.name} logo"></div>
                             </div>
@@ -295,7 +295,7 @@
                         let content = document.getElementById("commentInput").value;
                         let id= ${framework.id};
 
-                        let path = "/create?id="+id+"&content="+content+"&username="+username+"&email="+email;
+                        let path = "/paw-2020b-1/create?id="+id+"&content="+content+"&username="+username+"&email="+email;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
@@ -306,7 +306,7 @@
                         let username = document.getElementById("upVoteName").value;
                         let email = document.getElementById("upVoteEmail").value;
                         let commentId = document.getElementById("upVoteCommentId").value;
-                        let path = "/voteup?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
+                        let path = "/paw-2020b-1/voteup?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
                         window.location.href = path;
                     }
 
@@ -315,7 +315,7 @@
                         let username = document.getElementById("downVoteName").value;
                         let email = document.getElementById("downVoteEmail").value;
                         let commentId = document.getElementById("downVoteCommentId").value;
-                        let path = "/votedown?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
+                        let path = "/paw-2020b-1/votedown?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
                         window.location.href = path;
                     }
 
@@ -325,7 +325,7 @@
                         let ratingValue = document.getElementById("rankingValue").value;
                         let id= ${framework.id};
 
-                        let path = "/rate?id="+id+"&rating="+ratingValue+"&username="+username+"&email="+email;
+                        let path = "/paw-2020b-1/rate?id="+id+"&rating="+ratingValue+"&username="+username+"&email="+email;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
