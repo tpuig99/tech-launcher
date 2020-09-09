@@ -49,7 +49,7 @@ public class ContentDaoImpl implements ContentDao {
                 .withTableName("content")
                 .usingGeneratedKeyColumns("content_id");
 
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS content ("
+        /*jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS content ("
                 + "content_id SERIAL PRIMARY KEY,"
                 + "framework_id int NOT NULL,"
                 + "user_id int NOT NULL,"
@@ -62,7 +62,7 @@ public class ContentDaoImpl implements ContentDao {
                 + "FOREIGN KEY(framework_id) REFERENCES frameworks,"
                 + "FOREIGN KEY(user_id) REFERENCES users"
                 + ")");
-
+        */
     }
 
     @Override

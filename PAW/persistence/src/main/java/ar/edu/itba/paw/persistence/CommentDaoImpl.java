@@ -44,19 +44,19 @@ public class CommentDaoImpl implements CommentDao {
                 .withTableName("comments")
                 .usingGeneratedKeyColumns("comment_id");
 
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS comments ("
-                + "comment_id SERIAL PRIMARY KEY,"
-                + "framework_id int NOT NULL,"
-                + "user_id int NOT NULL,"
-                + "description varchar(500) NOT NULL,"
-                + "votes_up int,"
-                + "votes_down int,"
-                + "tstamp timestamp NOT NULL,"
-                + "reference int,"
-                + "FOREIGN KEY(framework_id) REFERENCES frameworks,"
-                + "FOREIGN KEY(user_id) REFERENCES users,"
-                + "FOREIGN KEY(reference) REFERENCES comments"
-                + ")");
+        //jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS comments ("
+        //        + "comment_id SERIAL PRIMARY KEY,"
+        //        + "framework_id int NOT NULL,"
+        //        + "user_id int NOT NULL,"
+        //        + "description varchar(500) NOT NULL,"
+        //        + "votes_up int,"
+        //        + "votes_down int,"
+        //        + "tstamp timestamp NOT NULL,"
+        //        + "reference int,"
+        //        + "FOREIGN KEY(framework_id) REFERENCES frameworks,"
+        //        + "FOREIGN KEY(user_id) REFERENCES users,"
+        //        + "FOREIGN KEY(reference) REFERENCES comments"
+        //        + ")");
 
     }
 

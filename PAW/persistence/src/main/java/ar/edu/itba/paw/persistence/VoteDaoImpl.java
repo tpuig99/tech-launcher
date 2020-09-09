@@ -36,14 +36,14 @@ public class VoteDaoImpl implements VoteDao{
                 .withTableName("votes")
                 .usingGeneratedKeyColumns("vote_id");
 
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS votes ("
-                + "vote_id SERIAL PRIMARY KEY,"
-                + "user_id integer NOT NULL,"
-                + "framework_id integer NOT NULL,"
-                + "stars integer NOT NULL,"
-                + "FOREIGN KEY(framework_id) REFERENCES frameworks,"
-                + "FOREIGN KEY(user_id) REFERENCES users"
-                + ")");
+        //jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS votes ("
+        //        + "vote_id SERIAL PRIMARY KEY,"
+        //        + "user_id integer NOT NULL,"
+        //        + "framework_id integer NOT NULL,"
+        //        + "stars integer NOT NULL,"
+        //        + "FOREIGN KEY(framework_id) REFERENCES frameworks,"
+        //        + "FOREIGN KEY(user_id) REFERENCES users"
+        //        + ")");
     }
 
     @Override
