@@ -95,13 +95,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Map<Long, String> getUsernamesByComments(List<Comment> comments) {
-        final List<String> usernames = new ArrayList<>();
+
         final Map<Long, String> toReturn = new HashMap<>();
         String username;
 
         for( Comment c : comments){
            username = findById(c.getUserId()).getUsername();
-           usernames.add(username);
+
            toReturn.put(c.getCommentId(), username);
 
         }

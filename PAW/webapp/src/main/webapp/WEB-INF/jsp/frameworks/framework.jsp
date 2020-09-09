@@ -92,26 +92,30 @@
                 </div>
 
                 <div class="container d-flex">
-                    <c:forEach var="comment" items="${comments}" varStatus="loop">
-                    <div class="card comment-card margin-left">
-                        <div class="card-body">
-                            <div class="row">
-                                <span><h6 class="card-subtitle mb-2 text-muted">${commentsUsernames.get(comment.commentId)}</h6></span>
-                                <span>
-                                    <button class="btn upVote" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
-                                        <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
-                                    </button>
-                                </span>
-                                <span class="padding-left d-flex align-items-center justify-content-end ">
-                                    <button class="btn downVote" data-toggle="modal" data-target="#downVoteModal" data-id=${comment.commentId}>
-                                        <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
-                                    </button>
-                                </span>
-                            </div>
-                            <p class="card-text">${comment.description}</p>
-                        </div>
-                    </div>
-                    </c:forEach>
+                    <!--<ul class="list-group margin-left list-group-comment list-group-flush">-->
+                        <c:forEach var="comment" items="${comments}" varStatus="loop">
+                            <!--<li class="list-group-item">-->
+                                <div class="card comment-card margin-left">
+                                    <div class="card-body">
+                                        <div class="row comment-card">
+                                            <span><h6 class="margin-right card-subtitle mb-2 text-muted">${commentsUsernames.get(comment.commentId)}</h6></span>
+                                            <span>
+                                                <button class=" btn upVote" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
+                                                    <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                                </button>
+                                            </span>
+                                            <span class="padding-left d-flex align-items-center">
+                                                <button class="btn downVote" data-toggle="modal" data-target="#downVoteModal" data-id=${comment.commentId}>
+                                                    <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <p class="card-text">${comment.description}</p>
+                                    </div>
+                                </div>
+                           <!-- </li>-->
+                        </c:forEach>
+                   <!-- </ul>-->
                 </div>
                 </c:if>
 
@@ -134,11 +138,11 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="1" class="btn primary-button rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="2" class="btn primary-button rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="3" class="btn primary-button rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="4" class="btn primary-button rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="5" class="btn primary-button rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="1" class="btn rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="2" class="btn rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="3" class="btn rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="4" class="btn rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="5" class="btn rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
                                     </div>
                                 </div>
                             </div>
