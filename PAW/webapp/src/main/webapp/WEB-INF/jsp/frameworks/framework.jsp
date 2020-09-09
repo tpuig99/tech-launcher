@@ -102,7 +102,7 @@
                                     </button>
                                 </span>
                                 <span class="padding-left d-flex align-items-center justify-content-end ">
-                                    <button class="btn" onclick="voteDownComment(${comment.commentId})">
+                                    <button class="btn downVote" data-toggle="modal" data-target="#downVoteModal" data-id=${comment.commentId}>
                                         <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
                                     </button>
                                 </span>
@@ -217,7 +217,8 @@
                                         <label for="inputEmail">Email</label>
                                         <input type="email" class="form-control" id="upVoteEmail" aria-describedby="emailHelp">
                                     </div>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteUpComment()">SUBMIT</button>
+                                    <input type="hidden" id="upVoteCommentId" value="" />
+                                    <button type="button"  class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteUpComment()">SUBMIT</button>
                                 </form>
                             </div>
                         </div>
@@ -233,7 +234,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body downVoteModalBody">
                                 <form>
                                     <div class="form-group">
                                         <label for="inputName">Name</label>
@@ -243,6 +244,7 @@
                                         <label for="inputEmail">Email</label>
                                         <input type="email" class="form-control" id="downVoteEmail" aria-describedby="emailHelp">
                                     </div>
+                                    <input type="hidden" id="downVoteCommentId" value="" />
                                     <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteDownComment()">SUBMIT</button>
                                 </form>
                             </div>
@@ -391,16 +393,21 @@
                         console.log(location.href);
                     }
 
-                    function voteUpComment(commentId) {
-                        console.log("commentId value is:" + commentId);
+                    function voteUpComment() {
                         let frameworkId = ${framework.id};
-                        let path = "/voteup?id="+frameworkId+"&comment_id="+commentId;
+                        let username = document.getElementById("upVoteName").value;
+                        let email = document.getElementById("upVoteEmail").value;
+                        let commentId = document.getElementById("upVoteCommentId").value;
+                        let path = "/voteup?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
                         window.location.href = path;
                     }
 
-                    function voteDownComment(commentId) {
+                    function voteDownComment() {
                         let frameworkId = ${framework.id};
-                        let path = "/votedown?id="+frameworkId+"&comment_id="+commentId;
+                        let username = document.getElementById("downVoteName").value;
+                        let email = document.getElementById("downVoteEmail").value;
+                        let commentId = document.getElementById("downVoteCommentId").value;
+                        let path = "/votedown?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
                         window.location.href = path;
                     }
 
@@ -417,10 +424,13 @@
                     }
 
                     $(document).on("click", ".upVote", function () {
-                        console.log("clicked");
                         let commentId = $(this).data('id');
-                        console.log("commentId values is " +  commentId);
-                        $(".upVoteModalBody #commentId").val( commentId );
+                        $(".upVoteModalBody #upVoteCommentId").val( commentId );
+                    });
+
+                    $(document).on("click", ".downVote", function () {
+                        let commentId = $(this).data('id');
+                        $(".downVoteModalBody #downVoteCommentId").val( commentId );
                     });
 
                 </script>
