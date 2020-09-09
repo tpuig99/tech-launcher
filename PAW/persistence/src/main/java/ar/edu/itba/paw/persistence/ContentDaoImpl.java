@@ -35,7 +35,7 @@ public class ContentDaoImpl implements ContentDao {
                             rs.getLong("votes_up"),
                             rs.getLong("votes_down"),
                             rs.getTimestamp("tstamp"),
-                            rs.getURL("link"),
+                            rs.getString("link"),
                             Enum.valueOf(ContentTypes.class, rs.getString("type"))
                     );
                 }
@@ -119,7 +119,7 @@ public class ContentDaoImpl implements ContentDao {
     }
 
     @Override
-    public Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type) {
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);
@@ -128,11 +128,11 @@ public class ContentDaoImpl implements ContentDao {
         args.put("votes_up", 0);
         args.put("votes_down", 0);
         args.put("tstamp", ts);
-        args.put("link", url.toString());
+        args.put("link", link);
         args.put("type", type.name());
 
         final Number voteId = jdbcInsert.executeAndReturnKey(args);
-        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, ts, url, type);
+        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, ts, link, type);
     }
 
     @Override
@@ -141,8 +141,8 @@ public class ContentDaoImpl implements ContentDao {
     }
 
     @Override
-    public Content changeContent(long contentId, String title, URL url, ContentTypes type) {
-        jdbcTemplate.update("UPDATE content SET title = ?, link = ?, type = ? WHERE content_id = ?", title, url.toString(), type.name());
+    public Content changeContent(long contentId, String title, String link, ContentTypes type) {
+        jdbcTemplate.update("UPDATE content SET title = ?, link = ?, type = ? WHERE content_id = ?", title, link, type.name());
         return getById(contentId);
     }
 

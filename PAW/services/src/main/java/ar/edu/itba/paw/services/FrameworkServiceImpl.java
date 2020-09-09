@@ -95,8 +95,8 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type) {
-        return ctns.insertContent(frameworkId,userId,title,url,type);
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
+        return ctns.insertContent(frameworkId,userId,title,link,type);
     }
 
     @Override
@@ -105,8 +105,8 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public Content changeContent(long contentId, String title, URL url, ContentTypes types) {
-        return ctns.changeContent(contentId,title,url,types);
+    public Content changeContent(long contentId, String title, String link, ContentTypes types) {
+        return ctns.changeContent(contentId,title,link,types);
     }
 
     @Override
