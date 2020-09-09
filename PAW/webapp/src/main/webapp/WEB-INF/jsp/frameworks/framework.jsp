@@ -97,13 +97,13 @@
                             <div class="row">
                                 <span><h6 class="card-subtitle mb-2 text-muted">${comment.userId}</h6></span>
                                 <span>
-                                    <button class="btn" onclick="voteUpComment(${comment.commentId})">
-                                        <i class="fa fa-arrow-up arrow">${comment.votesUp}</i>
+                                    <button class="btn" data-toggle="modal" data-target="#upVoteModal">
+                                        <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
                                     </button>
                                 </span>
                                 <span class="padding-left d-flex align-items-center justify-content-end ">
                                     <button class="btn" onclick="voteDownComment(${comment.commentId})">
-                                        <i class="fa fa-arrow-down arrow">${comment.votesDown}</i>
+                                        <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
                                     </button>
                                 </span>
                             </div>
@@ -190,6 +190,58 @@
                                     <div class="form-group">
                                         <label for="inputEmail">Email</label>
                                         <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp">
+                                    </div>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="upVoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="upVoteModalLabel">Please fill out your information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="inputName">Name</label>
+                                        <input type="text" class="form-control" id="upVoteName" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail">Email</label>
+                                        <input type="email" class="form-control" id="upVoteEmail" aria-describedby="emailHelp">
+                                    </div>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="downVoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="downVoteModalLabel">Please fill out your information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="inputName">Name</label>
+                                        <input type="text" class="form-control" id="downVoteName" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail">Email</label>
+                                        <input type="email" class="form-control" id="downVoteEmail" aria-describedby="emailHelp">
                                     </div>
                                     <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
                                 </form>
@@ -362,6 +414,13 @@
                         window.location.href = path;
                         console.log(location.href);
                     }
+
+                    // $(document).ready(function () {
+                    //     $(".open-AddBookDialog").click(function () {
+                    //         $('#bookId').val($(this).data('id'));
+                    //         $('#addBookDialog').modal('show');
+                    //     });
+                    // });
                 </script>
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
