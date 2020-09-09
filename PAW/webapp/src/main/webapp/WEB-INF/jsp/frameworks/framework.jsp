@@ -5,8 +5,9 @@
 <html>
     <head>
         <title>${framework.name}</title>
-        <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
+
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
+        <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
@@ -22,7 +23,7 @@
                 <div class="container d-flex">
                     <div class="row">
                         <div class="col-2">
-                            <div><img src="${framework.logo}" alt=""></div>
+                            <div class="max-logo"><img src="${framework.logo}" alt="${framework.name} logo"></div>
                         </div>
                         <div class="col-10">
 
@@ -32,7 +33,7 @@
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star color-star"></span>
-                                <span> ${framework.starsFormated}| ${framework.votesCant}</span>
+                                <span> ${framework.starsFormated} | ${framework.votesCant} voters</span>
                                 </div>
                             </div>
                             <div class="description">
@@ -157,12 +158,12 @@
 
                 <div class="container d-flex">
                     <c:forEach var="i" begin="0" end="4">
-                    <div class="card mini-card margin-left mx-5 mb-4">
+                    <div class="card mini-card mx-5 mb-4">
                         <a href="/frameworks/${competitors.get(i).id}">
-                            <div class="card-body">
-                                <div><img class="mini-img" src="${competitors.get(i).logo}" alt=""></div>
+                            <div class="card-body d-flex align-items-center justify-content-center">
+                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitors.get(i).logo}" alt="${framework.name} logo"></div>
                             </div>
-                            <div class="card-footer text-dark" style="height: 5em">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
+                            <div class="card-footer text-dark">${competitors.get(i).name} | <span class="fa fa-star fa-sm color-star"></span> ${competitors.get(i).stars}</div>
                         </a>
                     </div>
 

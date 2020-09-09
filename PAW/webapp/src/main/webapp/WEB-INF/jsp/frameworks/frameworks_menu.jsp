@@ -28,7 +28,7 @@
             <div class="card mx-5 mb-4">
                 <a href="/${framework.category}/${framework.id}">
                     <div class="card-body">
-                        <div><img src="${framework.logo}" alt="${framework.logo} logo" style="height: 5em"></div>
+                        <div class="medium-logo"><img src="${framework.logo}" alt="${framework.logo} logo" style="height: 5em"></div>
                     </div>
                     <div class="card-footer text-dark">${framework.name}</div>
                 </a>
