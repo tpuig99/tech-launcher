@@ -53,7 +53,7 @@
                    <h4 class="title">Bibliography</h4>
                     <ul class="list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
-                        <li class="list-group-item"><a href="${book.link}">${book.title}</a></li>
+                        <li class="list-group-item"><a target="_blank" href="${book.link}">${book.title}</a></li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -67,7 +67,7 @@
                     <ul class="list-group margin-left list-group-flush description">
 
                         <c:forEach var="course" items="${courses}">
-                            <li class="list-group-item"><a href="${course.link}">${course.title}</a></li>
+                            <li class="list-group-item"><a target="_blank" href="${course.link}">${course.title}</a></li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -79,7 +79,7 @@
                    <h4 class="title "> Tutorials</h4>
                     <ul class="list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">
-                            <li class="list-group-item"><a href="${tutorial.link}">${tutorial.title}</a></li>
+                            <li class="list-group-item"><a target="_blank" href="${tutorial.link}">${tutorial.title}</a></li>
                         </c:forEach>
                     </ul>
                 </div>
