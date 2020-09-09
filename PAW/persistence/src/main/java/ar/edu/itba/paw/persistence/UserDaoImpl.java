@@ -98,12 +98,12 @@ public class UserDaoImpl implements UserDao {
 
         final Map<Long, String> toReturn = new HashMap<>();
         String username;
+        if(comments !=null ) {
+            for (Comment c : comments) {
+                username = findById(c.getUserId()).getUsername();
 
-        for( Comment c : comments){
-           username = findById(c.getUserId()).getUsername();
-
-           toReturn.put(c.getCommentId(), username);
-
+                toReturn.put(c.getCommentId(), username);
+            }
         }
 
         return toReturn;
