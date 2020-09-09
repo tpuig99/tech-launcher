@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
         <div>
@@ -97,13 +97,13 @@
                             <div class="row">
                                 <span><h6 class="card-subtitle mb-2 text-muted">${comment.userId}</h6></span>
                                 <span>
-                                    <button class="btn" onclick="voteUpComment(${comment.commentId})">
-                                        <i class="fa fa-arrow-up arrow">${comment.votesUp}</i>
+                                    <button class="btn upVote" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
+                                        <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
                                     </button>
                                 </span>
                                 <span class="padding-left d-flex align-items-center justify-content-end ">
-                                    <button class="btn" onclick="voteDownComment(${comment.commentId})">
-                                        <i class="fa fa-arrow-down arrow">${comment.votesDown}</i>
+                                    <button class="btn downVote" data-toggle="modal" data-target="#downVoteModal" data-id=${comment.commentId}>
+                                        <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
                                     </button>
                                 </span>
                             </div>
@@ -133,11 +133,11 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal1" class="btn primary-button"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal2" class="btn primary-button"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal3" class="btn primary-button"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal4" class="btn primary-button"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal5" class="btn primary-button"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="1" class="btn primary-button rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="2" class="btn primary-button rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="3" class="btn primary-button rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="4" class="btn primary-button rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
+                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="5" class="btn primary-button rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
                                     </div>
                                 </div>
                             </div>
@@ -198,132 +198,87 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="ratingModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="upVoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="ratingModalLabel1">Please fill out your information</h5>
+                                <h5 class="modal-title" id="upVoteModalLabel">Please fill out your information</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body upVoteModalBody">
                                 <form>
                                     <div class="form-group">
-                                        <label for="ratingInputName1">Name</label>
-                                        <input type="text" class="form-control" id="ratingInputName1" aria-describedby="emailHelp">
+                                        <label for="inputName">Name</label>
+                                        <input type="text" class="form-control" id="upVoteName" aria-describedby="emailHelp">
                                     </div>
                                     <div class="form-group">
-                                        <label for="ratingInputEmail1">Email</label>
-                                        <input type="email" class="form-control" id="ratingInputEmail1" aria-describedby="emailHelp">
+                                        <label for="inputEmail">Email</label>
+                                        <input type="email" class="form-control" id="upVoteEmail" aria-describedby="emailHelp">
                                     </div>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating(1)">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="ratingModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="ratingModalLabel2">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="ratingInputName2">Name</label>
-                                        <input type="text" class="form-control" id="ratingInputName2" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ratingInputEmail2">Email</label>
-                                        <input type="email" class="form-control" id="ratingInputEmail2" aria-describedby="emailHelp">
-                                    </div>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating(2)">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="ratingModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="ratingModalLabel3">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="ratingInputName3">Name</label>
-                                        <input type="text" class="form-control" id="ratingInputName3" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ratingInputEmail3">Email</label>
-                                        <input type="email" class="form-control" id="ratingInputEmail3" aria-describedby="emailHelp">
-                                    </div>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating(3)">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="ratingModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="ratingModalLabel4">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="ratingInputName4">Name</label>
-                                        <input type="text" class="form-control" id="ratingInputName4" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ratingInputEmail4">Email</label>
-                                        <input type="email" class="form-control" id="ratingInputEmail4" aria-describedby="emailHelp">
-                                    </div>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating(4)">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade" id="ratingModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="ratingModalLabel5">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="ratingInputName5">Name</label>
-                                        <input type="text" class="form-control" id="ratingInputName5" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ratingInputEmail5">Email</label>
-                                        <input type="email" class="form-control" id="ratingInputEmail5" aria-describedby="emailHelp">
-                                    </div>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating(5)">SUBMIT</button>
+                                    <input type="hidden" id="upVoteCommentId" value="" />
+                                    <button type="button"  class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteUpComment()">SUBMIT</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <div class="modal fade" id="downVoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="downVoteModalLabel">Please fill out your information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body downVoteModalBody">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="inputName">Name</label>
+                                        <input type="text" class="form-control" id="downVoteName" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail">Email</label>
+                                        <input type="email" class="form-control" id="downVoteEmail" aria-describedby="emailHelp">
+                                    </div>
+                                    <input type="hidden" id="downVoteCommentId" value="" />
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteDownComment()">SUBMIT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ratingModalLabel">Please fill out your information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body rankingModal">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="ratingInputName">Name</label>
+                                        <input type="text" class="form-control" id="ratingInputName" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ratingInputEmail">Email</label>
+                                        <input type="email" class="form-control" id="ratingInputEmail" aria-describedby="emailHelp">
+                                    </div>
+                                    <input type="hidden" id="rankingValue" value="" />
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating()">SUBMIT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <script>
                     function publishComment() {
@@ -338,22 +293,28 @@
                         console.log(location.href);
                     }
 
-                    function voteUpComment(commentId) {
+                    function voteUpComment() {
                         let frameworkId = ${framework.id};
-                        let path = "/voteup?id="+frameworkId+"&comment_id="+commentId;
+                        let username = document.getElementById("upVoteName").value;
+                        let email = document.getElementById("upVoteEmail").value;
+                        let commentId = document.getElementById("upVoteCommentId").value;
+                        let path = "/voteup?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
                         window.location.href = path;
                     }
 
-                    function voteDownComment(commentId) {
+                    function voteDownComment() {
                         let frameworkId = ${framework.id};
-                        let path = "/votedown?id="+frameworkId+"&comment_id="+commentId;
+                        let username = document.getElementById("downVoteName").value;
+                        let email = document.getElementById("downVoteEmail").value;
+                        let commentId = document.getElementById("downVoteCommentId").value;
+                        let path = "/votedown?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
                         window.location.href = path;
                     }
 
-                    function publishRating(n){
-                        let username = document.getElementById("ratingInputName" + n).value;
-                        let email = document.getElementById("ratingInputEmail" + n).value;
-                        let ratingValue = n;
+                    function publishRating(){
+                        let username = document.getElementById("ratingInputName").value;
+                        let email = document.getElementById("ratingInputEmail").value;
+                        let ratingValue = document.getElementById("rankingValue").value;
                         let id= ${framework.id};
 
                         let path = "/rate?id="+id+"&rating="+ratingValue+"&username="+username+"&email="+email;
@@ -361,6 +322,22 @@
                         window.location.href = path;
                         console.log(location.href);
                     }
+
+                    $(document).on("click", ".rankingStar", function () {
+                        let value = $(this).data('value');
+                        $(".rankingModal #rankingValue").val( value );
+                    });
+
+                    $(document).on("click", ".upVote", function () {
+                        let commentId = $(this).data('id');
+                        $(".upVoteModalBody #upVoteCommentId").val( commentId );
+                    });
+
+                    $(document).on("click", ".downVote", function () {
+                        let commentId = $(this).data('id');
+                        $(".downVoteModalBody #downVoteCommentId").val( commentId );
+                    });
+
                 </script>
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
