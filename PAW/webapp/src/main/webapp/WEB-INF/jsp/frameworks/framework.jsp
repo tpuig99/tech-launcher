@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
         <div>
@@ -97,7 +97,7 @@
                             <div class="row">
                                 <span><h6 class="card-subtitle mb-2 text-muted">${comment.userId}</h6></span>
                                 <span>
-                                    <button class="btn" data-toggle="modal" data-target="#upVoteModal">
+                                    <button class="btn upVote" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
                                         <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
                                     </button>
                                 </span>
@@ -207,7 +207,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body upVoteModalBody">
                                 <form>
                                     <div class="form-group">
                                         <label for="inputName">Name</label>
@@ -217,7 +217,7 @@
                                         <label for="inputEmail">Email</label>
                                         <input type="email" class="form-control" id="upVoteEmail" aria-describedby="emailHelp">
                                     </div>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteUpComment()">SUBMIT</button>
                                 </form>
                             </div>
                         </div>
@@ -243,7 +243,7 @@
                                         <label for="inputEmail">Email</label>
                                         <input type="email" class="form-control" id="downVoteEmail" aria-describedby="emailHelp">
                                     </div>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteDownComment()">SUBMIT</button>
                                 </form>
                             </div>
                         </div>
@@ -392,6 +392,7 @@
                     }
 
                     function voteUpComment(commentId) {
+                        console.log("commentId value is:" + commentId);
                         let frameworkId = ${framework.id};
                         let path = "/voteup?id="+frameworkId+"&comment_id="+commentId;
                         window.location.href = path;
@@ -415,12 +416,13 @@
                         console.log(location.href);
                     }
 
-                    // $(document).ready(function () {
-                    //     $(".open-AddBookDialog").click(function () {
-                    //         $('#bookId').val($(this).data('id'));
-                    //         $('#addBookDialog').modal('show');
-                    //     });
-                    // });
+                    $(document).on("click", ".upVote", function () {
+                        console.log("clicked");
+                        let commentId = $(this).data('id');
+                        console.log("commentId values is " +  commentId);
+                        $(".upVoteModalBody #commentId").val( commentId );
+                    });
+
                 </script>
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
