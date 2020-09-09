@@ -99,7 +99,9 @@
                                 <div class="card comment-card margin-left">
                                     <div class="card-body">
                                         <div class="row comment-card">
-                                            <span><h6 class="margin-right card-subtitle mb-2 text-muted">${commentsUsernames.get(comment.commentId)}</h6></span>
+                                            <span><h6 class="margin-right card-subtitle mb-2 text-muted">
+                                                    <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
+                                            </h6></span>
 
                                             <span>
                                                 <button class=" btn upVote" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
@@ -113,7 +115,9 @@
                                             </span>
 
                                         </div>
-                                        <p class="card-text">${comment.description}</p>
+                                        <p class="card-text">
+                                            <c:out value="${comment.description}" default=""/>
+                                        </p>
                                     </div>
                                 </div>
                            <!-- </li>-->
@@ -295,7 +299,7 @@
                         let content = document.getElementById("commentInput").value;
                         let id= ${framework.id};
 
-                        let path = "/paw-2020b-1/create?id="+id+"&content="+content+"&username="+username+"&email="+email;
+                        let path = "/create?id="+id+"&content="+content+"&username="+username+"&email="+email;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
@@ -306,7 +310,7 @@
                         let username = document.getElementById("upVoteName").value;
                         let email = document.getElementById("upVoteEmail").value;
                         let commentId = document.getElementById("upVoteCommentId").value;
-                        let path = "/paw-2020b-1/voteup?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
+                        let path = "/voteup?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
                         window.location.href = path;
                     }
 
@@ -315,7 +319,7 @@
                         let username = document.getElementById("downVoteName").value;
                         let email = document.getElementById("downVoteEmail").value;
                         let commentId = document.getElementById("downVoteCommentId").value;
-                        let path = "/paw-2020b-1/votedown?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
+                        let path = "/votedown?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
                         window.location.href = path;
                     }
 
@@ -325,7 +329,7 @@
                         let ratingValue = document.getElementById("rankingValue").value;
                         let id= ${framework.id};
 
-                        let path = "/paw-2020b-1/rate?id="+id+"&rating="+ratingValue+"&username="+username+"&email="+email;
+                        let path = "/rate?id="+id+"&rating="+ratingValue+"&username="+username+"&email="+email;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
