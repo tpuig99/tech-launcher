@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Framework {
     private long id;
@@ -11,6 +12,20 @@ public class Framework {
     private String logo;
     private double stars;
     private int votesCant;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Framework framework = (Framework) o;
+        return id == framework.id &&
+                name.equals(framework.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 
     public Framework(long id, String name, FrameworkCategories category, String description, String introduction, String logo) {
         this.id = id;
