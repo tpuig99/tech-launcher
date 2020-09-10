@@ -26,7 +26,7 @@ public class FrameworkController {
     private CommentService commentService;
 
     @Autowired
-    private VoteService voteService;
+    private FrameworkVoteService frameworkVoteService;
 
     @Autowired
     private UserService us;
@@ -67,7 +67,7 @@ public class FrameworkController {
     public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId, @RequestParam("username") final String username, @RequestParam("email") final String email){
         Framework framework = fs.findById(frameworkId);
         final User user = us.create(username, email);
-        final Comment comment = commentService.voteUp(commentId);
+        final Comment comment = commentService.voteUp(commentId,user.getId());
         return new ModelAndView("redirect:/frameworks/"+framework.getId());
     }
 
@@ -75,7 +75,7 @@ public class FrameworkController {
     public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId, @RequestParam("username") final String username, @RequestParam("email") final String email){
         Framework framework = fs.findById(frameworkId);
         final User user = us.create(username, email);
-        final Comment comment = commentService.voteDown(commentId);
+        final Comment comment = commentService.voteDown(commentId,user.getId());
         return new ModelAndView("redirect:/frameworks/"+framework.getId());
     }
 
@@ -83,7 +83,7 @@ public class FrameworkController {
     public ModelAndView rateComment(@RequestParam("id") final long id, @RequestParam("rating") final int rating, @RequestParam("username") final String username, @RequestParam("email") final String email){
         Framework framework = fs.findById(id);
         final User user = us.create(username, email);
-        final Vote vote = voteService.insert(id,user.getId(),rating);
+        final FrameworkVote frameworkVote = frameworkVoteService.insert(id,user.getId(),rating);
 
         return new ModelAndView("redirect:/frameworks/"+id);
     }

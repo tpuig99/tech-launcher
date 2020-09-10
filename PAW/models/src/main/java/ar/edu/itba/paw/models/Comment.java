@@ -12,13 +12,11 @@ public class Comment {
     private Timestamp timestamp;
     private long reference;
 
-    public Comment(long commentId, long frameworkId, long userId, String description, long votesUp, long votesDown, Timestamp timestamp, long reference) {
+    public Comment(long commentId, long frameworkId, long userId, String description, Timestamp timestamp, long reference) {
         this.commentId = commentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
         this.description = description;
-        this.votesUp = votesUp;
-        this.votesDown = votesDown;
         this.timestamp = timestamp;
         this.reference = reference;
     }
@@ -53,5 +51,13 @@ public class Comment {
 
     public long getReference() {
         return reference;
+    }
+
+    public void setVotesUp(long votesUp) {
+        this.votesUp = votesUp;
+    }
+
+    public void setVotesDown(long votesDown) {
+        this.votesDown = votesDown;
     }
 }

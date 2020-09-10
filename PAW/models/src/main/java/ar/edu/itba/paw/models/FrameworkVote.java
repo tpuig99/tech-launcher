@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.models;
 
-public class Vote {
+public class FrameworkVote {
     private long id;
     private long frameworkId;
     private long userId;
@@ -16,7 +16,7 @@ public class Vote {
                 '}';
     }
 
-    public Vote(long voteId, long frameworkId, long userId, int stars) {
+    public FrameworkVote(long voteId, long frameworkId, long userId, int stars) {
         this.id = voteId;
         this.frameworkId = frameworkId;
         this.userId = userId;
