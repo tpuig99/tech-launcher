@@ -4,7 +4,16 @@ CREATE TABLE IF NOT EXISTS users (
                  mail varchar(100) NOT NULL UNIQUE,
                  password varchar(100)
                  );
-CREATE TABLE IF NOT EXISTS votes (
+CREATE TABLE IF NOT EXISTS frameworks (
+                 framework_id SERIAL PRIMARY KEY,
+                 framework_name varchar(50) NOT NULL,
+                 category varchar(50) NOT NULL,
+                 description varchar(500) NOT NULL,
+                 introduction varchar(5000) NOT NULL,
+                 logo varchar(150)
+                 );
+ALTER TABLE IF EXISTS  votes RENAME TO framework_votes;
+CREATE TABLE IF NOT EXISTS framework_votes (
                  vote_id SERIAL PRIMARY KEY,
                  user_id integer NOT NULL,
                  framework_id integer NOT NULL,
@@ -17,13 +26,20 @@ CREATE TABLE IF NOT EXISTS comments (
                  framework_id int NOT NULL,
                  user_id int NOT NULL,
                  description varchar(500) NOT NULL,
-                 votes_up int,
-                 votes_down int,
                  tstamp timestamp NOT NULL,
                  reference int,
                  FOREIGN KEY(framework_id) REFERENCES frameworks,
                  FOREIGN KEY(user_id) REFERENCES users,
                  FOREIGN KEY(reference) REFERENCES comments
+                 );
+ALTER TABLE comments DROP COLUMN IF EXISTS votes_up,DROP COLUMN IF EXISTS votes_down;
+CREATE TABLE IF NOT EXISTS comment_votes (
+                 vote_id SERIAL PRIMARY KEY,
+                 user_id integer NOT NULL,
+                 comment_id integer NOT NULL,
+                 vote int,
+                 FOREIGN KEY(comment_id) REFERENCES comments,
+                 FOREIGN KEY(user_id) REFERENCES users
                  );
 CREATE TABLE IF NOT EXISTS content (
                  content_id SERIAL PRIMARY KEY,

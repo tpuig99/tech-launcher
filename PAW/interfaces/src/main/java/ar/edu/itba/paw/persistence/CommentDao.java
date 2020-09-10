@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.Vote;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 public interface CommentDao {
@@ -15,6 +12,5 @@ public interface CommentDao {
     Comment insertComment(long frameworkId, long userId, String description, long reference);
     int deleteComment(long commentId);
     Comment changeComment(long commentId, String description);
-    Comment voteUp(long commentId);
-    Comment voteDown(long commentId);
+
 }
