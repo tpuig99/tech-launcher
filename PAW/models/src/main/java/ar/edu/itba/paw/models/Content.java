@@ -11,10 +11,10 @@ public class Content {
     private long votesUp;
     private long votesDown;
     private Timestamp timestamp;
-    private URL link;
+    private String link;
     private ContentTypes type;
 
-    public Content(long contentId, long frameworkId, long userId, String title, long votesUp, long votesDown, Timestamp timestamp, URL link, ContentTypes type) {
+    public Content(long contentId, long frameworkId, long userId, String title, long votesUp, long votesDown, Timestamp timestamp, String link, ContentTypes type) {
         this.contentId = contentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
@@ -54,7 +54,7 @@ public class Content {
         return timestamp;
     }
 
-    public URL getLink() {
+    public String getLink() {
         return link;
     }
 

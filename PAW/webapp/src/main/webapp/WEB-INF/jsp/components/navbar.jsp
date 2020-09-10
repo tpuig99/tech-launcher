@@ -8,12 +8,15 @@
 <body>
 
 <nav class="navbar fixed-top navbar-expand-lg">
-    <a class="navbar-brand" href="/">TECH LAUNCHER</a>
+    <a class="navbar-brand" href="<c:url value="/"/>">
+        <img src="<c:url value="/resources/assets/logo.png"/>" width="30" height="30" class="d-inline-block align-top" alt="">
+        TECH LAUNCHER
+    </a>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="<c:url value="/"/>">Home</a>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0" method="post">
@@ -28,7 +31,7 @@
     function searchFrameworks() {
         let input = document.getElementById("searchInput").value;
         console.log(input);
-        let path = "/search?toSearch="+input;
+        let path = "/paw-2020b-1/search?toSearch="+input;
         console.log(path);
         window.location.href = path;
         console.log(location.href);

@@ -27,6 +27,7 @@ color-star{
 
 .comment-card{
     margin-bottom: 1em;
+    max-width: 15em;
 }
 
 .padding-left{
@@ -57,6 +58,10 @@ color-star{
     -webkit-overflow-scrolling: touch;
 }
 
+.list-group-comment{
+    max-height: 15em;
+}
+
 textarea {
     resize: none;
 }
@@ -65,6 +70,12 @@ textarea {
     margin-top: 1em;
 }
 
+margin-right{
+    margin-right: 1em;
+}
+
 .justify{
     text-align: justify;
 }
+
+

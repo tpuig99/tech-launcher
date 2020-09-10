@@ -2,18 +2,13 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.FrameworkDao;
-import ar.edu.itba.paw.persistence.VoteDao;
 import ar.edu.itba.paw.service.CommentService;
 import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
-import ar.edu.itba.paw.service.VoteService;
+import ar.edu.itba.paw.service.FrameworkVoteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
-import java.net.URL;
 import java.util.List;
 
 @Service
@@ -23,7 +18,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     private FrameworkDao frameworkDao;
 
     @Autowired
-    private VoteService vote;
+    private FrameworkVoteService vote;
     @Autowired
     private CommentService cmts;
     @Autowired
@@ -55,13 +50,13 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public double getStars(long frameworkId) {
-        List<Vote>votes =  vote.getByFramework(frameworkId);
-        if(votes==null){
+        List<FrameworkVote> frameworkVotes =  vote.getByFramework(frameworkId);
+        if(frameworkVotes ==null){
             return 0;
         }
         double sum = 0,count=0;
-        for (Vote vote:votes) {
-            sum+=vote.getStars();
+        for (FrameworkVote frameworkVote : frameworkVotes) {
+            sum+= frameworkVote.getStars();
             count++;
         }
 
@@ -95,8 +90,8 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type) {
-        return ctns.insertContent(frameworkId,userId,title,url,type);
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
+        return ctns.insertContent(frameworkId,userId,title,link,type);
     }
 
     @Override
@@ -105,8 +100,8 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public Content changeContent(long contentId, String title, URL url, ContentTypes types) {
-        return ctns.changeContent(contentId,title,url,types);
+    public Content changeContent(long contentId, String title, String link, ContentTypes types) {
+        return ctns.changeContent(contentId,title,link,types);
     }
 
     @Override
@@ -125,15 +120,15 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     private void getStarsAndVotes(Framework framework){
-        List<Vote>votes =  vote.getByFramework(framework.getId());
-        if(votes==null){
+        List<FrameworkVote> frameworkVotes =  vote.getByFramework(framework.getId());
+        if(frameworkVotes ==null){
             framework.setStars(0);
             framework.setVotesCant(0);
             return;
         }
         double sum = 0,count=0;
-        for (Vote vote:votes) {
-            sum+=vote.getStars();
+        for (FrameworkVote frameworkVote : frameworkVotes) {
+            sum+= frameworkVote.getStars();
             count++;
         }
         framework.setVotesCant((int) count);

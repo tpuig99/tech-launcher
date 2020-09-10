@@ -35,14 +35,6 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 .withTableName("frameworks")
                 .usingGeneratedKeyColumns("framework_id");
 
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS frameworks ("
-                + "framework_id SERIAL PRIMARY KEY,"
-                + "framework_name varchar(50) NOT NULL,"
-                + "category varchar(50) NOT NULL,"
-                + "description varchar(500) NOT NULL,"
-                + "introduction varchar(5000) NOT NULL,"
-                + "logo varchar(150)"
-                + ")");
     }
 
     @Override
@@ -67,7 +59,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
     public List<Framework> getByNameOrCategory(String toSearch) {
         String value = "%"+toSearch+"%";
 
-        return jdbcTemplate.query("SELECT * FROM frameworks WHERE framework_name LIKE ? OR category LIKE ?", ROW_MAPPER, value, value);
+        return jdbcTemplate.query("SELECT * FROM frameworks WHERE framework_name ILIKE ? OR category ILIKE ?", ROW_MAPPER, value, value);
 
     }
 

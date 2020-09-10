@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.Content;
+import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -28,8 +29,6 @@ public class CommentDaoImpl implements CommentDao {
                             rs.getInt("framework_id"),
                             rs.getLong("user_id"),
                             rs.getString("description"),
-                            rs.getLong("votes_up"),
-                            rs.getLong("votes_down"),
                             rs.getTimestamp("tstamp"),
                             rs.getLong("reference")
                             );
@@ -43,20 +42,6 @@ public class CommentDaoImpl implements CommentDao {
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("comments")
                 .usingGeneratedKeyColumns("comment_id");
-
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS comments ("
-                + "comment_id SERIAL PRIMARY KEY,"
-                + "framework_id int NOT NULL,"
-                + "user_id int NOT NULL,"
-                + "description varchar(500) NOT NULL,"
-                + "votes_up int,"
-                + "votes_down int,"
-                + "tstamp timestamp NOT NULL,"
-                + "reference int,"
-                + "FOREIGN KEY(framework_id) REFERENCES frameworks,"
-                + "FOREIGN KEY(user_id) REFERENCES users,"
-                + "FOREIGN KEY(reference) REFERENCES comments"
-                + ")");
 
     }
 
@@ -72,22 +57,15 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public List<Comment> getCommentsByFramework(long frameworkId) {
         final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments where framework_id = ?", ROW_MAPPER, frameworkId);
-
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-
         return toReturn;
     }
+
+
+
 
     @Override
     public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
         final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND user_id = ?", ROW_MAPPER, frameworkId, userId);
-
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-
         return toReturn;
     }
 
@@ -95,12 +73,10 @@ public class CommentDaoImpl implements CommentDao {
     public List<Comment> getCommentsByUser(long userId) {
         final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE user_id = ?", ROW_MAPPER, userId);
 
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-
         return toReturn;
     }
+
+
 
     @Override
     public Comment insertComment(long frameworkId, long userId, String description, long reference) {
@@ -109,13 +85,11 @@ public class CommentDaoImpl implements CommentDao {
         args.put("framework_id", frameworkId);
         args.put("user_id", userId);
         args.put("description", description);
-        args.put("votes_up", 0);
-        args.put("votes_down", 0);
         args.put("tstamp", ts);
         args.put("reference", reference);
 
         final Number voteId = jdbcInsert.executeAndReturnKey(args);
-        return new Comment (voteId.longValue(), frameworkId, userId, description, 0, 0, ts, reference);
+        return new Comment (voteId.longValue(), frameworkId, userId, description, ts, reference);
     }
 
     @Override
@@ -128,4 +102,5 @@ public class CommentDaoImpl implements CommentDao {
         jdbcTemplate.update("UPDATE comments SET description = ? WHERE comment_id = ?", description, commentId);
         return getById(commentId);
     }
+
 }

@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.ContentTypes;
-import ar.edu.itba.paw.models.Vote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,8 +9,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -35,7 +32,7 @@ public class ContentDaoImpl implements ContentDao {
                             rs.getLong("votes_up"),
                             rs.getLong("votes_down"),
                             rs.getTimestamp("tstamp"),
-                            rs.getURL("link"),
+                            rs.getString("link"),
                             Enum.valueOf(ContentTypes.class, rs.getString("type"))
                     );
                 }
@@ -48,20 +45,6 @@ public class ContentDaoImpl implements ContentDao {
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("content")
                 .usingGeneratedKeyColumns("content_id");
-
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS content ("
-                + "content_id SERIAL PRIMARY KEY,"
-                + "framework_id int NOT NULL,"
-                + "user_id int NOT NULL,"
-                + "title varchar(100) NOT NULL,"
-                + "votes_up int,"
-                + "votes_down int,"
-                + "tstamp timestamp NOT NULL,"
-                + "link text NOT NULL,"
-                + "type varchar(10) NOT NULL,"
-                + "FOREIGN KEY(framework_id) REFERENCES frameworks,"
-                + "FOREIGN KEY(user_id) REFERENCES users"
-                + ")");
 
     }
 
@@ -77,11 +60,6 @@ public class ContentDaoImpl implements ContentDao {
     @Override
     public List<Content> getContentByFramework(long frameworkId) {
         final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content where framework_id = ?", ROW_MAPPER, frameworkId);
-
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-
         return toReturn;
     }
 
@@ -89,37 +67,23 @@ public class ContentDaoImpl implements ContentDao {
     public List<Content> getContentByFrameworkAndUser(long frameworkId, long userId) {
         final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND user_id = ?", ROW_MAPPER, frameworkId, userId);
 
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-
         return toReturn;
     }
 
     @Override
     public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type) {
         final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND type = ?", ROW_MAPPER, frameworkId, type.name());
-
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-
         return toReturn;
     }
 
     @Override
     public List<Content> getContentByUser(long userId) {
         final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE user_id = ?", ROW_MAPPER, userId);
-
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-
         return toReturn;
     }
 
     @Override
-    public Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type) {
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);
@@ -128,11 +92,11 @@ public class ContentDaoImpl implements ContentDao {
         args.put("votes_up", 0);
         args.put("votes_down", 0);
         args.put("tstamp", ts);
-        args.put("link", url.toString());
+        args.put("link", link);
         args.put("type", type.name());
 
         final Number voteId = jdbcInsert.executeAndReturnKey(args);
-        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, ts, url, type);
+        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, ts, link, type);
     }
 
     @Override
@@ -141,8 +105,8 @@ public class ContentDaoImpl implements ContentDao {
     }
 
     @Override
-    public Content changeContent(long contentId, String title, URL url, ContentTypes type) {
-        jdbcTemplate.update("UPDATE content SET title = ?, link = ?, type = ? WHERE content_id = ?", title, url.toString(), type.name());
+    public Content changeContent(long contentId, String title, String link, ContentTypes type) {
+        jdbcTemplate.update("UPDATE content SET title = ?, link = ?, type = ? WHERE content_id = ?", title, link, type.name());
         return getById(contentId);
     }
 
