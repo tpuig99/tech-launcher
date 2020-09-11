@@ -28,11 +28,22 @@
 <!--<script type=text/javascript" src="../../../resources/js/search.js"></script>-->
 
 <script>
+    function isEmpty( input ){
+        for (let i = 0; i < input.length; i++) {
+            if(input.charAt(i) !== " " ){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     function searchFrameworks() {
         let input = document.getElementById("searchInput").value;
-        if( input !== "" ) {
+        if( isEmpty(input) ) {
             window.location.href = "/search?toSearch=" + input;
         }
+        window.location.href = "/";
     }
 
     form = document.getElementById("search").addEventListener('submit', e => {
