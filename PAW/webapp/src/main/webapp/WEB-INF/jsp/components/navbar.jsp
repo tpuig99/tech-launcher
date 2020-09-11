@@ -19,7 +19,7 @@
                 <a class="nav-link" href="<c:url value="/"/>">Home</a>
             </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0" method="post">
+        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn my-2 my-sm-0" type="button" onclick="searchFrameworks()"><i class="fas fa-search"></i></button>
         </form>
@@ -31,10 +31,14 @@
     function searchFrameworks() {
         let input = document.getElementById("searchInput").value;
         console.log(input);
-        let path = "/paw-2020b-1/search?toSearch="+input;
+        let path = "/search?toSearch="+input;
         console.log(path);
         window.location.href = path;
-        console.log(location.href);
     }
+
+    form = document.getElementById("search").addEventListener('submit', e => {
+        e.preventDefault();
+        searchFrameworks();
+    })
 </script>
 </body>
