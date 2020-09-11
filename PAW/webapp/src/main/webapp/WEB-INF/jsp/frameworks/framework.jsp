@@ -177,7 +177,7 @@
                 <div class="container d-flex">
                     <c:forEach var="i" begin="0" end="4">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="<c:url value="/frameworks/${competitors.get(i).id}"/>">
+                        <a href="<c:url value="/${competitors.get(i).frameCategory}/${competitors.get(i).id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitors.get(i).logo}" alt="${framework.name} logo"></div>
                             </div>
