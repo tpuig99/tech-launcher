@@ -60,7 +60,7 @@ public class FrameworkController {
         final User user = us.create(username, email);
         final Comment comment = commentService.insertComment(framework.getId(),user.getId(),content,1);
 
-        return new ModelAndView("redirect:/frameworks/"+framework.getId());
+        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+framework.getId());
     }
 
     @RequestMapping(path={"/voteup"}, method= RequestMethod.GET)
@@ -68,7 +68,7 @@ public class FrameworkController {
         Framework framework = fs.findById(frameworkId);
         final User user = us.create(username, email);
         final Comment comment = commentService.voteUp(commentId,user.getId());
-        return new ModelAndView("redirect:/frameworks/"+framework.getId());
+        return new ModelAndView("redirect:/" + framework.getCategory() + "/" + framework.getId());
     }
 
     @RequestMapping(path={"/votedown"}, method= RequestMethod.GET)
@@ -76,7 +76,7 @@ public class FrameworkController {
         Framework framework = fs.findById(frameworkId);
         final User user = us.create(username, email);
         final Comment comment = commentService.voteDown(commentId,user.getId());
-        return new ModelAndView("redirect:/frameworks/"+framework.getId());
+        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+framework.getId());
     }
 
     @RequestMapping(path={"/rate"}, method = RequestMethod.GET)
@@ -85,7 +85,7 @@ public class FrameworkController {
         final User user = us.create(username, email);
         final FrameworkVote frameworkVote = frameworkVoteService.insert(id,user.getId(),rating);
 
-        return new ModelAndView("redirect:/frameworks/"+id);
+        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+id);
     }
 }
 
