@@ -30,15 +30,9 @@
 <script>
     function searchFrameworks() {
         let input = document.getElementById("searchInput").value;
-        let path ="";
-        if( input === "" ){
-            path += "/error?invalidCode=empty%20search"
+        if( input !== "" ) {
+            window.location.href = "/search?toSearch=" + input;
         }
-        else{
-            path = "/search?toSearch="+input;
-        }
-
-        window.location.href = path;
     }
 
     form = document.getElementById("search").addEventListener('submit', e => {
