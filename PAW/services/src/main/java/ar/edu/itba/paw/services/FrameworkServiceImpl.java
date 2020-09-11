@@ -51,7 +51,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     @Override
     public double getStars(long frameworkId) {
         List<FrameworkVote> frameworkVotes =  vote.getByFramework(frameworkId);
-        if(frameworkVotes ==null){
+        if(frameworkVotes.isEmpty()){
             return 0;
         }
         double sum = 0,count=0;
@@ -121,7 +121,7 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     private void getStarsAndVotes(Framework framework){
         List<FrameworkVote> frameworkVotes =  vote.getByFramework(framework.getId());
-        if(frameworkVotes ==null){
+        if(frameworkVotes.isEmpty()){
             framework.setStars(0);
             framework.setVotesCant(0);
             return;
