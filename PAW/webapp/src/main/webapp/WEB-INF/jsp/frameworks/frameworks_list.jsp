@@ -18,31 +18,31 @@
 
 <div class="content">
     <div class="page-title">
-        <h2>Search Results</h2>
+        <h2>Search Results for: ${search_result}</h2>
     </div>
+    <div class="page-description"></div>
 
-
-    <c:if test="${empty matchingFrameworks}">
-        <div>
-            Nothing found
-        </div>
-
-    </c:if>
-
-    <c:if test="${not empty matchingFrameworks}">
-    <div class="row equal">
-        <c:forEach var="framework" items="${matchingFrameworks}" >
-            <div class="card mx-4 mb-4">
-                <a href="<c:url value="/frameworks/${framework.id}"/>">
-                    <div class="card-body">
-                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
-                    </div>
-                    <div class="card-footer text-dark">${framework.name} - ${framework.category}</div>
-                </a>
+    <c:choose>
+        <c:when test="${matchingFrameworks.size() == 0 }">
+            <div>
+                We are sorry, there were no results matching "${search_result}", but you can try again some other day, as we are continuously adding content!
             </div>
-        </c:forEach>
-    </div>
-    </c:if>
+        </c:when>
+        <c:otherwise>
+            <div class="row equal">
+                <c:forEach var="framework" items="${matchingFrameworks}" >
+                    <div class="card mx-4 mb-4">
+                        <a href="<c:url value="/frameworks/${framework.id}"/>">
+                            <div class="card-body">
+                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
+                            </div>
+                            <div class="card-footer text-dark">${framework.name} - ${framework.category}</div>
+                        </a>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:otherwise>
+    </c:choose>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
