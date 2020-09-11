@@ -21,6 +21,7 @@ public class FrameworkListController {
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
 
         mav.addObject("matchingFrameworks", fs.getByNameOrCategory(toSearch));
+        mav.addObject("search_result", toSearch );
 
         return mav;
     }

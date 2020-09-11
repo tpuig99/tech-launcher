@@ -18,14 +18,14 @@
 
 <div class="content">
     <div class="page-title">
-        <h2>Search Results</h2>
+        <h2>Search Results for: ${search_result}</h2>
     </div>
-
+    <div class="page-description"></div>
 
     <c:choose>
         <c:when test="${matchingFrameworks.size() == 0 }">
             <div>
-                Nothing found
+                We are sorry, there were no results matching "${search_result}", but you can try again some other day, as we are continuously adding content!
             </div>
         </c:when>
         <c:otherwise>
