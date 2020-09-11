@@ -21,4 +21,8 @@ public class HomeController {
         mav.addObject("frameworksList", fs.getAll() );
         return mav;
     }
+    @RequestMapping("/login")
+    public ModelAndView login() {
+        return new ModelAndView("login");
+    }
 }
