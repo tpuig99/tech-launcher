@@ -70,7 +70,7 @@ textarea {
     margin-top: 1em;
 }
 
-margin-right{
+.margin-right{
     margin-right: 1em;
 }
 
@@ -78,4 +78,19 @@ margin-right{
     text-align: justify;
 }
 
+.secondary-font{
+    color: #48bfe3;
+    font-size: large;
+    margin-left: 0;
+}
+
+.third-font{
+    color: grey;
+    font-size: small;
+    justify-content: flex-end;
+}
+
+.row{
+    width: 100%;
+}
 

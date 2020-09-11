@@ -93,37 +93,44 @@
                 </div>
 
                 <div class="container d-flex">
-                    <!--<ul class="list-group margin-left list-group-comment list-group-flush">-->
-                        <c:forEach var="comment" items="${comments}" varStatus="loop">
-                            <!--<li class="list-group-item">-->
-                                <div class="card comment-card margin-left">
-                                    <div class="card-body">
-                                        <div class="row comment-card">
-                                            <span><h6 class="margin-right card-subtitle mb-2 text-muted">
-                                                    <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
-                                            </h6></span>
+                    <c:forEach var="comment" items="${comments}" varStatus="loop">
+                    <div class="row margin-left margin-bottom">
 
-                                            <span>
-                                                <button class=" btn upVote" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
-                                                    <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
-                                                </button>
-                                            </span>
-                                            <span class="padding-left d-flex align-items-center">
-                                                <button class="btn downVote" data-toggle="modal" data-target="#downVoteModal" data-id=${comment.commentId}>
-                                                    <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
-                                                </button>
-                                            </span>
-
-                                        </div>
-                                        <p class="card-text">
-                                            <c:out value="${comment.description}" default=""/>
-                                        </p>
-                                    </div>
+                        <div class="col-1">
+                            <div>
+                                <button class=" btn upVote btn-link" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
+                                    <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                </button>
+                            </div>
+                            <div>
+                                <button class="btn downVote  btn-link" data-toggle="modal" data-target="#downVoteModal" data-id=${comment.commentId}>
+                                    <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <div class="col secondary-font">
+                                    <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
                                 </div>
-                           <!-- </li>-->
-                        </c:forEach>
-                   <!-- </ul>-->
+                                <div class="col third-font d-flex justify-content-flex-end">
+                                    <c:out value="${comment.timestamp}" default=""/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                <c:out value="${comment.description}" default=""/>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    </c:forEach>
                 </div>
+
                 </c:if>
 
                 <!-- User Interaction -->
