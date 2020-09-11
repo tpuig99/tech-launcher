@@ -30,7 +30,14 @@
 <script>
     function searchFrameworks() {
         let input = document.getElementById("searchInput").value;
-        let path = "/search?toSearch="+input;
+        let path ="";
+        if( input === "" ){
+            path += "/error?invalidCode=empty%20search"
+        }
+        else{
+            path = "/search?toSearch="+input;
+        }
+
         window.location.href = path;
     }
 
