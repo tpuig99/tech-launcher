@@ -7,8 +7,13 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import java.util.Properties;
 import java.util.UUID;
 
 
@@ -17,12 +22,6 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     @Autowired
     private UserService service;
-
-    @Autowired
-    private MessageSource messages;
-
-    @Autowired
-    private JavaMailSender mailSender;
 
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
@@ -33,14 +32,28 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
         service.createVerificationToken(user, token);
-
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true");
+        mailSender.setJavaMailProperties(prop);
+        Session session = Session.getInstance(prop, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("confirmemailonly", "pawserver");
+            }
+        });
+        mailSender.setSession(session);
         String recipientAddress = user.getMail();
         String subject = "Registration Confirmation";
         String confirmationUrl
                 = event.getAppUrl() + "/regitrationConfirm.html?token=" + token;
-        String message = messages.getMessage("message.regSucc", null, event.getLocale());
+        String message = "Click link to finish your registration!! ";
 
         SimpleMailMessage email = new SimpleMailMessage();
+        email.setFrom("confirmemailonly@gmail.com");
         email.setTo(recipientAddress);
         email.setSubject(subject);
         email.setText(message + "\r\n" + "http://localhost:8080" + confirmationUrl);

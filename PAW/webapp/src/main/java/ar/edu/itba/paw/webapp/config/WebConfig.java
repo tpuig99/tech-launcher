@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 
 @EnableWebMvc
-@ComponentScan({ "ar.edu.itba.paw.webapp.controller","ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence"})
+@ComponentScan({ "ar.edu.itba.paw.webapp.controller","ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence","ar.edu.itba.paw.webapp.form"})
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Value("classpath:schema.sql")

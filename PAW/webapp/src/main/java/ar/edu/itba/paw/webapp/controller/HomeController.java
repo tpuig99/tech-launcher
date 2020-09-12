@@ -69,7 +69,8 @@ public class HomeController {
                 return mav;
         } catch (RuntimeException ex) {
             ModelAndView mav = new ModelAndView("session/registerForm");
-            mav.addObject("errorMessage", "Something went wrong! Please, try again");
+            System.out.println(ex.getMessage());
+            mav.addObject("errorMessage", "Something went wrong! Please, try again. \n"+ex.getMessage());
             return mav;
         }
         return new ModelAndView("redirect:/");
