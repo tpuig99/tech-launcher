@@ -1,40 +1,45 @@
-<html xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <title th:text="#{label.badUser.title}">bad user</title>
-</head>
-<body>
-<h1 th:text="${param.message[0]}">error</h1>
-<br>
-<a th:href="@{/user/registration}" th:text="#{label.form.loginSignUp}">
-    signup</a>
+<%@ page isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-<div th:if="${param.expired[0]}">
-    <h1 th:text="#{label.form.resendRegistrationToken}">resend</h1>
-    <button onclick="resendToken()"
-            th:text="#{label.form.resendRegistrationToken}">resend</button>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title id="title">Validation Error</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <h1 th:text="${param.message[0]}">error</h1>
+        <br>
+        <a th:href="@{/user/registration}">signup</a>
+        <div th:if="${param.expired[0]}">
+            <h1>${message}</h1>
+            <button onclick="resendToken(${token},${message})" th:text="#{label.form.resendRegistrationToken}">Resend</button>
 
-    <script src="jquery.min.js"></script>
-    <script type="text/javascript">
+            <script type="text/javascript">
 
-        var serverContext = [[@{/}]];
+                let serverContext = '[[@{/}]]';
 
-            function resendToken(){
-                $.get(serverContext + "user/resendRegistrationToken?token=" + token,
-                    function(data){
-                        window.location.href =
-                            serverContext +"login.html?message=" + data.message;
-                    })
-                    .fail(function(data) {
-                        if(data.responseJSON.error.indexOf("MailError") > -1) {
-                            window.location.href = serverContext + "emailError.html";
-                        }
-                        else {
-                            window.location.href =
-                                serverContext + "login.html?message=" + data.responseJSON.message;
-                        }
-                    });
-            }
-    </script>
-</div>
-</body>
+                    function resendToken(token,message){
+                        $.get(serverContext + "user/resendRegistrationToken?token=" + token,
+                            function(data){
+                                window.location.href =
+                                    serverContext +"login.html?message=" + data.message;
+                            })
+                            .catch(function(message) {
+                                /* fijarse que onda aca
+                                if(data.responseJSON.error.indexOf("MailError") > -1) {
+                                    window.location.href = serverContext + "emailError.html";
+                                }
+                                else {
+                                    window.location.href =
+                                        serverContext + "login.html?message=" + data.responseJSON.message;
+                                }
+                                 */
+                            });
+                    }
+            </script>
+            <script src="jquery.min.js"></script>
+        </div>
+    </body>
 </html>
