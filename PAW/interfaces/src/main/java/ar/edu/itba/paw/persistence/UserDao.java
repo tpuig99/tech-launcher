@@ -19,5 +19,5 @@ public interface UserDao {
     Map<Long, String> getUsernamesByComments(List<Comment> comments);
     List<String> getMails();
     List<String> getUserNames();
-
+    void setEnable(long id);
 }
