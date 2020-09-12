@@ -2,6 +2,7 @@ package ar.edu.itba.paw;
 
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.UserDao;
+import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.services.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class UserServiceImplTest{
         @Mock
         private UserDao mockDao;
         @Test
-        public void testCreate() {
+        public void testCreate() throws UserAlreadyExistException {
 // 1. Setup!
         Mockito.when(mockDao.create(Mockito.eq(USERNAME),
         Mockito.eq(MAIL),Mockito.eq(PASSWORD)))
@@ -38,7 +39,7 @@ public class UserServiceImplTest{
         Assert.assertEquals(PASSWORD, maybeUser.getPassword());
         }
 @Test
-public void testCreateEmptyPassword() {
+public void testCreateEmptyPassword() throws UserAlreadyExistException {
 // 1. Setup!
     Mockito.when(mockDao.create(Mockito.eq(USERNAME),
             Mockito.eq(MAIL)))

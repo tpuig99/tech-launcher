@@ -19,6 +19,9 @@
             <div class="page-title">
                 Register
             </div>
+            <c:if test="${not empty errorMessage}">
+                <c:out value="${errorMessage}"/>
+            </c:if>
             <div class="page-description"></div>
 
             <c:url value="/create" var="postPath"/>
@@ -37,6 +40,7 @@
                     <form:label path="repeatPassword">Repeat password: </form:label>
                     <form:input class="form-control" type="password" path="repeatPassword"/>
                     <form:errors path="repeatPassword" cssClass="formError" element="p"/>
+                    <form:errors cssClass="formError" element="p"/>
                 </div>
                 <div class="form-group">
                     <form:label path="email">Email: </form:label>

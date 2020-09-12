@@ -10,6 +10,7 @@ public interface UserDao {
     List<User> getAll();
     User findById(long id);
     User findByUsername(String username);
+    User findByUsernameOrMail(String username,String Mail);
     User findByMail(String mail);
     User create(String username,String mail,String password);
     User create(String username,String mail);

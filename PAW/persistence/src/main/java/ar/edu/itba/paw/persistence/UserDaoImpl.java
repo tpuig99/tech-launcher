@@ -77,6 +77,15 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public User findByUsernameOrMail(String username, String mail) {
+        final List<User> list = jdbcTemplate.query("SELECT * FROM users WHERE user_name ILIKE ? or mail =?", ROW_MAPPER, username,mail);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+    }
+
+    @Override
     public User findByMail(String mail) {
         final List<User> list = jdbcTemplate.query("SELECT * FROM users WHERE mail = ?", ROW_MAPPER, mail);
         if (list.isEmpty()) {
