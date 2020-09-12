@@ -10,8 +10,6 @@ import ar.edu.itba.paw.webapp.form.OnRegistrationCompleteEvent;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.MessageSource;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
-import sun.misc.resources.Messages;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -78,12 +75,11 @@ public class HomeController {
 
     @RequestMapping(value="/regitrationConfirm", method = { RequestMethod.GET })
     public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
-
         Locale locale = request.getLocale();
         VerificationToken verificationToken = us.getVerificationToken(token);
         if (verificationToken == null) {
             model.addAttribute("message", "Something went wrong! Do you want to send another confirmation link?");
-            return "redirect:/session/badUser.html?lang=" + locale.getLanguage();
+            return "session/badUser";
         }
         User user =us.findById((int) verificationToken.getUserId());
         Calendar cal = Calendar.getInstance();
@@ -91,7 +87,7 @@ public class HomeController {
             model.addAttribute("message", "The link has expired! Do you want to send another confirmation link?");
             model.addAttribute("expired", true);
             model.addAttribute("token", token);
-            return "redirect:/session/badUser.html?lang=" + locale.getLanguage();
+            return "session/badUser";
         }
 
         user.setEnable(true);

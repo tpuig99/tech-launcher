@@ -115,13 +115,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public int delete(long userId) {
-        String sql = "DELETE FROM usersdao where user_id=?";
+        String sql = "DELETE FROM users where user_id=?";
         return jdbcTemplate.update(sql,userId);
     }
 
     @Override
     public User update(long userId, String user_name, String mail, String password) {
-        String sql = "UPDATE usersdao set mail=?,user_name=?,password=? where user_id=?";
+        String sql = "UPDATE users set mail=?,user_name=?,password=? where user_id=?";
         jdbcTemplate.update(sql,mail,user_name,password,userId);
         return findById(userId);
     }
@@ -157,7 +157,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void setEnable(long id) {
-        String sql = "UPDATE usersdao set enabled=true where user_id=?";
+        String sql = "UPDATE users set enabled=true where user_id=?";
         jdbcTemplate.update(sql,id);
     }
 }
