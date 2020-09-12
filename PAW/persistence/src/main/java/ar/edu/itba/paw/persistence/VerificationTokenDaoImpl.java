@@ -38,20 +38,19 @@ public class VerificationTokenDaoImpl implements VerificationTokenDao {
     }
 
     @Override
-    public VerificationToken insert(long userId, String token) {
+    public void insert(long userId, String token) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(ts);
         calendar.add(Calendar.MINUTE,60*24);
-        ts = (Timestamp) calendar.getTime();
+        ts = new Timestamp(calendar.getTime().getTime());
+        System.out.println(ts);
         final Map<String, Object> args = new HashMap<>();
         args.put("token", token);
         args.put("user_id", userId);
         args.put("exp_date", ts);
 
         Number token_id = jdbcInsert.executeAndReturnKey(args);
-        return new VerificationToken((Long) token_id,token,userId,ts);
-
     }
 
     @Override

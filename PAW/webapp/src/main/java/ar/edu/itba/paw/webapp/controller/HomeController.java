@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.GenericResponse;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
+import ar.edu.itba.paw.service.EmailService;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
@@ -42,6 +43,8 @@ public class HomeController {
     @Autowired
     ApplicationEventPublisher eventPublisher;
 
+    @Autowired
+    private EmailService es;
 
     @RequestMapping("/")
     public ModelAndView helloWorld() {
@@ -62,7 +65,8 @@ public class HomeController {
         try {
         User registered = us.create(form.getUsername(), form.getEmail(), form.getPassword());
         String appUrl = request.getContextPath();
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl));
+        //eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl));
+        es.sendEmailConfirmation(registered,appUrl);
         } catch (UserAlreadyExistException uaeEx) {
                 ModelAndView mav = new ModelAndView("session/registerForm");
                 mav.addObject("errorMessage", uaeEx.getLocalizedMessage());
