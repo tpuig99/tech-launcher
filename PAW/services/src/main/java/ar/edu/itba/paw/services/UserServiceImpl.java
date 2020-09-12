@@ -9,6 +9,7 @@ import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +24,8 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     @Autowired
     private VerificationTokenDao tokenDao;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User findById(int id) {
@@ -37,6 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(String username,String mail) throws UserAlreadyExistException {
         checkIfUserExists(username,mail);
+
         return userDao.create(username,mail);
     }
 
@@ -56,7 +60,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(String username, String mail, String password) throws UserAlreadyExistException{
         checkIfUserExists(username,mail);
-        return userDao.create(username,mail,password);
+        String psw = passwordEncoder.encode(password);
+        return userDao.create(username,mail,psw);
     }
 
     @Override
