@@ -40,7 +40,7 @@ public class HomeController {
             return index(form);
         }
         final User u = us.create(form.getUsername(), form.getEmail(),form.getPassword());
-        return new ModelAndView("redirect:http://localhost:8080/");
+        return new ModelAndView("redirect:/");
     }
     /*@ModelAttribute("userId")
     public Integer loggedUser(final HttpSession session)
