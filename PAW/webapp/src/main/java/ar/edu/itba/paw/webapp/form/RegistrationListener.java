@@ -31,7 +31,11 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
-        service.createVerificationToken(user, token);
+        if(!event.isResend()){
+            service.createVerificationToken(user, token);
+        }else{
+            service.generateNewVerificationToken(user,token);
+        }
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");

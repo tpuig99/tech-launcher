@@ -94,10 +94,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public VerificationToken generateNewVerificationToken(String existingToken) {
-        VerificationToken verificationToken = tokenDao.getByToken(existingToken);
-        String token = UUID.randomUUID().toString();
+    public void generateNewVerificationToken(User user, String token) {
+        VerificationToken verificationToken = tokenDao.getByUser(user.getId());
         tokenDao.change(verificationToken.getTokenId(),token);
-        return tokenDao.getById(verificationToken.getTokenId());
     }
 }

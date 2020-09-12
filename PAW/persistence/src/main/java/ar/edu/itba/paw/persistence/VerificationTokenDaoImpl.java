@@ -44,7 +44,6 @@ public class VerificationTokenDaoImpl implements VerificationTokenDao {
         calendar.setTime(ts);
         calendar.add(Calendar.MINUTE,60*24);
         ts = new Timestamp(calendar.getTime().getTime());
-        System.out.println(ts);
         final Map<String, Object> args = new HashMap<>();
         args.put("token", token);
         args.put("user_id", userId);
@@ -86,7 +85,7 @@ public class VerificationTokenDaoImpl implements VerificationTokenDao {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(ts);
         calendar.add(Calendar.MINUTE,60*24);
-        ts = (Timestamp) calendar.getTime();
+        ts = new Timestamp(calendar.getTime().getTime());
         String sql = "UPDATE verification_token set token=?,exp_date=? where token_id=?";
         jdbcTemplate.update(sql,token,ts,tokenId);
     }

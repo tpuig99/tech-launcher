@@ -9,11 +9,13 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
     private String appUrl;
     private Locale locale;
     private User user;
-    public OnRegistrationCompleteEvent(User user, Locale locale, String appUrl) {
+    private boolean resend;
+    public OnRegistrationCompleteEvent(User user, Locale locale, String appUrl,Boolean resend) {
         super(user);
         this.user = user;
         this.locale = locale;
         this.appUrl = appUrl;
+        this.resend=resend;
     }
 
     public void setAppUrl(String appUrl) {
@@ -38,5 +40,13 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
 
     public User getUser() {
         return user;
+    }
+
+    public boolean isResend() {
+        return resend;
+    }
+
+    public void setResend(boolean resend) {
+        this.resend = resend;
     }
 }

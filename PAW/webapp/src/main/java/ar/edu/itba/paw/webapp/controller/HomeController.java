@@ -52,14 +52,14 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/create", method = { RequestMethod.POST })
-    public ModelAndView create(@Valid @ModelAttribute("registerForm") final UserForm form, HttpServletRequest request, final BindingResult errors) {
+    public ModelAndView create(@Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors,HttpServletRequest request) {
         if (errors.hasErrors()) {
             return index(form);
         }
         try {
         User registered = us.create(form.getUsername(), form.getEmail(), form.getPassword());
         String appUrl = request.getContextPath();
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl));
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl,false));
         } catch (UserAlreadyExistException uaeEx) {
                 ModelAndView mav = new ModelAndView("session/registerForm");
                 mav.addObject("errorMessage", uaeEx.getLocalizedMessage());
@@ -99,29 +99,13 @@ public class HomeController {
     @RequestMapping(value= "/user/resendRegistrationToken", method = RequestMethod.GET)
     public GenericResponse resendRegistrationToken(
             HttpServletRequest request, @RequestParam("token") String existingToken) {
-        JavaMailSender mailSender = new JavaMailSenderImpl();
-        VerificationToken newToken = us.generateNewVerificationToken(existingToken);
 
-        User user = us.findById((int) newToken.getUserId());
-        String appUrl =
-                "http://" + request.getServerName() +
-                        ":" + request.getServerPort() +
-                        request.getContextPath();
-        SimpleMailMessage email = constructResendVerificationTokenEmail(appUrl, request.getLocale(), newToken, user);
-        mailSender.send(email);
+        VerificationToken verificationToken = us.getVerificationToken(existingToken);
+        User registered = us.findById((int) verificationToken.getUserId());
+        String appUrl = request.getContextPath();
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl,true));
 
         return new GenericResponse("Another mail was sent!");
-    }
-    private SimpleMailMessage constructResendVerificationTokenEmail
-            (String contextPath, Locale locale, VerificationToken newToken, User user) {
-        String confirmationUrl =
-                contextPath + "/regitrationConfirm.html?token=" + newToken.getToken();
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setSubject("Resend Registration Token");
-        email.setText(" rn" + confirmationUrl);
-        email.setFrom("support.email");
-        email.setTo(user.getMail());
-        return email;
     }
     /*@ModelAttribute("userId")
     public Integer loggedUser(final HttpSession session)
