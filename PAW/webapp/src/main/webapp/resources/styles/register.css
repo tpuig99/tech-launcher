@@ -1,0 +1,29 @@
+.page-title {
+    font-size: 3em;
+}
+
+form {
+    margin-left: 13em;
+}
+
+form div *{
+    margin-top: 1em;
+}
+
+label {
+    margin-left: 2em;
+}
+
+input {
+    margin-left: 3em;
+}
+
+.content .formError {
+    margin-left: 3em;
+    color: darkred;
+}
+
+.btn {
+    border-radius: 10%;
+    float: right;
+}
