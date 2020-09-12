@@ -98,10 +98,10 @@
             <version>2.2.5.RELEASE</version>
         </dependency>
             <dependency>
-                <groupId>javax.mail</groupId>
-                <artifactId>mail</artifactId>
-                <version>1.4.7</version>
-            </dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.5.0-b01</version>
+        </dependency>
         </dependencies>
     </dependencyManagement>
 
