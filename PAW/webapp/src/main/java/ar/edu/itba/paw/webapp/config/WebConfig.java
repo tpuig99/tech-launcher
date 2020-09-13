@@ -91,7 +91,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(auth.getDefaultUserDetailsService()).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(auth.getDefaultUserDetailsService()).passwordEncoder(encoder());
     }
 }
 
