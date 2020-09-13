@@ -60,12 +60,23 @@ public class RegisterController {
             mav.addObject("errorMessage", "Something went wrong! Please, try again. \n"+ex.getMessage());
             return mav;
         }
-        return new ModelAndView("redirect:/register/success");
+        return new ModelAndView("redirect:/register/success/1");
     }
 
-    @RequestMapping("/register/success")
-    public ModelAndView success(){
-        return new ModelAndView("session/successfulRegister");
+    @RequestMapping("/register/success/1")
+    public ModelAndView success1(){
+        ModelAndView mav = new ModelAndView("session/successful");
+        mav.addObject("message","We sent you an email to verify your account. Here's a button to the Home page, so you can start browsing ");
+        mav.addObject("title","Created account successfully!");
+        return mav;
+    }
+
+    @RequestMapping("/register/success/2")
+    public ModelAndView success2(){
+        ModelAndView mav = new ModelAndView("session/successful");
+        mav.addObject("message","Yay!! You are now a user of Tech Launcher, our page! Press the Home button and start contributing to our community ");
+        mav.addObject("title","Your email has been confirmed!");
+        return mav;
     }
 
     @RequestMapping(value="/regitrationConfirm", method = { RequestMethod.GET })
@@ -88,7 +99,7 @@ public class RegisterController {
         user.setEnable(true);
         us.saveRegisteredUser(user);
         //return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
-        return "redirect:/";
+        return "redirect:/register/success/2";
     }
 
     @RequestMapping(value= "/register/resendRegistrationToken", method = RequestMethod.GET)

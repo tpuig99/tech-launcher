@@ -14,8 +14,8 @@
         <jsp:include page="../components/navbar.jsp"/>
 
         <div class="content">
-            <div class="page-title">Created account successfully!</div>
-            <div class="page-description">We sent you an email to verify your account. Here's a button to the Home page, so you can start browsing <button class="btn btn-primary" onclick="goHome()">Home</button></div>
+            <div class="page-title">${title}</div>
+            <div class="page-description">${message}<button class="btn btn-primary" onclick="goHome()">Home</button></div>
         </div>
 
         <script>
