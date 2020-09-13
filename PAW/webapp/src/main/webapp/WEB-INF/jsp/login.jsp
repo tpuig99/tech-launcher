@@ -14,7 +14,7 @@
         <input id="password" name="j_password" type="password"/>
     </div>
     <div>
-        <label><input name="j_rememberme" type="checkbox"/> <spring:message code="remember_me"/></label>
+        <label><input name="j_rememberme" type="checkbox"/>Remember me</label>
     </div>
     <div>
         <input type="submit" value="Login!"/>

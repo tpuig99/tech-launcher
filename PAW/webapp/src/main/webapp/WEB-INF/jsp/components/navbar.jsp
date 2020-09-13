@@ -32,7 +32,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="${pageContext.request.contextPath}/register">Sign Up</a>
-                <a class="dropdown-item" href="#">Log in</a>
+                <a class="dropdown-item" href="${pageContext.request.contextPath}/login">Log in</a>
             </div>
         </div>
     </div>
