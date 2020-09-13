@@ -332,8 +332,12 @@
                         let username = document.getElementById("upVoteName").value;
                         let email = document.getElementById("upVoteEmail").value;
                         let commentId = document.getElementById("upVoteCommentId").value;
-                        let path = "/voteup?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
-                        window.location.href = path;
+                        let path2 = '<c:url value="/voteup" />?id='+frameworkId
+                        +'&comment_id='+commentId
+                        +'&username='+username
+                        +'&email='+email;
+                        console.log(path2);
+                        window.location.href = path2;
                     }
 
                     function voteDownComment() {
