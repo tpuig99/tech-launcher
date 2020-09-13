@@ -14,13 +14,13 @@
         <a th:href="@{/user/registration}">signup</a>
         <div th:if="${param.expired[0]}">
             <h1>${message}</h1>
-            <button onclick="resendToken(${token},${message})" th:text="#{label.form.resendRegistrationToken}">Resend</button>
+            <button onclick="resendToken(${token})" th:text="#{label.form.resendRegistrationToken}">Resend</button>
 
             <script type="text/javascript">
 
                 let serverContext = '[[@{/}]]';
 
-                    function resendToken(token,message){
+                    function resendToken(token){
                         $.get(serverContext + "user/resendRegistrationToken?token=" + token,
                             function(data){
                                 window.location.href =
