@@ -79,6 +79,14 @@ public class RegisterController {
         return mav;
     }
 
+    @RequestMapping("/register/success/3")
+    public ModelAndView success3(){
+        ModelAndView mav = new ModelAndView("session/successful");
+        mav.addObject("message","We sent you an email to verify your account again. Here's a button to the Home page, so you can start browsing");
+        mav.addObject("title","Verification email resent");
+        return mav;
+    }
+
     @RequestMapping(value="/regitrationConfirm", method = { RequestMethod.GET })
     public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
         Locale locale = request.getLocale();
@@ -103,7 +111,7 @@ public class RegisterController {
     }
 
     @RequestMapping(value= "/register/resendRegistrationToken", method = RequestMethod.GET)
-    public ModelAndView resendRegistrationToken(
+    public String resendRegistrationToken(
             HttpServletRequest request, @RequestParam("token") String existingToken) {
 
         VerificationToken verificationToken = us.getVerificationToken(existingToken);
@@ -111,7 +119,7 @@ public class RegisterController {
         String appUrl = request.getContextPath();
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl,true));
 
-        return new ModelAndView("redirect:/register/success");
+        return "redirect:/register/success/3";
     }
     /*@ModelAttribute("userId")
     public Integer loggedUser(final HttpSession session)
