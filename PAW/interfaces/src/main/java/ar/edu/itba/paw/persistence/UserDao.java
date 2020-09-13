@@ -10,6 +10,7 @@ public interface UserDao {
     List<User> getAll();
     User findById(long id);
     User findByUsername(String username);
+    User findByUsernameOrMail(String username,String Mail);
     User findByMail(String mail);
     User create(String username,String mail,String password);
     User create(String username,String mail);
@@ -18,5 +19,5 @@ public interface UserDao {
     Map<Long, String> getUsernamesByComments(List<Comment> comments);
     List<String> getMails();
     List<String> getUserNames();
-
+    void setEnable(long id);
 }
