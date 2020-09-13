@@ -26,7 +26,7 @@ public class UserDaoImpl implements UserDao {
             RowMapper<User>() {
                 @Override
                 public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new User(rs.getInt("user_id"), rs.getString("user_name"),rs.getString("mail"),rs.getString("password"));
+                    return new User(rs.getInt("user_id"), rs.getString("user_name"),rs.getString("mail"),rs.getString("password"),rs.getBoolean("enabled"));
                 }
             };
     private final static RowMapper<String> ROW_MAPPER_USERNAME = new
@@ -77,6 +77,15 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public User findByUsernameOrMail(String username, String mail) {
+        final List<User> list = jdbcTemplate.query("SELECT * FROM users WHERE user_name ILIKE ? or mail =?", ROW_MAPPER, username,mail);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+    }
+
+    @Override
     public User findByMail(String mail) {
         final List<User> list = jdbcTemplate.query("SELECT * FROM users WHERE mail = ?", ROW_MAPPER, mail);
         if (list.isEmpty()) {
@@ -99,19 +108,20 @@ public class UserDaoImpl implements UserDao {
         args.put("user_name", user_name); // la key es el nombre de la columna
         args.put("mail",mail);
         args.put("password",password);
+        args.put("enabled",false);
         final Number userId = jdbcInsert.executeAndReturnKey(args);
         return new User(userId.longValue(), user_name,mail,password);
     }
 
     @Override
     public int delete(long userId) {
-        String sql = "DELETE FROM usersdao where user_id=?";
+        String sql = "DELETE FROM users where user_id=?";
         return jdbcTemplate.update(sql,userId);
     }
 
     @Override
     public User update(long userId, String user_name, String mail, String password) {
-        String sql = "UPDATE usersdao set mail=?,user_name=?,password=? where user_id=?";
+        String sql = "UPDATE users set mail=?,user_name=?,password=? where user_id=?";
         jdbcTemplate.update(sql,mail,user_name,password,userId);
         return findById(userId);
     }
@@ -143,5 +153,11 @@ public class UserDaoImpl implements UserDao {
         final List<String> toReturn = jdbcTemplate.query("SELECT user_name FROM users", ROW_MAPPER_MAIL);
         return toReturn;
 
+    }
+
+    @Override
+    public void setEnable(long id) {
+        String sql = "UPDATE users set enabled=true where user_id=?";
+        jdbcTemplate.update(sql,id);
     }
 }
