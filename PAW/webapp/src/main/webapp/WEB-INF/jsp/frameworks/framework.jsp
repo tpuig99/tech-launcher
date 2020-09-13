@@ -51,7 +51,12 @@
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
                 <div>
-                   <h4 class="title">Bibliography</h4>
+                   <span><h4 class="title">Bibliography</h4></span>
+                   <span>
+                       <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal" >
+                            <i class="fa fa-plus"></i>
+                        </button>
+                   </span>
                     <ul class="list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
                         <li class="list-group-item"><a target="_blank" href="${book.link}">${book.title}</a></li>
@@ -311,6 +316,44 @@
                 </div>
 
 
+                <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addContentLabel">Add Content</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="inputName">Title</label>
+                                        <input type="text" class="form-control" id="inputTitle" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail">Link</label>
+                                        <input type="email" class="form-control" id="inputLink" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newRating">Select Type</label>
+                                        <div class="input-group col-xs-8">
+                                            <select class="form-control" name="newRating" id="newRating">
+                                                <option value="1">Bibliography</option>
+                                                <option value="2">Course</option>
+                                                <option value="3">Tutorial</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="file" id="fileElem" multiple accept="application/pdf" style="display:none" onchange="handleFiles(this.files)">
+                                    <a href="javascript:selectFiles()">Select some files</a>
+                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
 
 
@@ -392,6 +435,13 @@
                             e.preventDefault();
                         });
                     });
+
+                    function selectFiles() {
+                        let el = document.getElementById("fileElem");
+                        if (el) {
+                            el.click();
+                        }
+                    }
 
                 </script>
 

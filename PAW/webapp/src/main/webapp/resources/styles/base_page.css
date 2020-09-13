@@ -83,6 +83,12 @@ nav a:hover {
      color: white;
 }
 
+.fab-button{
+    background-color: #48bfe3;
+    color: white;
+    border-radius: 50%;
+}
+
 
 img {
     max-width: 100%;
