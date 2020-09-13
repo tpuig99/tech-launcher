@@ -55,7 +55,7 @@ public class FrameworkController {
     }
 
     @RequestMapping(path={"/create"}, method= RequestMethod.GET)
-    public ModelAndView saveComment(@RequestParam("id") final long id, @RequestParam("content") final String content, @RequestParam("username") final String username, @RequestParam("email") final String email){
+    public ModelAndView saveComment(@RequestParam("id") final long id, @RequestParam("content") final String content, @RequestParam("username") final String username, @RequestParam("email") final String email) throws UserAlreadyExistException {
         Framework framework = fs.findById(id);
         final User user = us.create(username, email);
         final Comment comment = commentService.insertComment(framework.getId(),user.getId(),content,1);
@@ -64,7 +64,7 @@ public class FrameworkController {
     }
 
     @RequestMapping(path={"/voteup"}, method= RequestMethod.GET)
-    public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId, @RequestParam("username") final String username, @RequestParam("email") final String email){
+    public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId, @RequestParam("username") final String username, @RequestParam("email") final String email) throws UserAlreadyExistException {
         Framework framework = fs.findById(frameworkId);
         final User user = us.create(username, email);
         final Comment comment = commentService.voteUp(commentId,user.getId());
@@ -72,7 +72,7 @@ public class FrameworkController {
     }
 
     @RequestMapping(path={"/votedown"}, method= RequestMethod.GET)
-    public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId, @RequestParam("username") final String username, @RequestParam("email") final String email){
+    public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId, @RequestParam("username") final String username, @RequestParam("email") final String email) throws UserAlreadyExistException {
         Framework framework = fs.findById(frameworkId);
         final User user = us.create(username, email);
         final Comment comment = commentService.voteDown(commentId,user.getId());
@@ -80,7 +80,7 @@ public class FrameworkController {
     }
 
     @RequestMapping(path={"/rate"}, method = RequestMethod.GET)
-    public ModelAndView rateComment(@RequestParam("id") final long id, @RequestParam("rating") final int rating, @RequestParam("username") final String username, @RequestParam("email") final String email){
+    public ModelAndView rateComment(@RequestParam("id") final long id, @RequestParam("rating") final int rating, @RequestParam("username") final String username, @RequestParam("email") final String email) throws UserAlreadyExistException {
         Framework framework = fs.findById(id);
         final User user = us.create(username, email);
         final FrameworkVote frameworkVote = frameworkVoteService.insert(id,user.getId(),rating);

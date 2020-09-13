@@ -2,14 +2,19 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.persistence.UserDao;
+import ar.edu.itba.paw.persistence.VerificationTokenDao;
+import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -17,6 +22,10 @@ public class UserServiceImpl implements UserService {
     @Qualifier("userDaoImpl")
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private VerificationTokenDao tokenDao;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User findById(int id) {
@@ -29,18 +38,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(String username,String mail) {
-        User user = findByUsername(username);
-        if( user != null ){
-            return user;
-        }
-        return userDao.create(username,mail);
+    public User create(String username,String mail) throws UserAlreadyExistException {
+        checkIfUserExists(username,mail);
 
+        return userDao.create(username,mail);
+    }
+
+    private void checkIfUserExists(String username, String mail) throws UserAlreadyExistException {
+        User user = findByUsernameOrMail(username,mail);
+        if( user != null ){
+            if(user.getMail().equals(mail)){
+                throw new UserAlreadyExistException("There is an account with that email address: " +  user.getMail());
+            }
+            throw new UserAlreadyExistException("There is an account with that username " +  user.getUsername());
+        }
+    }
+
+    private User findByUsernameOrMail(String username, String mail) { return userDao.findByUsernameOrMail(username,mail);
     }
 
     @Override
-    public User create(String username, String mail, String password) {
-        return userDao.create(username,mail,password);
+    public User create(String username, String mail, String password) throws UserAlreadyExistException{
+        checkIfUserExists(username,mail);
+        String psw = passwordEncoder.encode(password);
+        return userDao.create(username,mail,psw);
     }
 
     @Override
@@ -56,5 +77,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<Long, String> getUsernamesByComments(List<Comment> comments) {
         return userDao.getUsernamesByComments(comments);
+    }
+
+    @Override
+    public void createVerificationToken(User user, String token) {
+        VerificationToken verificationToken = tokenDao.getByUser(user.getId());
+        if(verificationToken!=null){
+            tokenDao.change(verificationToken.getTokenId(),token);
+        }
+        tokenDao.insert(user.getId(),token);
+    }
+
+    @Override
+    public VerificationToken getVerificationToken(String token) {
+        return tokenDao.getByToken(token);
+    }
+
+    @Override
+    public void saveRegisteredUser(User user) {
+        userDao.setEnable(user.getId());
+    }
+
+    @Override
+    public void generateNewVerificationToken(User user, String token) {
+        VerificationToken verificationToken = tokenDao.getByUser(user.getId());
+        tokenDao.change(verificationToken.getTokenId(),token);
     }
 }
