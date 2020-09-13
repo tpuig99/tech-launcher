@@ -96,6 +96,9 @@ public class RegisterController {
             return "session/badUser";
         }
         User user =us.findById((int) verificationToken.getUserId());
+        if(user.isEnable()){
+            return "redirect:/register/success/2";
+        }
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getexpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
             model.addAttribute("message", "The link has expired! Do you want to send another confirmation link?");
