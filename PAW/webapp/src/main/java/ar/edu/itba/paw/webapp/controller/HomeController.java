@@ -70,7 +70,12 @@ public class HomeController {
             mav.addObject("errorMessage", "Something went wrong! Please, try again. \n"+ex.getMessage());
             return mav;
         }
-        return new ModelAndView("redirect:/");
+        return new ModelAndView("redirect:/register/success");
+    }
+
+    @RequestMapping("/register/success")
+    public ModelAndView success(){
+        return new ModelAndView("session/successfulRegister");
     }
 
     @RequestMapping(value="/regitrationConfirm", method = { RequestMethod.GET })
