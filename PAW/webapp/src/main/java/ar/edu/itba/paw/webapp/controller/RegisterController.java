@@ -91,8 +91,8 @@ public class RegisterController {
         return "redirect:/";
     }
 
-    @RequestMapping(value= "/user/resendRegistrationToken", method = RequestMethod.GET)
-    public GenericResponse resendRegistrationToken(
+    @RequestMapping(value= "/register/resendRegistrationToken", method = RequestMethod.GET)
+    public ModelAndView resendRegistrationToken(
             HttpServletRequest request, @RequestParam("token") String existingToken) {
 
         VerificationToken verificationToken = us.getVerificationToken(existingToken);
@@ -100,7 +100,7 @@ public class RegisterController {
         String appUrl = request.getContextPath();
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl,true));
 
-        return new GenericResponse("Another mail was sent!");
+        return new ModelAndView("redirect:/register/success");
     }
     /*@ModelAttribute("userId")
     public Integer loggedUser(final HttpSession session)
