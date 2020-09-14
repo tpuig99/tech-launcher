@@ -364,7 +364,7 @@
                         let content = document.getElementById("commentInput").value;
                         let id= ${framework.id};
 
-                        let path = "/create?id="+id+"&content="+content+"&username="+username+"&email="+email;
+                        let path = '<c:url value="/create" />?id='+id+'&content='+content+'&username='+username+'&email='+email;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
@@ -375,7 +375,7 @@
                         let username = document.getElementById("upVoteName").value;
                         let email = document.getElementById("upVoteEmail").value;
                         let commentId = document.getElementById("upVoteCommentId").value;
-                        let path = "/voteup?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
+                        let path = '<c:url value="/voteup" />?id='+frameworkId+'&comment_id='+commentId+'&username='+username+'&email='+email;
                         window.location.href = path;
                     }
 
@@ -384,7 +384,7 @@
                         let username = document.getElementById("downVoteName").value;
                         let email = document.getElementById("downVoteEmail").value;
                         let commentId = document.getElementById("downVoteCommentId").value;
-                        let path = "/votedown?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
+                        let path = '<c:url value="/votedown" />?id='+frameworkId+'&comment_id='+commentId+'&username='+username+'&email='+email;
                         window.location.href = path;
                     }
 
@@ -408,7 +408,7 @@
                         console.log(rate_value);
                         let id= ${framework.id};
 
-                        let path = "/rate?id="+id+"&rating="+rate_value+"&username="+username+"&email="+email;
+                        let path = '<c:url value="/rate" />?id='+id+'&rating='+rate_value+'&username='+username+'&email='+email;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);

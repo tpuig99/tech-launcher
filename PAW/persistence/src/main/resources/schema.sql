@@ -2,7 +2,16 @@ CREATE TABLE IF NOT EXISTS users (
                  user_id SERIAL PRIMARY KEY,
                  user_name varchar(100) NOT NULL UNIQUE,
                  mail varchar(100) NOT NULL UNIQUE,
-                 password varchar(100)
+                 password varchar(100),
+                 enabled boolean default false not null
+                 );
+ALTER TABLE users ADD COLUMN IF NOT EXISTS enabled boolean default false not null ;
+CREATE TABLE IF NOT EXISTS verification_token(
+                 token_id SERIAL PRIMARY KEY,
+                 user_id integer NOT NULL unique,
+                 token varchar NOT NULL,
+                 exp_date timestamp NOT NULL,
+                 FOREIGN KEY(user_id) REFERENCES users
                  );
 CREATE TABLE IF NOT EXISTS frameworks (
                  framework_id SERIAL PRIMARY KEY,
