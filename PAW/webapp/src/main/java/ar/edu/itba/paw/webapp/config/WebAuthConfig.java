@@ -25,11 +25,11 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement()
-                .invalidSessionUrl("/login")
+                .invalidSessionUrl("/")
                 .and().authorizeRequests()
                 .antMatchers("/login").anonymous()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/**").authenticated()
+                .antMatchers("/**").permitAll()
                 .and().formLogin()
                 .usernameParameter("j_username")
                 .passwordParameter("j_password")
