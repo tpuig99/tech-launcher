@@ -51,11 +51,13 @@
     }
 
     function searchFrameworks() {
-        let input = document.getElementById("searchInput").value;
-        if( isEmpty(input) ) {
+        let input = document.getElementById("searchInput").value
+
+        if( !isEmpty(input) ) {
             window.location.href = "/search?toSearch=" + input;
+            return;
         }
-        window.location.href = "/";
+        window.location.reload();
     }
 
     form = document.getElementById("search").addEventListener('submit', e => {

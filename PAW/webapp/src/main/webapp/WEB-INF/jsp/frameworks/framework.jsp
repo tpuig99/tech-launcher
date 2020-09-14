@@ -10,6 +10,7 @@
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
@@ -138,6 +139,7 @@
                     <h4 class="title">Give your opinion</h4>
                 </div>
 
+
                 <div class="margin-left">
                     <div class="row">
                         <div class="col-8">
@@ -149,17 +151,26 @@
                         </div>
                         <div class="col">
                             <h5>Rating</h5>
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="1" class="btn rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="2" class="btn rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="3" class="btn rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="4" class="btn rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
-                                        <button type="button" data-toggle="modal" data-target="#ratingModal" data-value="5" class="btn rankingStar"><span class="fa fa-star fa-lg checked"></span></button>
-                                    </div>
-                                </div>
+
+
+
+
+                            <div class="stars">
+                                <form id="rating-form">
+                                    <input class="star star-5" id="star-5" type="radio" name="star"/>
+                                    <label class="star star-5" for="star-5"></label>
+                                    <input class="star star-4" id="star-4" type="radio" name="star"/>
+                                    <label class="star star-4" for="star-4"></label>
+                                    <input class="star star-3" id="star-3" type="radio" name="star"/>
+                                    <label class="star star-3" for="star-3"></label>
+                                    <input class="star star-2" id="star-2" type="radio" name="star"/>
+                                    <label class="star star-2" for="star-2"></label>
+                                    <input class="star star-1" id="star-1" type="radio" name="star"/>
+                                    <label class="star star-1" for="star-1"></label>
+                                    <input class="btn primary-button" type="submit" value="SUBMIT">
+                                </form>
                             </div>
+
 
                         </div>
 
@@ -299,6 +310,10 @@
                     </div>
                 </div>
 
+
+
+
+
                 <script>
                     function publishComment() {
                         let username = document.getElementById("inputName").value;
@@ -306,7 +321,7 @@
                         let content = document.getElementById("commentInput").value;
                         let id= ${framework.id};
 
-                        let path = "/create?id="+id+"&content="+content+"&username="+username+"&email="+email;
+                        let path = '<c:url value="/create" />?id='+id+'&content='+content+'&username='+username+'&email='+email;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
@@ -317,7 +332,7 @@
                         let username = document.getElementById("upVoteName").value;
                         let email = document.getElementById("upVoteEmail").value;
                         let commentId = document.getElementById("upVoteCommentId").value;
-                        let path = "/voteup?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
+                        let path = '<c:url value="/voteup" />?id='+frameworkId+'&comment_id='+commentId+'&username='+username+'&email='+email;
                         window.location.href = path;
                     }
 
@@ -326,7 +341,7 @@
                         let username = document.getElementById("downVoteName").value;
                         let email = document.getElementById("downVoteEmail").value;
                         let commentId = document.getElementById("downVoteCommentId").value;
-                        let path = "/votedown?id="+frameworkId+"&comment_id="+commentId+"&username="+username+"&email="+email;
+                        let path = '<c:url value="/votedown" />?id='+frameworkId+'&comment_id='+commentId+'&username='+username+'&email='+email;
                         window.location.href = path;
                     }
 
@@ -334,9 +349,23 @@
                         let username = document.getElementById("ratingInputName").value;
                         let email = document.getElementById("ratingInputEmail").value;
                         let ratingValue = document.getElementById("rankingValue").value;
+                        if (document.getElementById('star-1').checked) {
+                            rate_value = 1;
+                        }else if(document.getElementById('star-2').checked){
+                            rate_value = 2;
+                        }else if(document.getElementById('star-3').checked){
+                            rate_value = 3;
+                        }
+                        else if(document.getElementById('star-4').checked){
+                            rate_value = 4;
+                        }
+                        else if(document.getElementById('star-5').checked){
+                            rate_value =  5;
+                        }
+                        console.log(rate_value);
                         let id= ${framework.id};
 
-                        let path = "/rate?id="+id+"&rating="+ratingValue+"&username="+username+"&email="+email;
+                        let path = '<c:url value="/rate" />?id='+id+'&rating='+rate_value+'&username='+username+'&email='+email;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
@@ -357,7 +386,15 @@
                         $(".downVoteModalBody #downVoteCommentId").val( commentId );
                     });
 
+                    $(document).ready(function() {
+                        $('#rating-form').on('submit', function(e){
+                            $('#ratingModal').modal('show');
+                            e.preventDefault();
+                        });
+                    });
+
                 </script>
+
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
