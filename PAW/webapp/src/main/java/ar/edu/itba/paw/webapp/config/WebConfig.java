@@ -86,13 +86,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         messageSource.setCacheSeconds(5);
         return messageSource;
     }
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(auth.getDefaultUserDetailsService()).passwordEncoder(encoder());
-    }
+
 }
 
 
