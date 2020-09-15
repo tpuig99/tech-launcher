@@ -42,9 +42,9 @@ public class FrameworkController {
 
         mav.addObject("framework", framework);
 
-        mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book));
-        mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course));
-        mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial));
+        mav.addObject("books", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.book));
+        mav.addObject("courses", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.course));
+        mav.addObject("tutorials", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.tutorial));
         mav.addObject("category", category);
         mav.addObject("competitors", fs.getCompetitors(framework));
 

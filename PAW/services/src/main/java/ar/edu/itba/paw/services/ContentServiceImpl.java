@@ -42,6 +42,16 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
+    public List<Content> getNotPendingContentByFrameworkAndType(long frameworkId, ContentTypes type) {
+        return content.getNotPendingContentByFrameworkAndType(frameworkId, type);
+    }
+
+    @Override
+    public List<Content> getPendingContentByFrameworkAndType(long frameworkId, ContentTypes type) {
+        return content.getPendingContentByFrameworkAndType(frameworkId, type);
+    }
+
+    @Override
     public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type, Boolean pending) {
         return content.insertContent(frameworkId, userId, title, link, type, pending);
     }
