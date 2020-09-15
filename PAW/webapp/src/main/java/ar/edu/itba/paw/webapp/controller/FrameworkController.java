@@ -33,7 +33,7 @@ public class FrameworkController {
     private UserService us;
 
     @RequestMapping("/{category}/{id}")
-    public ModelAndView framework(@PathVariable long id, @PathVariable String category) {
+    public ModelAndView framework(@PathVariable long id, @PathVariable String category,@ModelAttribute("contentForm") final ContentForm form) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Framework framework = fs.findById(id);
         List<Comment> comments = commentService.getCommentsByFramework(id);

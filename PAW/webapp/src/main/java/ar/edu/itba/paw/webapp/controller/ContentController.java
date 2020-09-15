@@ -31,7 +31,7 @@ public class ContentController {
     @RequestMapping(path={"/content"}, method = RequestMethod.GET)
     public ModelAndView showContentForm(@ModelAttribute("contentForm") final ContentForm form){
 
-        return new ModelAndView("frameworks/contentForm");
+        return new ModelAndView("frameworks/framework");
     }
 
     @RequestMapping(path={"/content"}, method = RequestMethod.POST)

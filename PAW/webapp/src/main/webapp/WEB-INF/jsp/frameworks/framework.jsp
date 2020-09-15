@@ -54,7 +54,7 @@
                 <div>
                    <span><h4 class="title">Bibliography</h4></span>
                    <span>
-                       <button class="btn fab-button" type="button" onclick="uploadContent()"> <!--data-toggle="modal" data-target="#addContentModal"-->
+                       <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
                             <i class="fa fa-plus"></i>
                         </button>
                    </span>

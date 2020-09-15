@@ -1,9 +1,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-<html>
-<body>
-
-<form:form modelAttribute="contentForm" action="/content" method="post">
+<c:url value="/content" var="postPath"/>
+<form:form modelAttribute="contentForm" action="${postPath}" method="post">
     <div>
         <form:label path="title">Title <form:input  path="title" type="text"/></form:label>
     </div>
@@ -30,6 +28,3 @@
 </form:form>
 
 
-
-</body>
-</html>
