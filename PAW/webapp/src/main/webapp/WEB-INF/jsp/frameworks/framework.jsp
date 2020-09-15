@@ -370,9 +370,7 @@
                     }
 
                     function publishRating(){
-                        let username = document.getElementById("ratingInputName").value;
-                        let email = document.getElementById("ratingInputEmail").value;
-                        let ratingValue = document.getElementById("rankingValue").value;
+                        let rate_value = 0;
                         if (document.getElementById('star-1').checked) {
                             rate_value = 1;
                         }else if(document.getElementById('star-2').checked){
@@ -389,7 +387,7 @@
                         console.log(rate_value);
                         let id= ${framework.id};
 
-                        let path = '<c:url value="/rate" />?id='+id+'&rating='+rate_value+'&username='+username+'&email='+email;
+                        let path = '<c:url value="/rate" />?id='+id+'&rating='+rate_value;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
@@ -412,7 +410,7 @@
 
                     $(document).ready(function() {
                         $('#rating-form').on('submit', function(e){
-                            $('#ratingModal').modal('show');
+                            publishRating();
                             e.preventDefault();
                         });
                     });
