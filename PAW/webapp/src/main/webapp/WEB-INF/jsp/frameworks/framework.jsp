@@ -51,7 +51,7 @@
                 <!-- Content -->
                 <div class="container">
                     <div><h4 class="title">Content</h4></div>
-                    <div  class="d-flex align-items-end justify-content-flex-end">
+                    <div class="d-flex justify-content-end">
                        <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
                             <i class="fa fa-plus"></i>
                         </button>
@@ -59,7 +59,7 @@
                 </div>
                 <c:if test="${empty books && empty courses && empty tutorials}">
                     <div class="d-flex align-items-center justify-content-center">There is no content available for this tech yet</div>
-                    </c:if>
+                </c:if>
 
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">

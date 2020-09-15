@@ -5,10 +5,9 @@
 <c:url value="/content" var="postPath"/>
 <form:form modelAttribute="contentForm" action="${postPath}" method="post">
     <div class="form-group">
-        <div>
-        <form:label path="title">Title</form:label>
-        </div>
+        <div><form:label path="title">Title</form:label></div>
         <div><form:input  path="title"  class="form-control" type="text"/></div>
+        <form:errors path="title" element="p" cssError="formError"/>
     </div>
     <form:label path="frameworkId"><form:input  class="input-wrap" path="frameworkId" type="hidden" value="${param.frameworkId}"/></form:label>
 
@@ -29,8 +28,9 @@
             <form:label path="link">Link </form:label>
         </div>
         <div>
-            <form:input  path="link" class="form-control" type="text"/>
+            <form:input  path="link" class="form-control" type="text" />
         </div>
+        <form:errors path="link" element="p" cssError="formError"/>
 
 
     </div>
