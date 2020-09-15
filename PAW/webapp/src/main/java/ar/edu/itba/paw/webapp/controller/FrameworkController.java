@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.net.Authenticator;
 import java.util.List;
 import java.util.Map;
 
@@ -58,27 +59,27 @@ public class FrameworkController {
     }
 
     @RequestMapping(path={"/create"}, method= RequestMethod.GET)
-    public ModelAndView saveComment(@RequestParam("id") final long id, @RequestParam("content") final String content, @RequestParam("username") final String username, @RequestParam("email") final String email) throws UserAlreadyExistException {
+    public ModelAndView saveComment(@RequestParam("id") final long id, @RequestParam("content") final String content) throws UserAlreadyExistException {
         Framework framework = fs.findById(id);
-        final User user = us.create(username, email);
-        final Comment comment = commentService.insertComment(framework.getId(),user.getId(),content,1);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final Comment comment = commentService.insertComment(framework.getId(),us.findByUsername(authentication.getName()).getId(),content, null);
 
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+framework.getId());
     }
 
     @RequestMapping(path={"/voteup"}, method= RequestMethod.GET)
-    public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId, @RequestParam("username") final String username, @RequestParam("email") final String email) throws UserAlreadyExistException {
+    public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
         Framework framework = fs.findById(frameworkId);
-        final User user = us.create(username, email);
-        final Comment comment = commentService.voteUp(commentId,user.getId());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final Comment comment = commentService.voteUp(commentId,us.findByUsername(authentication.getName()).getId());
         return new ModelAndView("redirect:/" + framework.getCategory() + "/" + framework.getId());
     }
 
     @RequestMapping(path={"/votedown"}, method= RequestMethod.GET)
-    public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId, @RequestParam("username") final String username, @RequestParam("email") final String email) throws UserAlreadyExistException {
+    public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
         Framework framework = fs.findById(frameworkId);
-        final User user = us.create(username, email);
-        final Comment comment = commentService.voteDown(commentId,user.getId());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final Comment comment = commentService.voteDown(commentId,us.findByUsername(authentication.getName()).getId());
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+framework.getId());
     }
 

@@ -106,7 +106,7 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public Comment insertComment(long frameworkId, long userId, String description) {
-        return cmts.insertComment(frameworkId,userId,description,-1);
+        return cmts.insertComment(frameworkId,userId,description,null);
     }
 
     @Override

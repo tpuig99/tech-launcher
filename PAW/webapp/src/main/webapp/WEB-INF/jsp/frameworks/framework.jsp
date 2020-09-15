@@ -152,7 +152,7 @@
                             <h5>Leave your comment</h5>
                             <div>
                                 <textarea id="commentInput" class="form-control" aria-label="With textarea"></textarea>
-                                <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
+                                <button type="button" onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
                             </div>
                         </div>
                         <div class="col">
@@ -208,85 +208,6 @@
                 </c:if>
                 
                 <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="inputName">Name</label>
-                                        <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail">Email</label>
-                                        <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp">
-                                    </div>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="upVoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="upVoteModalLabel">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body upVoteModalBody">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="inputName">Name</label>
-                                        <input type="text" class="form-control" id="upVoteName" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail">Email</label>
-                                        <input type="email" class="form-control" id="upVoteEmail" aria-describedby="emailHelp">
-                                    </div>
-                                    <input type="hidden" id="upVoteCommentId" value="" />
-                                    <button type="button"  class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteUpComment()">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="downVoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="downVoteModalLabel">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body downVoteModalBody">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="inputName">Name</label>
-                                        <input type="text" class="form-control" id="downVoteName" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail">Email</label>
-                                        <input type="email" class="form-control" id="downVoteEmail" aria-describedby="emailHelp">
-                                    </div>
-                                    <input type="hidden" id="downVoteCommentId" value="" />
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteDownComment()">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
 
                 <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -340,12 +261,10 @@
 
                 <script>
                     function publishComment() {
-                        let username = document.getElementById("inputName").value;
-                        let email = document.getElementById("inputEmail").value;
                         let content = document.getElementById("commentInput").value;
                         let id= ${framework.id};
 
-                        let path = '<c:url value="/create" />?id='+id+'&content='+content+'&username='+username+'&email='+email;
+                        let path = '<c:url value="/create" />?id='+id+'&content='+content;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
@@ -353,19 +272,15 @@
 
                     function voteUpComment() {
                         let frameworkId = ${framework.id};
-                        let username = document.getElementById("upVoteName").value;
-                        let email = document.getElementById("upVoteEmail").value;
                         let commentId = document.getElementById("upVoteCommentId").value;
-                        let path = '<c:url value="/voteup" />?id='+frameworkId+'&comment_id='+commentId+'&username='+username+'&email='+email;
+                        let path = '<c:url value="/voteup" />?id='+frameworkId+'&comment_id='+commentId;
                         window.location.href = path;
                     }
 
                     function voteDownComment() {
                         let frameworkId = ${framework.id};
-                        let username = document.getElementById("downVoteName").value;
-                        let email = document.getElementById("downVoteEmail").value;
                         let commentId = document.getElementById("downVoteCommentId").value;
-                        let path = '<c:url value="/votedown" />?id='+frameworkId+'&comment_id='+commentId+'&username='+username+'&email='+email;
+                        let path = '<c:url value="/votedown" />?id='+frameworkId+'&comment_id='+commentId;
                         window.location.href = path;
                     }
 
