@@ -42,19 +42,12 @@ public class ContentController {
         }
 
         Framework framework = fs.findById(3);
-       // ContentTypes type = ContentTypes.valueOf(form.getType());
+        ContentTypes type = ContentTypes.valueOf(form.getType());
 
-        final Content content = contentService.insertContent(3, 1, form.getTitle(), form.getLink(), ContentTypes.book, false );
+        final Content content = contentService.insertContent(3, 1, form.getTitle(), form.getLink(), type, true );
 
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+3);
     }
 
-        /*@RequestMapping(path={"/content"}, method = RequestMethod.GET)
-    public ModelAndView uploadContent(@RequestBody Content content, @RequestParam("id") final long id){
-        Framework framework = fs.findById(id);
-        final Content c = contentService.insertContent(id, content.getUserId(), content.getTitle(), content.getLink(), content.getType());
-
-        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+id);
-    }*/
 
 }

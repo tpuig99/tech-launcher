@@ -8,14 +8,15 @@
         <form:label path="title">Title <form:input  path="title" type="text"/></form:label>
     </div>
     <div class="form-group">
-        <label for="contentType">Select Type</label>
+        <form:label path="type">Select Type
         <div class="input-group col-xs-8">
-            <select id="contentType" class="form-control" name="newRating" id="newRating">
-                <option value="book">Bibliography</option>
-                <option value="course">Course</option>
-                <option value="tutorial">Tutorial</option>
-            </select>
+            <form:select path="type" class="form-control" name="newRating" id="newRating">
+                <form:option value="book">Bibliography</form:option>
+                <form:option value="course">Course</form:option>
+                <form:option value="tutorial">Tutorial</form:option>
+            </form:select>
         </div>
+        </form:label>
     </div>
     <div>
         <form:label path="link">Link <form:input  path="link" type="text"/></form:label>

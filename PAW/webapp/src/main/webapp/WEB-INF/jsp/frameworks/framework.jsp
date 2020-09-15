@@ -326,7 +326,6 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <jsp:include page="contentForm.jsp"/>
                             </div>
                         </div>
                     </div>
