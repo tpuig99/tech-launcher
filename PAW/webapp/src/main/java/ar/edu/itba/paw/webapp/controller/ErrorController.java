@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,4 +29,10 @@ public class ErrorController {
             mav.addObject("url", req.getRequestURL());
             return mav;
         }
+
+
+    @RequestMapping("/403")
+    public ModelAndView forbidden() {
+        return new ModelAndView("403");
+    }
 }
