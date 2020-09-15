@@ -35,12 +35,13 @@ public class ContentController {
     }
 
     @RequestMapping(path={"/content"}, method = RequestMethod.POST)
-    public ModelAndView addContent(@Valid @ModelAttribute("contentForm") final ContentForm form, final BindingResult errors, @RequestParam("id") final long frameworkId){
+    public ModelAndView addContent(@Valid @ModelAttribute("contentForm") final ContentForm form, final BindingResult errors){
 
         if(errors.hasErrors()){
             return showContentForm(form);
         }
 
+        long frameworkId = form.getFrameworkId();
         Framework framework = fs.findById(frameworkId);
         ContentTypes type = ContentTypes.valueOf(form.getType());
 

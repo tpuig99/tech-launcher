@@ -13,6 +13,8 @@ public class ContentForm {
 
     private String type;
 
+    private long frameworkId;
+
     public String getTitle() {
         return title;
     }
@@ -23,6 +25,14 @@ public class ContentForm {
 
     public String getType() {
         return type;
+    }
+
+    public long getFrameworkId() {
+        return frameworkId;
+    }
+
+    public void setFrameworkId(long frameworkId) {
+        this.frameworkId = frameworkId;
     }
 
     public void setTitle(String title) {

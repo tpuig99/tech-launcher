@@ -327,7 +327,9 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <jsp:include page="contentForm.jsp"/>
+                                <jsp:include page="contentForm.jsp">
+                                    <jsp:param name="frameworkId" value="${framework.id}" />
+                                </jsp:include>
                             </div>
                         </div>
                     </div>
