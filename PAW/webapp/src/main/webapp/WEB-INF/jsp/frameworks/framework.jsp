@@ -105,12 +105,12 @@
 
                         <div class="col-1">
                             <div>
-                                <button class=" btn upVote btn-link" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
+                                <button class=" btn upVote btn-link" onclick="voteUpComment(${comment.commentId})">
                                     <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
                                 </button>
                             </div>
                             <div>
-                                <button class="btn downVote  btn-link" data-toggle="modal" data-target="#downVoteModal" data-id=${comment.commentId}>
+                                <button class="btn downVote  btn-link" onclick="voteDownComment(${comment.commentId})">
                                     <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
                                 </button>
                             </div>
@@ -208,36 +208,6 @@
                 </c:if>
                 
                 <!-- Modal -->
-
-
-                <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="ratingModalLabel">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body rankingModal">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="ratingInputName">Name</label>
-                                        <input type="text" class="form-control" id="ratingInputName" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ratingInputEmail">Email</label>
-                                        <input type="email" class="form-control" id="ratingInputEmail" aria-describedby="emailHelp">
-                                    </div>
-                                    <input type="hidden" id="rankingValue" value="" />
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating()">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
                 <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -270,16 +240,14 @@
                         console.log(location.href);
                     }
 
-                    function voteUpComment() {
+                    function voteUpComment(commentId) {
                         let frameworkId = ${framework.id};
-                        let commentId = document.getElementById("upVoteCommentId").value;
                         let path = '<c:url value="/voteup" />?id='+frameworkId+'&comment_id='+commentId;
                         window.location.href = path;
                     }
 
-                    function voteDownComment() {
+                    function voteDownComment(commentId) {
                         let frameworkId = ${framework.id};
-                        let commentId = document.getElementById("downVoteCommentId").value;
                         let path = '<c:url value="/votedown" />?id='+frameworkId+'&comment_id='+commentId;
                         window.location.href = path;
                     }
@@ -311,16 +279,6 @@
                     $(document).on("click", ".rankingStar", function () {
                         let value = $(this).data('value');
                         $(".rankingModal #rankingValue").val( value );
-                    });
-
-                    $(document).on("click", ".upVote", function () {
-                        let commentId = $(this).data('id');
-                        $(".upVoteModalBody #upVoteCommentId").val( commentId );
-                    });
-
-                    $(document).on("click", ".downVote", function () {
-                        let commentId = $(this).data('id');
-                        $(".downVoteModalBody #downVoteCommentId").val( commentId );
                     });
 
                     $(document).ready(function() {
