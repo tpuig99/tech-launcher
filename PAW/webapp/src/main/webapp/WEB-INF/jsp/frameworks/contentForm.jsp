@@ -24,9 +24,12 @@
     <!--<input type="file" id="fileElem" multiple accept="application/pdf" style="display:none" onchange="handleFiles(this.files)">
     <a href="javascript:selectFiles()">Select some files</a>-->
     <div>
-        <input class="btn primary-button" type="submit" value="SUBMIT"/>
+        <input class="btn primary-button" type="submit" value="SUBMIT" onclick="uploadContent()"/>
     </div>
    <!-- <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>-->
 </form:form>
+
+
+
 </body>
 </html>

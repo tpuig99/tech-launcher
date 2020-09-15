@@ -35,19 +35,21 @@ public class ContentController {
     }
 
     @RequestMapping(path={"/content"}, method = RequestMethod.POST)
-    public ModelAndView addContent(@Valid @ModelAttribute("contentForm") final ContentForm form, final BindingResult errors/*, @RequestParam("id") final long id, @RequestParam("userid") final long userId*/){
+    public ModelAndView addContent(@Valid @ModelAttribute("contentForm") final ContentForm form, final BindingResult errors, @RequestParam("id") final long frameworkId){
 
         if(errors.hasErrors()){
             return showContentForm(form);
         }
 
-        Framework framework = fs.findById(3);
+        Framework framework = fs.findById(frameworkId);
         ContentTypes type = ContentTypes.valueOf(form.getType());
 
-        final Content content = contentService.insertContent(3, 1, form.getTitle(), form.getLink(), type, true );
+        final Content content = contentService.insertContent(frameworkId, 1, form.getTitle(), form.getLink(), type, true );
 
-        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+3);
+        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+frameworkId);
     }
+
+
 
 
 }

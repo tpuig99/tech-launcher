@@ -89,6 +89,5 @@ public class FrameworkController {
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+id);
     }
 
-
 }
 

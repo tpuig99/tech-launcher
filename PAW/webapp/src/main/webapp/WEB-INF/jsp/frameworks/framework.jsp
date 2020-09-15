@@ -1,6 +1,7 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
     <head>
@@ -53,7 +54,7 @@
                 <div>
                    <span><h4 class="title">Bibliography</h4></span>
                    <span>
-                       <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal" >
+                       <button class="btn fab-button" type="button" onclick="uploadContent()"> <!--data-toggle="modal" data-target="#addContentModal"-->
                             <i class="fa fa-plus"></i>
                         </button>
                    </span>
@@ -326,6 +327,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
+                                <jsp:include page="contentForm.jsp"/>
                             </div>
                         </div>
                     </div>
@@ -423,42 +425,6 @@
                     function uploadContent(){
                         let id= ${framework.id};
                         let path = '<c:url value="/content" />?id='+id;
-                        let title = document.getElementById('contentTitle').value;
-                        let link = document.getElementById('contentLink').value;
-                        let typeSelect = document.getElementById('contentType');
-                        let type = typeSelect[typeSelect.selectedIndex].value;
-
-                        console.log(title);
-                        console.log(link);
-                        console.log(type);
-
-
-                        const data2 = new FormData(document.getElementById('contentForm'));
-
-                        const data = new FormData();
-                        data.append('title', title);
-                        data.append('link', link);
-                        data.append('type', type);
-
-                        fetch('/content', {
-                            method: 'POST',
-                            body: data
-                        })
-                            .then(function(response) {
-                                if(response.ok) {
-                                    return response.text()
-                                } else {
-                                    throw "Error in Ajax call";
-                                }
-
-                            })
-                            .then(function(texto) {
-                                console.log(texto);
-                            })
-                            .catch(function(err) {
-                                console.log(err);
-                            });
-
                         window.location.href = path;
 
                     }
@@ -472,5 +438,7 @@
             </div>
             </div>
         </div>
+
+
     </body>
 </html>
