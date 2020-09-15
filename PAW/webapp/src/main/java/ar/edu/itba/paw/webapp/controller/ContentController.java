@@ -44,9 +44,7 @@ public class ContentController {
         Framework framework = fs.findById(3);
        // ContentTypes type = ContentTypes.valueOf(form.getType());
 
-
-        final Content content = contentService.insertContent(3, 1, form.getTitle(), form.getLink(), ContentTypes.book );
-
+        final Content content = contentService.insertContent(3, 1, form.getTitle(), form.getLink(), ContentTypes.book, false );
 
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+3);
     }

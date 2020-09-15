@@ -33,7 +33,8 @@ public class ContentDaoImpl implements ContentDao {
                             rs.getLong("votes_down"),
                             rs.getTimestamp("tstamp"),
                             rs.getString("link"),
-                            Enum.valueOf(ContentTypes.class, rs.getString("type"))
+                            Enum.valueOf(ContentTypes.class, rs.getString("type")),
+                            rs.getBoolean("pending")
                     );
                 }
             };
@@ -83,7 +84,7 @@ public class ContentDaoImpl implements ContentDao {
     }
 
     @Override
-    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type, Boolean pending) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);
@@ -94,9 +95,10 @@ public class ContentDaoImpl implements ContentDao {
         args.put("tstamp", ts);
         args.put("link", link);
         args.put("type", type.name());
+        args.put("pending", pending);
 
         final Number voteId = jdbcInsert.executeAndReturnKey(args);
-        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, ts, link, type);
+        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, ts, link, type, pending);
     }
 
     @Override

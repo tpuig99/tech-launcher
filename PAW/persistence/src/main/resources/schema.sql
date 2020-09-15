@@ -60,6 +60,8 @@ CREATE TABLE IF NOT EXISTS content (
                  tstamp timestamp NOT NULL,
                  link text NOT NULL,
                  type varchar(10) NOT NULL,
+                 pending boolean NOT NULL DEFAULT false,
                  FOREIGN KEY(framework_id) REFERENCES frameworks,
                  FOREIGN KEY(user_id) REFERENCES users
                  );
+ALTER TABLE content ADD COLUMN IF NOT EXISTS pending boolean default false not null ;

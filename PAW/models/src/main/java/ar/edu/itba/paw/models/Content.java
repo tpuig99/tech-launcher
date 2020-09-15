@@ -13,8 +13,9 @@ public class Content {
     private Timestamp timestamp;
     private String link;
     private ContentTypes type;
+    private Boolean pending;
 
-    public Content(long contentId, long frameworkId, long userId, String title, long votesUp, long votesDown, Timestamp timestamp, String link, ContentTypes type) {
+    public Content(long contentId, long frameworkId, long userId, String title, long votesUp, long votesDown, Timestamp timestamp, String link, ContentTypes type, Boolean pending) {
         this.contentId = contentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
@@ -24,6 +25,8 @@ public class Content {
         this.timestamp = timestamp;
         this.link = link;
         this.type = type;
+        this.pending = pending;
+
     }
 
     public long getContentId() {
@@ -60,5 +63,13 @@ public class Content {
 
     public ContentTypes getType() {
         return type;
+    }
+
+    public Boolean getPending() {
+        return pending;
+    }
+
+    public void setPending(Boolean pending) {
+        this.pending = pending;
     }
 }

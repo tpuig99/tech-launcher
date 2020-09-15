@@ -10,7 +10,7 @@ public class ContentForm {
     private String title;
     @NotNull
     private String link;
-    @NotNull
+
     private String type;
 
     public String getTitle() {

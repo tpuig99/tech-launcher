@@ -42,8 +42,8 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
-        return content.insertContent(frameworkId, userId, title, link, type);
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type, Boolean pending) {
+        return content.insertContent(frameworkId, userId, title, link, type, pending);
     }
 
     @Override
