@@ -326,29 +326,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="inputName">Title</label>
-                                        <input type="text" class="form-control" id="inputTitle" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail">Link</label>
-                                        <input type="email" class="form-control" id="inputLink" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="newRating">Select Type</label>
-                                        <div class="input-group col-xs-8">
-                                            <select class="form-control" name="newRating" id="newRating">
-                                                <option value="1">Bibliography</option>
-                                                <option value="2">Course</option>
-                                                <option value="3">Tutorial</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <input type="file" id="fileElem" multiple accept="application/pdf" style="display:none" onchange="handleFiles(this.files)">
-                                    <a href="javascript:selectFiles()">Select some files</a>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
-                                </form>
+                                <jsp:include page="contentForm.jsp"/>
                             </div>
                         </div>
                     </div>
@@ -441,6 +419,49 @@
                         if (el) {
                             el.click();
                         }
+                    }
+
+                    function uploadContent(){
+                        let id= ${framework.id};
+                        let path = '<c:url value="/content" />?id='+id;
+                        let title = document.getElementById('contentTitle').value;
+                        let link = document.getElementById('contentLink').value;
+                        let typeSelect = document.getElementById('contentType');
+                        let type = typeSelect[typeSelect.selectedIndex].value;
+
+                        console.log(title);
+                        console.log(link);
+                        console.log(type);
+
+
+                        const data2 = new FormData(document.getElementById('contentForm'));
+
+                        const data = new FormData();
+                        data.append('title', title);
+                        data.append('link', link);
+                        data.append('type', type);
+
+                        fetch('/content', {
+                            method: 'POST',
+                            body: data
+                        })
+                            .then(function(response) {
+                                if(response.ok) {
+                                    return response.text()
+                                } else {
+                                    throw "Error in Ajax call";
+                                }
+
+                            })
+                            .then(function(texto) {
+                                console.log(texto);
+                            })
+                            .catch(function(err) {
+                                console.log(err);
+                            });
+
+                        window.location.href = path;
+
                     }
 
                 </script>
