@@ -90,8 +90,8 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
-        return ctns.insertContent(frameworkId,userId,title,link,type);
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type, Boolean pending) {
+        return ctns.insertContent(frameworkId,userId,title,link,type, pending);
     }
 
     @Override

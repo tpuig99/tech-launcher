@@ -1,6 +1,7 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
     <head>
@@ -51,7 +52,12 @@
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
                 <div>
-                   <h4 class="title">Bibliography</h4>
+                   <span><h4 class="title">Bibliography</h4></span>
+                   <span>
+                       <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
+                            <i class="fa fa-plus"></i>
+                        </button>
+                   </span>
                     <ul class="list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
                         <li class="list-group-item"><a target="_blank" href="${book.link}">${book.title}</a></li>
@@ -311,6 +317,24 @@
                 </div>
 
 
+                <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addContentLabel">Add Content</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <jsp:include page="contentForm.jsp">
+                                    <jsp:param name="frameworkId" value="${framework.id}" />
+                                </jsp:include>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
 
 
@@ -393,6 +417,20 @@
                         });
                     });
 
+                    function selectFiles() {
+                        let el = document.getElementById("fileElem");
+                        if (el) {
+                            el.click();
+                        }
+                    }
+
+                    function uploadContent(){
+                        let id= ${framework.id};
+                        let path = '<c:url value="/content" />?id='+id;
+                        window.location.href = path;
+
+                    }
+
                 </script>
 
 
@@ -402,5 +440,7 @@
             </div>
             </div>
         </div>
+
+
     </body>
 </html>

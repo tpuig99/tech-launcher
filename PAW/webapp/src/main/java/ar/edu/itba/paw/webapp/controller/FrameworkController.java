@@ -2,14 +2,15 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
+import ar.edu.itba.paw.webapp.form.ContentForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class FrameworkController {
     private UserService us;
 
     @RequestMapping("/{category}/{id}")
-    public ModelAndView framework(@PathVariable("id") long id, @PathVariable("category") String category) {
+    public ModelAndView framework(@PathVariable long id, @PathVariable String category,@ModelAttribute("contentForm") final ContentForm form) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Framework framework = fs.findById(id);
         List<Comment> comments = commentService.getCommentsByFramework(id);
@@ -87,5 +88,6 @@ public class FrameworkController {
 
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+id);
     }
+
 }
 
