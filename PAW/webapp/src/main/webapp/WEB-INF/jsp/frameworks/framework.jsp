@@ -194,11 +194,11 @@
                 <div class="container d-flex">
                     <c:forEach var="i" begin="0" end="4">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="<c:url value="/${competitors.get(i).frameCategory}/${competitors.get(i).id}"/>">
+                        <a href="<c:url value="/${competitors[i].frameCategory}/${competitors[i].id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
-                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitors.get(i).logo}" alt="${framework.name} logo"></div>
+                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitors[i].logo}" alt="${framework.name} logo"></div>
                             </div>
-                            <div class="card-footer text-dark">${competitors.get(i).name}</div>
+                            <div class="card-footer text-dark">${competitors[i].name}</div>
                         </a>
                     </div>
 
@@ -242,14 +242,12 @@
 
                     function voteUpComment(commentId) {
                         let frameworkId = ${framework.id};
-                        let path = '<c:url value="/voteup" />?id='+frameworkId+'&comment_id='+commentId;
-                        window.location.href = path;
+                        window.location.href = '<c:url value="/voteup" />?id=' + frameworkId + '&comment_id=' + commentId;
                     }
 
                     function voteDownComment(commentId) {
                         let frameworkId = ${framework.id};
-                        let path = '<c:url value="/votedown" />?id='+frameworkId+'&comment_id='+commentId;
-                        window.location.href = path;
+                        window.location.href = '<c:url value="/votedown" />?id=' + frameworkId + '&comment_id=' + commentId;
                     }
 
                     function publishRating(){
@@ -276,11 +274,6 @@
                         console.log(location.href);
                     }
 
-                    $(document).on("click", ".rankingStar", function () {
-                        let value = $(this).data('value');
-                        $(".rankingModal #rankingValue").val( value );
-                    });
-
                     $(document).ready(function() {
                         $('#rating-form').on('submit', function(e){
                             publishRating();
@@ -297,9 +290,7 @@
 
                     function uploadContent(){
                         let id= ${framework.id};
-                        let path = '<c:url value="/content" />?id='+id;
-                        window.location.href = path;
-
+                        window.location.href = '<c:url value="/content" />?id=' + id;
                     }
 
                 </script>
