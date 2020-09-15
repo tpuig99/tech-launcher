@@ -48,16 +48,24 @@
                 </div>
 
 
+                <!-- Content -->
+                <div class="container">
+                    <div><h4 class="title">Content</h4></div>
+                    <div  class="d-flex align-items-end justify-content-flex-end">
+                       <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
+                            <i class="fa fa-plus"></i>
+                        </button>
+                   </div>
+                </div>
+                <c:if test="${empty books && empty courses && empty tutorials}">
+                    <div class="d-flex align-items-center justify-content-center">There is no content available for this tech yet</div>
+                    </c:if>
 
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
                 <div>
-                   <span><h4 class="title">Bibliography</h4></span>
-                   <span>
-                       <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
-                            <i class="fa fa-plus"></i>
-                        </button>
-                   </span>
+                   <span><h4 class="subtitle margin-left margin-top">Bibliography</h4></span>
+
                     <ul class="list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
                         <li class="list-group-item"><a target="_blank" href="${book.link}">${book.title}</a></li>
@@ -69,7 +77,7 @@
                 <!-- Courses -->
                 <c:if test="${not empty courses}">
                 <div>
-                    <h4 class="title ">Courses</h4>
+                    <h4 class="subtitle margin-left margin-top">Courses</h4>
 
                     <ul class="list-group margin-left list-group-flush description">
 
@@ -83,7 +91,7 @@
                 <!-- Tutorials -->
                 <c:if test="${not empty tutorials}">
                 <div>
-                   <h4 class="title "> Tutorials</h4>
+                   <h4 class="subtitle margin-left margin-top"> Tutorials</h4>
                     <ul class="list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">
                             <li class="list-group-item"><a target="_blank" href="${tutorial.link}">${tutorial.title}</a></li>
@@ -320,13 +328,15 @@
                 <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
+                            <div class="modal-header container">
+
                                 <h5 class="modal-title" id="addContentLabel">Add Content</h5>
+
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body container">
                                 <jsp:include page="contentForm.jsp">
                                     <jsp:param name="frameworkId" value="${framework.id}" />
                                 </jsp:include>
@@ -424,12 +434,6 @@
                         }
                     }
 
-                    function uploadContent(){
-                        let id= ${framework.id};
-                        let path = '<c:url value="/content" />?id='+id;
-                        window.location.href = path;
-
-                    }
 
                 </script>
 

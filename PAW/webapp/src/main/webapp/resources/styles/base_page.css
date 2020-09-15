@@ -67,6 +67,13 @@ nav a:hover {
     border-bottom: 0.1em solid black;
 }
 
+.subtitle {
+    padding-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+}
+
 
 .container {
     flex-wrap: wrap;
