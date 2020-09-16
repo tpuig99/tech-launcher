@@ -14,7 +14,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-        <jsp:include page="./components/navbar.jsp"/>
+        <jsp:include page="components/navbar.jsp">
+            <jsp:param name="connected" value="${user}"/>
+            <jsp:param name="username" value="${user.name}"/>
+        </jsp:include>
         <jsp:include page="./components/sidebar.jsp"/>
 
         <div class="content">

@@ -50,7 +50,7 @@ public class FrameworkController {
         mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial));
         mav.addObject("category", category);
         mav.addObject("competitors", fs.getCompetitors(framework));
-
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("comments", comments);
         mav.addObject("commentsUsernames", us.getUsernamesByComments(comments));
 
