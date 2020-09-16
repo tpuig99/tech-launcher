@@ -213,10 +213,10 @@
                                     <label class="star star-1" for="star-1"></label>
                                     <c:choose>
                                         <c:when test="${user.name != 'anonymousUser'}">
-                                            <input class="btn primary-button" type="submit" value="SUBMIT">
+                                            <button class="btn primary-button" type="submit">RATE</button>
                                         </c:when>
                                         <c:otherwise>
-                                            <input class="btn primary-button"  data-toggle="modal" data-target="#loginModal" value="SUBMIT">
+                                            <button class="btn primary-button"  data-toggle="modal" data-target="#loginModal">RATE</button>
                                         </c:otherwise>
                                     </c:choose>
                                 </form>
