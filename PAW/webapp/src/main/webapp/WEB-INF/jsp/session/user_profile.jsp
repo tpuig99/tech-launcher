@@ -14,7 +14,10 @@
 </head>
 <body>
 
-<jsp:include page="../components/navbar.jsp"/>
+<jsp:include page="../components/navbar.jsp">
+    <jsp:param name="connected" value="${user.authenticated}"/>
+    <jsp:param name="username" value="${user.name}"/>
+</jsp:include>
 
 <div class="content">
     <div class="page-title">
@@ -23,7 +26,11 @@
     <div class="page-description"></div>
 
     <div>
-        <p> User Profile Should Be Here!</p>
+        <p> ${profile.id} </p>
+        <p> ${profile.username} </p>
+        <p> ${profile.mail} </p>
+        <p> ${profile.password} </p>
+        <p> ${profile.enable} </p>
     </div>
 </div>
 
