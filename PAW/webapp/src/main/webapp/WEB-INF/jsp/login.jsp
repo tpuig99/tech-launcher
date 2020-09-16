@@ -14,7 +14,7 @@
 <body>
     <jsp:include page="components/navbar.jsp"/>
 
-    <div class="content">
+    <div class="content-no-sidebar">
         <div class="page-title">
             Login
         </div>
