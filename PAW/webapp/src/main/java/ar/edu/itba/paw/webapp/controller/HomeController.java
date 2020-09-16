@@ -24,6 +24,8 @@ public class HomeController {
     }
     @RequestMapping("/login")
     public ModelAndView login(@ModelAttribute("registerForm") final UserForm form) {
-        return new ModelAndView("login");
+        ModelAndView mav = new ModelAndView("login");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        return mav;
     }
 }
