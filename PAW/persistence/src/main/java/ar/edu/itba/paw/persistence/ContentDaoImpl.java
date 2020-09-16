@@ -79,7 +79,7 @@ public class ContentDaoImpl implements ContentDao {
 
     @Override
     public List<Content> getContentByUser(long userId) {
-        final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE user_id = ?", ROW_MAPPER, userId);
+        final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE user_id = ?", ROW_MAPPER, userId);
         return toReturn;
     }
 
