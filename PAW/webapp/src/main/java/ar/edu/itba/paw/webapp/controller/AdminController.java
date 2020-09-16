@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -9,7 +10,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class AdminController {
     @RequestMapping("/")
     public ModelAndView index() {
-        return new ModelAndView("admin/index");
+        ModelAndView mav = new ModelAndView("admin/index");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        return mav;
     }
 }
 

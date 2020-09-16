@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,8 @@ public class ErrorController {
 
     @RequestMapping("/403")
     public ModelAndView forbidden() {
-        return new ModelAndView("403");
+        ModelAndView mav = new ModelAndView("403");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        return mav;
     }
 }

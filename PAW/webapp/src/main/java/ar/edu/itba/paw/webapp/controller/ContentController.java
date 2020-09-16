@@ -5,9 +5,12 @@ import ar.edu.itba.paw.models.ContentTypes;
 import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
+import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.ContentForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,6 +23,9 @@ import javax.validation.Valid;
 
 @Controller
 public class ContentController {
+
+    @Autowired
+    private UserService us;
 
     @Autowired
     private FrameworkService fs;
@@ -44,8 +50,9 @@ public class ContentController {
         long frameworkId = form.getFrameworkId();
         Framework framework = fs.findById(frameworkId);
         ContentTypes type = ContentTypes.valueOf(form.getType());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        final Content content = contentService.insertContent(frameworkId, 1, form.getTitle(), form.getLink(), type, true );
+        final Content content = contentService.insertContent(frameworkId, us.findByUsername(authentication.getName()).getId(), form.getTitle(), form.getLink(), type, true );
 
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+frameworkId);
     }

@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS framework_votes (
                  FOREIGN KEY(framework_id) REFERENCES frameworks,
                  FOREIGN KEY(user_id) REFERENCES users
                  );
+CREATE UNIQUE INDEX IF NOT EXISTS idx_framework_vote on framework_votes(user_id,framework_id);
 CREATE TABLE IF NOT EXISTS comments (
                  comment_id SERIAL PRIMARY KEY,
                  framework_id int NOT NULL,
@@ -50,6 +51,7 @@ CREATE TABLE IF NOT EXISTS comment_votes (
                  FOREIGN KEY(comment_id) REFERENCES comments,
                  FOREIGN KEY(user_id) REFERENCES users
                  );
+CREATE UNIQUE INDEX IF NOT EXISTS idx_comment_vote on comment_votes(user_id,comment_id);
 CREATE TABLE IF NOT EXISTS content (
                  content_id SERIAL PRIMARY KEY,
                  framework_id int NOT NULL,

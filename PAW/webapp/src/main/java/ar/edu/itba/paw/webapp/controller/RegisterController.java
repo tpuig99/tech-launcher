@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,7 +39,9 @@ public class RegisterController {
 
     @RequestMapping("/register")
     public ModelAndView index(@ModelAttribute("registerForm") final UserForm form) {
-            return new ModelAndView("session/registerForm");
+            ModelAndView mav = new ModelAndView("session/registerForm");
+            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+            return mav;
     }
 
     @RequestMapping(value = "/create", method = { RequestMethod.POST })
@@ -66,6 +69,7 @@ public class RegisterController {
     @RequestMapping("/register/success/1")
     public ModelAndView success1(){
         ModelAndView mav = new ModelAndView("session/successful");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("message","We sent you an email to verify your account. Here's a button to the Home page, so you can start browsing ");
         mav.addObject("title","Created account successfully!");
         return mav;
@@ -74,6 +78,7 @@ public class RegisterController {
     @RequestMapping("/register/success/2")
     public ModelAndView success2(){
         ModelAndView mav = new ModelAndView("session/successful");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("message","Yay!! You are now a user of Tech Launcher, our page! Press the Home button and start contributing to our community ");
         mav.addObject("title","Your email has been confirmed!");
         return mav;
@@ -82,6 +87,7 @@ public class RegisterController {
     @RequestMapping("/register/success/3")
     public ModelAndView success3(){
         ModelAndView mav = new ModelAndView("session/successful");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("message","We sent you an email to verify your account again. Here's a button to the Home page, so you can start browsing");
         mav.addObject("title","Verification email resent");
         return mav;
