@@ -6,6 +6,10 @@ public class FrameworkVote {
     private long userId;
     private int stars;
 
+    public void setStars(int stars) {
+        this.stars = stars;
+    }
+
     @Override
     public String toString() {
         return "Vote{" +

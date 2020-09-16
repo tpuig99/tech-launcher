@@ -5,7 +5,7 @@
 
 <html>
     <head>
-        <title>${framework.name}</title>
+        <title>Tech Launcher/${framework.name}</title>
 
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
@@ -17,7 +17,10 @@
     <body>
         <div>
 
-            <jsp:include page="../components/navbar.jsp"/>
+            <jsp:include page="../components/navbar.jsp">
+                <jsp:param name="connected" value="${user.authenticated}"/>
+                <jsp:param name="username" value="${user.name}"/>
+            </jsp:include>
             <jsp:include page="../components/sidebar.jsp"/>
 
             <div class="content">
@@ -54,9 +57,18 @@
                 <div>
                    <span><h4 class="title">Bibliography</h4></span>
                    <span>
-                       <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
-                            <i class="fa fa-plus"></i>
-                        </button>
+                       <c:choose>
+                           <c:when test="${user.name != 'anonymousUser'}">
+                               <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
+                                   <i class="fa fa-plus"></i>
+                               </button>
+                           </c:when>
+                           <c:otherwise>
+                               <button class="btn fab-button" type="button" data-toggle="modal" data-target="#loginModal"> <!--onclick="uploadContent()"-->
+                                    <i class="fa fa-plus"></i>
+                               </button>
+                           </c:otherwise>
+                       </c:choose>
                    </span>
                     <ul class="list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
@@ -105,14 +117,32 @@
 
                         <div class="col-1">
                             <div>
-                                <button class=" btn upVote btn-link" data-toggle="modal" data-target="#upVoteModal" data-id=${comment.commentId}>
-                                    <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
-                                </button>
+                                <c:choose>
+                                    <c:when test="${user.name != 'anonymousUser'}">
+                                        <button class=" btn upVote btn-link" onclick="voteUpComment(${comment.commentId})">
+                                            <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button class=" btn upVote btn-link" data-toggle="modal" data-target="#loginModal">
+                                            <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <div>
-                                <button class="btn downVote  btn-link" data-toggle="modal" data-target="#downVoteModal" data-id=${comment.commentId}>
-                                    <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
-                                </button>
+                                <c:choose>
+                                    <c:when test="${user.name != 'anonymousUser'}">
+                                        <button class="btn downVote  btn-link" onclick="voteDownComment(${comment.commentId})">
+                                            <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button class=" btn downVote btn-link" data-toggle="modal" data-target="#loginModal">
+                                            <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                         <div class="col">
@@ -126,7 +156,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                <c:out value="${comment.description}" default=""/>
+                                    <c:out value="${comment.description}" default=""/>
                                 </div>
                             </div>
 
@@ -152,7 +182,15 @@
                             <h5>Leave your comment</h5>
                             <div>
                                 <textarea id="commentInput" class="form-control" aria-label="With textarea"></textarea>
-                                <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
+
+                                <c:choose>
+                                    <c:when test="${user.name != 'anonymousUser'}">
+                                        <button type="button" onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button type="button" class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">SUBMIT</button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                         <div class="col">
@@ -173,7 +211,14 @@
                                     <label class="star star-2" for="star-2"></label>
                                     <input class="star star-1" id="star-1" type="radio" name="star"/>
                                     <label class="star star-1" for="star-1"></label>
-                                    <input class="btn primary-button" type="submit" value="SUBMIT">
+                                    <c:choose>
+                                        <c:when test="${user.name != 'anonymousUser'}">
+                                            <input class="btn primary-button" type="submit" value="SUBMIT">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input class="btn primary-button"  data-toggle="modal" data-target="#loginModal" value="SUBMIT">
+                                        </c:otherwise>
+                                    </c:choose>
                                 </form>
                             </div>
 
@@ -194,11 +239,11 @@
                 <div class="container d-flex">
                     <c:forEach var="i" begin="0" end="4">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="<c:url value="/${competitors.get(i).frameCategory}/${competitors.get(i).id}"/>">
+                        <a href="<c:url value="/${competitors[i].frameCategory}/${competitors[i].id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
-                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitors.get(i).logo}" alt="${framework.name} logo"></div>
+                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitors[i].logo}" alt="${framework.name} logo"></div>
                             </div>
-                            <div class="card-footer text-dark">${competitors.get(i).name}</div>
+                            <div class="card-footer text-dark">${competitors[i].name}</div>
                         </a>
                     </div>
 
@@ -208,115 +253,6 @@
                 </c:if>
                 
                 <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="inputName">Name</label>
-                                        <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail">Email</label>
-                                        <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp">
-                                    </div>
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishComment()">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="upVoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="upVoteModalLabel">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body upVoteModalBody">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="inputName">Name</label>
-                                        <input type="text" class="form-control" id="upVoteName" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail">Email</label>
-                                        <input type="email" class="form-control" id="upVoteEmail" aria-describedby="emailHelp">
-                                    </div>
-                                    <input type="hidden" id="upVoteCommentId" value="" />
-                                    <button type="button"  class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteUpComment()">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="downVoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="downVoteModalLabel">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body downVoteModalBody">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="inputName">Name</label>
-                                        <input type="text" class="form-control" id="downVoteName" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputEmail">Email</label>
-                                        <input type="email" class="form-control" id="downVoteEmail" aria-describedby="emailHelp">
-                                    </div>
-                                    <input type="hidden" id="downVoteCommentId" value="" />
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="voteDownComment()">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="ratingModalLabel">Please fill out your information</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body rankingModal">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="ratingInputName">Name</label>
-                                        <input type="text" class="form-control" id="ratingInputName" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ratingInputEmail">Email</label>
-                                        <input type="email" class="form-control" id="ratingInputEmail" aria-describedby="emailHelp">
-                                    </div>
-                                    <input type="hidden" id="rankingValue" value="" />
-                                    <button type="button" class="btn primary-button d-flex align-items-center justify-content-center" onclick="publishRating()">SUBMIT</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
                 <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -335,44 +271,50 @@
                     </div>
                 </div>
 
-
-
+                <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="loginModalLabel">You have be logged in to do this</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-log-in">
+                                    <button type="button" class="btn btn-danger" onclick="window.location.href = '/register'">Sign Up</button>
+                                </div>
+                                <div class="modal-log-in">
+                                    <button type="button" class="btn btn-primary" onclick="window.location.href = '/login'">Log in</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <script>
                     function publishComment() {
-                        let username = document.getElementById("inputName").value;
-                        let email = document.getElementById("inputEmail").value;
                         let content = document.getElementById("commentInput").value;
                         let id= ${framework.id};
 
-                        let path = '<c:url value="/create" />?id='+id+'&content='+content+'&username='+username+'&email='+email;
+                        let path = '<c:url value="/create" />?id='+id+'&content='+content;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
                     }
 
-                    function voteUpComment() {
+                    function voteUpComment(commentId) {
                         let frameworkId = ${framework.id};
-                        let username = document.getElementById("upVoteName").value;
-                        let email = document.getElementById("upVoteEmail").value;
-                        let commentId = document.getElementById("upVoteCommentId").value;
-                        let path = '<c:url value="/voteup" />?id='+frameworkId+'&comment_id='+commentId+'&username='+username+'&email='+email;
-                        window.location.href = path;
+                        window.location.href = '<c:url value="/voteup" />?id=' + frameworkId + '&comment_id=' + commentId;
                     }
 
-                    function voteDownComment() {
+                    function voteDownComment(commentId) {
                         let frameworkId = ${framework.id};
-                        let username = document.getElementById("downVoteName").value;
-                        let email = document.getElementById("downVoteEmail").value;
-                        let commentId = document.getElementById("downVoteCommentId").value;
-                        let path = '<c:url value="/votedown" />?id='+frameworkId+'&comment_id='+commentId+'&username='+username+'&email='+email;
-                        window.location.href = path;
+                        window.location.href = '<c:url value="/votedown" />?id=' + frameworkId + '&comment_id=' + commentId;
                     }
 
                     function publishRating(){
-                        let username = document.getElementById("ratingInputName").value;
-                        let email = document.getElementById("ratingInputEmail").value;
-                        let ratingValue = document.getElementById("rankingValue").value;
+                        let rate_value = 0;
                         if (document.getElementById('star-1').checked) {
                             rate_value = 1;
                         }else if(document.getElementById('star-2').checked){
@@ -389,30 +331,15 @@
                         console.log(rate_value);
                         let id= ${framework.id};
 
-                        let path = '<c:url value="/rate" />?id='+id+'&rating='+rate_value+'&username='+username+'&email='+email;
+                        let path = '<c:url value="/rate" />?id='+id+'&rating='+rate_value;
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
                     }
 
-                    $(document).on("click", ".rankingStar", function () {
-                        let value = $(this).data('value');
-                        $(".rankingModal #rankingValue").val( value );
-                    });
-
-                    $(document).on("click", ".upVote", function () {
-                        let commentId = $(this).data('id');
-                        $(".upVoteModalBody #upVoteCommentId").val( commentId );
-                    });
-
-                    $(document).on("click", ".downVote", function () {
-                        let commentId = $(this).data('id');
-                        $(".downVoteModalBody #downVoteCommentId").val( commentId );
-                    });
-
                     $(document).ready(function() {
                         $('#rating-form').on('submit', function(e){
-                            $('#ratingModal').modal('show');
+                            publishRating();
                             e.preventDefault();
                         });
                     });
@@ -426,9 +353,7 @@
 
                     function uploadContent(){
                         let id= ${framework.id};
-                        let path = '<c:url value="/content" />?id='+id;
-                        window.location.href = path;
-
+                        window.location.href = '<c:url value="/content" />?id=' + id;
                     }
 
                 </script>

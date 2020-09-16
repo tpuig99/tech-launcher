@@ -1,42 +1,36 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
 <head>
     <title>
-        Tech Launcher/${category}
+        User Profile
     </title>
 
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
 </head>
 <body>
 
 <jsp:include page="../components/navbar.jsp">
-    <jsp:param name="connected" value="${user}"/>
+    <jsp:param name="connected" value="${user.authenticated}"/>
     <jsp:param name="username" value="${user.name}"/>
 </jsp:include>
-<jsp:include page="../components/sidebar.jsp"/>
 
 <div class="content">
     <div class="page-title">
-        <h2>${category}</h2>
+        <h2>User Profile</h2>
     </div>
-    <div class="page-description">
+    <div class="page-description"></div>
 
-    </div>
-    <div class="row equal">
-        <c:forEach items="${frameworksList}" var="framework">
-            <div class="card mx-4 mb-4">
-                <a href="<c:url value="/${framework.category}/${framework.id}"/>">
-                    <div class="card-body">
-                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.logo} logo"></div>
-                    </div>
-                    <div class="card-footer text-dark">${framework.name}</div>
-                </a>
-            </div>
-        </c:forEach>
+    <div>
+        <p> ${profile.id} </p>
+        <p> ${profile.username} </p>
+        <p> ${profile.mail} </p>
+        <p> ${profile.password} </p>
+        <p> ${profile.enable} </p>
     </div>
 </div>
 

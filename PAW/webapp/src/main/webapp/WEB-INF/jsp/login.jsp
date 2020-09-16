@@ -12,9 +12,12 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/register.css"/>"/>
 </head>
 <body>
-    <jsp:include page="components/navbar.jsp"/>
+<jsp:include page="components/navbar.jsp">
+    <jsp:param name="connected" value="${user}"/>
+    <jsp:param name="username" value="${user.name}"/>
+</jsp:include>
 
-    <div class="content">
+    <div class="content-no-sidebar">
         <div class="page-title">
             Login
         </div>

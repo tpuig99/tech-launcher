@@ -79,7 +79,7 @@ public class CommentDaoImpl implements CommentDao {
 
 
     @Override
-    public Comment insertComment(long frameworkId, long userId, String description, long reference) {
+    public Comment insertComment(long frameworkId, long userId, String description, Long reference) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);

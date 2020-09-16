@@ -37,6 +37,8 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
         FrameworkVote frameworkVote = getByFrameworkAndUser(frameworkId,userId);
         if(frameworkVote !=null){
             update(frameworkVote.getVoteId(),stars);
+            frameworkVote.setStars(stars);
+            return frameworkVote;
         }
         return vs.insert(frameworkId,userId,stars);
     }

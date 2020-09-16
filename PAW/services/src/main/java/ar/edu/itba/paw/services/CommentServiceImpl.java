@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment insertComment(long frameworkId, long userId, String description, long reference) {
+    public Comment insertComment(long frameworkId, long userId, String description, Long reference) {
        Comment comment = cmts.insertComment(frameworkId, userId, description, reference);
        comment.setVotesDown(0);
        comment.setVotesUp(0);

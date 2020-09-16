@@ -1,27 +1,24 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.FrameworkCategories;
-import ar.edu.itba.paw.service.*;
+import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class FrameworkMenuController {
-
+public class UserProfileController {
     @Autowired
-    private FrameworkService fs;
+    UserService us;
 
-    @RequestMapping("/{category}")
-    public ModelAndView frameworkMenu(@PathVariable String category) {
-        final ModelAndView mav = new ModelAndView("frameworks/frameworks_menu");
-        mav.addObject("category",category);
-        mav.addObject("frameworksList", fs.getByCategory(FrameworkCategories.getByName(category)));
+    @RequestMapping(path={"/users/{username}"}, method = RequestMethod.GET)
+    public ModelAndView userProfile(@PathVariable String username) {
+        ModelAndView mav = new ModelAndView("session/user_profile");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-
+        mav.addObject("profile", us.findByUsername(username));
         return mav;
     }
 }
