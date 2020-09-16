@@ -18,7 +18,7 @@
             <jsp:param name="username" value="${user.name}"/>
         </jsp:include>
 
-        <div class="content">
+        <div class="content-no-sidebar">
             <div class="page-title">
                 Register
             </div>

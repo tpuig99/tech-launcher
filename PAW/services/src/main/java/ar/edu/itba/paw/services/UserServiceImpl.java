@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
-
+    private static long USER_NOT_EXISTS = -1;
     @Qualifier("userDaoImpl")
     @Autowired
     private UserDao userDao;
@@ -38,20 +38,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByUsernameForLogin(String username) {
+        User user = findByUsername(username);
+        if(user.isEnable())
+            return user;
+        return null;
+    }
+
+    @Override
     public User create(String username,String mail) throws UserAlreadyExistException {
         checkIfUserExists(username,mail);
 
         return userDao.create(username,mail);
     }
 
-    private void checkIfUserExists(String username, String mail) throws UserAlreadyExistException {
+    private long checkIfUserExists(String username, String mail) throws UserAlreadyExistException {
         User user = findByUsernameOrMail(username,mail);
         if( user != null ){
+            if(user.getMail().equals(mail) && user.getPassword()==null)
+                return user.getId();
             if(user.getMail().equals(mail)){
                 throw new UserAlreadyExistException("There is an account with that email address: " +  user.getMail());
             }
             throw new UserAlreadyExistException("There is an account with that username " +  user.getUsername());
         }
+        return USER_NOT_EXISTS;
     }
 
     private User findByUsernameOrMail(String username, String mail) { return userDao.findByUsernameOrMail(username,mail);
@@ -59,9 +70,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(String username, String mail, String password) throws UserAlreadyExistException{
-        checkIfUserExists(username,mail);
+        long aux= checkIfUserExists(username,mail);
         String psw = passwordEncoder.encode(password);
-        return userDao.create(username,mail,psw);
+        if(aux==USER_NOT_EXISTS)
+            return userDao.create(username,mail,psw);
+        userDao.update(aux,username,mail,psw);
+        return userDao.findById(aux);
     }
 
     @Override

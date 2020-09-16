@@ -5,7 +5,7 @@
 
 <html>
     <head>
-        <title>${framework.name}</title>
+        <title>Tech Launcher/${framework.name}</title>
 
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
@@ -57,9 +57,18 @@
                 <div>
                    <span><h4 class="title">Bibliography</h4></span>
                    <span>
-                       <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
-                            <i class="fa fa-plus"></i>
-                        </button>
+                       <c:choose>
+                           <c:when test="${user.name != 'anonymousUser'}">
+                               <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
+                                   <i class="fa fa-plus"></i>
+                               </button>
+                           </c:when>
+                           <c:otherwise>
+                               <button class="btn fab-button" type="button" data-toggle="modal" data-target="#loginModal"> <!--onclick="uploadContent()"-->
+                                    <i class="fa fa-plus"></i>
+                               </button>
+                           </c:otherwise>
+                       </c:choose>
                    </span>
                     <ul class="list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
@@ -108,14 +117,32 @@
 
                         <div class="col-1">
                             <div>
-                                <button class=" btn upVote btn-link" onclick="voteUpComment(${comment.commentId})">
-                                    <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
-                                </button>
+                                <c:choose>
+                                    <c:when test="${user.name != 'anonymousUser'}">
+                                        <button class=" btn upVote btn-link" onclick="voteUpComment(${comment.commentId})">
+                                            <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button class=" btn upVote btn-link" data-toggle="modal" data-target="#loginModal">
+                                            <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <div>
-                                <button class="btn downVote  btn-link" onclick="voteDownComment(${comment.commentId})">
-                                    <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
-                                </button>
+                                <c:choose>
+                                    <c:when test="${user.name != 'anonymousUser'}">
+                                        <button class="btn downVote  btn-link" onclick="voteDownComment(${comment.commentId})">
+                                            <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button class=" btn downVote btn-link" data-toggle="modal" data-target="#loginModal">
+                                            <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                         <div class="col">
@@ -129,7 +156,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                <c:out value="${comment.description}" default=""/>
+                                    <c:out value="${comment.description}" default=""/>
                                 </div>
                             </div>
 
@@ -155,7 +182,15 @@
                             <h5>Leave your comment</h5>
                             <div>
                                 <textarea id="commentInput" class="form-control" aria-label="With textarea"></textarea>
-                                <button type="button" onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
+
+                                <c:choose>
+                                    <c:when test="${user.name != 'anonymousUser'}">
+                                        <button type="button" onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button type="button" class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">SUBMIT</button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                         <div class="col">
@@ -176,7 +211,14 @@
                                     <label class="star star-2" for="star-2"></label>
                                     <input class="star star-1" id="star-1" type="radio" name="star"/>
                                     <label class="star star-1" for="star-1"></label>
-                                    <input class="btn primary-button" type="submit" value="SUBMIT">
+                                    <c:choose>
+                                        <c:when test="${user.name != 'anonymousUser'}">
+                                            <input class="btn primary-button" type="submit" value="SUBMIT">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input class="btn primary-button"  data-toggle="modal" data-target="#loginModal" value="SUBMIT">
+                                        </c:otherwise>
+                                    </c:choose>
                                 </form>
                             </div>
 
@@ -229,8 +271,26 @@
                     </div>
                 </div>
 
-
-
+                <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="loginModalLabel">You have be logged in to do this</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-log-in">
+                                    <button type="button" class="btn btn-danger" onclick="window.location.href = '/register'">Sign Up</button>
+                                </div>
+                                <div class="modal-log-in">
+                                    <button type="button" class="btn btn-primary" onclick="window.location.href = '/login'">Log in</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <script>
                     function publishComment() {
