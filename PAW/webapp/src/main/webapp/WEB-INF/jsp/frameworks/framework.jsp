@@ -339,7 +339,9 @@
 
                     $(document).ready(function() {
                         $('#rating-form').on('submit', function(e){
-                            publishRating();
+                            if(${user.name != 'anonymousUser'}) {
+                                publishRating();
+                            }
                             e.preventDefault();
                         });
                     });
