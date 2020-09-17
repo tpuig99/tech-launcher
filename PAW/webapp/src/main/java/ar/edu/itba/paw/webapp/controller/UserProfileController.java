@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.service.CommentService;
 import ar.edu.itba.paw.service.ContentService;
+import ar.edu.itba.paw.service.FrameworkVoteService;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,9 @@ public class UserProfileController {
     ContentService contentService;
 
     @Autowired
+    FrameworkVoteService voteService;
+
+    @Autowired
     UserService us;
 
     @RequestMapping(path={"/users/{username}"}, method = RequestMethod.GET)
@@ -30,6 +34,7 @@ public class UserProfileController {
         mav.addObject("profile", us.findById((int) userId));
         mav.addObject("contents", contentService.getContentByUser(userId));
         mav.addObject("comments", commentService.getCommentsByUser(userId));
+        mav.addObject("votes", voteService.getAllByUser(userId));
         return mav;
     }
 }

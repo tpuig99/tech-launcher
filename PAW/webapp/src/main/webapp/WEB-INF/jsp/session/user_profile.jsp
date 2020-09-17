@@ -31,7 +31,7 @@
             <div class="well profile">
                 <div class="row justify-content-center">
                     <div>
-                        <img src="https://www.kindpng.com/picc/m/495-4952535_create-digital-profile-icon-blue-user-profile-icon.png" alt="" class="img-circle img-slot">
+                        <img src="https://www.kindpng.com/picc/m/495-4952535_create-digital-profile-icon-blue-user-profile-icon.png" alt="" class="rounded-circle img-slot">
                         <h2><c:out value="${profile.username}"/></h2>
                         <p><strong>Email: </strong><c:out value="${profile.mail}"/></p>
                         <p><strong>Description: </strong> Hi. I'm <c:out value="${profile.username}"/>. I like cupcakes. </p>
@@ -51,23 +51,8 @@
                         <p><small>Comments</small></p>
                     </div>
                     <div class="col-4 emphasis">
-                        <h2><strong>43</strong></h2>
-                        <p><small>Snippets</small></p>
-                        <div class="btn-group dropup btn-block">
-                            <button type="button" class="btn btn-primary"><span class="fa fa-gear"></span> Options </button>
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu text-left" role="menu">
-                                <li><a href="#"><span class="fa fa-envelope pull-right"></span> Send an email </a></li>
-                                <li><a href="#"><span class="fa fa-list pull-right"></span> Add or remove from a list  </a></li>
-                                <li class="divider"></li>
-                                <li><a href="#"><span class="fa fa-warning pull-right"></span>Report this user for spam</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#" class="btn disabled" role="button"> Unfollow </a></li>
-                            </ul>
-                        </div>
+                        <h2><strong><c:out value="${fn:length(votes)}"/> </strong></h2>
+                        <p><small>Votes Given</small></p>
                     </div>
                 </div>
             </div>
