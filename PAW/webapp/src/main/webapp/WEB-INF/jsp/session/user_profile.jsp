@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/user_profile.css"/>"/>
 </head>
 <body>
@@ -22,13 +23,13 @@
 </jsp:include>
 
 <div class="content-profile row">
-    <div class="col border-right">
-        <div class="sticky-top-row">
-    <div class="page-title mb-4 ml-2">
-        <h2>User Profile</h2>
-    </div>
+    <div class="col border-right justify-content-center">
+        <div class="sticky-top-row ml-2">
+            <div class="page-title mb-4">
+                <h2>User Profile</h2>
+            </div>
             <div class="well profile">
-                <div class="row justify-content-center">
+                <div class="row">
                     <div>
                         <img src="https://picsum.photos/536/354" alt="" class="rounded-circle img-slot">
                         <h2><c:out value="${profile.username}"/></h2>
@@ -58,8 +59,23 @@
         </div>
     </div>
     <div class="col-8">
-    <p> Aca irian todo los datos no relevantes</p>
-        <p> Aca irian todo los datos no relevantes</p>
+        <!-- Comments -->
+        <c:if test="${not empty comments}">
+            <div class="page-title mb-4 ml-2 text-left">
+                <h2>Comments</h2>
+            </div>
+            <div class="container d-flex justify-content-center">
+                <c:forEach var="comment" items="${comments}" varStatus="loop">
+                    <div class="card row mb-2">
+                        <div class="card-body row mt-1">
+                            <div class="col secondary-font"> <c:out value="${frameworkNames.get(comment.commentId)}" default=""/> </div>
+                            <div class="col-6 text-left"> <c:out value="${comment.description}" default=""/> </div>
+                            <div class="col third-font text-right"> <c:out value="${comment.timestamp}" default=""/> </div>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
     </div>
     </div>
 </div>
