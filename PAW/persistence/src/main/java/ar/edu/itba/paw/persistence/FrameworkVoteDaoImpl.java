@@ -65,6 +65,11 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
     }
 
     @Override
+    public List<FrameworkVote> getAllByUser(long userId) {
+        return jdbcTemplate.query("SELECT * FROM framework_votes WHERE user_id=?", new Object[] { userId }, ROW_MAPPER);
+    }
+
+    @Override
     public FrameworkVote insert(long frameworkId, long userId, int stars) {
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId); // la key es el nombre de la columna
