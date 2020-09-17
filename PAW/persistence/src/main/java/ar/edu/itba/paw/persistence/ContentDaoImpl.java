@@ -78,6 +78,18 @@ public class ContentDaoImpl implements ContentDao {
     }
 
     @Override
+    public List<Content> getNotPendingContentByFrameworkAndType(long frameworkId, ContentTypes type) {
+        final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND type = ? AND pending = false", ROW_MAPPER, frameworkId, type.name());
+        return toReturn;
+    }
+
+    @Override
+    public List<Content> getPendingContentByFrameworkAndType(long frameworkId, ContentTypes type) {
+        final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND type = ? AND pending = true", ROW_MAPPER, frameworkId, type.name());
+        return toReturn;
+    }
+
+    @Override
     public List<Content> getContentByUser(long userId) {
         final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE user_id = ?", ROW_MAPPER, userId);
         return toReturn;

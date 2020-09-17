@@ -82,6 +82,13 @@ nav a:hover {
     border-bottom: 0.1em solid black;
 }
 
+.subtitle {
+    padding-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+}
+
 
 .container {
     flex-wrap: wrap;
@@ -102,6 +109,11 @@ nav a:hover {
     background-color: #48bfe3;
     color: white;
     border-radius: 50%;
+    display: block;
+    height: 0.5em;
+    width:  0.5em;
+    border: 1px solid #fefefe;
+    font-size:22px;
 }
 
 
@@ -125,4 +137,3 @@ img {
     width: 8em;
     height: 8em;
 }
-

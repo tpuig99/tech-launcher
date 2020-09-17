@@ -51,6 +51,18 @@
                 </div>
 
 
+                <!-- Content -->
+                <div class="container">
+                    <div><h4 class="title">Content</h4></div>
+                    <div class="d-flex justify-content-end">
+                       <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
+                           <i class="fa fa-plus"></i>
+                        </button>
+                   </div>
+                </div>
+                <c:if test="${empty books && empty courses && empty tutorials}">
+                    <div class="d-flex align-items-center justify-content-center">There is no content available for this tech yet</div>
+                </c:if>
 
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
@@ -81,9 +93,9 @@
                 <!-- Courses -->
                 <c:if test="${not empty courses}">
                 <div>
-                    <h4 class="title ">Courses</h4>
+                    <h4 class="subtitle margin-left ">Courses</h4>
 
-                    <ul class="list-group margin-left list-group-flush description">
+                    <ul class=" margin-bottom list-group margin-left list-group-flush description">
 
                         <c:forEach var="course" items="${courses}">
                             <li class="list-group-item"><a target="_blank" href="${course.link}">${course.title}</a></li>
@@ -95,8 +107,8 @@
                 <!-- Tutorials -->
                 <c:if test="${not empty tutorials}">
                 <div>
-                   <h4 class="title "> Tutorials</h4>
-                    <ul class="list-group margin-left list-group-flush description">
+                   <h4 class="subtitle margin-left"> Tutorials</h4>
+                    <ul class="  margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">
                             <li class="list-group-item"><a target="_blank" href="${tutorial.link}">${tutorial.title}</a></li>
                         </c:forEach>
@@ -221,12 +233,8 @@
                                     </c:choose>
                                 </form>
                             </div>
-
-
                         </div>
-
                     </div>
-
                 </div>
 
                 <!-- Competition Cards -->
@@ -253,23 +261,6 @@
                 </c:if>
                 
                 <!-- Modal -->
-                <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addContentLabel">Add Content</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <jsp:include page="contentForm.jsp">
-                                    <jsp:param name="frameworkId" value="${framework.id}" />
-                                </jsp:include>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -292,7 +283,41 @@
                     </div>
                 </div>
 
+                <!-- Content Modal -->
+                <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header container">
+
+                                <h5 class="modal-title" id="addContentLabel">Add Content</h5>
+
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                </button>
+                                    <span aria-hidden="true">&times;</span>
+                            </div>
+                            <div class="modal-body container">
+                                <jsp:include page="contentForm.jsp">
+                                    <jsp:param name="frameworkId" value="${framework.id}" />
+                                </jsp:include>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="snackbar">Your content is now pending approval !</div>
+
+                <!-- Scripts -->
                 <script>
+
+                    $(window).on('load', function() {
+                        console.log(${contentFormError});
+                        if(${contentFormError}) {
+                            $('#addContentModal').modal('show');
+                        }else{
+                            showSnackbar();
+                        }
+                    });
+
                     function publishComment() {
                         let content = document.getElementById("commentInput").value;
                         let id= ${framework.id};
@@ -346,6 +371,8 @@
                         });
                     });
 
+
+
                     function selectFiles() {
                         let el = document.getElementById("fileElem");
                         if (el) {
@@ -356,6 +383,13 @@
                     function uploadContent(){
                         let id= ${framework.id};
                         window.location.href = '<c:url value="/content" />?id=' + id;
+                    }
+
+                    function showSnackbar() {
+                        console.log("En snackbar");
+                        let x = document.getElementById("snackbar");
+                        x.className = "show";
+                        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
                     }
 
                 </script>
