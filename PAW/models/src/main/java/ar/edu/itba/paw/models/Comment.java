@@ -10,9 +10,9 @@ public class Comment {
     private long votesUp;
     private long votesDown;
     private Timestamp timestamp;
-    private long reference;
+    private Long reference;
 
-    public Comment(long commentId, long frameworkId, long userId, String description, Timestamp timestamp, long reference) {
+    public Comment(long commentId, long frameworkId, long userId, String description, Timestamp timestamp, Long reference) {
         this.commentId = commentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
@@ -49,7 +49,7 @@ public class Comment {
         return timestamp;
     }
 
-    public long getReference() {
+    public Long getReference() {
         return reference;
     }
 

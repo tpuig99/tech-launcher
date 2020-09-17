@@ -99,6 +99,7 @@ public class UserDaoImpl implements UserDao {
         final Map<String, Object> args = new HashMap<>();
         args.put("user_name", user_name); // la key es el nombre de la columna
         args.put("mail",mail);
+        args.put("enabled",false);
         final Number userId = jdbcInsert.executeAndReturnKey(args);
         return new User(userId.longValue(), user_name,mail);
     }

@@ -31,8 +31,16 @@
                 <i class="fas fa-user"></i>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="${pageContext.request.contextPath}/register">Sign Up</a>
-                <a class="dropdown-item" href="#">Log in</a>
+                <c:choose>
+                    <c:when test="${param.username != 'anonymousUser'}">
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/users/${param.username}">Profile</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Log out</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/register">Sign Up</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/login">Log in</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>
