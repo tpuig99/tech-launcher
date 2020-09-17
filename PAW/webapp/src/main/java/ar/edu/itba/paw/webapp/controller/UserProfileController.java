@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.Content;
+import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.FrameworkVote;
 import ar.edu.itba.paw.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,16 +42,31 @@ public class UserProfileController {
         long userId = us.findByUsername(username).getId();
         mav.addObject("profile", us.findById((int) userId));
 
-        List<Comment> commentList = commentService.getCommentsByUser(userId);
-        Map<Long, String> commentFrameworkName = new HashMap<>();
-
+        final List<Comment> commentList = commentService.getCommentsByUser(userId);
+        Map<Long, String> frameworkCommentNames = new HashMap<>();
         for (Comment comment : commentList) {
-            commentFrameworkName.put(comment.getCommentId(),frameworkService.findById(comment.getFrameworkId()).getName());
+            frameworkCommentNames.put(comment.getCommentId(),frameworkService.findById(comment.getFrameworkId()).getName());
         }
-        mav.addObject("frameworkNames", commentFrameworkName);
-        mav.addObject("contents", contentService.getContentByUser(userId));
-        mav.addObject("comments", commentService.getCommentsByUser(userId));
-        mav.addObject("votes", voteService.getAllByUser(userId));
+
+        final List<Content> contentList = contentService.getContentByUser(userId);
+        Map<Long, String> frameworkContentNames = new HashMap<>();
+        for (Content content : contentList) {
+            frameworkContentNames.put(content.getContentId(),frameworkService.findById(content.getFrameworkId()).getName());
+        }
+
+        final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
+        Map<Long, String> frameworkVoteNames = new HashMap<>();
+        for (FrameworkVote vote : votesList) {
+            frameworkVoteNames.put(vote.getVoteId(),frameworkService.findById(vote.getFrameworkId()).getName());
+        }
+
+
+        mav.addObject("frameworkCommentNames", frameworkCommentNames);
+        mav.addObject("frameworkContentNames", frameworkContentNames);
+        mav.addObject("frameworkVoteNames", frameworkVoteNames);
+        mav.addObject("contents", contentList);
+        mav.addObject("comments", commentList);
+        mav.addObject("votes", votesList);
         return mav;
     }
 }

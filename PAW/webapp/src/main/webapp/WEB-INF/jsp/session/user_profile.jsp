@@ -65,12 +65,47 @@
                 <h2>Comments</h2>
             </div>
             <div class="container d-flex justify-content-center">
-                <c:forEach var="comment" items="${comments}" varStatus="loop">
+                <c:forEach var="comment" items="${comments}">
                     <div class="card row mb-2">
                         <div class="card-body row mt-1">
-                            <div class="col secondary-font"> <c:out value="${frameworkNames.get(comment.commentId)}" default=""/> </div>
+                            <div class="col-3 secondary-font"> <c:out value="${frameworkCommentNames.get(comment.commentId)}" default=""/> </div>
                             <div class="col-6 text-left"> <c:out value="${comment.description}" default=""/> </div>
                             <div class="col third-font text-right"> <c:out value="${comment.timestamp}" default=""/> </div>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
+
+        <!-- Contents -->
+        <c:if test="${not empty contents}">
+            <div class="page-title mb-4 ml-2 text-left">
+                <h2>Contents</h2>
+            </div>
+            <div class="container d-flex justify-content-center">
+                <c:forEach var="content" items="${contents}">
+                    <div class="card row mb-2">
+                        <div class="card-body row mt-1">
+                            <div class="col-3 secondary-font"> <c:out value="${frameworkContentNames.get(content.contentId)}" default=""/> </div>
+                            <div class="col-6 text-left"> <c:out value="${content.type.name()}: ${content.title}" default=""/> </div>
+                            <div class="col third-font text-right"> <c:out value="${content.timestamp}" default=""/> </div>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
+
+        <!-- Votes -->
+        <c:if test="${not empty votes}">
+            <div class="page-title mb-4 ml-2 text-left">
+                <h2>Votes</h2>
+            </div>
+            <div class="container d-flex justify-content-center">
+                <c:forEach var="vote" items="${votes}">
+                    <div class="card row mb-2">
+                        <div class="card-body row mt-1">
+                            <div class="col-3 secondary-font"> <c:out value="${frameworkVoteNames.get(vote.voteId)}" default=""/> </div>
+                            <div class="col-6 text-left"> <c:out value="${vote.stars} / 5 stars" default=""/> </div>
                         </div>
                     </div>
                 </c:forEach>
