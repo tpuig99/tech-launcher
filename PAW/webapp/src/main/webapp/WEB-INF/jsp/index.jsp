@@ -22,7 +22,7 @@
 
     <div class="content">
         <div class="page-title">
-            <h2>Frameworks</h2>
+            <h2>Techs</h2>
         </div>
         <div class="page-description">
 
