@@ -31,7 +31,7 @@
             <div class="well profile">
                 <div class="row justify-content-center">
                     <div>
-                        <img src="https://www.kindpng.com/picc/m/495-4952535_create-digital-profile-icon-blue-user-profile-icon.png" alt="" class="rounded-circle img-slot">
+                        <img src="https://picsum.photos/536/354" alt="" class="rounded-circle img-slot">
                         <h2><c:out value="${profile.username}"/></h2>
                         <p><strong>Email: </strong><c:out value="${profile.mail}"/></p>
                         <p><strong>Description: </strong> Hi. I'm <c:out value="${profile.username}"/>. I like cupcakes. </p>

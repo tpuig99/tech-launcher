@@ -21,7 +21,7 @@
 }
 .emphasis:hover
 {
-    border-top: 4px solid #1abc9c;
+    border-top: 4px solid #733bce;
 }
 .emphasis h2
 {
@@ -29,7 +29,7 @@
 }
 a.tags
 {
-    background: #1abc9c;
+    background: #733bce;
     border-radius: 2px;
     color: #f5f5f5;
     font-weight: bold;
