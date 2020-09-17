@@ -54,16 +54,17 @@ public class UserProfileController {
             frameworkContentNames.put(content.getContentId(),frameworkService.findById(content.getFrameworkId()).getName());
         }
 
-        final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
+        /*final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
         Map<Long, String> frameworkVoteNames = new HashMap<>();
         for (FrameworkVote vote : votesList) {
             frameworkVoteNames.put(vote.getVoteId(),frameworkService.findById(vote.getFrameworkId()).getName());
-        }
+        }*/
+        final List<FrameworkVote> votesList = voteService.getAllByUserWithFrameworkName(userId);
 
 
         mav.addObject("frameworkCommentNames", frameworkCommentNames);
         mav.addObject("frameworkContentNames", frameworkContentNames);
-        mav.addObject("frameworkVoteNames", frameworkVoteNames);
+        //mav.addObject("frameworkVoteNames", frameworkVoteNames);
         mav.addObject("contents", contentList);
         mav.addObject("comments", commentList);
         mav.addObject("votes", votesList);

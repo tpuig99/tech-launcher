@@ -10,6 +10,7 @@ public interface FrameworkVoteService {
     FrameworkVote getById(long voteId);
     FrameworkVote getByFrameworkAndUser(long frameworkId, long userId);
     List<FrameworkVote> getAllByUser(long userId);
+    List<FrameworkVote> getAllByUserWithFrameworkName(long userId);
     FrameworkVote insert(long frameworkId, long userId, int stars);
     int delete(long voteId);
     FrameworkVote update(long voteId, int stars);

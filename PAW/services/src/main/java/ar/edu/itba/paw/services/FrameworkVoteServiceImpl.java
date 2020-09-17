@@ -38,6 +38,11 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
     }
 
     @Override
+    public List<FrameworkVote> getAllByUserWithFrameworkName(long userId) {
+        return vs.getAllByUserWithFrameworkName(userId);
+    }
+
+    @Override
     public FrameworkVote insert(long frameworkId, long userId, int stars) {
         FrameworkVote frameworkVote = getByFrameworkAndUser(frameworkId,userId);
         if(frameworkVote !=null){

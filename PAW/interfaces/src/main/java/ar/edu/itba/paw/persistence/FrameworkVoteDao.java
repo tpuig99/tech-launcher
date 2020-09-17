@@ -13,4 +13,5 @@ public interface FrameworkVoteDao {
      FrameworkVote insert(long frameworkId, long userId, int stars);
      int delete(long voteId);
      FrameworkVote update(long voteId, int stars);
+     List<FrameworkVote> getAllByUserWithFrameworkName(long userId);
 }

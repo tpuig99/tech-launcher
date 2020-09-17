@@ -104,7 +104,7 @@
                 <c:forEach var="vote" items="${votes}">
                     <div class="card row mb-2">
                         <div class="card-body row mt-1">
-                            <div class="col-3 secondary-font"> <c:out value="${frameworkVoteNames.get(vote.voteId)}" default=""/> </div>
+                            <div class="col-3 secondary-font"> <c:out value="${vote.frameworkName}" default=""/> </div>
                             <div class="col-6 text-left"> <c:out value="${vote.stars} / 5 stars" default=""/> </div>
                         </div>
                     </div>
