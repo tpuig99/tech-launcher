@@ -5,6 +5,23 @@
     display: inline-block;
 }
 
+
+.content-profile {
+    justify-content: center;
+    text-align: center;
+    vertical-align: center;
+    padding-top: 6.5em;
+    padding-bottom: 2em;
+    width: 100%;
+}
+
+.sticky-top-row {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 110px;
+    z-index: 1020;
+}
+
 .img-slot
 {
     width: 6em;

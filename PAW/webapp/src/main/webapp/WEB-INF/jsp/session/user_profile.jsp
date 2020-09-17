@@ -21,13 +21,12 @@
     <jsp:param name="username" value="${user.name}"/>
 </jsp:include>
 
-<div class="content-no-sidebar">
-    <div class="page-title">
+<div class="content-profile row">
+    <div class="col border-right">
+        <div class="sticky-top-row">
+    <div class="page-title mb-4 ml-2">
         <h2>User Profile</h2>
     </div>
-    <div class="page-description"></div>
-
-    <div class="row justify-content-center">
             <div class="well profile">
                 <div class="row justify-content-center">
                     <div>
@@ -56,6 +55,12 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="col-8">
+    <p> Aca irian todo los datos no relevantes</p>
+        <p> Aca irian todo los datos no relevantes</p>
+    </div>
     </div>
 </div>
 
