@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<c:url value="/content" var="postPath"/>
+<c:url value="/content" var="postPath" />
 <form:form modelAttribute="contentForm" action="${postPath}" method="post">
     <div class="form-group">
         <div><form:label path="title">Title</form:label></div>
@@ -42,9 +42,11 @@
     <!--<input type="file" id="fileElem" multiple accept="application/pdf" style="display:none" onchange="handleFiles(this.files)">
     <a href="javascript:selectFiles()">Select some files</a>-->
     <div class="d-flex justify-content-center">
-        <input class="btn primary-button" type="submit" value="SUBMIT" data-toggle="snackbar" data-content="Your content is now on a pending list"/>
+        <input class="btn primary-button" type="submit" value="SUBMIT"/>
     </div>
    <!-- <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>-->
 </form:form>
+
+
 </body>
 

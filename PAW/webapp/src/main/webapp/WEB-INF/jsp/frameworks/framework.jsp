@@ -283,6 +283,7 @@
                     </div>
                 </div>
 
+                <!-- Content Modal -->
                 <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -303,12 +304,17 @@
                     </div>
                 </div>
 
+                <div id="snackbar">Your content is now pending approval !</div>
+
+                <!-- Scripts -->
                 <script>
 
                     $(window).on('load', function() {
                         console.log(${contentFormError});
                         if(${contentFormError}) {
                             $('#addContentModal').modal('show');
+                        }else{
+                            showSnackbar();
                         }
                     });
 
@@ -377,6 +383,13 @@
                     function uploadContent(){
                         let id= ${framework.id};
                         window.location.href = '<c:url value="/content" />?id=' + id;
+                    }
+
+                    function showSnackbar() {
+                        console.log("En snackbar");
+                        let x = document.getElementById("snackbar");
+                        x.className = "show";
+                        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
                     }
 
                 </script>
