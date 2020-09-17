@@ -233,12 +233,8 @@
                                     </c:choose>
                                 </form>
                             </div>
-
-
                         </div>
-
                     </div>
-
                 </div>
 
                 <!-- Competition Cards -->
@@ -265,23 +261,6 @@
                 </c:if>
                 
                 <!-- Modal -->
-                <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addContentLabel">Add Content</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <jsp:include page="contentForm.jsp">
-                                    <jsp:param name="frameworkId" value="${framework.id}" />
-                                </jsp:include>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -299,6 +278,11 @@
                                 <div class="modal-log-in">
                                     <button type="button" class="btn btn-primary" onclick="window.location.href = '/login'">Log in</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">

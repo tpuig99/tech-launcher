@@ -2,6 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
+<head>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/form.css"/>"/>
+</head>
+<body>
+
 <c:url value="/content" var="postPath"/>
 <form:form modelAttribute="contentForm" action="${postPath}" method="post">
     <div class="form-group">
@@ -41,5 +46,5 @@
     </div>
    <!-- <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>-->
 </form:form>
-
+</body>
 
