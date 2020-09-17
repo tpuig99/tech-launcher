@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -51,6 +52,7 @@ public class FrameworkController {
         mav.addObject("comments", comments);
         mav.addObject("commentsUsernames", us.getUsernamesByComments(comments));
 
+       // mav.addObject("contentFormError", false);
 
         return mav;
     }
@@ -89,5 +91,31 @@ public class FrameworkController {
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+id);
     }
 
+    @RequestMapping(path={"/content"}, method = RequestMethod.POST)
+    public ModelAndView addContent(@Valid @ModelAttribute("contentForm") final ContentForm form, final BindingResult errors, final RedirectAttributes redirectAttributes){
+
+        long frameworkId = form.getFrameworkId();
+        Framework framework = fs.findById(frameworkId);
+
+
+        if(errors.hasErrors()){
+           // redirectAttributes.addFlashAttribute("contentFormMessage","Error.");
+            //redirectAttributes.addFlashAttribute("contentFormError",true);
+
+            final ModelAndView framework1 = framework(frameworkId, framework.getCategory(), form);
+            framework1.addObject("contentFormError", true);
+            return framework1;
+            //return new ModelAndView("redirect:/" + framework.getCategory() + "/"+frameworkId);
+        }
+        redirectAttributes.addFlashAttribute("contentFormError",false);
+        redirectAttributes.addFlashAttribute("contentFormMessage","Your content is now pending approval.");
+
+
+        ContentTypes type = ContentTypes.valueOf(form.getType());
+
+        final Content content = contentService.insertContent(frameworkId, 1, form.getTitle(), form.getLink(), type, true );
+
+        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+frameworkId);
+    }
 }
 

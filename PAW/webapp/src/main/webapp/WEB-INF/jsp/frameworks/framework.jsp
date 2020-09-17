@@ -52,8 +52,8 @@
                 <div class="container">
                     <div><h4 class="title">Content</h4></div>
                     <div class="d-flex justify-content-end">
-                       <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
-                            <i class="fa fa-plus"></i>
+                       <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
+                           <i class="fa fa-plus"></i>
                         </button>
                    </div>
                 </div>
@@ -64,9 +64,9 @@
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
                 <div>
-                   <span><h4 class="subtitle margin-left margin-top">Bibliography</h4></span>
+                   <span><h4 class="subtitle margin-left">Bibliography</h4></span>
 
-                    <ul class="list-group margin-left list-group-flush description">
+                    <ul class="list-group margin-left margin-bottom list-group-flush description">
                         <c:forEach var="book" items="${books}">
                         <li class="list-group-item"><a target="_blank" href="${book.link}">${book.title}</a></li>
                         </c:forEach>
@@ -77,9 +77,9 @@
                 <!-- Courses -->
                 <c:if test="${not empty courses}">
                 <div>
-                    <h4 class="subtitle margin-left margin-top">Courses</h4>
+                    <h4 class="subtitle margin-left ">Courses</h4>
 
-                    <ul class="list-group margin-left list-group-flush description">
+                    <ul class=" margin-bottom list-group margin-left list-group-flush description">
 
                         <c:forEach var="course" items="${courses}">
                             <li class="list-group-item"><a target="_blank" href="${course.link}">${course.title}</a></li>
@@ -91,8 +91,8 @@
                 <!-- Tutorials -->
                 <c:if test="${not empty tutorials}">
                 <div>
-                   <h4 class="subtitle margin-left margin-top"> Tutorials</h4>
-                    <ul class="list-group margin-left list-group-flush description">
+                   <h4 class="subtitle margin-left"> Tutorials</h4>
+                    <ul class="  margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">
                             <li class="list-group-item"><a target="_blank" href="${tutorial.link}">${tutorial.title}</a></li>
                         </c:forEach>
@@ -349,6 +349,14 @@
 
 
                 <script>
+
+                    $(window).on('load', function() {
+                        console.log(${contentFormError});
+                        if(${contentFormError}) {
+                            $('#addContentModal').modal('show');
+                        }
+                    });
+
                     function publishComment() {
                         let username = document.getElementById("inputName").value;
                         let email = document.getElementById("inputEmail").value;
@@ -427,12 +435,15 @@
                         });
                     });
 
+
+
                     function selectFiles() {
                         let el = document.getElementById("fileElem");
                         if (el) {
                             el.click();
                         }
                     }
+
 
 
                 </script>
