@@ -19,8 +19,10 @@ CREATE TABLE IF NOT EXISTS frameworks (
                  category varchar(50) NOT NULL,
                  description varchar(500) NOT NULL,
                  introduction varchar(5000) NOT NULL,
-                 logo varchar(150)
+                 logo varchar(150),
+                 type varchar(100)
                  );
+ALTER TABLE frameworks ADD COLUMN IF NOT EXISTS type varchar(100) default '' not null ;
 ALTER TABLE IF EXISTS  votes RENAME TO framework_votes;
 CREATE TABLE IF NOT EXISTS framework_votes (
                  vote_id SERIAL PRIMARY KEY,
