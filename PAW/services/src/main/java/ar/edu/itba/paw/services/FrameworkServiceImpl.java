@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FrameworkServiceImpl implements FrameworkService {
@@ -115,7 +116,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public Comment changeComment(long commentId, String description) {
+    public Optional<Comment> changeComment(long commentId, String description) {
         return cmts.changeComment(commentId,description);
     }
 

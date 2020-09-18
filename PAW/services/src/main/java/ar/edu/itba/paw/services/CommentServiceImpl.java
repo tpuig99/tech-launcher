@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -19,9 +20,9 @@ public class CommentServiceImpl implements CommentService {
     CommentVoteDao cmtVotes;
 
     @Override
-    public Comment getById(long contentId) {
-        Comment comment = cmts.getById(contentId);
-        setCommentVotes(comment);
+    public Optional<Comment> getById(long contentId) {
+        Optional<Comment> comment = cmts.getById(contentId);
+        comment.ifPresent(this::setCommentVotes);
         return comment;
     }
 
@@ -70,35 +71,35 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment changeComment(long commentId, String description) {
-        Comment comment = cmts.changeComment(commentId, description);
-        setCommentVotes(comment);
+    public Optional<Comment> changeComment(long commentId, String description) {
+        Optional<Comment> comment = cmts.changeComment(commentId, description);
+        comment.ifPresent(this::setCommentVotes);
         return comment;
     }
 
     @Override
-    public Comment voteUp(long commentId,long userId) {
+    public Optional<Comment> voteUp(long commentId,long userId) {
         CommentVote vote = cmtVotes.getByCommentAndUser(commentId,userId);
         if(vote!=null){
             vote = cmtVotes.update(vote.getCommentVoteId(),1);
         }else {
             vote = cmtVotes.insert(commentId, userId, 1);
         }
-        Comment comment = cmts.getById(commentId);
-        setCommentVotes(comment);
+        Optional<Comment> comment = cmts.getById(commentId);
+        comment.ifPresent(this::setCommentVotes);
         return comment;
     }
 
     @Override
-    public Comment voteDown(long commentId,long userId) {
+    public Optional<Comment> voteDown(long commentId,long userId) {
         CommentVote vote = cmtVotes.getByCommentAndUser(commentId,userId);
         if(vote!=null){
             vote = cmtVotes.update(vote.getCommentVoteId(),-1);
         }else {
             vote = cmtVotes.insert(commentId, userId, -1);
         }
-        Comment comment = cmts.getById(commentId);
-        setCommentVotes(comment);
+        Optional<Comment> comment = cmts.getById(commentId);
+        comment.ifPresent(this::setCommentVotes);
         return comment;
     }
     private void setCommentVotes(Comment comment){

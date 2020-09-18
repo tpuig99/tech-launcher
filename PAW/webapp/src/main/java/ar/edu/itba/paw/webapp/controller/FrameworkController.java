@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import java.net.Authenticator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class FrameworkController {
@@ -73,7 +74,7 @@ public class FrameworkController {
     public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
         Framework framework = fs.findById(frameworkId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final Comment comment = commentService.voteUp(commentId,us.findByUsername(authentication.getName()).getId());
+        final Optional<Comment> comment = commentService.voteUp(commentId,us.findByUsername(authentication.getName()).getId());
         return new ModelAndView("redirect:/" + framework.getCategory() + "/" + framework.getId());
     }
 
@@ -81,7 +82,7 @@ public class FrameworkController {
     public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
         Framework framework = fs.findById(frameworkId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final Comment comment = commentService.voteDown(commentId,us.findByUsername(authentication.getName()).getId());
+        final Optional<Comment> comment = commentService.voteDown(commentId,us.findByUsername(authentication.getName()).getId());
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+framework.getId());
     }
 
