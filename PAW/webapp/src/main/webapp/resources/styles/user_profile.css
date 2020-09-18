@@ -32,6 +32,22 @@
 {
     border-top:1px solid rgba(0,0,0,0.1);
 }
+
+.emphasis.emph-comment:hover
+{
+    border-top: 4px solid #48bfe3;
+}
+
+.emphasis.emph-votes:hover
+{
+    border-top: 4px solid #FFC107;
+}
+
+.emphasis.emph-content:hover
+{
+    border-top: 4px solid #AFBBF2;
+}
+
 .emphasis
 {
     border-top: 4px solid transparent;

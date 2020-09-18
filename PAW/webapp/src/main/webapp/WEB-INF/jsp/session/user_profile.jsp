@@ -66,11 +66,11 @@
             </div>
             <div class="container d-flex justify-content-center">
                 <c:forEach var="comment" items="${comments}">
-                    <div class="card row mb-2">
+                    <div class="card emphasis emph-comment row mb-2">
                         <div class="card-body row mt-1">
                             <div class="col-3 secondary-font"> <c:out value="${frameworkCommentNames.get(comment.commentId)}" default=""/> </div>
                             <div class="col-6 text-left"> <c:out value="${comment.description}" default=""/> </div>
-                            <div class="col third-font text-right"> <c:out value="${comment.timestamp}" default=""/> </div>
+                            <div class="col third-font text-right"> <c:out value="${comment.timestamp.toLocaleString()}" default=""/> </div>
                         </div>
                     </div>
                 </c:forEach>
@@ -84,11 +84,11 @@
             </div>
             <div class="container d-flex justify-content-center">
                 <c:forEach var="content" items="${contents}">
-                    <div class="card row mb-2">
+                    <div class="card emphasis emph-content row mb-2">
                         <div class="card-body row mt-1">
                             <div class="col-3 secondary-font"> <c:out value="${frameworkContentNames.get(content.contentId)}" default=""/> </div>
                             <div class="col-6 text-left"> <c:out value="${content.type.name()}: ${content.title}" default=""/> </div>
-                            <div class="col third-font text-right"> <c:out value="${content.timestamp}" default=""/> </div>
+                            <div class="col third-font text-right"> <c:out value="${content.timestamp.toLocaleString()}" default=""/> </div>
                         </div>
                     </div>
                 </c:forEach>
@@ -100,12 +100,12 @@
             <div class="page-title mb-4 ml-2 text-left">
                 <h2>Votes</h2>
             </div>
-            <div class="container d-flex justify-content-center">
+            <div class="container row equal justify-content-center">
                 <c:forEach var="vote" items="${votes}">
-                    <div class="card row mb-2">
+                    <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
                         <div class="card-body row mt-1">
-                            <div class="col-3 secondary-font"> <c:out value="${vote.frameworkName}" default=""/> </div>
-                            <div class="col-6 text-left"> <c:out value="${vote.stars} / 5 stars" default=""/> </div>
+                            <div class="col secondary-font"> <c:out value="${vote.frameworkName}" default=""/> </div>
+                            <div class="col"> <c:out value="${vote.stars} / 5" default=""/> </div>
                         </div>
                     </div>
                 </c:forEach>
