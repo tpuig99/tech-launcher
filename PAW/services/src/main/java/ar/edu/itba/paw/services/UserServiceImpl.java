@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -94,15 +93,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createVerificationToken(User user, String token) {
-        VerificationToken verificationToken = tokenDao.getByUser(user.getId());
-        if(verificationToken!=null){
-            tokenDao.change(verificationToken.getTokenId(),token);
-        }
+        Optional<VerificationToken> verificationToken = tokenDao.getByUser(user.getId());
+        verificationToken.ifPresent(value -> tokenDao.change(value.getTokenId(), token));
         tokenDao.insert(user.getId(),token);
     }
 
     @Override
-    public VerificationToken getVerificationToken(String token) {
+    public Optional<VerificationToken> getVerificationToken(String token) {
         return tokenDao.getByToken(token);
     }
 
@@ -113,8 +110,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void generateNewVerificationToken(User user, String token) {
-        VerificationToken verificationToken = tokenDao.getByUser(user.getId());
-        tokenDao.change(verificationToken.getTokenId(),token);
+        Optional<VerificationToken> verificationToken = tokenDao.getByUser(user.getId());
+        verificationToken.ifPresent(value -> tokenDao.change(value.getTokenId(), token));
     }
 
     @Override

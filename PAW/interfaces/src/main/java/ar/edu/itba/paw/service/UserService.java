@@ -18,7 +18,7 @@ public interface UserService {
     Optional<User> update(long userId,String username,String mail,String password);
     Map<Long, String> getUsernamesByComments(List<Comment> comments);
     void createVerificationToken(User user, String token);
-    VerificationToken getVerificationToken(String token);
+    Optional<VerificationToken> getVerificationToken(String token);
     void saveRegisteredUser(User user);
     void generateNewVerificationToken(User user, String token);
     void updateDescription(long userId,String description);
