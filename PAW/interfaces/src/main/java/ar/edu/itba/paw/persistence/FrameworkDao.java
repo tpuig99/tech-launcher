@@ -7,9 +7,10 @@ import ar.edu.itba.paw.models.FrameworkCategories;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Optional;
 
 public interface FrameworkDao {
-    Framework findById(long id);
+    Optional<Framework> findById(long id);
     List<Framework> getByCategory(FrameworkCategories category);
     List<Framework> getAll();
     List<Framework> getByNameOrCategory(String toSearch);

@@ -13,6 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class ErrorController {
 
+        private static final String ERROR_VIEW = "/error";
+
+        public static ModelAndView redirectToErrorView() { return new ModelAndView("redirect:" + ERROR_VIEW); }
+
         @ExceptionHandler(value = Exception.class)
         public ModelAndView
         defaultErrorHandler(HttpServletRequest req, Exception e) {

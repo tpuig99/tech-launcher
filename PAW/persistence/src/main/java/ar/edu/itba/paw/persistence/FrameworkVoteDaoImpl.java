@@ -13,25 +13,14 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final static RowMapper<FrameworkVote> ROW_MAPPER = new
-            RowMapper<FrameworkVote>() {
-                @Override
-                public FrameworkVote mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new FrameworkVote(rs.getInt("vote_id"),rs.getInt("framework_id"),rs.getInt("user_id"),rs.getInt("stars"));
-                }
-            };
-    private final static RowMapper<FrameworkVote> ROW_MAPPER_WITH_FRAMEWORK_NAME = new
-            RowMapper<FrameworkVote>() {
-                @Override
-                public FrameworkVote mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new FrameworkVote(rs.getInt("vote_id"),rs.getInt("framework_id"),rs.getInt("user_id"),rs.getInt("stars"),rs.getString("framework_name"));
-                }
-            };
+    private final static RowMapper<FrameworkVote> ROW_MAPPER = FrameworkVoteDaoImpl::frameworkMapRow;
+    private final static RowMapper<FrameworkVote> ROW_MAPPER_WITH_FRAMEWORK_NAME = FrameworkVoteDaoImpl::frameworkNameMapRow;
 
     @Autowired
     public FrameworkVoteDaoImpl(final DataSource ds) {
@@ -41,34 +30,39 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
                 .usingGeneratedKeyColumns("vote_id");
     }
 
+    private static FrameworkVote frameworkMapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new FrameworkVote(rs.getInt("vote_id"),
+                rs.getInt("framework_id"),
+                rs.getInt("user_id"),
+                rs.getInt("stars"));
+    }
+
+    private static FrameworkVote frameworkNameMapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new FrameworkVote(rs.getInt("vote_id"),
+                rs.getInt("framework_id"),
+                rs.getInt("user_id"),
+                rs.getInt("stars"),
+                rs.getString("framework_name"));
+    }
+
     @Override
     public List<FrameworkVote> getAll() {
-        final List<FrameworkVote> toReturn = jdbcTemplate.query("SELECT * FROM framework_votes", ROW_MAPPER);
-        return toReturn;
+        return jdbcTemplate.query("SELECT * FROM framework_votes", ROW_MAPPER);
     }
 
     @Override
     public List<FrameworkVote> getByFramework(long frameworkId) {
-        final List<FrameworkVote> toReturn = jdbcTemplate.query("SELECT * FROM framework_votes WHERE framework_id=?", ROW_MAPPER,frameworkId);
-        return toReturn;
+        return jdbcTemplate.query("SELECT * FROM framework_votes WHERE framework_id=?", ROW_MAPPER,frameworkId);
     }
 
     @Override
-    public FrameworkVote getById(long voteId) {
-        final List<FrameworkVote> toReturn = jdbcTemplate.query("SELECT * FROM framework_votes WHERE vote_id=?", ROW_MAPPER,voteId);
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-        return toReturn.get(0);
+    public Optional<FrameworkVote> getById(long voteId) {
+        return jdbcTemplate.query("SELECT * FROM framework_votes WHERE vote_id=?", new Object[] {voteId}, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
-    public FrameworkVote getByFrameworkAndUser(long frameworkId, long userId) {
-        final List<FrameworkVote> toReturn = jdbcTemplate.query("SELECT * FROM framework_votes WHERE framework_id=? AND user_id=?", ROW_MAPPER,frameworkId,userId);
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-        return toReturn.get(0);
+    public Optional<FrameworkVote> getByFrameworkAndUser(long frameworkId, long userId) {
+        return jdbcTemplate.query("SELECT * FROM framework_votes WHERE framework_id=? AND user_id=?", new Object[] {frameworkId,userId}, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -88,14 +82,12 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
 
     @Override
     public int delete(long voteId) {
-        String sql = "DELETE FROM framework_votes where vote_id=?";
-        return jdbcTemplate.update(sql,voteId);
+        return jdbcTemplate.update("DELETE FROM framework_votes where vote_id=?",voteId);
     }
 
     @Override
-    public FrameworkVote update(long voteId, int stars) {
-        String sql = "UPDATE framework_votes set stars=? where vote_id=?";
-        jdbcTemplate.update(sql,stars,voteId);
+    public Optional<FrameworkVote> update(long voteId, int stars) {
+        jdbcTemplate.update("UPDATE framework_votes set stars=? where vote_id=?",stars,voteId);
         return getById(voteId);
     }
 

@@ -48,8 +48,10 @@ public class UserProfileController {
             mav.addObject("contents", contentList);
             mav.addObject("comments", commentList);
             mav.addObject("votes", votesList);
+
+            return mav;
         }
 
-        return mav;
+        return ErrorController.redirectToErrorView();
     }
 }

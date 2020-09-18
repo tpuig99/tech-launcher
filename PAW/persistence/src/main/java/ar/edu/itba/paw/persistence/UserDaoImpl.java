@@ -99,14 +99,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public int delete(long userId) {
-        String sql = "DELETE FROM users where user_id=?";
-        return jdbcTemplate.update(sql,userId);
+        return jdbcTemplate.update("DELETE FROM users where user_id=?",userId);
     }
 
     @Override
     public Optional<User> update(long userId, String user_name, String mail, String password) {
-        String sql = "UPDATE users set mail=?,user_name=?,password=? where user_id=?";
-        jdbcTemplate.update(sql,mail,user_name,password,userId);
+        jdbcTemplate.update("UPDATE users set mail=?,user_name=?,password=? where user_id=?",
+                mail,user_name,password,userId);
         return findById(userId);
     }
 
@@ -142,13 +141,11 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void setEnable(long id) {
-        String sql = "UPDATE users set enabled=true where user_id=?";
-        jdbcTemplate.update(sql,id);
+        jdbcTemplate.update("UPDATE users set enabled=true where user_id=?",id);
     }
 
     @Override
     public void updateDescription(long id, String description) {
-        String sql = "UPDATE users set user_description=? where user_id=?";
-        jdbcTemplate.update(sql,description,id);
+        jdbcTemplate.update("UPDATE users set user_description=? where user_id=?",description,id);
     }
 }

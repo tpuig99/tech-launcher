@@ -70,14 +70,12 @@ public class CommentVoteDaoImpl implements CommentVoteDao{
 
     @Override
     public int delete(long voteId) {
-        String sql = "DELETE FROM comment_votes where vote_id=?";
-        return jdbcTemplate.update(sql,voteId);
+        return jdbcTemplate.update("DELETE FROM comment_votes where vote_id=?",voteId);
     }
 
     @Override
     public Optional<CommentVote> update(long voteId, int vote) {
-        String sql = "UPDATE comment_votes set vote=? where vote_id=?";
-        jdbcTemplate.update(sql,vote,voteId);
+        jdbcTemplate.update("UPDATE comment_votes set vote=? where vote_id=?",vote,voteId);
         return getById(voteId);
     }
 }

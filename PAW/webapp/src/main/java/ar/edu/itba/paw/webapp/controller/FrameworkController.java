@@ -40,98 +40,123 @@ public class FrameworkController {
     @RequestMapping("/{category}/{id}")
     public ModelAndView framework(@PathVariable long id, @PathVariable String category,@ModelAttribute("contentForm") final ContentForm form) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
-        Framework framework = fs.findById(id);
-        List<Comment> comments = commentService.getCommentsByFramework(id);
-        Map<Long, String> commentsUsernames = us.getUsernamesByComments(comments);
+        Optional<Framework> framework = fs.findById(id);
 
+        if (framework.isPresent()) {
+            List<Comment> comments = commentService.getCommentsByFramework(id);
+            Map<Long, String> commentsUsernames = us.getUsernamesByComments(comments);
 
-        mav.addObject("framework", framework);
+            mav.addObject("framework", framework.get());
 
-        mav.addObject("books", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.book));
-        mav.addObject("courses", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.course));
-        mav.addObject("tutorials", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.tutorial));
-        mav.addObject("category", category);
-        mav.addObject("competitors", fs.getCompetitors(framework));
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("comments", comments);
-        mav.addObject("commentsUsernames", us.getUsernamesByComments(comments));
+            mav.addObject("books", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.book));
+            mav.addObject("courses", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.course));
+            mav.addObject("tutorials", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.tutorial));
+            mav.addObject("category", category);
+            mav.addObject("competitors", fs.getCompetitors(framework.get()));
+            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+            mav.addObject("comments", comments);
+            mav.addObject("commentsUsernames", us.getUsernamesByComments(comments));
 
-       // mav.addObject("contentFormError", false);
-
-        return mav;
+            // mav.addObject("contentFormError", false);
+            return mav;
+        }
+        return ErrorController.redirectToErrorView();
     }
 
     @RequestMapping(path={"/create"}, method= RequestMethod.GET)
     public ModelAndView saveComment(@RequestParam("id") final long id, @RequestParam("content") final String content) throws UserAlreadyExistException {
-        Framework framework = fs.findById(id);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<Framework> framework = fs.findById(id);
 
-        if (us.findByUsername(authentication.getName()).isPresent()) {
-            final Comment comment = commentService.insertComment(framework.getId(),us.findByUsername(authentication.getName()).get().getId(),content, null);
+        if (framework.isPresent()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (us.findByUsername(authentication.getName()).isPresent()) {
+                final Comment comment = commentService.insertComment(framework.get().getId(), us.findByUsername(authentication.getName()).get().getId(), content, null);
+            }
+
+            return new ModelAndView("redirect:/" + framework.get().getCategory() + "/" + framework.get().getId());
         }
 
-        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+framework.getId());
+        return ErrorController.redirectToErrorView();
     }
+
 
     @RequestMapping(path={"/voteup"}, method= RequestMethod.GET)
     public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
-        Framework framework = fs.findById(frameworkId);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<Framework> framework = fs.findById(frameworkId);
 
-        if (us.findByUsername(authentication.getName()).isPresent()) {
-            final Optional<Comment> comment = commentService.voteUp(commentId,us.findByUsername(authentication.getName()).get().getId());
+        if (framework.isPresent()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (us.findByUsername(authentication.getName()).isPresent()) {
+                final Optional<Comment> comment = commentService.voteUp(commentId, us.findByUsername(authentication.getName()).get().getId());
+            }
+
+            return new ModelAndView("redirect:/" + framework.get().getCategory() + "/" + framework.get().getId());
         }
 
-        return new ModelAndView("redirect:/" + framework.getCategory() + "/" + framework.getId());
+        return ErrorController.redirectToErrorView();
     }
 
     @RequestMapping(path={"/votedown"}, method= RequestMethod.GET)
     public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
-        Framework framework = fs.findById(frameworkId);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (us.findByUsername(authentication.getName()).isPresent()) {
-            final Optional<Comment> comment = commentService.voteDown(commentId, us.findByUsername(authentication.getName()).get().getId());
+        Optional<Framework> framework = fs.findById(frameworkId);
+
+        if (framework.isPresent()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (us.findByUsername(authentication.getName()).isPresent()) {
+                final Optional<Comment> comment = commentService.voteDown(commentId, us.findByUsername(authentication.getName()).get().getId());
+            }
+
+            return new ModelAndView("redirect:/" + framework.get().getCategory() + "/" + framework.get().getId());
         }
 
-        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+framework.getId());
+        return ErrorController.redirectToErrorView();
     }
 
     @RequestMapping(path={"/rate"}, method = RequestMethod.GET)
     public ModelAndView rateComment(@RequestParam("id") final long id, @RequestParam("rating") final int rating) throws UserAlreadyExistException {
-        Framework framework = fs.findById(id);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<Framework> framework = fs.findById(id);
 
-        if (us.findByUsername(authentication.getName()).isPresent()) {
-            final FrameworkVote frameworkVote = frameworkVoteService.insert(id, us.findByUsername(authentication.getName()).get().getId(), rating);
+        if (framework.isPresent()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (us.findByUsername(authentication.getName()).isPresent()) {
+                final FrameworkVote frameworkVote = frameworkVoteService.insert(id, us.findByUsername(authentication.getName()).get().getId(), rating);
+            }
+            return new ModelAndView("redirect:/" + framework.get().getCategory() + "/" + id);
         }
-        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+id);
+
+        return ErrorController.redirectToErrorView();
     }
 
     @RequestMapping(path={"/content"}, method = RequestMethod.POST)
     public ModelAndView addContent(@Valid @ModelAttribute("contentForm") final ContentForm form, final BindingResult errors, final RedirectAttributes redirectAttributes){
 
         long frameworkId = form.getFrameworkId();
-        Framework framework = fs.findById(frameworkId);
+        Optional<Framework> framework = fs.findById(frameworkId);
+
+        if (framework.isPresent()) {
+            if(errors.hasErrors()){
+                // redirectAttributes.addFlashAttribute("contentFormMessage","Error.");
+                //redirectAttributes.addFlashAttribute("contentFormError",true);
+
+                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form);
+                framework1.addObject("contentFormError", true);
+                return framework1;
+                //return new ModelAndView("redirect:/" + framework.getCategory() + "/"+frameworkId);
+            }
+            redirectAttributes.addFlashAttribute("contentFormError",false);
+            redirectAttributes.addFlashAttribute("contentFormMessage","Your content is now pending approval.");
 
 
-        if(errors.hasErrors()){
-           // redirectAttributes.addFlashAttribute("contentFormMessage","Error.");
-            //redirectAttributes.addFlashAttribute("contentFormError",true);
+            ContentTypes type = ContentTypes.valueOf(form.getType());
 
-            final ModelAndView framework1 = framework(frameworkId, framework.getCategory(), form);
-            framework1.addObject("contentFormError", true);
-            return framework1;
-            //return new ModelAndView("redirect:/" + framework.getCategory() + "/"+frameworkId);
+            final Content content = contentService.insertContent(frameworkId, 1, form.getTitle(), form.getLink(), type, true );
+
+            return new ModelAndView("redirect:/" + framework.get().getCategory() + "/"+frameworkId);
         }
-        redirectAttributes.addFlashAttribute("contentFormError",false);
-        redirectAttributes.addFlashAttribute("contentFormMessage","Your content is now pending approval.");
-
-
-        ContentTypes type = ContentTypes.valueOf(form.getType());
-
-        final Content content = contentService.insertContent(frameworkId, 1, form.getTitle(), form.getLink(), type, true );
-
-        return new ModelAndView("redirect:/" + framework.getCategory() + "/"+frameworkId);
+        return ErrorController.redirectToErrorView();
     }
 }
 

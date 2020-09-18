@@ -26,11 +26,9 @@ public class FrameworkServiceImpl implements FrameworkService {
     private ContentService ctns;
 
     @Override
-    public Framework findById(long id) {
-        Framework framework =frameworkDao.findById(id);
-        if(framework!=null) {
-           getStarsAndVotes(framework);
-        }
+    public Optional<Framework> findById(long id) {
+        Optional<Framework> framework = frameworkDao.findById(id);
+        framework.ifPresent(this::getStarsAndVotes);
         return framework;
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FrameworkService {
-    Framework findById(long frameworkId);
+    Optional<Framework> findById(long frameworkId);
     List<Framework> getByCategory(FrameworkCategories category);
     List<Framework> getAll();
     double getStars(long frameworkId);
