@@ -125,7 +125,7 @@ public class RegisterController {
 
         VerificationToken verificationToken = us.getVerificationToken(existingToken);
         User registered = us.findById((int) verificationToken.getUserId());
-        String appUrl = request.getContextPath();
+        String appUrl = request.getRequestURL().substring(0,request.getRequestURL().indexOf(request.getPathInfo())) ;
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl,true));
 
         return "redirect:/register/success/3";
