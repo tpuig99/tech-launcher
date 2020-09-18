@@ -14,11 +14,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private static long USER_NOT_EXISTS = -1;
+    private static final long USER_NOT_EXISTS = -1;
     @Qualifier("userDaoImpl")
     @Autowired
     private UserDao userDao;
@@ -28,21 +29,18 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public User findById(int id) {
+    public Optional<User> findById(int id) {
         return userDao.findById(id);
     }
 
     @Override
-    public User findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userDao.findByUsername(username);
     }
 
     @Override
-    public User findByUsernameForLogin(String username) {
-        User user = findByUsername(username);
-        if(user.isEnable())
-            return user;
-        return null;
+    public Optional<User> findByUsernameForLogin(String username) {
+        return findByUsername(username);
     }
 
     @Override
@@ -53,30 +51,31 @@ public class UserServiceImpl implements UserService {
     }
 
     private long checkIfUserExists(String username, String mail) throws UserAlreadyExistException {
-        User user = findByUsernameOrMail(username,mail);
-        if( user != null ){
-            if(user.getMail().equals(mail) && user.getPassword()==null)
-                return user.getId();
-            if(user.getMail().equals(mail)){
-                throw new UserAlreadyExistException("There is an account with that email address: " +  user.getMail());
+        Optional<User> user = findByUsernameOrMail(username,mail);
+        if( user.isPresent() ){
+            if(user.get().getMail().equals(mail) && user.get().getPassword()==null)
+                return user.get().getId();
+            if(user.get().getMail().equals(mail)){
+                throw new UserAlreadyExistException("There is an account with that email address: " +  user.get().getMail());
             }
-            throw new UserAlreadyExistException("There is an account with that username " +  user.getUsername());
+            throw new UserAlreadyExistException("There is an account with that username " +  user.get().getUsername());
         }
         return USER_NOT_EXISTS;
     }
 
-    private User findByUsernameOrMail(String username, String mail) { return userDao.findByUsernameOrMail(username,mail);
+    private Optional<User> findByUsernameOrMail(String username, String mail) { return userDao.findByUsernameOrMail(username,mail);
     }
 
     @Override
     public User create(String username, String mail, String password) throws UserAlreadyExistException{
         long aux= checkIfUserExists(username,mail);
         String psw = passwordEncoder.encode(password);
-        if(aux==USER_NOT_EXISTS)
-            return userDao.create(username,mail,psw);
-        userDao.update(aux,username,mail,psw);
-        return userDao.findById(aux);
+        if(aux==USER_NOT_EXISTS) {
+            return userDao.create(username, mail, psw);
+        }
+        return update(aux, username, mail, psw).get();
     }
+
 
     @Override
     public int delete(long userId) {
@@ -84,7 +83,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(long userId, String username, String mail, String password) {
+    public Optional<User> update(long userId, String username, String mail, String password) {
         return userDao.update(userId,username,mail,password);
     }
 

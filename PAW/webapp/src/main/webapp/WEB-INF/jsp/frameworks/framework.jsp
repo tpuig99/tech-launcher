@@ -309,14 +309,14 @@
                 <!-- Scripts -->
                 <script>
 
-                    $(window).on('load', function() {
-                        console.log(${contentFormError});
-                        if(${contentFormError}) {
-                            $('#addContentModal').modal('show');
-                        }else{
-                            showSnackbar();
-                        }
-                    });
+                    <%--$(window).on('load', function() {--%>
+                    <%--    console.log(${contentFormError});--%>
+                    <%--    if(${contentFormError}) {--%>
+                    <%--        $('#addContentModal').modal('show');--%>
+                    <%--    }else{--%>
+                    <%--        showSnackbar();--%>
+                    <%--    }--%>
+                    <%--});--%>
 
                     function publishComment() {
                         let content = document.getElementById("commentInput").value;

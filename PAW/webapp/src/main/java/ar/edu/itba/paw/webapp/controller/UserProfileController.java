@@ -2,8 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.FrameworkVote;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class UserProfileController {
@@ -39,16 +36,20 @@ public class UserProfileController {
     public ModelAndView userProfile(@PathVariable String username) {
         ModelAndView mav = new ModelAndView("session/user_profile");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        long userId = us.findByUsername(username).getId();
-        mav.addObject("profile", us.findById((int) userId));
+        if (us.findByUsername(username).isPresent()) {
+            User user = us.findByUsername(username).get();
+            long userId = user.getId();
+            mav.addObject("profile", user);
 
-        final List<Comment> commentList = commentService.getCommentsByUser(userId);
-        final List<Content> contentList = contentService.getContentByUser(userId);
-        final List<FrameworkVote> votesList = voteService.getAllByUserWithFrameworkName(userId);
+            final List<Comment> commentList = commentService.getCommentsByUser(userId);
+            final List<Content> contentList = contentService.getContentByUser(userId);
+            final List<FrameworkVote> votesList = voteService.getAllByUserWithFrameworkName(userId);
 
-        mav.addObject("contents", contentList);
-        mav.addObject("comments", commentList);
-        mav.addObject("votes", votesList);
+            mav.addObject("contents", contentList);
+            mav.addObject("comments", commentList);
+            mav.addObject("votes", votesList);
+        }
+
         return mav;
     }
 }

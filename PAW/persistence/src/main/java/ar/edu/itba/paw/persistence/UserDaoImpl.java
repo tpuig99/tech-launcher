@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,37 +11,20 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class UserDaoImpl implements UserDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     
-    private final static RowMapper<User> ROW_MAPPER = new
-            RowMapper<User>() {
-                @Override
-                public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new User(rs.getInt("user_id"), rs.getString("user_name"),rs.getString("mail"),rs.getString("password"),rs.getBoolean("enabled"),rs.getString("user_description"));
-                }
-            };
-    private final static RowMapper<String> ROW_MAPPER_USERNAME = new
-            RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new String(rs.getString("user_name"));
-                }
-            };
-    private final static RowMapper<String> ROW_MAPPER_MAIL = new
-            RowMapper<String>() {
-                @Override
-                public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new String(rs.getString("mail"));
-                }
-            };
+    private final static RowMapper<User> ROW_MAPPER = UserDaoImpl::userMapRow;
+    private final static RowMapper<String> ROW_MAPPER_USERNAME = UserDaoImpl::usernameMapRow;
+    private final static RowMapper<String> ROW_MAPPER_MAIL = UserDaoImpl::mailMapRow;
+
     @Autowired
     public UserDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -51,47 +33,46 @@ public class UserDaoImpl implements UserDao {
                         .usingGeneratedKeyColumns("user_id");
     }
 
+    private static User userMapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new User(rs.getInt("user_id"),
+                rs.getString("user_name"),
+                rs.getString("mail"),
+                rs.getString("password"),
+                rs.getBoolean("enabled"),
+                rs.getString("user_description"));
+    }
+
+    private static String usernameMapRow(ResultSet rs, int rowNum) throws SQLException {
+        return rs.getString("user_name");
+    }
+
+    private static String mailMapRow(ResultSet rs, int rowNum) throws SQLException {
+        return rs.getString("mail");
+    }
+
     @Override
     public List<User> getAll() {
-        final List<User> toReturn = jdbcTemplate.query("SELECT * FROM users", ROW_MAPPER);
-
-        return toReturn;
+        return jdbcTemplate.query("SELECT * FROM users", ROW_MAPPER);
     }
 
     @Override
-    public User findById(final long id) {
-        final List<User> list = jdbcTemplate.query("SELECT * FROM users WHERE user_id = ?", ROW_MAPPER, id);
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.get(0);
+    public Optional<User> findById(final long id) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE user_id = ?", new Object[] { id }, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
-    public User findByUsername(String username) {
-        final List<User> list = jdbcTemplate.query("SELECT * FROM users WHERE user_name ILIKE ?", ROW_MAPPER, username);
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.get(0);
+    public Optional<User> findByUsername(String username) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE user_name ILIKE ?", new Object[] {username}, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
-    public User findByUsernameOrMail(String username, String mail) {
-        final List<User> list = jdbcTemplate.query("SELECT * FROM users WHERE user_name ILIKE ? or mail =?", ROW_MAPPER, username,mail);
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.get(0);
+    public Optional<User> findByUsernameOrMail(String username, String mail) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE user_name ILIKE ? or mail =?", new Object[] {username, mail}, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
-    public User findByMail(String mail) {
-        final List<User> list = jdbcTemplate.query("SELECT * FROM users WHERE mail = ?", ROW_MAPPER, mail);
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.get(0);
+    public Optional<User> findByMail(String mail) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE mail = ?", new Object[] { mail }, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -123,12 +104,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User update(long userId, String user_name, String mail, String password) {
+    public Optional<User> update(long userId, String user_name, String mail, String password) {
         String sql = "UPDATE users set mail=?,user_name=?,password=? where user_id=?";
         jdbcTemplate.update(sql,mail,user_name,password,userId);
         return findById(userId);
     }
 
+    // TODO: CAN IT BE REPLACED WITH A NATURAL JOIN? QUERY IS A LITTLE BIT TRICKY
     @Override
     public Map<Long, String> getUsernamesByComments(List<Comment> comments) {
 
@@ -136,9 +118,11 @@ public class UserDaoImpl implements UserDao {
         String username;
         if(comments !=null ) {
             for (Comment c : comments) {
-                username = findById(c.getUserId()).getUsername();
-
-                toReturn.put(c.getCommentId(), username);
+                Optional<User> user = findById(c.getUserId());
+                if (user.isPresent()) {
+                    username = user.get().getUsername();
+                    toReturn.put(c.getCommentId(), username);
+                }
             }
         }
 
@@ -147,15 +131,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<String> getMails() {
-        final List<String> toReturn = jdbcTemplate.query("SELECT mail FROM users", ROW_MAPPER_MAIL);
-        return toReturn;
+        return jdbcTemplate.query("SELECT mail FROM users", ROW_MAPPER_MAIL);
     }
 
+    // TODO: IS THIS ALRIGHT? ROW_MAPPER_MAIL???
     @Override
     public List<String> getUserNames() {
-        final List<String> toReturn = jdbcTemplate.query("SELECT user_name FROM users", ROW_MAPPER_MAIL);
-        return toReturn;
-
+        return jdbcTemplate.query("SELECT user_name FROM users", ROW_MAPPER_MAIL);
     }
 
     @Override

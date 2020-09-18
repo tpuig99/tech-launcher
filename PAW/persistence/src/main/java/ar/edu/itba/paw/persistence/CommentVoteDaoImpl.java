@@ -14,18 +14,13 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class CommentVoteDaoImpl implements CommentVoteDao{
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final static RowMapper<CommentVote> ROW_MAPPER = new
-            RowMapper<CommentVote>() {
-                @Override
-                public CommentVote mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new CommentVote(rs.getInt("vote_id"),rs.getInt("comment_id"),rs.getInt("user_id"),rs.getInt("vote"));
-                }
-            };
+    private final static RowMapper<CommentVote> ROW_MAPPER = CommentVoteDaoImpl::mapRow;
 
     @Autowired
     public CommentVoteDaoImpl(final DataSource ds) {
@@ -35,35 +30,32 @@ public class CommentVoteDaoImpl implements CommentVoteDao{
                 .usingGeneratedKeyColumns("vote_id");
     }
 
+    private static CommentVote mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new CommentVote(rs.getInt("vote_id"),
+                rs.getInt("comment_id"),
+                rs.getInt("user_id"),
+                rs.getInt("vote"));
+    }
+
 
     @Override
     public List<CommentVote> getAll() {
-        final List<CommentVote> toReturn = jdbcTemplate.query("SELECT * FROM comment_votes", ROW_MAPPER);
-        return toReturn;
+        return jdbcTemplate.query("SELECT * FROM comment_votes", ROW_MAPPER);
     }
 
     @Override
     public List<CommentVote> getByComment(long commentId) {
-        final List<CommentVote> toReturn = jdbcTemplate.query("SELECT * FROM comment_votes WHERE comment_id=?", ROW_MAPPER,commentId);
-        return toReturn;
+        return jdbcTemplate.query("SELECT * FROM comment_votes WHERE comment_id=?", new Object[] {commentId}, ROW_MAPPER);
     }
 
     @Override
-    public CommentVote getById(long voteId) {
-        final List<CommentVote> toReturn = jdbcTemplate.query("SELECT * FROM comment_votes WHERE vote_id=?", ROW_MAPPER,voteId);
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-        return toReturn.get(0);
+    public Optional<CommentVote> getById(long voteId) {
+        return jdbcTemplate.query("SELECT * FROM comment_votes WHERE vote_id=?", new Object[] {voteId}, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
-    public CommentVote getByCommentAndUser(long commentId, long userId) {
-        final List<CommentVote> toReturn = jdbcTemplate.query("SELECT * FROM comment_votes WHERE comment_id=? AND user_id=?", ROW_MAPPER,commentId,userId);
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-        return toReturn.get(0);
+    public Optional<CommentVote> getByCommentAndUser(long commentId, long userId) {
+        return jdbcTemplate.query("SELECT * FROM comment_votes WHERE comment_id=? AND user_id=?", new Object[] {commentId,userId}, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -83,7 +75,7 @@ public class CommentVoteDaoImpl implements CommentVoteDao{
     }
 
     @Override
-    public CommentVote update(long voteId, int vote) {
+    public Optional<CommentVote> update(long voteId, int vote) {
         String sql = "UPDATE comment_votes set vote=? where vote_id=?";
         jdbcTemplate.update(sql,vote,voteId);
         return getById(voteId);

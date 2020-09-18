@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Optional;
 
 @Controller
 public class RegisterController {
@@ -101,22 +102,27 @@ public class RegisterController {
             model.addAttribute("message", "Something went wrong! Do you want to send another confirmation link?");
             return "session/badUser";
         }
-        User user =us.findById((int) verificationToken.getUserId());
-        if(user.isEnable()){
+        Optional<User> user =us.findById((int) verificationToken.getUserId());
+
+        if (user.isPresent()) {
+            if(user.get().isEnable()){
+                return "redirect:/register/success/2";
+            }
+            Calendar cal = Calendar.getInstance();
+            if ((verificationToken.getexpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
+                model.addAttribute("message", "The link has expired! Do you want to send another confirmation link?");
+                model.addAttribute("expired", true);
+                model.addAttribute("token", token);
+                return "session/badUser";
+            }
+
+            user.get().setEnable(true);
+            us.saveRegisteredUser(user.get());
+            //return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
             return "redirect:/register/success/2";
         }
-        Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getexpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
-            model.addAttribute("message", "The link has expired! Do you want to send another confirmation link?");
-            model.addAttribute("expired", true);
-            model.addAttribute("token", token);
-            return "session/badUser";
-        }
 
-        user.setEnable(true);
-        us.saveRegisteredUser(user);
-        //return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
-        return "redirect:/register/success/2";
+        return "redirect:/error";
     }
 
     @RequestMapping(value= "/register/resendRegistrationToken", method = RequestMethod.GET)
@@ -124,11 +130,15 @@ public class RegisterController {
             HttpServletRequest request, @RequestParam("token") String existingToken) {
 
         VerificationToken verificationToken = us.getVerificationToken(existingToken);
-        User registered = us.findById((int) verificationToken.getUserId());
+        Optional<User> registered = us.findById((int) verificationToken.getUserId());
         String appUrl = request.getRequestURL().substring(0,request.getRequestURL().indexOf(request.getPathInfo())) ;
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl,true));
 
-        return "redirect:/register/success/3";
+        if(registered.isPresent()) {
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered.get(), request.getLocale(), appUrl,true));
+            return "redirect:/register/success/3";
+        }
+
+        return "redirect:/error";
     }
     /*@ModelAttribute("userId")
     public Integer loggedUser(final HttpSession session)

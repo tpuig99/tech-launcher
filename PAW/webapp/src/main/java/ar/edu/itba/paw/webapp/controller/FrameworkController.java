@@ -65,7 +65,10 @@ public class FrameworkController {
     public ModelAndView saveComment(@RequestParam("id") final long id, @RequestParam("content") final String content) throws UserAlreadyExistException {
         Framework framework = fs.findById(id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final Comment comment = commentService.insertComment(framework.getId(),us.findByUsername(authentication.getName()).getId(),content, null);
+
+        if (us.findByUsername(authentication.getName()).isPresent()) {
+            final Comment comment = commentService.insertComment(framework.getId(),us.findByUsername(authentication.getName()).get().getId(),content, null);
+        }
 
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+framework.getId());
     }
@@ -74,7 +77,11 @@ public class FrameworkController {
     public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
         Framework framework = fs.findById(frameworkId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final Optional<Comment> comment = commentService.voteUp(commentId,us.findByUsername(authentication.getName()).getId());
+
+        if (us.findByUsername(authentication.getName()).isPresent()) {
+            final Optional<Comment> comment = commentService.voteUp(commentId,us.findByUsername(authentication.getName()).get().getId());
+        }
+
         return new ModelAndView("redirect:/" + framework.getCategory() + "/" + framework.getId());
     }
 
@@ -82,7 +89,10 @@ public class FrameworkController {
     public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
         Framework framework = fs.findById(frameworkId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final Optional<Comment> comment = commentService.voteDown(commentId,us.findByUsername(authentication.getName()).getId());
+        if (us.findByUsername(authentication.getName()).isPresent()) {
+            final Optional<Comment> comment = commentService.voteDown(commentId, us.findByUsername(authentication.getName()).get().getId());
+        }
+
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+framework.getId());
     }
 
@@ -90,8 +100,10 @@ public class FrameworkController {
     public ModelAndView rateComment(@RequestParam("id") final long id, @RequestParam("rating") final int rating) throws UserAlreadyExistException {
         Framework framework = fs.findById(id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final FrameworkVote frameworkVote = frameworkVoteService.insert(id,us.findByUsername(authentication.getName()).getId(),rating);
 
+        if (us.findByUsername(authentication.getName()).isPresent()) {
+            final FrameworkVote frameworkVote = frameworkVoteService.insert(id, us.findByUsername(authentication.getName()).get().getId(), rating);
+        }
         return new ModelAndView("redirect:/" + framework.getCategory() + "/"+id);
     }
 
