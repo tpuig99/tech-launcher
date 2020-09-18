@@ -20,4 +20,5 @@ public interface UserDao {
     List<String> getMails();
     List<String> getUserNames();
     void setEnable(long id);
+    void updateDescription(long userId,String description);
 }

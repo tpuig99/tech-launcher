@@ -25,6 +25,13 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
                     return new FrameworkVote(rs.getInt("vote_id"),rs.getInt("framework_id"),rs.getInt("user_id"),rs.getInt("stars"));
                 }
             };
+    private final static RowMapper<FrameworkVote> ROW_MAPPER_WITH_FRAMEWORK_NAME = new
+            RowMapper<FrameworkVote>() {
+                @Override
+                public FrameworkVote mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return new FrameworkVote(rs.getInt("vote_id"),rs.getInt("framework_id"),rs.getInt("user_id"),rs.getInt("stars"),rs.getString("framework_name"));
+                }
+            };
 
     @Autowired
     public FrameworkVoteDaoImpl(final DataSource ds) {
@@ -90,5 +97,10 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
         String sql = "UPDATE framework_votes set stars=? where vote_id=?";
         jdbcTemplate.update(sql,stars,voteId);
         return getById(voteId);
+    }
+
+    @Override
+    public List<FrameworkVote> getAllByUserWithFrameworkName(long userId) {
+        return jdbcTemplate.query("select framework_id, vote_id,user_id,stars,framework_name from framework_votes natural join frameworks where user_id =?", new Object[] { userId }, ROW_MAPPER_WITH_FRAMEWORK_NAME);
     }
 }

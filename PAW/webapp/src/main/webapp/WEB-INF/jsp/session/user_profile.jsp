@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/user_profile.css"/>"/>
 </head>
 <body>
@@ -21,15 +22,14 @@
     <jsp:param name="username" value="${user.name}"/>
 </jsp:include>
 
-<div class="content-no-sidebar">
-    <div class="page-title">
-        <h2>User Profile</h2>
-    </div>
-    <div class="page-description"></div>
-
-    <div class="row justify-content-center">
+<div class="content-profile row">
+    <div class="col border-right justify-content-center">
+        <div class="sticky-top-row ml-2">
+            <div class="page-title mb-4">
+                <h2>User Profile</h2>
+            </div>
             <div class="well profile">
-                <div class="row justify-content-center">
+                <div class="row">
                     <div>
                         <img src="https://picsum.photos/536/354" alt="" class="rounded-circle img-slot">
                         <h2><c:out value="${profile.username}"/></h2>
@@ -56,6 +56,62 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <!-- Comments -->
+        <c:if test="${not empty comments}">
+            <div class="page-title mb-4 ml-2 text-left">
+                <h2>Comments</h2>
+            </div>
+            <div class="container d-flex justify-content-center">
+                <c:forEach var="comment" items="${comments}">
+                    <div class="card emphasis emph-comment row mb-2">
+                        <div class="card-body row mt-1">
+                            <div class="col-3 secondary-font"> <c:out value="${comment.frameworkName}" default=""/> </div>
+                            <div class="col-6 text-left"> <c:out value="${comment.description}" default=""/> </div>
+                            <div class="col third-font text-right"> <c:out value="${comment.timestamp.toLocaleString()}" default=""/> </div>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
+
+        <!-- Contents -->
+        <c:if test="${not empty contents}">
+            <div class="page-title mb-4 ml-2 text-left">
+                <h2>Contents</h2>
+            </div>
+            <div class="container d-flex justify-content-center">
+                <c:forEach var="content" items="${contents}">
+                    <div class="card emphasis emph-content row mb-2">
+                        <div class="card-body row mt-1">
+                            <div class="col-3 secondary-font"> <c:out value="${content.frameworkName}" default=""/> </div>
+                            <div class="col-6 text-left"> <c:out value="${content.type.name()}: ${content.title}" default=""/> </div>
+                            <div class="col third-font text-right"> <c:out value="${content.timestamp.toLocaleString()}" default=""/> </div>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
+
+        <!-- Votes -->
+        <c:if test="${not empty votes}">
+            <div class="page-title mb-4 ml-2 text-left">
+                <h2>Votes</h2>
+            </div>
+            <div class="container row equal justify-content-center">
+                <c:forEach var="vote" items="${votes}">
+                    <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
+                        <div class="card-body row mt-1">
+                            <div class="col secondary-font"> <c:out value="${vote.frameworkName}" default=""/> </div>
+                            <div class="col"> <c:out value="${vote.stars} / 5" default=""/> </div>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
+    </div>
     </div>
 </div>
 

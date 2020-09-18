@@ -34,7 +34,20 @@ public class CommentDaoImpl implements CommentDao {
                             );
                 }
             };
-
+    private final static RowMapper<Comment> ROW_MAPPER_PROFILE = new
+            RowMapper<Comment>() {
+                @Override
+                public Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return new Comment(rs.getLong("comment_id"),
+                            rs.getInt("framework_id"),
+                            rs.getLong("user_id"),
+                            rs.getString("description"),
+                            rs.getTimestamp("tstamp"),
+                            rs.getLong("reference"),
+                            rs.getString("framework_name")
+                    );
+                }
+            };
     @Autowired
     public CommentDaoImpl(final DataSource ds) {
         this.jdbcTemplate = new JdbcTemplate(ds);
@@ -71,7 +84,7 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public List<Comment> getCommentsByUser(long userId) {
-        final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE user_id = ?", ROW_MAPPER, userId);
+        final List<Comment> toReturn = jdbcTemplate.query("select comment_id, frameworks.framework_id,user_id,comments.description,tstamp,reference,framework_name from comments join frameworks on frameworks.framework_id = comments.framework_id where user_id=?", ROW_MAPPER_PROFILE, userId);
 
         return toReturn;
     }

@@ -20,4 +20,5 @@ public interface UserService {
     VerificationToken getVerificationToken(String token);
     void saveRegisteredUser(User user);
     void generateNewVerificationToken(User user, String token);
+    void updateDescription(long userId,String description);
 }

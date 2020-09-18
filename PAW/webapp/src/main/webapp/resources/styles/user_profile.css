@@ -5,6 +5,23 @@
     display: inline-block;
 }
 
+
+.content-profile {
+    justify-content: center;
+    text-align: center;
+    vertical-align: center;
+    padding-top: 6.5em;
+    padding-bottom: 2em;
+    width: 100%;
+}
+
+.sticky-top-row {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 110px;
+    z-index: 1020;
+}
+
 .img-slot
 {
     width: 6em;
@@ -15,6 +32,22 @@
 {
     border-top:1px solid rgba(0,0,0,0.1);
 }
+
+.emphasis.emph-comment:hover
+{
+    border-top: 4px solid #48bfe3;
+}
+
+.emphasis.emph-votes:hover
+{
+    border-top: 4px solid #FFC107;
+}
+
+.emphasis.emph-content:hover
+{
+    border-top: 4px solid #AFBBF2;
+}
+
 .emphasis
 {
     border-top: 4px solid transparent;

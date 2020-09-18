@@ -38,6 +38,24 @@ public class ContentDaoImpl implements ContentDao {
                     );
                 }
             };
+    private final static RowMapper<Content> ROW_MAPPER_PROFILE = new
+            RowMapper<Content>() {
+                @Override
+                public Content mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return new Content(rs.getLong("content_id"),
+                            rs.getInt("framework_id"),
+                            rs.getLong("user_id"),
+                            rs.getString("title"),
+                            rs.getLong("votes_up"),
+                            rs.getLong("votes_down"),
+                            rs.getTimestamp("tstamp"),
+                            rs.getString("link"),
+                            Enum.valueOf(ContentTypes.class, rs.getString("type")),
+                            rs.getBoolean("pending"),
+                            rs.getString("framework_name")
+                    );
+                }
+            };
 
     @Autowired
     public ContentDaoImpl(final DataSource ds) {
@@ -91,7 +109,7 @@ public class ContentDaoImpl implements ContentDao {
 
     @Override
     public List<Content> getContentByUser(long userId) {
-        final List<Content> toReturn = jdbcTemplate.query("SELECT * FROM content WHERE user_id = ?", ROW_MAPPER, userId);
+        final List<Content> toReturn = jdbcTemplate.query("select content_id,title, frameworks.framework_id,user_id,votes_up,votes_down,tstamp,link,content.type,pending,framework_name from content join frameworks on content.framework_id = frameworks.framework_id where user_id=?", ROW_MAPPER_PROFILE, userId);
         return toReturn;
     }
 
