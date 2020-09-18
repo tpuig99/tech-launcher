@@ -6,6 +6,7 @@ public class User {
     private String mail;
     private String password;
     private boolean enable = false;
+    private String description;
 
     public User(final long id,final String username,final String mail) {
         this.id = id;
@@ -20,12 +21,29 @@ public class User {
         this.password = password;
     }
 
+    public User(long id, String username, String mail, String password, boolean enable, String description) {
+        this.id = id;
+        this.username = username;
+        this.mail = mail;
+        this.password = password;
+        this.enable = enable;
+        this.description = description;
+    }
+
     public User(long id, String username, String mail, String password, boolean enable) {
         this.id = id;
         this.username = username;
         this.mail = mail;
         this.password = password;
         this.enable = enable;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public long getId() {

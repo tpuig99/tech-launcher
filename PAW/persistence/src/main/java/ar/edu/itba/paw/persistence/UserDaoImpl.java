@@ -26,7 +26,7 @@ public class UserDaoImpl implements UserDao {
             RowMapper<User>() {
                 @Override
                 public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new User(rs.getInt("user_id"), rs.getString("user_name"),rs.getString("mail"),rs.getString("password"),rs.getBoolean("enabled"));
+                    return new User(rs.getInt("user_id"), rs.getString("user_name"),rs.getString("mail"),rs.getString("password"),rs.getBoolean("enabled"),rs.getString("user_description"));
                 }
             };
     private final static RowMapper<String> ROW_MAPPER_USERNAME = new
@@ -100,6 +100,7 @@ public class UserDaoImpl implements UserDao {
         args.put("user_name", user_name); // la key es el nombre de la columna
         args.put("mail",mail);
         args.put("enabled",false);
+        args.put("user_description","");
         final Number userId = jdbcInsert.executeAndReturnKey(args);
         return new User(userId.longValue(), user_name,mail);
     }
@@ -109,6 +110,7 @@ public class UserDaoImpl implements UserDao {
         args.put("user_name", user_name); // la key es el nombre de la columna
         args.put("mail",mail);
         args.put("password",password);
+        args.put("user_description","");
         args.put("enabled",false);
         final Number userId = jdbcInsert.executeAndReturnKey(args);
         return new User(userId.longValue(), user_name,mail,password);
@@ -160,5 +162,11 @@ public class UserDaoImpl implements UserDao {
     public void setEnable(long id) {
         String sql = "UPDATE users set enabled=true where user_id=?";
         jdbcTemplate.update(sql,id);
+    }
+
+    @Override
+    public void updateDescription(long id, String description) {
+        String sql = "UPDATE users set user_description=? where user_id=?";
+        jdbcTemplate.update(sql,description,id);
     }
 }

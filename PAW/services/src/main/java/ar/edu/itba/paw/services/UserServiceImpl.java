@@ -117,4 +117,9 @@ public class UserServiceImpl implements UserService {
         VerificationToken verificationToken = tokenDao.getByUser(user.getId());
         tokenDao.change(verificationToken.getTokenId(),token);
     }
+
+    @Override
+    public void updateDescription(long userId, String description) {
+        userDao.updateDescription(userId,description);
+    }
 }
