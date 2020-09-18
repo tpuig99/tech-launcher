@@ -43,28 +43,9 @@ public class UserProfileController {
         mav.addObject("profile", us.findById((int) userId));
 
         final List<Comment> commentList = commentService.getCommentsByUser(userId);
-        Map<Long, String> frameworkCommentNames = new HashMap<>();
-        for (Comment comment : commentList) {
-            frameworkCommentNames.put(comment.getCommentId(),frameworkService.findById(comment.getFrameworkId()).getName());
-        }
-
         final List<Content> contentList = contentService.getContentByUser(userId);
-        Map<Long, String> frameworkContentNames = new HashMap<>();
-        for (Content content : contentList) {
-            frameworkContentNames.put(content.getContentId(),frameworkService.findById(content.getFrameworkId()).getName());
-        }
-
-        /*final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
-        Map<Long, String> frameworkVoteNames = new HashMap<>();
-        for (FrameworkVote vote : votesList) {
-            frameworkVoteNames.put(vote.getVoteId(),frameworkService.findById(vote.getFrameworkId()).getName());
-        }*/
         final List<FrameworkVote> votesList = voteService.getAllByUserWithFrameworkName(userId);
 
-
-        mav.addObject("frameworkCommentNames", frameworkCommentNames);
-        mav.addObject("frameworkContentNames", frameworkContentNames);
-        //mav.addObject("frameworkVoteNames", frameworkVoteNames);
         mav.addObject("contents", contentList);
         mav.addObject("comments", commentList);
         mav.addObject("votes", votesList);

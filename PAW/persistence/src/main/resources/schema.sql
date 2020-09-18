@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
                  enabled boolean default false not null
                  );
 ALTER TABLE users ADD COLUMN IF NOT EXISTS enabled boolean default false not null ;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS user_description varchar(200) default '' not null ;
 CREATE TABLE IF NOT EXISTS verification_token(
                  token_id SERIAL PRIMARY KEY,
                  user_id integer NOT NULL unique,
