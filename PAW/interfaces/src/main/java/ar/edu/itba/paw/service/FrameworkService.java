@@ -19,7 +19,7 @@ public interface FrameworkService {
     List<Framework> getByNameOrCategory(String toSearch);
     Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type, Boolean pending);
     int deleteContent(long contentId);
-    Content changeContent(long contentId, String title, String link, ContentTypes types);
+    Optional<Content> changeContent(long contentId, String title, String link, ContentTypes types);
     Comment insertComment(long frameworkId, long userId, String description);
     int deleteComment(long commentId);
     Optional<Comment> changeComment(long commentId, String description);

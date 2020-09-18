@@ -101,7 +101,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public Content changeContent(long contentId, String title, String link, ContentTypes types) {
+    public Optional<Content> changeContent(long contentId, String title, String link, ContentTypes types) {
         return ctns.changeContent(contentId,title,link,types);
     }
 
