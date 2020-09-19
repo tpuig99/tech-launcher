@@ -37,6 +37,10 @@ public class FrameworkController {
     @Autowired
     private UserService us;
 
+    public static ModelAndView redirectToFramework(Long id, String category) {
+        return new ModelAndView("redirect:/" + category + "/" + id);
+    }
+
     @RequestMapping("/{category}/{id}")
     public ModelAndView framework(@PathVariable long id, @PathVariable String category,@ModelAttribute("contentForm") final ContentForm form) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
@@ -74,7 +78,7 @@ public class FrameworkController {
                 final Comment comment = commentService.insertComment(framework.get().getId(), us.findByUsername(authentication.getName()).get().getId(), content, null);
             }
 
-            return new ModelAndView("redirect:/" + framework.get().getCategory() + "/" + framework.get().getId());
+            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
         }
 
         return ErrorController.redirectToErrorView();
@@ -92,7 +96,7 @@ public class FrameworkController {
                 final Optional<Comment> comment = commentService.voteUp(commentId, us.findByUsername(authentication.getName()).get().getId());
             }
 
-            return new ModelAndView("redirect:/" + framework.get().getCategory() + "/" + framework.get().getId());
+            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
         }
 
         return ErrorController.redirectToErrorView();
@@ -108,7 +112,7 @@ public class FrameworkController {
                 final Optional<Comment> comment = commentService.voteDown(commentId, us.findByUsername(authentication.getName()).get().getId());
             }
 
-            return new ModelAndView("redirect:/" + framework.get().getCategory() + "/" + framework.get().getId());
+            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
         }
 
         return ErrorController.redirectToErrorView();
@@ -124,7 +128,7 @@ public class FrameworkController {
             if (us.findByUsername(authentication.getName()).isPresent()) {
                 final FrameworkVote frameworkVote = frameworkVoteService.insert(id, us.findByUsername(authentication.getName()).get().getId(), rating);
             }
-            return new ModelAndView("redirect:/" + framework.get().getCategory() + "/" + id);
+            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
         }
 
         return ErrorController.redirectToErrorView();
@@ -154,7 +158,7 @@ public class FrameworkController {
 
             final Content content = contentService.insertContent(frameworkId, 1, form.getTitle(), form.getLink(), type, true );
 
-            return new ModelAndView("redirect:/" + framework.get().getCategory() + "/"+frameworkId);
+            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
         }
         return ErrorController.redirectToErrorView();
     }
