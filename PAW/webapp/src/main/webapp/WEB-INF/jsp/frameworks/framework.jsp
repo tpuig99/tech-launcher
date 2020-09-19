@@ -308,15 +308,16 @@
 
                 <!-- Scripts -->
                 <script>
-
-                    <%--$(window).on('load', function() {--%>
-                    <%--    console.log(${contentFormError});--%>
-                    <%--    if(${contentFormError}) {--%>
-                    <%--        $('#addContentModal').modal('show');--%>
-                    <%--    }else{--%>
-                    <%--        showSnackbar();--%>
-                    <%--    }--%>
-                    <%--});--%>
+                    <c:if test="${not empty contentFormError}">
+                        $(window).on('load', function() {
+                            console.log(${contentFormError});
+                            if(${contentFormError}) {
+                                $('#addContentModal').modal('show');
+                            }else{
+                                showSnackbar();
+                            }
+                        });
+                    </c:if>
 
                     function publishComment() {
                         let content = document.getElementById("commentInput").value;
