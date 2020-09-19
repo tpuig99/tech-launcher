@@ -95,7 +95,15 @@ textarea {
     justify-content: flex-end;
 }
 
+.hide{
+    visibility: hidden;
+}
+
 .row{
+    width: 100%;
+}
+
+.fill{
     width: 100%;
 }
 

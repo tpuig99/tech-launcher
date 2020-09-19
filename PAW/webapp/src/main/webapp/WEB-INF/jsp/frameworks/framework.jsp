@@ -172,9 +172,25 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <button type="button" class="btn btn-light">
-                                    <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
-                                </button>
+                                <span>
+                                    <button type="button" class="btn btn-light">
+                                        <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
+                                     </button>
+                                    </span>
+                                <span>
+                                    <button type="button" class="btn btn-light">
+                                        <i class="arrow fas fa-eye fa-xs"></i><span class="reply padding-left">See Comments</span>
+                                    </button>
+                                </span>
+                            </div>
+                            <div class="row">
+                                <div class="col-10">
+                               <textarea id="commentReplyInput" class="form-control"></textarea>
+                                </div>
+                                <div class="col">
+                                <button class="btn primary-button btn-sm">SUBMIT</button>
+                                </div>
+
                             </div>
 
                         </div>
