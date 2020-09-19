@@ -34,7 +34,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 FrameworkCategories.getByName(rs.getString("category")),
                 rs.getString("description"),
                 rs.getString("introduction"),
-                rs.getString("logo"));
+                rs.getString("logo"),FrameworkType.getByName(rs.getString("type")));
     }
 
     @Override
@@ -49,9 +49,38 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> getByNameOrCategory(String toSearch) {
+    public List<Framework> getByType(FrameworkType type) {
+        return jdbcTemplate.query("SELECT * FROM frameworks WHERE type = ?", new Object[]{ type.getType() }, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByCategoryAndType(FrameworkType type, FrameworkCategories category) {
+        return jdbcTemplate.query("SELECT * FROM frameworks WHERE type = ? and category = ? ", new Object[]{ type.getType(),category.getNameCat() }, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByCategoryAndWord(FrameworkCategories category, String toSearch) {
         String value = "%"+toSearch+"%";
-        return jdbcTemplate.query("SELECT * FROM frameworks WHERE framework_name ILIKE ? OR category ILIKE ?", new Object[]{ value, value }, ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM frameworks WHERE category = ? and framework_name ILIKE ?", new Object[]{ category.getNameCat(),value}, ROW_MAPPER);
+
+    }
+
+    @Override
+    public List<Framework> getByTypeAndWord(FrameworkType type, String toSearch) {
+        String value = "%"+toSearch+"%";
+        return jdbcTemplate.query("SELECT * FROM frameworks WHERE type = ? and framework_name ILIKE ?", new Object[]{ type.getType(),value}, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByCategoryAndTypeAndWord(FrameworkType type, FrameworkCategories category, String toSearch) {
+        String value = "%"+toSearch+"%";
+        return jdbcTemplate.query("SELECT * FROM frameworks WHERE type = ? and category = ? and framework_name ILIKE ?", new Object[]{ type.getType(),category.getNameCat(),value}, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByWord(String toSearch) {
+        String value = "%"+toSearch+"%";
+        return jdbcTemplate.query("SELECT * FROM frameworks WHERE framework_name ILIKE ? OR category ILIKE ? OR type ILIKE ?", new Object[]{ value, value, value}, ROW_MAPPER);
     }
 
     @Override
@@ -59,14 +88,15 @@ public class FrameworkDaoImpl implements FrameworkDao {
         return jdbcTemplate.query("SELECT * FROM frameworks", ROW_MAPPER);
     }
 
-    private Framework create(String framework_name,FrameworkCategories category,String description,String introduction,String logo) {
+    private Framework create(String framework_name,FrameworkCategories category,String description,String introduction,String logo,FrameworkType type) {
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_name", framework_name); // la key es el nombre de la columna
         args.put("category", category.name()); // la key es el nombre de la columna
         args.put("description", description); // la key es el nombre de la columna
         args.put("introduction",introduction);
         args.put("logo",logo);
+        args.put("type",type.getType());
         final Number frameworkId = jdbcInsert.executeAndReturnKey(args);
-        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction,logo);
+        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction,logo,type);
     }
 }
