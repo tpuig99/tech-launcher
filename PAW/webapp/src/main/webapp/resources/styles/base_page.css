@@ -11,6 +11,10 @@ nav a:hover {
     color: #f1f1f1;
 }
 
+.error-background {
+    background: #AFBBF2
+}
+
 .sidenav {
     position: fixed;
     height: 100%;
@@ -45,6 +49,17 @@ nav a:hover {
     padding-top: 10px;
 }
 
+.content-no-sidebar {
+    justify-content: center;
+    text-align: center;
+    vertical-align: center;
+    padding-top: 6.5em;
+    margin: auto;
+    padding-left: 5em;
+    padding-right: 5em;
+    width: 60%;
+}
+
 .page-title {
     font-size: 5em;
     border-bottom: 0.01em solid black;
@@ -67,10 +82,11 @@ nav a:hover {
     border-bottom: 0.1em solid black;
 }
 
-
-
-img {
-    height: 15em;
+.subtitle {
+    padding-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 0.5em;
 }
 
 
@@ -78,10 +94,7 @@ img {
     flex-wrap: wrap;
 }
 
-.mini-img
-{
-    width: 5em;
-}
+
 
 .margin-left{
     margin-left: 3em;
@@ -90,4 +103,37 @@ img {
 .primary-button{
     background-color: #48bfe3;
      color: white;
+}
+
+.fab-button{
+    background-color: #48bfe3;
+    color: white;
+    border-radius: 50%;
+    display: block;
+    height: 0.5em;
+    width:  0.5em;
+    border: 1px solid #fefefe;
+    font-size:22px;
+}
+
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.mini-logo
+{
+    width: 5em;
+    height: 5em;
+}
+
+.medium-logo{
+    width: 5em;
+    height: 5em;
+}
+
+.max-logo{
+    width: 8em;
+    height: 8em;
 }

@@ -2,19 +2,15 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.FrameworkDao;
-import ar.edu.itba.paw.persistence.VoteDao;
 import ar.edu.itba.paw.service.CommentService;
 import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
-import ar.edu.itba.paw.service.VoteService;
+import ar.edu.itba.paw.service.FrameworkVoteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
-import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FrameworkServiceImpl implements FrameworkService {
@@ -23,18 +19,16 @@ public class FrameworkServiceImpl implements FrameworkService {
     private FrameworkDao frameworkDao;
 
     @Autowired
-    private VoteService vote;
+    private FrameworkVoteService vote;
     @Autowired
     private CommentService cmts;
     @Autowired
     private ContentService ctns;
 
     @Override
-    public Framework findById(long id) {
-        Framework framework =frameworkDao.findById(id);
-        if(framework!=null) {
-           getStarsAndVotes(framework);
-        }
+    public Optional<Framework> findById(long id) {
+        Optional<Framework> framework = frameworkDao.findById(id);
+        framework.ifPresent(this::getStarsAndVotes);
         return framework;
     }
 
@@ -55,13 +49,13 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public double getStars(long frameworkId) {
-        List<Vote>votes =  vote.getByFramework(frameworkId);
-        if(votes==null){
+        List<FrameworkVote> frameworkVotes =  vote.getByFramework(frameworkId);
+        if(frameworkVotes.isEmpty()){
             return 0;
         }
         double sum = 0,count=0;
-        for (Vote vote:votes) {
-            sum+=vote.getStars();
+        for (FrameworkVote frameworkVote : frameworkVotes) {
+            sum+= frameworkVote.getStars();
             count++;
         }
 
@@ -95,8 +89,8 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public Content insertContent(long frameworkId, long userId, String title, URL url, ContentTypes type) {
-        return ctns.insertContent(frameworkId,userId,title,url,type);
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type, Boolean pending) {
+        return ctns.insertContent(frameworkId,userId,title,link,type, pending);
     }
 
     @Override
@@ -105,13 +99,13 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public Content changeContent(long contentId, String title, URL url, ContentTypes types) {
-        return ctns.changeContent(contentId,title,url,types);
+    public Optional<Content> changeContent(long contentId, String title, String link, ContentTypes types) {
+        return ctns.changeContent(contentId,title,link,types);
     }
 
     @Override
     public Comment insertComment(long frameworkId, long userId, String description) {
-        return cmts.insertComment(frameworkId,userId,description,-1);
+        return cmts.insertComment(frameworkId,userId,description,null);
     }
 
     @Override
@@ -120,20 +114,20 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public Comment changeComment(long commentId, String description) {
+    public Optional<Comment> changeComment(long commentId, String description) {
         return cmts.changeComment(commentId,description);
     }
 
     private void getStarsAndVotes(Framework framework){
-        List<Vote>votes =  vote.getByFramework(framework.getId());
-        if(votes==null){
+        List<FrameworkVote> frameworkVotes =  vote.getByFramework(framework.getId());
+        if(frameworkVotes.isEmpty()){
             framework.setStars(0);
             framework.setVotesCant(0);
             return;
         }
         double sum = 0,count=0;
-        for (Vote vote:votes) {
-            sum+=vote.getStars();
+        for (FrameworkVote frameworkVote : frameworkVotes) {
+            sum+= frameworkVote.getStars();
             count++;
         }
         framework.setVotesCant((int) count);
