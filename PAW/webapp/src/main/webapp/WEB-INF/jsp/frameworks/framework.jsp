@@ -171,6 +171,11 @@
                                     <c:out value="${comment.description}" default=""/>
                                 </div>
                             </div>
+                            <div class="row">
+                                <button type="button" class="btn btn-light">
+                                    <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
+                                </button>
+                            </div>
 
                         </div>
 

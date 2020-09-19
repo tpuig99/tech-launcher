@@ -13,6 +13,11 @@
     text-align: justify;
 }
 
+.reply {
+    color: grey;
+    font-size: small;
+}
+
 .checked:hover {
     color: yellow;
 }
