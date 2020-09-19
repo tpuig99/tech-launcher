@@ -163,7 +163,7 @@
                                     <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
                                 </div>
                                 <div class="col third-font d-flex justify-content-flex-end">
-                                    <c:out value="${comment.timestamp}" default=""/>
+                                    <c:out value="${comment.timestamp.toLocaleString()}" default=""/>
                                 </div>
                             </div>
                             <div class="row">
