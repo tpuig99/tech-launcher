@@ -37,7 +37,7 @@ public class UserController {
                 us.createVerify(user.get().getId(),frameworkId);
         }
         final ModelAndView mav = new ModelAndView("admin/mod_page");
-        mav.addObject("frameworksList", fs.getAll() );
+        mav.addObject("pendingToVerify",us.getVerifyByPending(true));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         return mav;
     }
@@ -49,7 +49,7 @@ public class UserController {
             us.deleteVerification(verificationId);
         }
         final ModelAndView mav = new ModelAndView("admin/mod_page");
-        mav.addObject("frameworksList", fs.getAll() );
+        mav.addObject("pendingToVerify",us.getVerifyByPending(true));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         return mav;
     }
@@ -83,7 +83,7 @@ public class UserController {
             mailSender.send(email);
         }
         final ModelAndView mav = new ModelAndView("admin/mod_page");
-        mav.addObject("frameworksList", fs.getAll() );
+        mav.addObject("pendingToVerify",us.getVerifyByPending(true));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         return mav;
     }
