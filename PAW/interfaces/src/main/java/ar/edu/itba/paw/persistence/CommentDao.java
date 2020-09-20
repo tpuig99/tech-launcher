@@ -10,7 +10,7 @@ public interface CommentDao {
     List<Comment> getCommentsByFramework(long frameworkId);
     List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId);
     List<Comment> getCommentsByUser(long userId);
-    Comment insertComment(long frameworkId, long userId, String description, Long reference);
+    Optional<Comment> insertComment(long frameworkId, long userId, String description, Long reference);
     int deleteComment(long commentId);
     Optional<Comment> changeComment(long commentId, String description);
 

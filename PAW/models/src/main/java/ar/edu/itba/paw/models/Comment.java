@@ -13,16 +13,7 @@ public class Comment {
     private Long reference;
     private String frameworkName;
 
-    public Comment(long commentId, long frameworkId, long userId, String description, Timestamp timestamp, Long reference) {
-        this.commentId = commentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.description = description;
-        this.timestamp = timestamp;
-        this.reference = reference;
-    }
-
-    public Comment(long commentId, long frameworkId, long userId, String description, Timestamp timestamp, Long reference, String frameworkName) {
+    public Comment(long commentId, long frameworkId, long userId, String description, Timestamp timestamp, Long reference, String frameworkName,int votesUp,int votesDown) {
         this.commentId = commentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
@@ -30,14 +21,8 @@ public class Comment {
         this.timestamp = timestamp;
         this.reference = reference;
         this.frameworkName = frameworkName;
-    }
-
-    public String getFrameworkName() {
-        return frameworkName;
-    }
-
-    public void setFrameworkName(String frameworkName) {
-        this.frameworkName = frameworkName;
+        this.votesUp = votesUp;
+        this.votesDown = votesDown;
     }
 
     public long getCommentId() {
@@ -72,11 +57,7 @@ public class Comment {
         return reference;
     }
 
-    public void setVotesUp(long votesUp) {
-        this.votesUp = votesUp;
-    }
-
-    public void setVotesDown(long votesDown) {
-        this.votesDown = votesDown;
+    public String getFrameworkName() {
+        return frameworkName;
     }
 }
