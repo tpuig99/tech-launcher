@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.VerifyUser;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -45,12 +42,14 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
                     rs.getInt("framework_id"),
                     rs.getLong("user_id"),
                     rs.getString("description"),
+                    rs.getInt("pos"),
+                    rs.getInt("neg"),
                     rs.getTimestamp("tstamp"),
                     rs.getLong("reference"),
                     rs.getString("framework_name"),
-                    rs.getInt("pos"),
-                    rs.getInt("neg"),
-                    rs.getString("user_name")
+                    rs.getString("user_name"),
+                    FrameworkCategories.getByName(rs.getString("category")),
+                    rs.getBoolean("is_verify")
             );
             return new VerifyUser(rs.getInt("verification_id"),comment,rs.getBoolean("pending"));
         }

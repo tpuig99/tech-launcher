@@ -13,18 +13,22 @@ public class Comment {
     private Long reference;
     private String frameworkName;
     private String userName;
+    private FrameworkCategories category;
+    private boolean isVerify;
 
-    public Comment(long commentId, long frameworkId, long userId, String description, Timestamp timestamp, Long reference, String frameworkName, int votesUp, int votesDown,String userName) {
+    public Comment(long commentId, long frameworkId, long userId, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify) {
         this.commentId = commentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
         this.description = description;
+        this.votesUp = votesUp;
+        this.votesDown = votesDown;
         this.timestamp = timestamp;
         this.reference = reference;
         this.frameworkName = frameworkName;
-        this.votesUp = votesUp;
-        this.votesDown = votesDown;
         this.userName = userName;
+        this.category = category;
+        this.isVerify = isVerify;
     }
 
     public long getCommentId() {
@@ -67,4 +71,14 @@ public class Comment {
         return userName;
     }
 
+    public String getCategory(){
+        return category.getNameCat();
+    }
+    public FrameworkCategories getEnumCategory() {
+        return category;
+    }
+
+    public boolean isVerify() {
+        return isVerify;
+    }
 }
