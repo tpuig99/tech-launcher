@@ -55,9 +55,19 @@
                 <div class="container">
                     <div><h4 class="title">Content</h4></div>
                     <div class="d-flex justify-content-end">
-                       <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
-                           <i class="fa fa-plus"></i>
-                        </button>
+                        <c:choose>
+                            <c:when test="${user.name != 'anonymousUser'}">
+                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#loginModal">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
+
                    </div>
                 </div>
                 <c:if test="${empty books && empty courses && empty tutorials}">
