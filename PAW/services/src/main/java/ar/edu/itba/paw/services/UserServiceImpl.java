@@ -3,8 +3,10 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
+import ar.edu.itba.paw.models.VerifyUser;
 import ar.edu.itba.paw.persistence.UserDao;
 import ar.edu.itba.paw.persistence.VerificationTokenDao;
+import ar.edu.itba.paw.persistence.VerifyUserDao;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +27,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private VerificationTokenDao tokenDao;
     @Autowired
+    private VerifyUserDao verifyUserDao;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public Optional<User> findById(int id) {
+    public Optional<User> findById(long id) {
         return userDao.findById(id);
     }
 
@@ -37,17 +42,6 @@ public class UserServiceImpl implements UserService {
         return userDao.findByUsername(username);
     }
 
-    @Override
-    public Optional<User> findByUsernameForLogin(String username) {
-        return findByUsername(username);
-    }
-
-    @Override
-    public User create(String username,String mail) throws UserAlreadyExistException {
-        checkIfUserExists(username,mail);
-
-        return userDao.create(username,mail);
-    }
 
     private long checkIfUserExists(String username, String mail) throws UserAlreadyExistException {
         Optional<User> user = findByUsernameOrMail(username,mail);
@@ -82,14 +76,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> update(long userId, String username, String mail, String password) {
+    public void  updatePassword(long userId, String password) {
+        String psw = passwordEncoder.encode(password);
+        userDao.updatePassword(userId,psw);
+    }
+
+
+    private Optional<User> update(long userId, String username, String mail, String password) {
         return userDao.update(userId,username,mail,password);
     }
 
-    @Override
-    public Map<Long, String> getUsernamesByComments(List<Comment> comments) {
-        return userDao.getUsernamesByComments(comments);
-    }
 
     @Override
     public void createVerificationToken(User user, String token) {
@@ -117,5 +113,60 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateDescription(long userId, String description) {
         userDao.updateDescription(userId,description);
+    }
+
+    @Override
+    public VerifyUser createVerify(long userId, long frameworkId, long commentId) {
+        return verifyUserDao.create(userId,frameworkId,commentId);
+    }
+
+    @Override
+    public VerifyUser createVerify(long userId, long frameworkId) {
+        return verifyUserDao.create(userId,frameworkId);
+    }
+
+    @Override
+    public List<VerifyUser> getVerifyByUser(long userId, boolean pending) {
+        return verifyUserDao.getByUser(userId,pending);
+    }
+
+    @Override
+    public List<VerifyUser> getVerifyByFramework(long frameworkId, boolean pending) {
+        return verifyUserDao.getByFramework(frameworkId,pending);
+    }
+
+    @Override
+    public List<VerifyUser> getAllVerifyByUser(long userId) {
+        return verifyUserDao.getAllByUser(userId);
+    }
+
+    @Override
+    public List<VerifyUser> getAllVerifyByFramework(long frameworkId) {
+        return verifyUserDao.getAllByFramework(frameworkId);
+    }
+
+    @Override
+    public Optional<VerifyUser> getVerifyById(long verificationId) {
+        return verifyUserDao.getById(verificationId);
+    }
+
+    @Override
+    public List<VerifyUser> getVerifyByPending(boolean pending) {
+        return verifyUserDao.getByPending(pending);
+    }
+
+    @Override
+    public void deleteVerification(long verificationId) {
+        verifyUserDao.delete(verificationId);
+    }
+
+    @Override
+    public void verify(long verificationId) {
+        verifyUserDao.verify(verificationId);
+    }
+
+    @Override
+    public Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId) {
+        return verifyUserDao.getByFrameworkAndUser(frameworkId,userId);
     }
 }

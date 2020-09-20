@@ -20,7 +20,7 @@ public class PawUserDetailsService implements UserDetailsService {
     private UserService us;
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        final Optional<User> user = us.findByUsernameForLogin(username);
+        final Optional<User> user = us.findByUsername(username);
         if (!user.isPresent() || !user.get().isEnable()) {
             throw new UsernameNotFoundException("No user by the name " + username);
         }

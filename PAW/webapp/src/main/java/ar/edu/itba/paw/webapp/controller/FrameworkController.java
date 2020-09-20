@@ -48,7 +48,6 @@ public class FrameworkController {
 
         if (framework.isPresent()) {
             List<Comment> comments = commentService.getCommentsByFramework(id);
-            Map<Long, String> commentsUsernames = us.getUsernamesByComments(comments);
 
             mav.addObject("framework", framework.get());
 
@@ -59,7 +58,6 @@ public class FrameworkController {
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
             mav.addObject("comments", comments);
-            mav.addObject("commentsUsernames", us.getUsernamesByComments(comments));
 
             // mav.addObject("contentFormError", false);
             return mav;

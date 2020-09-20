@@ -1,5 +1,10 @@
 package ar.edu.itba.paw.models;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class User {
     private long id;
     private String username;
@@ -7,45 +12,26 @@ public class User {
     private String password;
     private boolean enable = false;
     private String description;
+    private boolean allowMod;
+    private boolean admin;
+    private List<VerifyUser> verifications;
 
-    public User(final long id,final String username,final String mail) {
-        this.id = id;
-        this.username = username;
-        this.mail = mail;
-    }
-
-    public User(long id, String username, String mail, String password) {
-        this.id = id;
-        this.username = username;
-        this.mail = mail;
-        this.password = password;
-    }
-
-    public User(long id, String username, String mail, String password, boolean enable, String description) {
+    public User(long id, String username, String mail, String password, boolean enable, String description, boolean allowMod,boolean admin) {
         this.id = id;
         this.username = username;
         this.mail = mail;
         this.password = password;
         this.enable = enable;
         this.description = description;
+        this.allowMod = allowMod;
+        this.admin = admin;
+        verifications = new ArrayList<>();
     }
 
-    public User(long id, String username, String mail, String password, boolean enable) {
-        this.id = id;
-        this.username = username;
-        this.mail = mail;
-        this.password = password;
-        this.enable = enable;
-    }
 
     public String getDescription() {
         return description;
     }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public long getId() {
         return id;
     }
@@ -62,26 +48,26 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public boolean isAllowMod() {
+        return allowMod;
+    }
+
+    public void setVerifications(List<VerifyUser> verifications) {
+        verifications.addAll(verifications);
     }
 
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", mail='" + mail + '\'' +
-                ", password='" + password + '\'' +
-                ", enable=" + enable +
-                '}';
+    public boolean isVerify(long frameworkId){
+        for (VerifyUser v: verifications) {
+            if(v.getFrameworkId()==frameworkId)
+                return true;
+        }
+        return false;
     }
 }

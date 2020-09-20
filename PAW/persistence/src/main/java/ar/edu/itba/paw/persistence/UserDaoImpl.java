@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.VerifyUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -24,7 +25,11 @@ public class UserDaoImpl implements UserDao {
     private final static RowMapper<User> ROW_MAPPER = UserDaoImpl::userMapRow;
     private final static RowMapper<String> ROW_MAPPER_USERNAME = UserDaoImpl::usernameMapRow;
     private final static RowMapper<String> ROW_MAPPER_MAIL = UserDaoImpl::mailMapRow;
+    private final static RowMapper<VerifyUser> ROW_MAPPER_VERIFY_USER = UserDaoImpl::VerifyMapRow;
 
+
+    private final static String SELECTION="select users.user_id,user_name,mail,password,enabled,user_description,allow_moderator,CASE WHEN admin_id IS NULL THEN false ELSE true END AS is_admin from users left join admins a on users.user_id = a.user_id ";
+    private final static String SELECTION_VERIFY="select v.verification_id, v.framework_id,v.user_id,v.comment_id,v.pending,user_name,framework_name,c.description,c.tstamp,(CASE WHEN v.comment_id IS NULL THEN false ELSE true END) AS has_comment, count(case when vote=-1 then vote end) as neg, reference, count(case when vote=1 then vote end) as pos from verify_users v left join frameworks f on f.framework_id = v.framework_id left join comments c on c.comment_id = v.comment_id left join users u on u.user_id = v.user_id left join comment_votes cv on v.comment_id = cv.comment_id WHERE v.user_id=? group by v.verification_id,u.user_name,f.framework_name,c.description, v.framework_id, v.user_id, v.comment_id, v.pending, user_name, framework_name, v.verification_id, c.tstamp, (CASE WHEN v.comment_id IS NULL THEN false ELSE true END),c.reference";
     @Autowired
     public UserDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -39,7 +44,9 @@ public class UserDaoImpl implements UserDao {
                 rs.getString("mail"),
                 rs.getString("password"),
                 rs.getBoolean("enabled"),
-                rs.getString("user_description"));
+                rs.getString("user_description"),
+                rs.getBoolean("allow_moderator"),
+                rs.getBoolean("is_admin"));
     }
 
     private static String usernameMapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -49,42 +56,85 @@ public class UserDaoImpl implements UserDao {
     private static String mailMapRow(ResultSet rs, int rowNum) throws SQLException {
         return rs.getString("mail");
     }
+    private static VerifyUser VerifyMapRow(ResultSet rs, int i) throws SQLException {
+
+        if(rs.getBoolean("has_comment")){
+            Comment comment = new Comment(rs.getLong("comment_id"),
+                    rs.getInt("framework_id"),
+                    rs.getLong("user_id"),
+                    rs.getString("description"),
+                    rs.getTimestamp("tstamp"),
+                    rs.getLong("reference"),
+                    rs.getString("framework_name"),
+                    rs.getInt("pos"),
+                    rs.getInt("neg"),
+                    rs.getString("user_name")
+            );
+            return new VerifyUser(rs.getInt("verification_id"),comment,rs.getBoolean("pending"));
+        }
+        return new VerifyUser(rs.getInt("verification_id"),
+                rs.getLong("user_id"),
+                rs.getString("user_name"),
+                rs.getInt("framework_id"),
+                rs.getString("framework_name"),
+                rs.getBoolean("pending")
+                );
+    }
+
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query("SELECT * FROM users", ROW_MAPPER);
+        List<User> users = jdbcTemplate.query(SELECTION, ROW_MAPPER);
+        getVerify(users);
+        return users;
+    }
+
+    private void getVerify(List<User> users) {
+        for (User user: users) {
+            user.setVerifications(jdbcTemplate.query(SELECTION_VERIFY, new Object[] { user.getId()}, ROW_MAPPER_VERIFY_USER));
+        }
+    }
+    private void getVerify(User user) {
+            user.setVerifications(jdbcTemplate.query(SELECTION_VERIFY, new Object[] { user.getId()}, ROW_MAPPER_VERIFY_USER));
+
     }
 
     @Override
     public Optional<User> findById(final long id) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE user_id = ?", new Object[] { id }, ROW_MAPPER).stream().findFirst();
+        String value = SELECTION+"WHERE users.user_id = ?";
+        Optional<User> user = jdbcTemplate.query(value, new Object[] { id }, ROW_MAPPER).stream().findFirst();
+        if(user.isPresent())
+            getVerify(user.get());
+        return user;
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE user_name ILIKE ?", new Object[] {username}, ROW_MAPPER).stream().findFirst();
+        String value = SELECTION+"WHERE users.user_name ILIKE ?";
+        Optional<User> user =  jdbcTemplate.query(value, new Object[] {username}, ROW_MAPPER).stream().findFirst();
+        if(user.isPresent())
+            getVerify(user.get());
+        return user;
     }
 
     @Override
     public Optional<User> findByUsernameOrMail(String username, String mail) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE user_name ILIKE ? or mail =?", new Object[] {username, mail}, ROW_MAPPER).stream().findFirst();
+        String value = SELECTION+"WHERE users.user_name ILIKE ? or mail = ?";
+        Optional<User> user = jdbcTemplate.query(value, new Object[] {username, mail}, ROW_MAPPER).stream().findFirst();
+        if(user.isPresent())
+            getVerify(user.get());
+        return user;
     }
 
     @Override
     public Optional<User> findByMail(String mail) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE mail = ?", new Object[] { mail }, ROW_MAPPER).stream().findFirst();
+        String value = SELECTION+"WHERE users.mail = ?";
+        Optional<User> user = jdbcTemplate.query(value, new Object[] { mail }, ROW_MAPPER).stream().findFirst();
+        if(user.isPresent())
+            getVerify(user.get());
+        return user;
     }
 
-    @Override
-    public User create(String user_name,String mail) {
-        final Map<String, Object> args = new HashMap<>();
-        args.put("user_name", user_name); // la key es el nombre de la columna
-        args.put("mail",mail);
-        args.put("enabled",false);
-        args.put("user_description","");
-        final Number userId = jdbcInsert.executeAndReturnKey(args);
-        return new User(userId.longValue(), user_name,mail);
-    }
     @Override
     public User create(String user_name,String mail,String password) {
         final Map<String, Object> args = new HashMap<>();
@@ -93,8 +143,9 @@ public class UserDaoImpl implements UserDao {
         args.put("password",password);
         args.put("user_description","");
         args.put("enabled",false);
+        args.put("allow_moderator",true);
         final Number userId = jdbcInsert.executeAndReturnKey(args);
-        return new User(userId.longValue(), user_name,mail,password);
+        return new User(userId.longValue(), user_name,mail,password,false,"",true,false);
     }
 
     @Override
@@ -109,34 +160,14 @@ public class UserDaoImpl implements UserDao {
         return findById(userId);
     }
 
-    // TODO: CAN IT BE REPLACED WITH A NATURAL JOIN? QUERY IS A LITTLE BIT TRICKY
-    @Override
-    public Map<Long, String> getUsernamesByComments(List<Comment> comments) {
-
-        final Map<Long, String> toReturn = new HashMap<>();
-        String username;
-        if(comments !=null ) {
-            for (Comment c : comments) {
-                Optional<User> user = findById(c.getUserId());
-                if (user.isPresent()) {
-                    username = user.get().getUsername();
-                    toReturn.put(c.getCommentId(), username);
-                }
-            }
-        }
-
-        return toReturn;
-    }
-
     @Override
     public List<String> getMails() {
         return jdbcTemplate.query("SELECT mail FROM users", ROW_MAPPER_MAIL);
     }
 
-    // TODO: IS THIS ALRIGHT? ROW_MAPPER_MAIL???
     @Override
     public List<String> getUserNames() {
-        return jdbcTemplate.query("SELECT user_name FROM users", ROW_MAPPER_MAIL);
+        return jdbcTemplate.query("SELECT user_name FROM users", ROW_MAPPER_USERNAME);
     }
 
     @Override
@@ -147,5 +178,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void updateDescription(long id, String description) {
         jdbcTemplate.update("UPDATE users set user_description=? where user_id=?",description,id);
+    }
+
+    @Override
+    public void updatePassword(long id, String password) {
+        jdbcTemplate.update("UPDATE users set password=? where user_id=?",password,id);
     }
 }

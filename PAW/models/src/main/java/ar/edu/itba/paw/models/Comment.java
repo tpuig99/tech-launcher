@@ -12,8 +12,9 @@ public class Comment {
     private Timestamp timestamp;
     private Long reference;
     private String frameworkName;
+    private String userName;
 
-    public Comment(long commentId, long frameworkId, long userId, String description, Timestamp timestamp, Long reference, String frameworkName,int votesUp,int votesDown) {
+    public Comment(long commentId, long frameworkId, long userId, String description, Timestamp timestamp, Long reference, String frameworkName, int votesUp, int votesDown,String userName) {
         this.commentId = commentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
@@ -23,6 +24,7 @@ public class Comment {
         this.frameworkName = frameworkName;
         this.votesUp = votesUp;
         this.votesDown = votesDown;
+        this.userName = userName;
     }
 
     public long getCommentId() {
@@ -60,4 +62,9 @@ public class Comment {
     public String getFrameworkName() {
         return frameworkName;
     }
+
+    public String getUserName() {
+        return userName;
+    }
+
 }

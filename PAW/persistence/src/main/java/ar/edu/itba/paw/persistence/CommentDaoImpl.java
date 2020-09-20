@@ -20,8 +20,8 @@ import java.util.Optional;
 public class CommentDaoImpl implements CommentDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final String SELECTION ="select comments.comment_id,comments.framework_id,comments.user_id,comments.description,tstamp,reference,framework_name,count(case when vote=-1 then vote end) as neg,count(case when vote=1 then vote end) as pos from comments left join comment_votes cv on comments.comment_id = cv.comment_id left join frameworks on comments.framework_id = frameworks.framework_id ";
-    private final String GROUP_BY = " group by comments.comment_id , framework_name";
+    private final String SELECTION ="select comments.comment_id,comments.framework_id,comments.user_id,comments.description,tstamp,reference,framework_name,count(case when vote=-1 then vote end) as neg,count(case when vote=1 then vote end) as pos, user_name from comments left join comment_votes cv on comments.comment_id = cv.comment_id left join frameworks on comments.framework_id = frameworks.framework_id left join users u on u.user_id = comments.user_id ";
+    private final String GROUP_BY = " group by comments.comment_id , framework_name, user_name";
     private final static RowMapper<Comment> ROW_MAPPER = CommentDaoImpl::mapRow;
 
     @Autowired
@@ -43,7 +43,8 @@ public class CommentDaoImpl implements CommentDao {
                 rs.getLong("reference"),
                 rs.getString("framework_name"),
                 rs.getInt("pos"),
-                rs.getInt("neg")
+                rs.getInt("neg"),
+                rs.getString("user_name")
         );
     }
 

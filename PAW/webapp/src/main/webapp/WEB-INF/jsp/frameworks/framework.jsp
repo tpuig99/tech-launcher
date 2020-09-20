@@ -160,7 +160,7 @@
                         <div class="col">
                             <div class="row">
                                 <div class="col secondary-font">
-                                    <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
+                                    <c:out value="${comment.userName}" default=""/>
                                 </div>
                                 <div class="col third-font d-flex justify-content-flex-end">
                                     <c:out value="${comment.timestamp}" default=""/>
