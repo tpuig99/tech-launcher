@@ -13,6 +13,11 @@
     text-align: justify;
 }
 
+.reply {
+    color: grey;
+    font-size: small;
+}
+
 .checked:hover {
     color: yellow;
 }
@@ -33,6 +38,16 @@ color-star{
 .padding-left{
     padding-left: 0.2em;
     margin-left: 0.2em;
+}
+
+.padding-bottom{
+    padding-bottom: 0.2em;
+    margin-bottom: 0.2em;
+}
+
+.padding-top{
+    padding-top: 0.2em;
+    margin-top: 0.2em;
 }
 
 .center{
@@ -81,7 +96,6 @@ textarea {
 .secondary-font{
     color: #48bfe3;
     font-size: large;
-    margin-left: 0;
 }
 
 .third-font{
@@ -90,7 +104,23 @@ textarea {
     justify-content: flex-end;
 }
 
+.vertical-divider{
+    border-left: 0.02em solid #733bce;
+}
+
+.medium-font{
+    font-size: medium;
+}
+
+.hide{
+    visibility: hidden;
+}
+
 .row{
+    width: 100%;
+}
+
+.fill{
     width: 100%;
 }
 
