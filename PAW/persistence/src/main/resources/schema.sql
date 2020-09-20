@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS verify_users (
                 framework_id int NOT NULL,
                 user_id int NOT NULL,
                 comment_id int,
-                pending boolean NOT NULL DEFAULT false,
+                pending boolean NOT NULL DEFAULT true,
                 FOREIGN KEY(framework_id) REFERENCES frameworks ON DELETE CASCADE,
                 FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
                 FOREIGN KEY(comment_id) REFERENCES comments ON DELETE SET NULL,
