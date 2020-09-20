@@ -342,17 +342,6 @@
                         });
                     </c:if>
 
-                    /*function publishComment() {
-
-                        let id= <%--${framework.id};
-                        let content = document.getElementById("commentInput").value;
-                        let path = '<c:url value="/create" />?id='+id+'&content='+content;
-                          --%>
-                        console.log(path);
-                        window.location.href = path;
-                        console.log(location.href);
-                    }*/
-
                     function publishComment(commentId) {
                         console.log(commentId);
                         let id= ${framework.id};

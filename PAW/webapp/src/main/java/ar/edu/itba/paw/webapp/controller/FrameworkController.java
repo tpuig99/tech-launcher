@@ -61,7 +61,6 @@ public class FrameworkController {
             mav.addObject("comments", comments);
             mav.addObject("commentsUsernames", us.getUsernamesByComments(comments));
 
-            // mav.addObject("contentFormError", false);
             return mav;
         }
         return ErrorController.redirectToErrorView();
@@ -83,24 +82,6 @@ public class FrameworkController {
 
         return ErrorController.redirectToErrorView();
     }
-
-    /*@RequestMapping(path={"/reply"}, method= RequestMethod.GET)
-    public ModelAndView saveReply(@RequestParam("id") final long id, @RequestParam("content") final String content, @RequestParam("commentId") final long commentId) throws UserAlreadyExistException {
-        Optional<Framework> framework = fs.findById(id);
-
-        if (framework.isPresent()) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            if (us.findByUsername(authentication.getName()).isPresent()) {
-                final Comment comment = commentService.insertComment(framework.get().getId(), us.findByUsername(authentication.getName()).get().getId(), content, commentId);
-            }
-
-            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
-        }
-
-        return ErrorController.redirectToErrorView();
-    }*/
-
 
 
     @RequestMapping(path={"/voteup"}, method= RequestMethod.GET)

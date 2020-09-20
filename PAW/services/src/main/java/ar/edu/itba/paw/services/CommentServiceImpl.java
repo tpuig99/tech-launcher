@@ -34,6 +34,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public List<Comment> getRepliesByCommentAndFramework(long commentId, long frameworkId) {
+        List<Comment> comments = cmts.getRepliesByCommentAndFramework(commentId,frameworkId);
+        setCommentVotes(comments);
+        return comments;
+    }
+
+    @Override
     public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
         List<Comment> comments = cmts.getCommentsByFrameworkAndUser(frameworkId, userId);
         setCommentVotes(comments);
