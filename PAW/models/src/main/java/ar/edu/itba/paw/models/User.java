@@ -63,11 +63,18 @@ public class User {
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
-    public boolean isVerify(long frameworkId){
+    public boolean isVerifyForFramework(long frameworkId){
         for (VerifyUser v: verifications) {
             if(v.getFrameworkId()==frameworkId)
                 return true;
         }
         return false;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+    public boolean isVerify() {
+        return verifications.size()==0?false:true;
     }
 }

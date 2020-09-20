@@ -20,8 +20,8 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final static RowMapper<VerifyUser> ROW_MAPPER= VerifyUserDaoImpl::VerifyMapRow;
-    private final static String SELECTION_VERIFY="select v.verification_id, v.framework_id,v.user_id,v.comment_id,v.pending,user_name,framework_name,c.description,c.tstamp,(CASE WHEN v.comment_id IS NULL THEN false ELSE true END) AS has_comment, count(case when vote=-1 then vote end) as neg, reference, count(case when vote=1 then vote end) as pos from verify_users v left join frameworks f on f.framework_id = v.framework_id left join comments c on c.comment_id = v.comment_id left join users u on u.user_id = v.user_id left join comment_votes cv on v.comment_id = cv.comment_id ";
-    private final static String GROUP_BY=" group by v.verification_id,u.user_name,f.framework_name,c.description, v.framework_id, v.user_id, v.comment_id, v.pending, user_name, framework_name, v.verification_id, c.tstamp, (CASE WHEN v.comment_id IS NULL THEN false ELSE true END),c.reference";
+    private final static String SELECTION_VERIFY="select v.verification_id, v.framework_id,v.user_id,v.comment_id,v.pending,user_name,framework_name,c.description,c.tstamp,(CASE WHEN v.comment_id IS NULL THEN false ELSE true END) AS has_comment, count(case when vote=-1 then vote end) as neg, reference, count(case when vote=1 then vote end) as pos,(CASE WHEN v.pending IS false THEN true ELSE false END) AS is_verify,f.category from verify_users v left join frameworks f on f.framework_id = v.framework_id left join comments c on c.comment_id = v.comment_id left join users u on u.user_id = v.user_id left join comment_votes cv on v.comment_id = cv.comment_id ";
+    private final static String GROUP_BY=" group by v.verification_id,u.user_name,f.framework_name,c.description, v.framework_id, v.user_id, v.comment_id, v.pending, user_name, framework_name, v.verification_id, c.tstamp, (CASE WHEN v.comment_id IS NULL THEN false ELSE true END),c.reference,f.category";
     @Autowired
     CommentDao cd;
     @Autowired
