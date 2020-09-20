@@ -88,4 +88,15 @@ public class UserController {
         return mav;
     }
 
+    @RequestMapping("/mod")
+    public ModelAndView modPage(){
+        ModelAndView mav = new ModelAndView("admin/mod_page");
+
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+//        us.getVerifyByPending(true).forEach(verifyUser -> {
+//            System.out.println(verifyUser.getComment().getCategory());
+//        });
+        mav.addObject("pendingToVerify",us.getVerifyByPending(true));
+        return mav;
+    }
 }
