@@ -49,6 +49,7 @@ public class FrameworkController {
         if (framework.isPresent()) {
             List<Comment> comments = commentService.getCommentsByFramework(id);
             Map<Long, String> commentsUsernames = us.getUsernamesByComments(comments);
+            Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
 
             mav.addObject("framework", framework.get());
 
@@ -60,6 +61,7 @@ public class FrameworkController {
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
             mav.addObject("comments", comments);
             mav.addObject("commentsUsernames", us.getUsernamesByComments(comments));
+            mav.addObject("replies", replies);
 
             return mav;
         }

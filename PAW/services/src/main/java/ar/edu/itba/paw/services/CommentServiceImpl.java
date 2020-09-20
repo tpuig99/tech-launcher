@@ -8,7 +8,9 @@ import ar.edu.itba.paw.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -52,6 +54,11 @@ public class CommentServiceImpl implements CommentService {
         List<Comment> comments = cmts.getCommentsByUser(userId);
         setCommentVotes(comments);
         return comments;
+    }
+
+    @Override
+    public Map<Long, List<Comment>> getRepliesByFramework(long frameworkId) {
+        return cmts.getRepliesByFramework(frameworkId);
     }
 
     @Override

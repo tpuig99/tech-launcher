@@ -11,10 +11,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class CommentDaoImpl implements CommentDao {
@@ -54,6 +51,11 @@ public class CommentDaoImpl implements CommentDao {
         );
     }
 
+   /* private static Long mapRow3(ResultSet rs, int rowNum) throws SQLException {
+        return rs.getLong("comment_id")
+        );
+    }*/
+
     @Override
     public Optional<Comment> getById(long contentId) {
         return jdbcTemplate.query("SELECT * FROM comments WHERE comment_id = ?", new Object[] {contentId},ROW_MAPPER).stream().findFirst();
@@ -80,6 +82,21 @@ public class CommentDaoImpl implements CommentDao {
                 new Object[] {userId}, ROW_MAPPER_PROFILE);
     }
 
+    //TODO optimize queries
+    @Override
+    public Map<Long, List<Comment>> getRepliesByFramework(long frameworkId) {
+        Map<Long, List<Comment>> toReturn = new HashMap<>();
+        List<Comment> replies = new ArrayList<>();
+
+        List<Comment> comments = jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND reference IS NULL", new Object[] {frameworkId},  ROW_MAPPER );
+
+        for(Comment comment : comments){
+            long commentId = comment.getCommentId();
+            toReturn.put(commentId,jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND reference =?", new Object[] {frameworkId, commentId},  ROW_MAPPER ));
+
+        }
+        return toReturn;
+    }
 
 
     @Override
