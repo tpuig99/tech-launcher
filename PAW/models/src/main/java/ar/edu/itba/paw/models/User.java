@@ -57,7 +57,7 @@ public class User {
     }
 
     public void setVerifications(List<VerifyUser> verifications) {
-        verifications.addAll(verifications);
+        this.verifications.addAll(verifications);
     }
 
     public void setEnable(boolean enable) {
