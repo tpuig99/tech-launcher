@@ -40,6 +40,11 @@ color-star{
     margin-left: 0.2em;
 }
 
+.padding-bottom{
+    padding-bottom: 0.2em;
+    margin-bottom: 0.2em;
+}
+
 .center{
    justify-content: center;
 }
@@ -86,13 +91,20 @@ textarea {
 .secondary-font{
     color: #48bfe3;
     font-size: large;
-    margin-left: 0;
 }
 
 .third-font{
     color: grey;
     font-size: small;
     justify-content: flex-end;
+}
+
+.vertical-divider{
+    border-left: 0.02em solid #733bce;
+}
+
+.medium-font{
+    font-size: medium;
 }
 
 .hide{
