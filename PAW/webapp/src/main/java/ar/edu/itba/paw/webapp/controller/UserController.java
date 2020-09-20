@@ -36,7 +36,7 @@ public class UserController {
             if(!vu.isPresent())
                 us.createVerify(user.get().getId(),frameworkId);
         }
-        final ModelAndView mav = new ModelAndView("index");
+        final ModelAndView mav = new ModelAndView("admin/mod_page");
         mav.addObject("frameworksList", fs.getAll() );
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         return mav;
@@ -48,7 +48,7 @@ public class UserController {
         if(vu.isPresent() && vu.get().isPending()) {
             us.deleteVerification(verificationId);
         }
-        final ModelAndView mav = new ModelAndView("index");
+        final ModelAndView mav = new ModelAndView("admin/mod_page");
         mav.addObject("frameworksList", fs.getAll() );
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         return mav;
@@ -82,7 +82,7 @@ public class UserController {
             email.setText("Hey! You were accepted as a moderator of " + vu.get().getFrameworkName() + ".\n If you don't want to, just get to your profile and set off the moderator option. \n\n Thanks!");
             mailSender.send(email);
         }
-        final ModelAndView mav = new ModelAndView("index");
+        final ModelAndView mav = new ModelAndView("admin/mod_page");
         mav.addObject("frameworksList", fs.getAll() );
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         return mav;
@@ -93,9 +93,6 @@ public class UserController {
         ModelAndView mav = new ModelAndView("admin/mod_page");
 
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-//        us.getVerifyByPending(true).forEach(verifyUser -> {
-//            System.out.println(verifyUser.getComment().getCategory());
-//        });
         mav.addObject("pendingToVerify",us.getVerifyByPending(true));
         return mav;
     }
