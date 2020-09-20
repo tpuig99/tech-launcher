@@ -22,53 +22,43 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Optional<Comment> getById(long contentId) {
         Optional<Comment> comment = cmts.getById(contentId);
-        comment.ifPresent(this::setCommentVotes);
         return comment;
     }
 
     @Override
     public List<Comment> getCommentsByFramework(long frameworkId) {
         List<Comment> comments = cmts.getCommentsByFramework(frameworkId);
-        setCommentVotes(comments);
         return comments;
     }
 
     @Override
     public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
         List<Comment> comments = cmts.getCommentsByFrameworkAndUser(frameworkId, userId);
-        setCommentVotes(comments);
         return comments;
     }
 
     @Override
     public List<Comment> getCommentsByUser(long userId) {
         List<Comment> comments = cmts.getCommentsByUser(userId);
-        setCommentVotes(comments);
         return comments;
     }
 
     @Override
     public Comment insertComment(long frameworkId, long userId, String description, Long reference) {
-       Comment comment = cmts.insertComment(frameworkId, userId, description, reference);
-       comment.setVotesDown(0);
-       comment.setVotesUp(0);
-       return comment;
+       Optional<Comment> comment = cmts.insertComment(frameworkId, userId, description, reference);
+       if(comment.isPresent())
+           return comment.get();
+       return null;
     }
 
     @Override
     public int deleteComment(long commentId) {
-        List<CommentVote> votes = cmtVotes.getByComment(commentId);
-        // TODO: change for an On Delete Cascade. As no comment vote can exists if the comment does not exists
-        for (CommentVote vote: votes) {
-            cmtVotes.delete(vote.getCommentVoteId());
-        }
         return cmts.deleteComment(commentId);
     }
 
     @Override
     public Optional<Comment> changeComment(long commentId, String description) {
         Optional<Comment> comment = cmts.changeComment(commentId, description);
-        comment.ifPresent(this::setCommentVotes);
         return comment;
     }
 
@@ -81,7 +71,6 @@ public class CommentServiceImpl implements CommentService {
             cmtVotes.insert(commentId, userId, 1);
         }
         Optional<Comment> comment = cmts.getById(commentId);
-        comment.ifPresent(this::setCommentVotes);
         return comment;
     }
 
@@ -96,28 +85,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         Optional<Comment> comment = cmts.getById(commentId);
-        comment.ifPresent(this::setCommentVotes);
         return comment;
     }
 
-    private void setCommentVotes(List<Comment> comments) {
-        for (Comment comment:comments) {
-            setCommentVotes(comment);
-        }
-    }
-
-    private void setCommentVotes(Comment comment){
-        List<CommentVote> votes = cmtVotes.getByComment(comment.getCommentId());
-        int voteUp=0;
-        int voteDown=0;
-        for (CommentVote vote:votes) {
-            if(vote.isVoteUp()){
-                voteUp++;
-            }else{
-                voteDown++;
-            }
-        }
-        comment.setVotesUp(voteUp);
-        comment.setVotesDown(voteDown);
-    }
 }
