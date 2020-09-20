@@ -173,7 +173,7 @@
                             </div>
                             <div class="row">
                                 <span>
-                                    <button type="button" class="btn btn-light">
+                                    <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
                                         <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
                                      </button>
                                     </span>
@@ -184,12 +184,14 @@
                                 </span>
                             </div>
                             <div class="row">
-                                <div class="col-10">
-                               <textarea id="commentReplyInput" class="form-control"></textarea>
+                            <div class="collapse multi-collapse" id="${comment.commentId}">
+                                <div class="col-9">
+                                    <textarea id="commentReplyInput" class="form-control" aria-label="CommentReply"></textarea>
                                 </div>
                                 <div class="col">
-                                <button class="btn primary-button btn-sm">SUBMIT</button>
+                                    <button class="btn primary-button btn-sm" onclick="publishComment(${comment.commentId})">SUBMIT</button>
                                 </div>
+                            </div>
 
                             </div>
 
@@ -287,7 +289,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="loginModalLabel">You have be logged in to do this</h5>
+                                <h5 class="modal-title" id="loginModalLabel">You have to be logged in to do this</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -340,15 +342,36 @@
                         });
                     </c:if>
 
-                    function publishComment() {
-                        let content = document.getElementById("commentInput").value;
-                        let id= ${framework.id};
+                    /*function publishComment() {
 
+                        let id= <%--${framework.id};
+                        let content = document.getElementById("commentInput").value;
                         let path = '<c:url value="/create" />?id='+id+'&content='+content;
+                          --%>
+                        console.log(path);
+                        window.location.href = path;
+                        console.log(location.href);
+                    }*/
+
+                    function publishComment(commentId) {
+                        console.log(commentId);
+                        let id= ${framework.id};
+                        let path;
+                        let content;
+
+                        if(commentId !== undefined){
+                            content = document.getElementById("commentReplyInput").value;
+                            path = '<c:url value="/create" />?id='+id+'&content='+content+'&commentId='+commentId;
+                        }else{
+                            content = document.getElementById("commentInput").value;
+                            path = '<c:url value="/create" />?id='+id+'&content='+content;
+                        }
+
                         console.log(path);
                         window.location.href = path;
                         console.log(location.href);
                     }
+
 
                     function voteUpComment(commentId) {
                         let frameworkId = ${framework.id};
