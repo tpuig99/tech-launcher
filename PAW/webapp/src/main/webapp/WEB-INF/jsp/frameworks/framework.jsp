@@ -184,16 +184,32 @@
                                 </span>
                             </div>
                             <div class="row">
-                            <div class="collapse multi-collapse" id="${comment.commentId}">
-                                <div class="col-9">
-                                    <textarea id="commentReplyInput" class="form-control" aria-label="CommentReply"></textarea>
-                                </div>
-                                <div class="col">
-                                    <button class="btn primary-button btn-sm" onclick="publishComment(${comment.commentId})">SUBMIT</button>
+                                <div class="collapse multi-collapse" id="${comment.commentId}">
+                                    <div class="col-9">
+                                        <textarea id="commentReplyInput" class="form-control" aria-label="CommentReply"></textarea>
+                                    </div>
+                                    <div class="col">
+                                        <button class="btn primary-button btn-sm" onclick="publishComment(${comment.commentId})">SUBMIT</button>
+                                    </div>
                                 </div>
                             </div>
-
+                            <c:forEach var="reply" items="${replies.get(comment.commentId)}" varStatus="loop">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="col secondary-font">
+                                        <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
+                                    </div>
+                                    <div class="col third-font d-flex justify-content-flex-end">
+                                        <c:out value="${reply.timestamp.toLocaleString()}" default=""/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <c:out value="${reply.description}" default=""/>
+                                    </div>
+                                </div>
                             </div>
+                            </c:forEach>
 
                         </div>
 

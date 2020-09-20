@@ -63,7 +63,13 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public List<Comment> getCommentsByFramework(long frameworkId) {
+        return jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ?", new Object[] {frameworkId},  ROW_MAPPER );
+    }
+
+    @Override
+    public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
         return jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND reference IS NULL", new Object[] {frameworkId},  ROW_MAPPER );
+
     }
 
     @Override

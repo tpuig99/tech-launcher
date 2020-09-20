@@ -47,8 +47,8 @@ public class FrameworkController {
         Optional<Framework> framework = fs.findById(id);
 
         if (framework.isPresent()) {
-            List<Comment> comments = commentService.getCommentsByFramework(id);
-            Map<Long, String> commentsUsernames = us.getUsernamesByComments(comments);
+            List<Comment> comments = commentService.getCommentsWithoutReferenceByFramework(id);
+            Map<Long, String> commentsUsernames = us.getUsernamesByComments(commentService.getCommentsByFramework(id));
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
 
             mav.addObject("framework", framework.get());
