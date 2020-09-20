@@ -173,9 +173,22 @@
                             </div>
                             <div class="row padding-bottom">
                                 <span>
-                                    <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
-                                        <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
-                                     </button>
+                                    <c:choose>
+                                        <c:when test="${user.name != 'anonymousUser'}">
+                                            <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
+                                               <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="button" class="btn btn-light" data-toggle="modal" data-target="#loginModal">
+                                               <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
+
+
+
+
                                 </span>
                                 <span class="padding-left">
                                     <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}See" aria-expanded="false" aria-controls="multiCollapseExample1">
@@ -185,10 +198,10 @@
                             </div>
 
                             <div  class="collapse multi-collapse" id="${comment.commentId}See">
-                                <c:if test="${empty replies}">
+                                <c:if test="${empty replies.get(comment.commentId)}">
                                     <div>This comment has no replies yet</div>
                                 </c:if>
-                                <c:if test="${not empty replies}">
+                                <c:if test="${not empty replies.get(comment.commentId)}">
                                     <c:forEach var="reply" items="${replies.get(comment.commentId)}" varStatus="loop">
                                     <div class="row margin-left">
                                         <div class="row d-flex align-items-center ">
@@ -217,12 +230,12 @@
                             </div>
                             <div class="row collapse multi-collapse" id="${comment.commentId}">
 
-                                <span>
+                                <div>
                                     <textarea id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"></textarea>
-                                </span>
-                                <span>
+                                </div>
+                                <div>
                                     <button class="btn primary-button btn-sm padding-top" onclick="publishComment(${comment.commentId})">SUBMIT</button>
-                                </span>
+                                </div>
 
                             </div>
 
