@@ -31,6 +31,10 @@
                 <i class="fas fa-user"></i>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="${pageContext.request.contextPath}/${param.user_role}">Moderate</a>
+                <c:if test="${param.user_role == 'ROLE_ADMIN'}  || ${param.user_role == 'ROLE_MODERATOR'}">
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/mod">Moderate</a>
+                </c:if>
                 <c:choose>
                     <c:when test="${param.username != 'anonymousUser'}">
                         <a class="dropdown-item" href="${pageContext.request.contextPath}/users/${param.username}">Profile</a>

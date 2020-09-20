@@ -20,6 +20,7 @@
             <jsp:include page="../components/navbar.jsp">
                 <jsp:param name="connected" value="${user.authenticated}"/>
                 <jsp:param name="username" value="${user.name}"/>
+                <jsp:param name="user_role" value="${user_role}"/>
             </jsp:include>
             <jsp:include page="../components/sidebar.jsp"/>
 

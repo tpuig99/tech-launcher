@@ -48,7 +48,6 @@ public class FrameworkController {
 
         if (framework.isPresent()) {
             List<Comment> comments = commentService.getCommentsByFramework(id);
-
             mav.addObject("framework", framework.get());
 
             mav.addObject("books", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.book));
@@ -57,6 +56,9 @@ public class FrameworkController {
             mav.addObject("category", category);
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+            SecurityContextHolder.getContext().getAuthentication().getAuthorities().forEach(grantedAuthority -> {
+                mav.addObject("user_role", grantedAuthority.toString());
+            });
             mav.addObject("comments", comments);
 
             // mav.addObject("contentFormError", false);
