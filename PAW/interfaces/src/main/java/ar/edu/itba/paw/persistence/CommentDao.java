@@ -15,7 +15,7 @@ public interface CommentDao {
     List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId);
     List<Comment> getCommentsByUser(long userId);
     Map<Long, List<Comment>> getRepliesByFramework(long frameworkId);
-    Comment insertComment(long frameworkId, long userId, String description, Long reference);
+    Optional<Comment> insertComment(long frameworkId, long userId, String description, Long reference);
     int deleteComment(long commentId);
     Optional<Comment> changeComment(long commentId, String description);
 

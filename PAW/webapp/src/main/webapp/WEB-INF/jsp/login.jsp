@@ -34,12 +34,15 @@
                 <input class="form-control" id="password" name="j_password" type="password" placeholder="mypassword"/>
             </div>
             <div class="form-group">
-                <label><input name="j_rememberme" type="checkbox"/>Remember me</label>
+                <label><input name="j_rememberme" type="checkbox"/> Remember me</label>
             </div>
-            <div>
-                <input class="btn btn-primary" type="submit" value="Login!"/>
+            <div class="d-flex justify-content-center">
+                <input class="btn primary-button" type="submit" value="LOG IN"/>
             </div>
         </form>
+        <div>
+            <span>Don't have an account? </span><span><a href="${pageContext.request.contextPath}/register">Sign Up</a></span>
+        </div>
     </div>
 
 
