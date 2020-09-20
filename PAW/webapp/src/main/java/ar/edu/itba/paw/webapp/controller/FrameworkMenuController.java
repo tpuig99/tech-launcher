@@ -25,8 +25,11 @@ public class FrameworkMenuController {
         mav.addObject("category",category);
         mav.addObject("frameworksList", fs.getByCategory(FrameworkCategories.getByName(category)));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if( us.findByUsername(username).isPresent()){
+            User user = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+        }
 
         return mav;
     }

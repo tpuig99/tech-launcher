@@ -37,6 +37,7 @@ public class UserProfileController {
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         if (us.findByUsername(username).isPresent()) {
             User user = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             long userId = user.getId();
             mav.addObject("profile", user);
             final List<Comment> commentList = commentService.getCommentsByUser(userId);

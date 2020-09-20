@@ -18,8 +18,11 @@ public class AdminController {
     public ModelAndView index() {
         ModelAndView mav = new ModelAndView("admin/index");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if( us.findByUsername(username).isPresent()){
+            User user = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+        }
         return mav;
     }
 }
