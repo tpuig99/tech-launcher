@@ -194,27 +194,29 @@
                                 </div>
                             </div>
                             <div  class="collapse multi-collapse" id="${comment.commentId}See">
-                            <c:forEach var="reply" items="${replies.get(comment.commentId)}" varStatus="loop">
-                            <div class="row">
-                                <div class="row vertical-divider d-flex align-items-center margin-left">
-
-                                        <span class=" padding-left secondary-font medium-font margin-left">
-                                            <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
-                                        </span>
-                                        <span class="third-font padding-left d-flex justify-content-start ">
-                                            <c:out value="${reply.timestamp.toLocaleString()}" default=""/>
-                                        </span>
-                                </div>
-                                <div class="row  medium-font">
-                                    <div class="vertical-divider margin-left">
-                                        <div class="padding-left">
-                                            <c:out value="${reply.description}" default=""/>
+                                <c:forEach var="reply" items="${replies.get(comment.commentId)}" varStatus="loop">
+                                <div class="row margin-left">
+                                    <div class="row d-flex align-items-center ">
+                                        <div class="vertical-divider margin-left">
+                                            <div class="padding-left">
+                                                <span class="secondary-font medium-font ">
+                                                    <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
+                                                </span>
+                                                <span class="third-font">
+                                                    <c:out value="${reply.timestamp.toLocaleString()}" default=""/>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                                <div class="row padding-bottom"></div>
-                            </c:forEach>
+                                    <div class="row  medium-font">
+                                        <div class="vertical-divider margin-left">
+                                            <div class="padding-left">
+                                                <c:out value="${reply.description}" default=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><div class="row padding-bottom"></div>
+                                </c:forEach>
                             </div>
 
                         </div>
