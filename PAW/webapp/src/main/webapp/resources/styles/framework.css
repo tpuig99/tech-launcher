@@ -45,6 +45,11 @@ color-star{
     margin-bottom: 0.2em;
 }
 
+.padding-top{
+    padding-top: 0.2em;
+    margin-top: 0.2em;
+}
+
 .center{
    justify-content: center;
 }

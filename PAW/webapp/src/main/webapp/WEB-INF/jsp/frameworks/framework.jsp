@@ -183,16 +183,7 @@
                                     </button>
                                 </span>
                             </div>
-                            <div class="row">
-                                <div class="collapse multi-collapse" id="${comment.commentId}">
-                                    <div class="col-9">
-                                        <textarea id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"></textarea>
-                                    </div>
-                                    <div class="col">
-                                        <button class="btn primary-button btn-sm" onclick="publishComment(${comment.commentId})">SUBMIT</button>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div  class="collapse multi-collapse" id="${comment.commentId}See">
                                 <c:if test="${empty replies}">
                                     <div>This comment has no replies yet</div>
@@ -222,6 +213,16 @@
                                     </div><div class="row padding-bottom"></div>
                                     </c:forEach>
                                 </c:if>
+
+                            </div>
+                            <div class="row collapse multi-collapse" id="${comment.commentId}">
+
+                                <span>
+                                    <textarea id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"></textarea>
+                                </span>
+                                <span>
+                                    <button class="btn primary-button btn-sm padding-top" onclick="publishComment(${comment.commentId})">SUBMIT</button>
+                                </span>
 
                             </div>
 
