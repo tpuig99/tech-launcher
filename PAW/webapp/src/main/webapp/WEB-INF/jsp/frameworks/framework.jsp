@@ -349,12 +349,17 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div class="modal-log-in">
-                                    <button type="button" class="btn btn-danger" onclick="window.location.href = '/register'">Sign Up</button>
+                                <div class="row d-flex justify-content-center align-items-center">
+                                <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
                                 </div>
-                                <div class="modal-log-in">
-                                    <button type="button" class="btn btn-primary" onclick="window.location.href = '/login'">Log in</button>
+                               <div class="row justify-content-center align-items-center margin-top">
+                                    <button type="button" class="btn primary-button" onclick="window.location.href = '/login'">LOG IN</button>
                                 </div>
+                                <div class="row  justify-content-center align-items-center margin-top">
+                                    <div>Don't have an account yet? <a href="/register">Sign Up</a>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
