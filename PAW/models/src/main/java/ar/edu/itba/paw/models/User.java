@@ -75,6 +75,6 @@ public class User {
         return admin;
     }
     public boolean isVerify() {
-        return verifications.size()==0?false:true;
+        return verifications.size() != 0;
     }
 }

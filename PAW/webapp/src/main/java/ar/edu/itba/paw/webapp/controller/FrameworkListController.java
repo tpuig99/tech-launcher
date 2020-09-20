@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.FrameworkService;
+import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,9 @@ public class FrameworkListController {
     @Autowired
     private FrameworkService fs;
 
+    @Autowired
+    private UserService us;
+
     @RequestMapping(path={"/search"}, method= RequestMethod.GET)
     public ModelAndView matchedFrameworks(@RequestParam("toSearch") final String toSearch) {
 
@@ -26,6 +31,8 @@ public class FrameworkListController {
         mav.addObject("matchingFrameworks", fs.getByWord(toSearch));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("search_result", toSearch );
+        User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
 
         return mav;
     }

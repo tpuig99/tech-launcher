@@ -39,6 +39,8 @@ public class UserController {
         final ModelAndView mav = new ModelAndView("admin/mod_page");
         mav.addObject("pendingToVerify",us.getVerifyByPending(true));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        User user1 = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        mav.addObject("user_isMod", user1.isVerify() || user1.isAdmin());
         return mav;
     }
 
@@ -51,6 +53,8 @@ public class UserController {
         final ModelAndView mav = new ModelAndView("admin/mod_page");
         mav.addObject("pendingToVerify",us.getVerifyByPending(true));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
         return mav;
     }
 
@@ -85,6 +89,8 @@ public class UserController {
         final ModelAndView mav = new ModelAndView("admin/mod_page");
         mav.addObject("pendingToVerify",us.getVerifyByPending(true));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
         return mav;
     }
 
@@ -94,6 +100,8 @@ public class UserController {
 
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("pendingToVerify",us.getVerifyByPending(true));
+        User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+        mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
         return mav;
     }
 }

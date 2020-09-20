@@ -46,6 +46,7 @@ public class UserProfileController {
             mav.addObject("contents", contentList);
             mav.addObject("comments", commentList);
             mav.addObject("votes", votesList);
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
 
             return mav;
         }

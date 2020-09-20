@@ -15,9 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.net.Authenticator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class FrameworkController {
@@ -56,9 +54,10 @@ public class FrameworkController {
             mav.addObject("category", category);
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-            SecurityContextHolder.getContext().getAuthentication().getAuthorities().forEach(grantedAuthority -> {
-                mav.addObject("user_role", grantedAuthority.toString());
-            });
+
+            User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+
             mav.addObject("comments", comments);
 
             // mav.addObject("contentFormError", false);
