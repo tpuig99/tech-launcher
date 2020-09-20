@@ -63,13 +63,8 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
-        return jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND reference IS NULL", new Object[] {frameworkId},  ROW_MAPPER );
-
-    }
-
-    @Override
-    public List<Comment> getRepliesByCommentAndFramework(long commentId, long frameworkId) {
-        return jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND reference = ?", new Object[] {frameworkId, commentId},  ROW_MAPPER );
+        String value = SELECTION+"where comments.framework_id = ? AND comments.reference IS NULL"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[] {frameworkId},  ROW_MAPPER );
     }
 
     @Override
@@ -89,13 +84,17 @@ public class CommentDaoImpl implements CommentDao {
     public Map<Long, List<Comment>> getRepliesByFramework(long frameworkId) {
         Map<Long, List<Comment>> toReturn = new HashMap<>();
         List<Comment> replies = new ArrayList<>();
+        long commentId;
 
-        List<Comment> comments = jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND reference IS NULL", new Object[] {frameworkId},  ROW_MAPPER );
+        List<Comment> commentsWithoutRef = getCommentsWithoutReferenceByFramework(frameworkId);
 
-        for(Comment comment : comments){
-            long commentId = comment.getCommentId();
-            toReturn.put(commentId,jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND reference =?", new Object[] {frameworkId, commentId},  ROW_MAPPER ));
+        if(!commentsWithoutRef.isEmpty()) {
+            String value = SELECTION+"where comments.framework_id = ? AND comments.reference = ?"+GROUP_BY;
+            for (Comment comment : commentsWithoutRef) {
+                commentId = comment.getCommentId();
+                toReturn.put(commentId, jdbcTemplate.query(value, new Object[]{frameworkId, commentId}, ROW_MAPPER));
 
+            }
         }
         return toReturn;
     }

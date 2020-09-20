@@ -11,7 +11,6 @@ public interface CommentDao {
     Optional<Comment> getById(long contentId);
     List<Comment> getCommentsByFramework(long frameworkId);
     List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId);
-    List<Comment> getRepliesByCommentAndFramework(long commentId, long frameworkId);
     List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId);
     List<Comment> getCommentsByUser(long userId);
     Map<Long, List<Comment>> getRepliesByFramework(long frameworkId);
