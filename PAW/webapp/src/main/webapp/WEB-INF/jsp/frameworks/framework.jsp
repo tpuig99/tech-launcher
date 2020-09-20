@@ -176,8 +176,8 @@
                                     <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
                                         <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
                                      </button>
-                                    </span>
-                                <span>
+                                </span>
+                                <span class="padding-left">
                                     <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}See" aria-expanded="false" aria-controls="multiCollapseExample1">
                                         <i class="arrow fas fa-eye fa-xs"></i><span class="reply padding-left">See Replies</span>
                                     </button>
@@ -186,7 +186,7 @@
                             <div class="row">
                                 <div class="collapse multi-collapse" id="${comment.commentId}">
                                     <div class="col-9">
-                                        <textarea id="commentReplyInput" class="form-control" aria-label="CommentReply"></textarea>
+                                        <textarea id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"></textarea>
                                     </div>
                                     <div class="col">
                                         <button class="btn primary-button btn-sm" onclick="publishComment(${comment.commentId})">SUBMIT</button>
@@ -194,29 +194,35 @@
                                 </div>
                             </div>
                             <div  class="collapse multi-collapse" id="${comment.commentId}See">
-                                <c:forEach var="reply" items="${replies.get(comment.commentId)}" varStatus="loop">
-                                <div class="row margin-left">
-                                    <div class="row d-flex align-items-center ">
-                                        <div class="vertical-divider margin-left">
-                                            <div class="padding-left">
-                                                <span class="secondary-font medium-font ">
-                                                    <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
-                                                </span>
-                                                <span class="third-font">
-                                                    <c:out value="${reply.timestamp.toLocaleString()}" default=""/>
-                                                </span>
+                                <c:if test="${empty replies}">
+                                    <div>This comment has no replies yet</div>
+                                </c:if>
+                                <c:if test="${not empty replies}">
+                                    <c:forEach var="reply" items="${replies.get(comment.commentId)}" varStatus="loop">
+                                    <div class="row margin-left">
+                                        <div class="row d-flex align-items-center ">
+                                            <div class="vertical-divider margin-left">
+                                                <div class="padding-left">
+                                                    <span class="secondary-font medium-font ">
+                                                        <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
+                                                    </span>
+                                                    <span class="third-font">
+                                                        <c:out value="${reply.timestamp.toLocaleString()}" default=""/>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row  medium-font">
-                                        <div class="vertical-divider margin-left">
-                                            <div class="padding-left">
-                                                <c:out value="${reply.description}" default=""/>
+                                        <div class="row  medium-font">
+                                            <div class="vertical-divider margin-left">
+                                                <div class="padding-left">
+                                                    <c:out value="${reply.description}" default=""/>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div><div class="row padding-bottom"></div>
-                                </c:forEach>
+                                    </div><div class="row padding-bottom"></div>
+                                    </c:forEach>
+                                </c:if>
+
                             </div>
 
                         </div>
@@ -367,20 +373,19 @@
                     </c:if>
 
                     function publishComment(commentId) {
-                        console.log(commentId);
+
                         let id= ${framework.id};
                         let path;
                         let content;
 
                         if(commentId !== undefined){
-                            content = document.getElementById("commentReplyInput").value;
-                            path = '<c:url value="/create" />?id='+id+'&content='+content+'&commentId='+commentId;
+                            content = document.getElementById(commentId+"ReplyInput").value;
+                            console.log(content);    path = '<c:url value="/create" />?id='+id+'&content='+content+'&commentId='+commentId;
                         }else{
                             content = document.getElementById("commentInput").value;
                             path = '<c:url value="/create" />?id='+id+'&content='+content;
                         }
 
-                        console.log(path);
                         window.location.href = path;
                         console.log(location.href);
                     }
