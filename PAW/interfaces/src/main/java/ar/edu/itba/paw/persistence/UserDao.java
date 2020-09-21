@@ -18,6 +18,7 @@ public interface UserDao {
     int delete(long userId);
     Optional<User> update(long userId, String username, String mail, String password);
     Map<Long, String> getUsernamesByComments(List<Comment> comments);
+    Map<Long, String> getUsernamesByReplies(List<Comment> replies);
     List<String> getMails();
     List<String> getUserNames();
     void setEnable(long id);

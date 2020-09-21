@@ -50,6 +50,7 @@ public class FrameworkController {
             List<Comment> comments = commentService.getCommentsWithoutReferenceByFramework(id);
             Map<Long, String> commentsUsernames = us.getUsernamesByComments(commentService.getCommentsByFramework(id));
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
+            Map<Long, String> repliesUsernames = us.getUsernamesByReplies(replies);
 
             mav.addObject("framework", framework.get());
 
@@ -62,6 +63,7 @@ public class FrameworkController {
             mav.addObject("comments", comments);
             mav.addObject("commentsUsernames", us.getUsernamesByComments(comments));
             mav.addObject("replies", replies);
+            mav.addObject("repliesUsernames", repliesUsernames);
 
             return mav;
         }

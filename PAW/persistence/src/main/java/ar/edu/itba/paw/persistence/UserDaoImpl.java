@@ -129,6 +129,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public Map<Long, String> getUsernamesByReplies (List<Comment> comments) {
+        return getUsernamesByComments(comments);
+    }
+
+    @Override
     public List<String> getMails() {
         return jdbcTemplate.query("SELECT mail FROM users", ROW_MAPPER_MAIL);
     }

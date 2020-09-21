@@ -17,6 +17,7 @@ public interface UserService {
     int delete(long userId);
     Optional<User> update(long userId,String username,String mail,String password);
     Map<Long, String> getUsernamesByComments(List<Comment> comments);
+    Map<Long, String> getUsernamesByReplies(Map<Long, List<Comment>> map);
     void createVerificationToken(User user, String token);
     Optional<VerificationToken> getVerificationToken(String token);
     void saveRegisteredUser(User user);

@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -89,6 +87,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<Long, String> getUsernamesByComments(List<Comment> comments) {
         return userDao.getUsernamesByComments(comments);
+    }
+
+    @Override
+    public Map<Long, String> getUsernamesByReplies(Map<Long, List<Comment>> map) {
+        List<Comment> commentList = new ArrayList<>();
+        for (List<Comment> mapElement : map.values()) {
+            commentList.addAll(mapElement);
+        }
+        return userDao.getUsernamesByReplies(commentList);
     }
 
     @Override
