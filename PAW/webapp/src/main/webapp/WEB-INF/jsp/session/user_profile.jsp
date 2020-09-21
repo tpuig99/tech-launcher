@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/user_profile.css"/>"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -22,26 +23,31 @@
     <jsp:param name="username" value="${user.name}"/>
 </jsp:include>
 
-<div class="content-profile row">
-    <div class="col border-right justify-content-center">
-        <div class="sticky-top-row ml-2">
+<div class="content-profile row mx-2">
+    <div class="col border-right">
+        <div class="sticky-top-row">
             <div class="page-title mb-4">
                 <h2>User Profile</h2>
             </div>
-            <div class="well profile">
-                <div class="row">
+            <div>
+                <div class="row mx-2 justify-content-center">
                     <div>
                         <img src="https://picsum.photos/536/354" alt="" class="rounded-circle img-slot">
+                        <div class="row justify-content-center">
                         <h2><c:out value="${profile.username}"/></h2>
+                        <c:if test="${profile.enable}">
+                            <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip" title="This user is verified!"></i>
+                        </c:if>
+                        </div>
                         <p><strong>Email: </strong><c:out value="${profile.mail}"/></p>
-                        <p><strong>Description: </strong> Hi. I'm <c:out value="${profile.username}"/>. I like cupcakes. </p>
+                        <p><strong>Description: </strong><c:out value="${profile.description}"/></p>
                         <p><strong>Guide of: </strong>
                             <a class="tags" href="<c:url value="/Front_End_Development/22"/>">HTML5</a>
                             <a class="tags" href="<c:url value="/Programming_Languages/269"/>">C</a>
                         </p>
                     </div>
                 </div>
-                <div class="row text-center">
+                <div class="row mx-2 justify-content-center">
                     <div class="col-4 emphasis">
                         <h2><strong><c:out value="${fn:length(contents)}"/></strong></h2>
                         <p><small>Uploaded Contents</small></p>
@@ -114,6 +120,12 @@
     </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
