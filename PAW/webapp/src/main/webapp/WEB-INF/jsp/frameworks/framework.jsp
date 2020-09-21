@@ -162,6 +162,9 @@
                             <div class="row">
                                 <div class="col secondary-font">
                                     <a href="<c:url value='/users/${comment.userName}'/>">
+                                        <c:if test="${comment.verify}">
+                                            <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="This user is verified!"></i>
+                                        </c:if>
                                         <c:out value="${comment.userName}" default=""/>
                                     </a>
                                 </div>
@@ -326,6 +329,10 @@
                     <%--        showSnackbar();--%>
                     <%--    }--%>
                     <%--});--%>
+
+                    $(document).ready(function(){
+                        $('[data-toggle="tooltip"]').tooltip();
+                    });
 
                     function publishComment() {
                         let content = document.getElementById("commentInput").value;
