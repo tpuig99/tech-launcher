@@ -17,6 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -111,9 +113,18 @@ public class UserController {
         if( us.findByUsername(username).isPresent()){
             User user = us.findByUsername(username).get();
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            if( user.isAdmin()) {
+                mav.addObject("pendingToVerify", us.getVerifyByPending(true));
+            }
+            else if( user.isVerify() ){
+                List<VerifyUser> verify = new LinkedList<>();
+                user.getVerifications().forEach(verifyUser -> {
+                    verify.addAll(us.getVerifyByUser(verifyUser.getFrameworkId(),true));
+                });
+                mav.addObject("pendingToVerify",verify);
+            }
         }
 
-        mav.addObject("pendingToVerify",us.getVerifyByPending(true));
         return mav;
     }
 }

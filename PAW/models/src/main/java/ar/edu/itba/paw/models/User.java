@@ -60,6 +60,10 @@ public class User {
         this.verifications.addAll(verifications);
     }
 
+    public List<VerifyUser> getVerifications() {
+        return verifications;
+    }
+
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
