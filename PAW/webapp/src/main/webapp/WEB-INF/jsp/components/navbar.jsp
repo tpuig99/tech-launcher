@@ -26,7 +26,7 @@
                 <button class="btn my-2 my-sm-0" type="button" onclick="searchFrameworks()"><i class="fas fa-search"></i></button>
             </form>
         </div>
-        <div class="nav-item dropdown">
+        <div class="nav-item dropdown" id="profile-settings">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-user"></i>
             </a>
