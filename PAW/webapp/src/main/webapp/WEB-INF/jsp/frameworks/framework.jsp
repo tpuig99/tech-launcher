@@ -238,12 +238,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="row">Want to help us? Be a mod!</div>
-                        <button class="btn primary-button" onclick="applyForMod()">APPLY</button>
-                    </div>
-
-
+                    <c:if test="${!verifyForFramework && !isAdmin}">
+                        <div class="row">
+                            <div class="row">Want to help us? Be a mod!</div>
+                            <button class="btn primary-button" onclick="applyForMod()">APPLY</button>
+                        </div>
+                    </c:if>
                 </div>
 
                 <!-- Competition Cards -->

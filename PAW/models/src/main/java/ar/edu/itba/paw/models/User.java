@@ -67,6 +67,7 @@ public class User {
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
+
     public boolean isVerifyForFramework(long frameworkId){
         for (VerifyUser v: verifications) {
             if(v.getFrameworkId()==frameworkId)

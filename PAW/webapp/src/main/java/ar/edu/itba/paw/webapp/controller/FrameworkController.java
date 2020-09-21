@@ -59,6 +59,8 @@ public class FrameworkController {
             if( us.findByUsername(username).isPresent()){
                 User user = us.findByUsername(username).get();
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+                mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
+                mav.addObject("isAdmin",user.isAdmin());
             }
 
             mav.addObject("comments", comments);
