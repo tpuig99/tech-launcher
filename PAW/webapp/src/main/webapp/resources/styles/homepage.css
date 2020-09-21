@@ -7,7 +7,6 @@
     padding-top: 4em;
     padding-bottom: 4em;
     background-color: #733bce;
-    width: 100%;
 }
 
 .introduction h1 {
@@ -20,4 +19,36 @@
     margin-left: 8em;
     margin-right: 8em;
     justify-content: center;
+}
+
+.title-background-frameworks {
+    background-color: #340052;
+    align-content: center;
+}
+
+.title-background-forum {
+    background-color: #1d4c86;
+    align-content: center;
+}
+
+.title-background-projects {
+    background-color: #00523a;
+    align-content: center;
+}
+
+.card-header h3 {
+    color: #f1f1f1;
+}
+
+.card .card-background {
+    background-color: #AFBBF2;
+}
+
+.btn-homepage {
+    color: white;
+    background-color: #1d0081;
+}
+
+.btn-homepage:hover {
+    color: cyan;
 }
