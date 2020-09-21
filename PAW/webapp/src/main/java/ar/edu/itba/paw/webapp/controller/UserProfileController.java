@@ -42,7 +42,7 @@ public class UserProfileController {
             mav.addObject("profile", user);
             final List<Comment> commentList = commentService.getCommentsByUser(userId);
             final List<Content> contentList = contentService.getContentByUser(userId);
-            final List<FrameworkVote> votesList = voteService.getAllByUserWithFrameworkName(userId);
+            final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
 
             mav.addObject("contents", contentList);
             mav.addObject("comments", commentList);

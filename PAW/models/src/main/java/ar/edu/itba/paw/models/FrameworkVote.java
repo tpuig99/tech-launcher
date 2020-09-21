@@ -6,13 +6,11 @@ public class FrameworkVote {
     private long userId;
     private int stars;
     private String frameworkName;
+    private FrameworkCategories frameworkCategory;
+
 
     public String getFrameworkName() {
         return frameworkName;
-    }
-
-    public void setFrameworkName(String frameworkName) {
-        this.frameworkName = frameworkName;
     }
 
     public void setStars(int stars) {
@@ -29,19 +27,13 @@ public class FrameworkVote {
                 '}';
     }
 
-    public FrameworkVote(long voteId, long frameworkId, long userId, int stars) {
-        this.id = voteId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.stars = stars;
-    }
-
-    public FrameworkVote(long id, long frameworkId, long userId, int stars, String frameworkName) {
+    public FrameworkVote(long id, long frameworkId, long userId, int stars, String frameworkName, FrameworkCategories frameworkCategory) {
         this.id = id;
         this.frameworkId = frameworkId;
         this.userId = userId;
         this.stars = stars;
         this.frameworkName = frameworkName;
+        this.frameworkCategory = frameworkCategory;
     }
 
     public long getVoteId() {
@@ -58,5 +50,12 @@ public class FrameworkVote {
 
     public int getStars() {
         return stars;
+    }
+
+    public FrameworkCategories getFrameworkCategory() {
+        return frameworkCategory;
+    }
+    public String getCategory(){
+        return frameworkCategory.getNameCat();
     }
 }
