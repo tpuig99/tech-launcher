@@ -69,7 +69,11 @@
                 <c:forEach var="comment" items="${comments}">
                     <div class="card emphasis emph-comment row mb-2">
                         <div class="card-body row mt-1">
-                            <div class="col-3 secondary-font"> <c:out value="${comment.frameworkName}" default=""/> </div>
+                            <div class="col-3 secondary-font">
+                                <a href="<c:url value="/${comment.category}/${comment.frameworkId}"/>">
+                                    <c:out value="${comment.frameworkName}" default=""/>
+                                </a>
+                            </div>
                             <div class="col-6 text-left"> <c:out value="${comment.description}" default=""/> </div>
                             <div class="col third-font text-right"> <c:out value="${comment.timestamp.toLocaleString()}" default=""/> </div>
                         </div>
@@ -87,7 +91,9 @@
                 <c:forEach var="content" items="${contents}">
                     <div class="card emphasis emph-content row mb-2">
                         <div class="card-body row mt-1">
-                            <div class="col-3 secondary-font"> <c:out value="${content.frameworkName}" default=""/> </div>
+                            <div class="col-3 secondary-font">
+                                <c:out value="${content.frameworkName}" default=""/>
+                            </div>
                             <div class="col-6 text-left"> <c:out value="${content.type.name()}: ${content.title}" default=""/> </div>
                             <div class="col third-font text-right"> <c:out value="${content.timestamp.toLocaleString()}" default=""/> </div>
                         </div>
@@ -105,7 +111,9 @@
                 <c:forEach var="vote" items="${votes}">
                     <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
                         <div class="card-body row mt-1">
-                            <div class="col secondary-font"> <c:out value="${vote.frameworkName}" default=""/> </div>
+                            <div class="col secondary-font"> 
+                                <c:out value="${vote.frameworkName}" default=""/>
+                            </div>
                             <div class="col"> <c:out value="${vote.stars} / 5" default=""/> </div>
                         </div>
                     </div>
