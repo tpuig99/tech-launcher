@@ -110,19 +110,34 @@ public class UserController {
             User user = us.findByUsername(username).get();
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             if( user.isAdmin()) {
-                mav.addObject("pendingToVerify", us.getVerifyByPending(true));
+                List<VerifyUser> verify = us.getVerifyByPending(true);
+                List<VerifyUser> applicants = new LinkedList<>();
+                verify.forEach(verifyUser -> {
+                    if(verifyUser.getComment() == null ){
+                        applicants.add(verifyUser);
+                    }
+                });
+                verify.removeAll(applicants);
+                mav.addObject("pendingToVerify", verify);
+                mav.addObject("pendingApplicants", applicants);
+                return mav;
             }
             else if( user.isVerify() ){
                 List<VerifyUser> verify = new LinkedList<>();
                 user.getVerifications().forEach(verifyUser -> {
                     verify.addAll(us.getVerifyByUser(verifyUser.getFrameworkId(),true));
                 });
+                List<VerifyUser> applicants = new LinkedList<>();
+                verify.forEach(verifyUser -> {
+                    if(verifyUser.getComment() == null ){
+                        applicants.add(verifyUser);
+                    }
+                });
+                verify.removeAll(applicants);
                 mav.addObject("pendingToVerify",verify);
+                mav.addObject("pendingApplicants", applicants);
+                return mav;
             }
-            else{
-                return ErrorController.redirectToErrorView();
-            }
-            return mav;
         }
         return ErrorController.redirectToErrorView();
     }
