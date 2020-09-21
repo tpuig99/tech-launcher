@@ -17,7 +17,8 @@ public class FrameworkDaoImpl implements FrameworkDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final static RowMapper<Framework> ROW_MAPPER = FrameworkDaoImpl::mapRow;
-
+    private final String SELECTION="select frameworks.framework_id,framework_name,category,description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant from frameworks left join framework_votes on frameworks.framework_id = framework_votes.framework_id ";
+    private final String GROUP_BY=" group by framework_name, frameworks.framework_id, category, description, introduction, logo";
     @Autowired
     public FrameworkDaoImpl(final DataSource ds) {
         this.jdbcTemplate = new JdbcTemplate(ds);
@@ -34,29 +35,33 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 FrameworkCategories.getByName(rs.getString("category")),
                 rs.getString("description"),
                 rs.getString("introduction"),
-                rs.getString("logo"));
+                rs.getString("logo"),
+                rs.getDouble("stars"),
+                rs.getInt("votes_cant"));
     }
 
     @Override
     public Optional<Framework> findById(long id) {
-        return jdbcTemplate.query("SELECT * FROM frameworks WHERE framework_id = ?", new Object[]{ id }, ROW_MAPPER).stream().findFirst();
+        String value=SELECTION+"WHERE frameworks.framework_id = ?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[]{ id }, ROW_MAPPER).stream().findFirst();
         }
 
     @Override
     public List<Framework> getByCategory(FrameworkCategories category) {
-            //toReturn.add(new Framework(1, "Angular", FrameworkCategories.Back_End_Development, "Angular is a framework for dynamic websited." ));
-        return jdbcTemplate.query("SELECT * FROM frameworks WHERE category = ?", new Object[]{ category.getNameCat() }, ROW_MAPPER);
+        String value=SELECTION+"WHERE category = ?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[]{ category.getNameCat() }, ROW_MAPPER);
     }
 
     @Override
     public List<Framework> getByNameOrCategory(String toSearch) {
         String value = "%"+toSearch+"%";
-        return jdbcTemplate.query("SELECT * FROM frameworks WHERE framework_name ILIKE ? OR category ILIKE ?", new Object[]{ value, value }, ROW_MAPPER);
+        String query=SELECTION+"WHERE framework_name ILIKE ? OR category ILIKE ?"+GROUP_BY;
+        return jdbcTemplate.query(query, new Object[]{ value, value }, ROW_MAPPER);
     }
 
     @Override
     public List<Framework> getAll() {
-        return jdbcTemplate.query("SELECT * FROM frameworks", ROW_MAPPER);
+        return jdbcTemplate.query(SELECTION+GROUP_BY, ROW_MAPPER);
     }
 
     private Framework create(String framework_name,FrameworkCategories category,String description,String introduction,String logo) {
@@ -67,6 +72,6 @@ public class FrameworkDaoImpl implements FrameworkDao {
         args.put("introduction",introduction);
         args.put("logo",logo);
         final Number frameworkId = jdbcInsert.executeAndReturnKey(args);
-        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction,logo);
+        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction,logo,0,0);
     }
 }
