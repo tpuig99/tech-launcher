@@ -123,8 +123,11 @@ public class UserController {
                 });
                 mav.addObject("pendingToVerify",verify);
             }
+            else{
+                return ErrorController.redirectToErrorView();
+            }
+            return mav;
         }
-
-        return mav;
+        return ErrorController.redirectToErrorView();
     }
 }
