@@ -161,7 +161,9 @@
                         <div class="col">
                             <div class="row">
                                 <div class="col secondary-font">
-                                    <c:out value="${comment.userName}" default=""/>
+                                    <a href="<c:url value='/users/${comment.userName}'/>">
+                                        <c:out value="${comment.userName}" default=""/>
+                                    </a>
                                 </div>
                                 <div class="col third-font d-flex justify-content-flex-end">
                                     <c:out value="${comment.timestamp}" default=""/>
