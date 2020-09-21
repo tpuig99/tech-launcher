@@ -111,8 +111,10 @@
                 <c:forEach var="vote" items="${votes}">
                     <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
                         <div class="card-body row mt-1">
-                            <div class="col secondary-font"> 
-                                <c:out value="${vote.frameworkName}" default=""/>
+                            <div class="col secondary-font">
+                                <a href="/${vote.category}/${vote.frameworkId}">
+                                    <c:out value="${vote.frameworkName}" default=""/>
+                                </a>
                             </div>
                             <div class="col"> <c:out value="${vote.stars} / 5" default=""/> </div>
                         </div>
