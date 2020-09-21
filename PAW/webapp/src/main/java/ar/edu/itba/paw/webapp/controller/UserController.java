@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class UserController {
     FrameworkService fs;
 
     @RequestMapping("/apply")
-    public ModelAndView AddCandidate(@RequestParam("id") final long frameworkId) {
+    public String AddCandidate(HttpServletRequest request, @RequestParam("id") final long frameworkId) {
         String username = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<User> user = us.findByUsername(username);
         if(user.isPresent()){
@@ -38,14 +39,9 @@ public class UserController {
             if(!vu.isPresent())
                 us.createVerify(user.get().getId(),frameworkId);
         }
-        final ModelAndView mav = new ModelAndView("admin/mod_page");
-        mav.addObject("pendingToVerify",us.getVerifyByPending(true));
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        if( us.findByUsername(username).isPresent()){
-            User user1 = us.findByUsername(username).get();
-            mav.addObject("user_isMod", user1.isVerify() || user1.isAdmin());
-        }
-        return mav;
+        String referer = request.getHeader("Referer");
+
+        return "redirect:" + referer;
     }
 
     @RequestMapping("/reject")

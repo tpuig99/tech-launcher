@@ -238,6 +238,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="row">Want to help us? Be a mod!</div>
+                        <button class="btn primary-button" onclick="applyForMod()">APPLY</button>
+                    </div>
+
+
                 </div>
 
                 <!-- Competition Cards -->
@@ -374,7 +380,9 @@
                         });
                     });
 
-
+                    function applyForMod(){
+                        window.location.href = '<c:url value="/apply"/>?id=' + ${framework.id}
+                    }
 
                     function selectFiles() {
                         let el = document.getElementById("fileElem");
