@@ -100,6 +100,10 @@ nav a:hover {
     margin-left: 3em;
 }
 
+.double-margin-left{
+    margin-left: 6em;
+}
+
 .primary-button{
     background-color: #48bfe3;
      color: white;
