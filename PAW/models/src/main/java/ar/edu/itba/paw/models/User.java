@@ -79,6 +79,10 @@ public class User {
         return admin;
     }
     public boolean isVerify() {
-        return verifications.size() != 0;
+        for (VerifyUser v: verifications) {
+            if(!v.isPending())
+                return true;
+        }
+        return false;
     }
 }
