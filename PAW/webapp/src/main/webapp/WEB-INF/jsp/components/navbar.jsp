@@ -19,6 +19,9 @@
             <li class="nav-item active">
                 <a class="nav-link" href="<c:url value="/"/>">Home</a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="<c:url value="/frameworks"/>">Techs</a>
+            </li>
         </ul>
         <div>
             <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">

@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>
-        Tech Launcher/Search Result
+        Search Result - Tech Launcher
     </title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
