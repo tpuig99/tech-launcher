@@ -22,39 +22,54 @@
         <div class="content-no-sidebar">
             <div class="page-title">Pending to Verify by Comments</div>
             <div class="page-description"></div>
-            <c:forEach var = "pendingUser" items="${pendingToVerify}">
-                <div class="card emphasis emph-comment row mb-2 verified">
-                    <div class="card-body row mt-1">
-                        <div class="col-3 secondary-font"> <a href="/users/${pendingUser.userName}"><c:out value="${pendingUser.userName}" default=""/></a>
-                            <c:out value="/" default=""/>
-                            <a href="${pendingUser.frameworkName}/${pendingUser.frameworkId}"><c:out value="${pendingUser.frameworkName}" default=""/></a>
+            <c:choose>
+                <c:when test="${not empty pendingToVerify}">
+                    <c:forEach var = "pendingUser" items="${pendingToVerify}">
+                        <div class="card emphasis emph-comment row mb-2 verified">
+                            <div class="card-body row mt-1">
+                                <div class="col-3 secondary-font"> <a href="/users/${pendingUser.userName}"><c:out value="${pendingUser.userName}" default=""/></a>
+                                    <c:out value="/" default=""/>
+                                    <a href="${pendingUser.frameworkName}/${pendingUser.frameworkId}"><c:out value="${pendingUser.frameworkName}" default=""/></a>
+                                </div>
+                                <div class="col-6 text-left"> <c:out value="${pendingUser.comment.description}" default=""/> </div>
+                                <div class="col third-font text-right"> <c:out value="${pendingUser.comment.timestamp.toLocaleString()}" default=""/> </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="button" class="btn btn-secondary" onclick="rejectUser(${pendingUser.verificationId})">Ignore</button>
+                                <button type="button" class="btn btn-primary" onclick="promoteUser(${pendingUser.verificationId})">Promote</button>
+                            </div>
                         </div>
-                        <div class="col-6 text-left"> <c:out value="${pendingUser.comment.description}" default=""/> </div>
-                        <div class="col third-font text-right"> <c:out value="${pendingUser.comment.timestamp.toLocaleString()}" default=""/> </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-secondary" onclick="rejectUser(${pendingUser.verificationId})">Ignore</button>
-                        <button type="button" class="btn btn-primary" onclick="promoteUser(${pendingUser.verificationId})">Promote</button>
-                    </div>
-                </div>
-            </c:forEach>
-
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <div>It seems you have no work here. You'll have to wait for more comments to reach hot..</div>
+                </c:otherwise>
+            </c:choose>
             <div class="page-title">Pending Applicants</div>
             <div class="page-description"></div>
-            <c:forEach var = "applicant" items="${pendingApplicants}">
-                <div class="card emphasis emph-comment col-4 mb-2 applicant">
-                    <div class="card-body mt-1">
-                        <div class="secondary-font"> <a href="/users/${applicant.userName}"><c:out value="${applicant.userName}" default=""/></a>
-                            <c:out value="/" default=""/>
-                            <a href="${applicant.frameworkName}/${applicant.frameworkId}"><c:out value="${applicant.frameworkName}" default=""/></a>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-primary" onclick="promoteUser(${applicant.verificationId})">Promote</button>
-                        <button type="button" class="btn btn-secondary" onclick="rejectUser(${applicant.verificationId})">Ignore</button>
-                    </div>
-                </div>
-            </c:forEach>
+            <div class="row">
+                <c:choose>
+                    <c:when test="${not empty pendingApplicants}">
+                        <c:forEach var = "applicant" items="${pendingApplicants}">
+                            <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
+                                <div class="card-body mt-1">
+                                    <div class="secondary-font"> <a href="/users/${applicant.userName}"><c:out value="${applicant.userName}" default=""/></a>
+                                        <c:out value="/" default=""/>
+                                        <a href="${applicant.frameworkName}/${applicant.frameworkId}"><c:out value="${applicant.frameworkName}" default=""/></a>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" class="btn btn-primary" onclick="promoteUser(${applicant.verificationId})">Promote</button>
+                                    <button type="button" class="btn btn-secondary" onclick="rejectUser(${applicant.verificationId})">Ignore</button>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <div>It seems you have no work here. You'll have to wait for more users to apply for mod..</div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
         </div>
 
         <script>
