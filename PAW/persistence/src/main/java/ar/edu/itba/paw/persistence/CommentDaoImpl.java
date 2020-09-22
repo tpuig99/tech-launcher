@@ -12,10 +12,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class CommentDaoImpl implements CommentDao {
@@ -51,6 +48,11 @@ public class CommentDaoImpl implements CommentDao {
         );
     }
 
+   /* private static Long mapRow3(ResultSet rs, int rowNum) throws SQLException {
+        return rs.getLong("comment_id")
+        );
+    }*/
+
     @Override
     public Optional<Comment> getById(long commentId) {
         String value = SELECTION+"WHERE comments.comment_id = ?"+GROUP_BY;
@@ -60,6 +62,12 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public List<Comment> getCommentsByFramework(long frameworkId) {
         String value = SELECTION+"where comments.framework_id = ?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[] {frameworkId},  ROW_MAPPER );
+    }
+
+    @Override
+    public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
+        String value = SELECTION+"where comments.framework_id = ? AND comments.reference IS NULL"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[] {frameworkId},  ROW_MAPPER );
     }
 
@@ -75,6 +83,25 @@ public class CommentDaoImpl implements CommentDao {
         return jdbcTemplate.query(value, new Object[] {userId}, ROW_MAPPER);
     }
 
+    //TODO optimize queries
+    @Override
+    public Map<Long, List<Comment>> getRepliesByFramework(long frameworkId) {
+        Map<Long, List<Comment>> toReturn = new HashMap<>();
+        List<Comment> replies = new ArrayList<>();
+        long commentId;
+
+        List<Comment> commentsWithoutRef = getCommentsWithoutReferenceByFramework(frameworkId);
+
+        if(!commentsWithoutRef.isEmpty()) {
+            String value = SELECTION+"where comments.framework_id = ? AND comments.reference = ?"+GROUP_BY;
+            for (Comment comment : commentsWithoutRef) {
+                commentId = comment.getCommentId();
+                toReturn.put(commentId, jdbcTemplate.query(value, new Object[]{frameworkId, commentId}, ROW_MAPPER));
+
+            }
+        }
+        return toReturn;
+    }
 
 
     @Override

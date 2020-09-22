@@ -65,7 +65,6 @@ public class FrameworkController {
 
             mav.addObject("comments", comments);
 
-            // mav.addObject("contentFormError", false);
             return mav;
         }
         return ErrorController.redirectToErrorView();

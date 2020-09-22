@@ -10,7 +10,9 @@ import ar.edu.itba.paw.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -39,6 +41,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
+        List<Comment> comments = cmts.getCommentsWithoutReferenceByFramework(frameworkId);
+        return comments;
+    }
+
+    @Override
     public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
         List<Comment> comments = cmts.getCommentsByFrameworkAndUser(frameworkId, userId);
         return comments;
@@ -48,6 +56,11 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> getCommentsByUser(long userId) {
         List<Comment> comments = cmts.getCommentsByUser(userId);
         return comments;
+    }
+
+    @Override
+    public Map<Long, List<Comment>> getRepliesByFramework(long frameworkId) {
+        return cmts.getRepliesByFramework(frameworkId);
     }
 
     @Override

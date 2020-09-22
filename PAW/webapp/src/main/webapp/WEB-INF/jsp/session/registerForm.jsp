@@ -21,7 +21,7 @@
 
         <div class="content-no-sidebar">
             <div class="page-title">
-                Register
+                Sign Up
             </div>
             <c:if test="${not empty errorMessage}">
                 <c:out value="${errorMessage}"/>
@@ -51,8 +51,8 @@
                     <form:input class="form-control" type="email" path="email" placeholder="mygreatemail@gmail.com"/>
                     <form:errors path="email" cssClass="formError" element="p"/>
                 </div>
-                <div>
-                    <input class="btn btn-primary" type="submit" value="Register"/>
+                <div class="d-flex justify-content-center">
+                    <input class="btn primary-button" type="submit" value="SIGN UP"/>
                 </div>
             </form:form>
         </div>

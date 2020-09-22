@@ -56,9 +56,19 @@
                 <div class="container">
                     <div><h4 class="title">Content</h4></div>
                     <div class="d-flex justify-content-end">
-                       <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
-                           <i class="fa fa-plus"></i>
-                        </button>
+                        <c:choose>
+                            <c:when test="${user.name != 'anonymousUser'}">
+                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#loginModal">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
+
                    </div>
                 </div>
                 <c:if test="${empty books && empty courses && empty tutorials}">
@@ -169,13 +179,80 @@
                                     </a>
                                 </div>
                                 <div class="col third-font d-flex justify-content-flex-end">
-                                    <c:out value="${comment.timestamp}" default=""/>
+                                    <c:out value="${comment.timestamp.toLocaleString()}" default=""/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
                                     <c:out value="${comment.description}" default=""/>
                                 </div>
+                            </div>
+                            <div class="row padding-bottom">
+                                <span>
+                                    <c:choose>
+                                        <c:when test="${user.name != 'anonymousUser'}">
+                                            <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
+                                               <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="button" class="btn btn-light" data-toggle="modal" data-target="#loginModal">
+                                               <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
+
+
+
+
+                                </span>
+                                <span class="padding-left">
+                                    <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}See" aria-expanded="false" aria-controls="multiCollapseExample1">
+                                        <i class="arrow fas fa-eye fa-xs"></i><span class="reply padding-left">See Replies</span>
+                                    </button>
+                                </span>
+                            </div>
+
+                            <div  class="collapse multi-collapse" id="${comment.commentId}See">
+                                <c:if test="${empty replies.get(comment.commentId)}">
+                                    <div>This comment has no replies yet</div>
+                                </c:if>
+                                <c:if test="${not empty replies.get(comment.commentId)}">
+                                    <c:forEach var="reply" items="${replies.get(comment.commentId)}" varStatus="loop">
+                                    <div class="row margin-left">
+                                        <div class="row d-flex align-items-center ">
+                                            <div class="vertical-divider margin-left">
+                                                <div class="padding-left">
+                                                    <span class="secondary-font medium-font ">
+                                                        <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
+                                                    </span>
+                                                    <span class="third-font">
+                                                        <c:out value="${reply.timestamp.toLocaleString()}" default=""/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row  medium-font">
+                                            <div class="vertical-divider margin-left">
+                                                <div class="padding-left">
+                                                    <c:out value="${reply.description}" default=""/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><div class="row padding-bottom"></div>
+                                    </c:forEach>
+                                </c:if>
+
+                            </div>
+                            <div class="row collapse multi-collapse" id="${comment.commentId}">
+
+                                <div>
+                                    <textarea id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"></textarea>
+                                </div>
+                                <div>
+                                    <button class="btn primary-button btn-sm padding-top" onclick="publishComment(${comment.commentId})">SUBMIT</button>
+                                </div>
+
                             </div>
 
                         </div>
@@ -278,18 +355,23 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="loginModalLabel">You have be logged in to do this</h5>
+                                <h5 class="modal-title" id="loginModalLabel">You have to be logged in to do this</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div class="modal-log-in">
-                                    <button type="button" class="btn btn-danger" onclick="window.location.href = '/register'">Sign Up</button>
+                                <div class="row d-flex justify-content-center align-items-center">
+                                <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
                                 </div>
-                                <div class="modal-log-in">
-                                    <button type="button" class="btn btn-primary" onclick="window.location.href = '/login'">Log in</button>
+                               <div class="row justify-content-center align-items-center margin-top">
+                                    <button type="button" class="btn primary-button" onclick="window.location.href = '/login'">LOG IN</button>
                                 </div>
+                                <div class="row  justify-content-center align-items-center margin-top">
+                                    <div>Don't have an account yet? <a href="/register">Sign Up</a>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -320,15 +402,18 @@
 
                 <!-- Scripts -->
                 <script>
+                    <c:if test="${not empty contentFormError}">
+                        $(window).on('load', function() {
+                            console.log(${contentFormError});
+                            if(${contentFormError}) {
+                                $('#addContentModal').modal('show');
+                            }else{
+                                showSnackbar();
+                            }
+                        });
+                    </c:if>
 
-                    <%--$(window).on('load', function() {--%>
-                    <%--    console.log(${contentFormError});--%>
-                    <%--    if(${contentFormError}) {--%>
-                    <%--        $('#addContentModal').modal('show');--%>
-                    <%--    }else{--%>
-                    <%--        showSnackbar();--%>
-                    <%--    }--%>
-                    <%--});--%>
+                    function publishComment(commentId) {
 
                     $(document).ready(function(){
                         $('[data-toggle="tooltip"]').tooltip();
@@ -337,12 +422,21 @@
                     function publishComment() {
                         let content = document.getElementById("commentInput").value;
                         let id= ${framework.id};
+                        let path;
+                        let content;
 
-                        let path = '<c:url value="/create" />?id='+id+'&content='+content;
-                        console.log(path);
+                        if(commentId !== undefined){
+                            content = document.getElementById(commentId+"ReplyInput").value;
+                            console.log(content);    path = '<c:url value="/create" />?id='+id+'&content='+content+'&commentId='+commentId;
+                        }else{
+                            content = document.getElementById("commentInput").value;
+                            path = '<c:url value="/create" />?id='+id+'&content='+content;
+                        }
+
                         window.location.href = path;
                         console.log(location.href);
                     }
+
 
                     function voteUpComment(commentId) {
                         let frameworkId = ${framework.id};
