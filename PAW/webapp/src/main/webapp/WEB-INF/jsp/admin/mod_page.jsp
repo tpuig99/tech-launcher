@@ -4,7 +4,7 @@
 <html>
     <head>
         <title>
-            Tech Launcher/Mod Options
+            Mod Options - Tech Launcher
         </title>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -36,7 +36,7 @@
                             </div>
                             <div class="card-footer">
                                 <button type="button" class="btn btn-secondary" onclick="rejectUser(${pendingUser.verificationId})">Ignore</button>
-                                <button type="button" class="btn btn-primary" onclick="promoteUser(${pendingUser.verificationId})">Promote</button>
+                                <button type="button" class="btn primary-button" onclick="promoteUser(${pendingUser.verificationId})">Promote</button>
                             </div>
                         </div>
                     </c:forEach>
@@ -59,7 +59,7 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button type="button" class="btn btn-primary" onclick="promoteUser(${applicant.verificationId})">Promote</button>
+                                    <button type="button" class="btn primary-button" onclick="promoteUser(${applicant.verificationId})">Promote</button>
                                     <button type="button" class="btn btn-secondary" onclick="rejectUser(${applicant.verificationId})">Ignore</button>
                                 </div>
                             </div>

@@ -5,7 +5,7 @@
 
 <html>
     <head>
-        <title>${framework.name}</title>
+        <title>${framework.name} - Tech Launcher</title>
 
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
