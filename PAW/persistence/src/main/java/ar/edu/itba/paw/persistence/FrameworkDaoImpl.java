@@ -19,6 +19,12 @@ public class FrameworkDaoImpl implements FrameworkDao {
     private final static RowMapper<Framework> ROW_MAPPER = FrameworkDaoImpl::mapRow;
     private final String SELECTION="select frameworks.framework_id,type,framework_name,category,description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant from frameworks left join framework_votes on frameworks.framework_id = framework_votes.framework_id ";
     private final String GROUP_BY=" group by framework_name, frameworks.framework_id, category, type, description, introduction, logo";
+
+    private final String SELECTION2 = " SELECT f.framework_id, f.type, framework_name, category, description, introduction, logo, COALESCE(avg(stars),0) as stars, count(stars) as votes_cant " +
+            "FROM frameworks AS f LEFT JOIN framework_votes AS v ON f.framework_id = v.framework_id ";
+    private final String GROUP_BY2 = " GROUP BY framework_name, f.framework_id, category, f.type, description, introduction, logo ";
+
+
     @Autowired
     public FrameworkDaoImpl(final DataSource ds) {
         this.jdbcTemplate = new JdbcTemplate(ds);
@@ -91,6 +97,12 @@ public class FrameworkDaoImpl implements FrameworkDao {
         String value = "%"+toSearch+"%";
         String query=SELECTION+"WHERE framework_name ILIKE ? OR category ILIKE ? OR type ILIKE ?"+GROUP_BY;
         return jdbcTemplate.query(query, new Object[]{ value, value, value}, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getUserInterests(long userId) {
+        String query = SELECTION2 + " inner join content as c on f.framework_id = c.framework_id where c.user_id = ? " + GROUP_BY2;
+        return jdbcTemplate.query(query, new Object[] { userId }, ROW_MAPPER);
     }
 
     @Override

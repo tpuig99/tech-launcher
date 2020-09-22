@@ -22,7 +22,7 @@
 
 <div class="content">
     <div class="page-title">
-        <h2>Home Page</h2>
+        <h2>Techs</h2>
     </div>
     <div class="page-description">
 
@@ -32,7 +32,7 @@
         <h4 class="title">Best Rated</h4>
 
         <div class="row equal">
-            <c:forEach items="${frameworksList}" var="framework">
+            <c:forEach items="${hottestList}" var="framework">
                 <div class="card mx-4 mb-4">
                     <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
                         <div class="card-body">
@@ -47,11 +47,10 @@
 
     <div>
         <c:if test="${user.name != 'anonymousUser'}">
-            <h4 class="title">Based on your tastes</h4>
-            <c:choose>
-                <c:when test="${not empty frameworksList}">
+                <c:if test="${not empty interestsList}">
+                    <h4 class="title">Based on your tastes</h4>
                     <div class="row equal">
-                        <c:forEach items="${frameworksList}" var="framework">
+                        <c:forEach items="${interestsList}" var="framework">
                             <div class="card mx-4 mb-4">
                                 <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
                                     <div class="card-body">
@@ -62,11 +61,7 @@
                             </div>
                         </c:forEach>
                     </div>
-                </c:when>
-                <c:otherwise>
-                    <h4 class="title"> Your best rated frameworks will appear here </h4>
-                </c:otherwise>
-            </c:choose>
+                </c:if>
         </c:if>
 
     </div>

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FrameworkServiceImpl implements FrameworkService {
@@ -64,6 +65,15 @@ public class FrameworkServiceImpl implements FrameworkService {
         }
         return new ArrayList<Framework>();
     }
+
+    @Override
+    public List<Framework> getBestRatedFrameworks() {
+        List<Framework> toReturn = getAll().stream().filter(framework -> framework.getStars() > 4).collect(Collectors.toList());
+        return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
+    }
+
+    @Override
+    public List<Framework> getUserInterests(long userId) { return frameworkDao.getUserInterests(userId); }
 
     @Override
     public List<Framework> getAll() {

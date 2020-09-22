@@ -14,5 +14,7 @@ public interface FrameworkService {
     List<Framework> getAll();
     List<Framework> getCompetitors(Framework framework);
     List<Framework> getByWord(String toSearch);
+    List<Framework> getBestRatedFrameworks();
+    List<Framework> getUserInterests(long userId);
     List<Framework> search(String toSearch,FrameworkCategories category,FrameworkType type);
 }
