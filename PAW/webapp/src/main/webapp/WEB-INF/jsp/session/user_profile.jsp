@@ -45,7 +45,7 @@
                         <div class="row justify-content-center">
                         <h2><c:out value="${profile.username}"/></h2>
                         <c:if test="${profile.enable}">
-                            <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip" title="This user is verified!"></i>
+                            <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip" title="This user is a Moderator!"></i>
                         </c:if>
                         </div>
                         <p><strong>Email: </strong><c:out value="${profile.mail}"/></p>
