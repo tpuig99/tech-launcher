@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>
-        Tech Launcher/${category}
+        ${category}
     </title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
@@ -16,6 +16,7 @@
 <jsp:include page="../components/navbar.jsp">
     <jsp:param name="connected" value="${user}"/>
     <jsp:param name="username" value="${user.name}"/>
+    <jsp:param name="isMod" value="${user_isMod}"/>
 </jsp:include>
 <jsp:include page="../components/sidebar.jsp"/>
 

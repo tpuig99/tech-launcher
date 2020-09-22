@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.FrameworkCategories;
 import ar.edu.itba.paw.models.FrameworkVote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,18 +14,14 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final static RowMapper<FrameworkVote> ROW_MAPPER = new
-            RowMapper<FrameworkVote>() {
-                @Override
-                public FrameworkVote mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new FrameworkVote(rs.getInt("vote_id"),rs.getInt("framework_id"),rs.getInt("user_id"),rs.getInt("stars"));
-                }
-            };
+    private final static RowMapper<FrameworkVote> ROW_MAPPER = FrameworkVoteDaoImpl::frameworkMapRow;
+    private final static String SELECTION="select framework_name,v.framework_id,category,vote_id,user_id,stars from framework_votes v natural join frameworks ";
 
     @Autowired
     public FrameworkVoteDaoImpl(final DataSource ds) {
@@ -34,34 +31,38 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
                 .usingGeneratedKeyColumns("vote_id");
     }
 
-    @Override
-    public List<FrameworkVote> getAll() {
-        final List<FrameworkVote> toReturn = jdbcTemplate.query("SELECT * FROM framework_votes", ROW_MAPPER);
-        return toReturn;
+    private static FrameworkVote frameworkMapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new FrameworkVote(rs.getInt("vote_id"),
+                rs.getInt("framework_id"),
+                rs.getInt("user_id"),
+                rs.getInt("stars"),
+                rs.getString("framework_name"),
+                FrameworkCategories.getByName(rs.getString("category")));
     }
+
 
     @Override
     public List<FrameworkVote> getByFramework(long frameworkId) {
-        final List<FrameworkVote> toReturn = jdbcTemplate.query("SELECT * FROM framework_votes WHERE framework_id=?", ROW_MAPPER,frameworkId);
-        return toReturn;
+        String value=SELECTION+"WHERE v.framework_id=?";
+        return jdbcTemplate.query(value, ROW_MAPPER,frameworkId);
     }
 
     @Override
-    public FrameworkVote getById(long voteId) {
-        final List<FrameworkVote> toReturn = jdbcTemplate.query("SELECT * FROM framework_votes WHERE vote_id=?", ROW_MAPPER,voteId);
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-        return toReturn.get(0);
+    public Optional<FrameworkVote> getById(long voteId) {
+        String value=SELECTION+"WHERE v.vote_id=?";
+        return jdbcTemplate.query(value, new Object[] {voteId}, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
-    public FrameworkVote getByFrameworkAndUser(long frameworkId, long userId) {
-        final List<FrameworkVote> toReturn = jdbcTemplate.query("SELECT * FROM framework_votes WHERE framework_id=? AND user_id=?", ROW_MAPPER,frameworkId,userId);
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-        return toReturn.get(0);
+    public Optional<FrameworkVote> getByFrameworkAndUser(long frameworkId, long userId) {
+        String value=SELECTION+"WHERE v.framework_id=? AND user_id=?";
+        return jdbcTemplate.query(value, new Object[] {frameworkId,userId}, ROW_MAPPER).stream().findFirst();
+    }
+
+    @Override
+    public List<FrameworkVote> getAllByUser(long userId) {
+        String value=SELECTION+"WHERE user_id=?";
+        return jdbcTemplate.query(value, new Object[] { userId }, ROW_MAPPER);
     }
 
     @Override
@@ -71,19 +72,19 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
         args.put("user_id",userId);
         args.put("stars",stars);
         final Number voteId = jdbcInsert.executeAndReturnKey(args);
-        return new FrameworkVote(voteId.longValue(), frameworkId,userId,stars);
+
+        return getById(voteId.longValue()).get();
     }
 
     @Override
     public int delete(long voteId) {
-        String sql = "DELETE FROM framework_votes where vote_id=?";
-        return jdbcTemplate.update(sql,voteId);
+        return jdbcTemplate.update("DELETE FROM framework_votes where vote_id=?",voteId);
     }
 
     @Override
-    public FrameworkVote update(long voteId, int stars) {
-        String sql = "UPDATE framework_votes set stars=? where vote_id=?";
-        jdbcTemplate.update(sql,stars,voteId);
+    public Optional<FrameworkVote> update(long voteId, int stars) {
+        jdbcTemplate.update("UPDATE framework_votes set stars=? where vote_id=?",stars,voteId);
         return getById(voteId);
     }
+
 }

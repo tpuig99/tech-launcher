@@ -2,117 +2,121 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.CommentVote;
+import ar.edu.itba.paw.models.VerifyUser;
 import ar.edu.itba.paw.persistence.CommentDao;
 import ar.edu.itba.paw.persistence.CommentVoteDao;
+import ar.edu.itba.paw.persistence.VerifyUserDao;
 import ar.edu.itba.paw.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService {
+    private static int VOTES_FOR_VERIFY =10;
 
     @Autowired
     CommentDao cmts;
+
+    @Autowired
+    VerifyUserDao verifyUserDao;
+
     @Autowired
     CommentVoteDao cmtVotes;
 
     @Override
-    public Comment getById(long contentId) {
-        Comment comment = cmts.getById(contentId);
-        setCommentVotes(comment);
+    public Optional<Comment> getById(long contentId) {
+        Optional<Comment> comment = cmts.getById(contentId);
         return comment;
     }
 
     @Override
     public List<Comment> getCommentsByFramework(long frameworkId) {
         List<Comment> comments = cmts.getCommentsByFramework(frameworkId);
-        for (Comment comment:comments) {
-            setCommentVotes(comment);
-        }
+        return comments;
+    }
+
+    @Override
+    public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
+        List<Comment> comments = cmts.getCommentsWithoutReferenceByFramework(frameworkId);
         return comments;
     }
 
     @Override
     public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
         List<Comment> comments = cmts.getCommentsByFrameworkAndUser(frameworkId, userId);
-        for (Comment comment:comments) {
-            setCommentVotes(comment);
-        }
         return comments;
     }
 
     @Override
     public List<Comment> getCommentsByUser(long userId) {
-        List<Comment> comments = cmts.getCommentsByUser(userId);;
-        for (Comment comment:comments) {
-            setCommentVotes(comment);
-        }
+        List<Comment> comments = cmts.getCommentsByUser(userId);
         return comments;
     }
 
     @Override
+    public Map<Long, List<Comment>> getRepliesByFramework(long frameworkId) {
+        return cmts.getRepliesByFramework(frameworkId);
+    }
+
+    @Override
     public Comment insertComment(long frameworkId, long userId, String description, Long reference) {
-       Comment comment = cmts.insertComment(frameworkId, userId, description, reference);
-       comment.setVotesDown(0);
-       comment.setVotesUp(0);
-       return comment;
+       Optional<Comment> comment = cmts.insertComment(frameworkId, userId, description, reference);
+       if(comment.isPresent())
+           return comment.get();
+       return null;
     }
 
     @Override
     public int deleteComment(long commentId) {
-        List<CommentVote> votes = cmtVotes.getByComment(commentId);
-        for (CommentVote vote: votes) {
-            cmtVotes.delete(vote.getCommentVoteId());
-        }
         return cmts.deleteComment(commentId);
     }
 
     @Override
-    public Comment changeComment(long commentId, String description) {
-        Comment comment = cmts.changeComment(commentId, description);
-        setCommentVotes(comment);
+    public Optional<Comment> changeComment(long commentId, String description) {
+        Optional<Comment> comment = cmts.changeComment(commentId, description);
         return comment;
     }
 
     @Override
-    public Comment voteUp(long commentId,long userId) {
-        CommentVote vote = cmtVotes.getByCommentAndUser(commentId,userId);
-        if(vote!=null){
-            vote = cmtVotes.update(vote.getCommentVoteId(),1);
+    public Optional<Comment> voteUp(long commentId,long userId) {
+        Optional<CommentVote> vote = cmtVotes.getByCommentAndUser(commentId,userId);
+        if(vote.isPresent()){
+            cmtVotes.update(vote.get().getCommentVoteId(),1);
         }else {
-            vote = cmtVotes.insert(commentId, userId, 1);
+            cmtVotes.insert(commentId, userId, 1);
         }
-        Comment comment = cmts.getById(commentId);
-        setCommentVotes(comment);
+        Optional<Comment> comment = cmts.getById(commentId);
+        checkForVerify(comment);
         return comment;
     }
 
-    @Override
-    public Comment voteDown(long commentId,long userId) {
-        CommentVote vote = cmtVotes.getByCommentAndUser(commentId,userId);
-        if(vote!=null){
-            vote = cmtVotes.update(vote.getCommentVoteId(),-1);
-        }else {
-            vote = cmtVotes.insert(commentId, userId, -1);
-        }
-        Comment comment = cmts.getById(commentId);
-        setCommentVotes(comment);
-        return comment;
-    }
-    private void setCommentVotes(Comment comment){
-        List<CommentVote> votes = cmtVotes.getByComment(comment.getCommentId());
-        int voteUp=0;
-        int voteDown=0;
-        for (CommentVote vote:votes) {
-            if(vote.isVoteUp()){
-                voteUp++;
-            }else{
-                voteDown++;
+    private void checkForVerify(Optional<Comment> comment) {
+        if(comment.isPresent() && comment.get().getVotesUp()==VOTES_FOR_VERIFY){
+            Comment c=comment.get();
+            Optional<VerifyUser> v = verifyUserDao.getByFrameworkAndUser(c.getFrameworkId(),c.getUserId());
+            if(!v.isPresent()){
+                verifyUserDao.create(c.getUserId(),c.getFrameworkId(),c.getCommentId());
             }
         }
-        comment.setVotesUp(voteUp);
-        comment.setVotesDown(voteDown);
     }
+
+    @Override
+    public Optional<Comment> voteDown(long commentId,long userId) {
+        Optional<CommentVote> vote = cmtVotes.getByCommentAndUser(commentId,userId);
+
+        if(vote.isPresent()){
+            cmtVotes.update(vote.get().getCommentVoteId(),-1);
+        }else {
+            cmtVotes.insert(commentId, userId, -1);
+        }
+
+        Optional<Comment> comment = cmts.getById(commentId);
+        return comment;
+    }
+
 }

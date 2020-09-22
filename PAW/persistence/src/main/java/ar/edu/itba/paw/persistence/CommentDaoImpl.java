@@ -1,8 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.models.FrameworkCategories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,27 +12,15 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class CommentDaoImpl implements CommentDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final static RowMapper<Comment> ROW_MAPPER = new
-            RowMapper<Comment>() {
-                @Override
-                public Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new Comment(rs.getLong("comment_id"),
-                            rs.getInt("framework_id"),
-                            rs.getLong("user_id"),
-                            rs.getString("description"),
-                            rs.getTimestamp("tstamp"),
-                            rs.getLong("reference")
-                            );
-                }
-            };
+    private final String SELECTION ="select (CASE WHEN vu.pending IS false THEN true ELSE false END) AS is_verify,comments.comment_id,comments.framework_id,comments.user_id,comments.description,tstamp,reference,framework_name,frameworks.category,count(case when vote=-1 then vote end) as neg,count(case when vote=1 then vote end) as pos, user_name from comments left join comment_votes cv on comments.comment_id = cv.comment_id left join frameworks on comments.framework_id = frameworks.framework_id left join users u on u.user_id = comments.user_id left join verify_users vu on comments.user_id=vu.user_id and frameworks.framework_id = vu.framework_id ";
+    private final String GROUP_BY = " group by comments.comment_id , framework_name, user_name,frameworks.category,pending";
+    private final static RowMapper<Comment> ROW_MAPPER = CommentDaoImpl::mapRow;
 
     @Autowired
     public CommentDaoImpl(final DataSource ds) {
@@ -45,41 +32,80 @@ public class CommentDaoImpl implements CommentDao {
 
     }
 
+    private static Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new Comment(rs.getLong("comment_id"),
+                rs.getInt("framework_id"),
+                rs.getLong("user_id"),
+                rs.getString("description"),
+                rs.getInt("pos"),
+                rs.getInt("neg"),
+                rs.getTimestamp("tstamp"),
+                rs.getLong("reference"),
+                rs.getString("framework_name"),
+                rs.getString("user_name"),
+                FrameworkCategories.getByName(rs.getString("category")),
+                rs.getBoolean("is_verify")
+        );
+    }
+
+   /* private static Long mapRow3(ResultSet rs, int rowNum) throws SQLException {
+        return rs.getLong("comment_id")
+        );
+    }*/
+
     @Override
-    public Comment getById(long contentId) {
-        final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE comment_id = ?", ROW_MAPPER, contentId);
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-        return toReturn.get(0);
+    public Optional<Comment> getById(long commentId) {
+        String value = SELECTION+"WHERE comments.comment_id = ?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[] {commentId},ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public List<Comment> getCommentsByFramework(long frameworkId) {
-        final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments where framework_id = ?", ROW_MAPPER, frameworkId);
-        return toReturn;
+        String value = SELECTION+"where comments.framework_id = ?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[] {frameworkId},  ROW_MAPPER );
     }
 
-
-
+    @Override
+    public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
+        String value = SELECTION+"where comments.framework_id = ? AND comments.reference IS NULL"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[] {frameworkId},  ROW_MAPPER );
+    }
 
     @Override
     public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
-        final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE framework_id = ? AND user_id = ?", ROW_MAPPER, frameworkId, userId);
-        return toReturn;
+        String value = SELECTION+"WHERE comments.framework_id = ? AND comments.user_id = ?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[] {frameworkId, userId},  ROW_MAPPER);
     }
 
     @Override
     public List<Comment> getCommentsByUser(long userId) {
-        final List<Comment> toReturn = jdbcTemplate.query("SELECT * FROM comments WHERE user_id = ?", ROW_MAPPER, userId);
+        String value = SELECTION+"WHERE comments.user_id = ?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[] {userId}, ROW_MAPPER);
+    }
 
+    //TODO optimize queries
+    @Override
+    public Map<Long, List<Comment>> getRepliesByFramework(long frameworkId) {
+        Map<Long, List<Comment>> toReturn = new HashMap<>();
+        List<Comment> replies = new ArrayList<>();
+        long commentId;
+
+        List<Comment> commentsWithoutRef = getCommentsWithoutReferenceByFramework(frameworkId);
+
+        if(!commentsWithoutRef.isEmpty()) {
+            String value = SELECTION+"where comments.framework_id = ? AND comments.reference = ?"+GROUP_BY;
+            for (Comment comment : commentsWithoutRef) {
+                commentId = comment.getCommentId();
+                toReturn.put(commentId, jdbcTemplate.query(value, new Object[]{frameworkId, commentId}, ROW_MAPPER));
+
+            }
+        }
         return toReturn;
     }
 
 
-
     @Override
-    public Comment insertComment(long frameworkId, long userId, String description, Long reference) {
+    public Optional<Comment> insertComment(long frameworkId, long userId, String description, Long reference) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);
@@ -88,8 +114,8 @@ public class CommentDaoImpl implements CommentDao {
         args.put("tstamp", ts);
         args.put("reference", reference);
 
-        final Number voteId = jdbcInsert.executeAndReturnKey(args);
-        return new Comment (voteId.longValue(), frameworkId, userId, description, ts, reference);
+        final Number commentId = jdbcInsert.executeAndReturnKey(args);
+        return getById(commentId.longValue());
     }
 
     @Override
@@ -98,7 +124,7 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
-    public Comment changeComment(long commentId, String description) {
+    public Optional<Comment> changeComment(long commentId, String description) {
         jdbcTemplate.update("UPDATE comments SET description = ? WHERE comment_id = ?", description, commentId);
         return getById(commentId);
     }

@@ -3,12 +3,20 @@ nav {
     height: 4em;
 }
 
+#profile-settings{
+    margin-right: 3em;
+}
+
 nav a {
     color: aliceblue;
 }
 
 nav a:hover {
     color: #f1f1f1;
+}
+
+.error-background {
+    background: #AFBBF2
 }
 
 .sidenav {
@@ -94,6 +102,10 @@ nav a:hover {
 
 .margin-left{
     margin-left: 3em;
+}
+
+.double-margin-left{
+    margin-left: 6em;
 }
 
 .primary-button{

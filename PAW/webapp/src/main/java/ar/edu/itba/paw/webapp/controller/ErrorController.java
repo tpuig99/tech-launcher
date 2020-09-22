@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,6 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class ErrorController {
+        @Autowired
+        private UserService us;
+
+        private static final String ERROR_VIEW = "/error";
+
+        public static ModelAndView redirectToErrorView() { return new ModelAndView("redirect:" + ERROR_VIEW); }
 
         @ExceptionHandler(value = Exception.class)
         public ModelAndView
@@ -28,6 +37,8 @@ public class ErrorController {
             ModelAndView mav = new ModelAndView("error");
             mav.addObject("exception", e);
             mav.addObject("url", req.getRequestURL());
+            User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             return mav;
         }
 
@@ -36,6 +47,11 @@ public class ErrorController {
     public ModelAndView forbidden() {
         ModelAndView mav = new ModelAndView("403");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if( us.findByUsername(username).isPresent()){
+            User user = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+        }
         return mav;
     }
 }

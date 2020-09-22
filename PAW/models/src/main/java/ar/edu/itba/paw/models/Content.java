@@ -14,6 +14,7 @@ public class Content {
     private String link;
     private ContentTypes type;
     private Boolean pending;
+    private String frameworkName;
 
     public Content(long contentId, long frameworkId, long userId, String title, long votesUp, long votesDown, Timestamp timestamp, String link, ContentTypes type, Boolean pending) {
         this.contentId = contentId;
@@ -27,6 +28,27 @@ public class Content {
         this.type = type;
         this.pending = pending;
 
+    }
+    public Content(long contentId, long frameworkId, long userId, String title, long votesUp, long votesDown, Timestamp timestamp, String link, ContentTypes type, Boolean pending,String frameworkName) {
+        this.contentId = contentId;
+        this.frameworkId = frameworkId;
+        this.userId = userId;
+        this.title = title;
+        this.votesUp = votesUp;
+        this.votesDown = votesDown;
+        this.timestamp = timestamp;
+        this.link = link;
+        this.type = type;
+        this.pending = pending;
+        this.frameworkName = frameworkName;
+    }
+
+    public String getFrameworkName() {
+        return frameworkName;
+    }
+
+    public void setFrameworkName(String frameworkName) {
+        this.frameworkName = frameworkName;
     }
 
     public long getContentId() {

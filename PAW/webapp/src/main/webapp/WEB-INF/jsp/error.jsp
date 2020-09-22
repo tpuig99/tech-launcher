@@ -13,31 +13,29 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
-<body>
+<body class="error-background">
         <jsp:include page="components/navbar.jsp">
             <jsp:param name="connected" value="${user}"/>
             <jsp:param name="username" value="${user.name}"/>
+            <jsp:param name="isMod" value="${user_isMod}"/>
         </jsp:include>
-        <jsp:include page="./components/sidebar.jsp"/>
 
-        <div class="content">
-
-        <div class="mx-auto d-flex"></div>
-
-        <div class="mx-auto">
-                <div class="d-flex flex-column justify-content-center mx-4 mb-4 mt-4">
-                    <div class="mx-auto">
-                        <img src="<c:url value="/resources/assets/error_image.png"/>" class="d-block align-top" alt="Error image">
-                    </div>
-                    <div class="mx-auto mt-4">
-                        <h4>There was an error with the requested resource</h4></div>
-                    <div class="mx-auto mt-4">
-                        <a class="btn btn-primary" href="<c:url value="/"/>" role="button">GO BACK TO HOME PAGE</a>
+        <div>
+            <div class="content-no-sidebar">
+                <div class="mx-auto d-flex"></div>
+                <div class="mx-auto">
+                    <div class="d-flex flex-column justify-content-center mx-4 mb-4 mt-4">
+                        <div class="mx-auto">
+                            <img src="<c:url value="/resources/assets/error_image.png"/>" class="d-block align-top" alt="Error image">
+                        </div>
+                        <div class="mx-auto mt-4">
+                            <h4>There was an error with the requested resource</h4></div>
+                        <div class="mx-auto mt-4">
+                            <a class="btn btn-primary" href="<c:url value="/"/>" role="button">GO BACK TO HOME PAGE</a>
+                        </div>
                     </div>
                 </div>
+            </div>
         </div>
-
-
-    </div>
 </body>
 </html>

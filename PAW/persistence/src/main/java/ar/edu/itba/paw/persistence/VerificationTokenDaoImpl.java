@@ -13,28 +13,26 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class VerificationTokenDaoImpl implements VerificationTokenDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final static RowMapper<VerificationToken> ROW_MAPPER = new
-            RowMapper<VerificationToken>() {
-                @Override
-                public VerificationToken mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new VerificationToken(rs.getInt("token_id"),rs.getString("token"), rs.getInt("user_id"),rs.getTimestamp("exp_date"));
-                }
-            };
+    private final static RowMapper<VerificationToken> ROW_MAPPER = VerificationTokenDaoImpl::mapRow;
     @Autowired
     public VerificationTokenDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("verification_token")
                 .usingGeneratedKeyColumns("token_id");
+    }
+
+    private static VerificationToken mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new VerificationToken(rs.getInt("token_id"),
+                rs.getString("token"),
+                rs.getInt("user_id"),
+                rs.getTimestamp("exp_date"));
     }
 
     @Override
@@ -53,20 +51,13 @@ public class VerificationTokenDaoImpl implements VerificationTokenDao {
     }
 
     @Override
-    public VerificationToken getById(long tokenId) {
-        final List<VerificationToken> toReturn = jdbcTemplate.query("SELECT * FROM verification_token WHERE token_id = ?", ROW_MAPPER, tokenId);
-        if (toReturn.isEmpty()) {
-            return null;
-        }
-        return toReturn.get(0);    }
+    public Optional<VerificationToken> getById(long tokenId) {
+        return jdbcTemplate.query("SELECT * FROM verification_token WHERE token_id = ?", new Object[] {tokenId}, ROW_MAPPER).stream().findFirst();
+    }
 
     @Override
-    public VerificationToken getByUser(long userId) {
-        final List<VerificationToken> toReturn = jdbcTemplate.query("SELECT * FROM verification_token WHERE user_id = ?", ROW_MAPPER, userId);
-        if(toReturn.isEmpty()){
-            return null;
-        }
-        return toReturn.get(0);
+    public Optional<VerificationToken> getByUser(long userId) {
+        return jdbcTemplate.query("SELECT * FROM verification_token WHERE user_id = ?", new Object[] { userId }, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
@@ -91,11 +82,7 @@ public class VerificationTokenDaoImpl implements VerificationTokenDao {
     }
 
     @Override
-    public VerificationToken getByToken(String token) {
-        final List<VerificationToken> toReturn = jdbcTemplate.query("SELECT * FROM verification_token WHERE token = ?", ROW_MAPPER, token);
-        if(toReturn.isEmpty()){
-            return null;
-        }
-        return toReturn.get(0);
+    public Optional<VerificationToken> getByToken(String token) {
+        return jdbcTemplate.query("SELECT * FROM verification_token WHERE token = ?", new Object[] {token}, ROW_MAPPER).stream().findFirst();
     }
 }
