@@ -50,10 +50,14 @@
                         </div>
                         <p><strong>Email: </strong><c:out value="${profile.mail}"/></p>
                         <p><strong>Description: </strong><c:out value="${profile.description}"/></p>
-                        <p><strong>Guide of: </strong>
-                            <a class="tags" href="<c:url value="/Front_End_Development/22"/>">HTML5</a>
-                            <a class="tags" href="<c:url value="/Programming_Languages/269"/>">C</a>
-                        </p>
+                        <c:if test="${not empty verifiedList}">
+                            <p><strong>Moderator: </strong>
+                            <c:forEach items="${verifiedList}" var="verifiedTech">
+                                <a class="tags" href="<c:url value="/Framework/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                            </c:forEach>
+                            </p>
+                        </c:if>
+
                     </div>
                 </div>
                 <div class="row mx-2 justify-content-center">
