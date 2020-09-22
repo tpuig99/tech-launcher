@@ -4,7 +4,7 @@
 
 <head>
     <c:url value="/resources/js/search.js" var="searchJs"/>
-   <!-- <script src="/resources/js/search.js"></script>-->
+    <!-- <script src="/resources/js/search.js"></script>-->
 </head>
 <body>
 
@@ -19,16 +19,7 @@
             <li class="nav-item active">
                 <a class="nav-link" href="<c:url value="/"/>">Home</a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="<c:url value="/frameworks"/>">Techs</a>
-            </li>
         </ul>
-        <div>
-            <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
-                <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn my-2 my-sm-0" type="button" onclick="searchFrameworks()"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
         <div class="nav-item dropdown" id="profile-settings">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-user"></i>
@@ -53,31 +44,4 @@
     </div>
 </nav>
 <!--<script type=text/javascript" src="../../../resources/js/search.js"></script>-->
-
-<script>
-    function isEmpty( input ){
-        for (let i = 0; i < input.length; i++) {
-            if(input.charAt(i) !== " " ){
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    function searchFrameworks() {
-        let input = document.getElementById("searchInput").value
-
-        if( !isEmpty(input) ) {
-            window.location.href = "/search?toSearch=" + input + '&category=&type=';
-            return;
-        }
-        window.location.reload();
-    }
-
-    form = document.getElementById("search").addEventListener('submit', e => {
-        e.preventDefault();
-        searchFrameworks();
-    })
-</script>
 </body>
