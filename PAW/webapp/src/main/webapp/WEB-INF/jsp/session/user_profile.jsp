@@ -33,6 +33,14 @@
             <div>
                 <div class="row mx-2 justify-content-center">
                     <div>
+                        <div class="row justify-content-end">
+                            <c:if test="${profile.username == user.name}">
+                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#editProfileModal">
+                                    <i class="far fa-edit fa-sm"></i>
+                                </button>
+                            </c:if>
+                        </div>
+
                         <img src="https://picsum.photos/536/354" alt="" class="rounded-circle img-slot">
                         <div class="row justify-content-center">
                         <h2><c:out value="${profile.username}"/></h2>
@@ -129,13 +137,58 @@
             </div>
         </c:if>
     </div>
+
+    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header container">
+
+                    <h5 class="modal-title" id="editProfileLabel">Edit your profile</h5>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                    <span aria-hidden="true">&times;</span>
+                </div>
+                <div class="modal-body container">
+                    <jsp:include page="profileForm.jsp">
+                        <jsp:param name="username" value="${profile.username}" />
+                        <jsp:param name="description" value="${previousDescription}" />
+                    </jsp:include>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div id="snackbar">Your profile has been updated !</div>
 </div>
 
+
+
 <script>
+    <c:if test="${not empty profileFormError}">
+    $(window).on('load', function() {
+        if(${profileFormError}) {
+            $('#editProfileModal').modal('show');
+        }else{
+            showSnackbar();
+        }
+    });
+    </c:if>
+
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
     });
+
+    function editProfile(){
+        window.location.href = '<c:url value="/users/${profile.id}/edit" />';
+    }
+
+    function showSnackbar() {
+        let x = document.getElementById("snackbar");
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
+    }
+
 </script>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

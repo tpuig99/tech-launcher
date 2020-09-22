@@ -23,7 +23,6 @@ public class HomeController {
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("index");
-        mav.addObject("frameworksList", fs.getAll() );
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if( us.findByUsername(username).isPresent()){
@@ -33,6 +32,15 @@ public class HomeController {
 
         return mav;
     }
+
+    @RequestMapping("/frameworks")
+    public ModelAndView frameworksHome() {
+        final ModelAndView mav = new ModelAndView("frameworks/home");
+        mav.addObject("frameworksList", fs.getAll().subList(0, 5));
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        return mav;
+    }
+
     @RequestMapping("/login")
     public ModelAndView login(@ModelAttribute("registerForm") final UserForm form) {
         ModelAndView mav = new ModelAndView("login");
