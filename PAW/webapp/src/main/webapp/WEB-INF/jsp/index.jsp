@@ -27,17 +27,9 @@
     </div>
 
     <div class="card-deck mx-2 mb-4">
-                <div class="card text-center">
-                    <div class="card-header title-background-frameworks"><h3 class="card-title">Techs</h3></div>
-                    <div class="card-body">
-                        <p class="card-text">Here you can se a wide number of technologies that you may be interested in </p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="<c:url value="/frameworks" />" class="btn btn-homepage">Visit Techs</a>
-                    </div>
-                </div>
 
 
+            <%--
             <div class="card text-center">
                 <div class="card-header title-background-forum"><h3 class="card-title">Forum</h3></div>
                 <div class="card-body">
@@ -46,11 +38,21 @@
                 <div class="card-footer">
                     <a href="<c:url value="/" />" class="btn btn-homepage align-bottom">Visit Forum</a>
                 </div>
+            </div>--%>
+
+            <div class="card text-center">
+                <div class="card-header title-background-frameworks"><h3 class="card-title">Techs</h3></div>
+                <div class="card-body">
+                    <p class="card-text">Here you can se a wide number of technologies that you may be interested in </p>
+                </div>
+                <div class="card-footer">
+                    <a href="<c:url value="/frameworks" />" class="btn btn-homepage">Visit Techs</a>
+                </div>
             </div>
 
 
 
-            <div class="card text-center">
+            <%--<div class="card text-center">
                 <div class="card-header title-background-projects"><h3 class="card-title">Projects</h3></div>
                 <div class="card-body">
                     <p class="card-text">Have a look at the projects other users are engaged on, give your opinions or even publish your own </p>
@@ -58,7 +60,7 @@
                 <div class="card-footer">
                     <a href="<c:url value="/" />" class="btn btn-homepage align-bottom">Visit Projects</a>
                 </div>
-            </div>
+            </div>--%>
 
 
     </div>
