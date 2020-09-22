@@ -6,6 +6,7 @@ import ar.edu.itba.paw.webapp.form.ContentForm;
 import ar.edu.itba.paw.webapp.form.ProfileForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -46,17 +47,19 @@ public class UserProfileController {
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         if (us.findByUsername(username).isPresent()) {
             User user = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             long userId = user.getId();
             mav.addObject("profile", user);
             mav.addObject("previousDescription", user.getDescription());
 
             final List<Comment> commentList = commentService.getCommentsByUser(userId);
             final List<Content> contentList = contentService.getContentByUser(userId);
-            final List<FrameworkVote> votesList = voteService.getAllByUserWithFrameworkName(userId);
+            final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
 
             mav.addObject("contents", contentList);
             mav.addObject("comments", commentList);
             mav.addObject("votes", votesList);
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
 
             return mav;
         }

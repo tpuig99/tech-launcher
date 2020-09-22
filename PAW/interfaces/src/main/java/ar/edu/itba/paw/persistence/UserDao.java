@@ -14,13 +14,11 @@ public interface UserDao {
     Optional<User> findByUsernameOrMail(String username,String Mail);
     Optional<User> findByMail(String mail);
     User create(String username,String mail,String password);
-    User create(String username,String mail);
     int delete(long userId);
     Optional<User> update(long userId, String username, String mail, String password);
-    Map<Long, String> getUsernamesByComments(List<Comment> comments);
-    Map<Long, String> getUsernamesByReplies(List<Comment> replies);
     List<String> getMails();
     List<String> getUserNames();
     void setEnable(long id);
     void updateDescription(long userId,String description);
+    void updatePassword(long userId, String password);
 }

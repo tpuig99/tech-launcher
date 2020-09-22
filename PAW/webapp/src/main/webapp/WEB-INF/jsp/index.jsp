@@ -17,6 +17,7 @@
     <jsp:include page="components/navbar-home.jsp">
         <jsp:param name="connected" value="${user}"/>
         <jsp:param name="username" value="${user.name}"/>
+        <jsp:param name="isMod" value="${user_isMod}"/>
     </jsp:include>
 
     <div class="introduction">

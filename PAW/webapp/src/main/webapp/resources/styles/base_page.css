@@ -3,6 +3,10 @@ nav {
     height: 4em;
 }
 
+#profile-settings{
+    margin-right: 3em;
+}
+
 nav a {
     color: aliceblue;
 }

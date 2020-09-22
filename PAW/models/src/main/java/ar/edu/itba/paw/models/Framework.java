@@ -9,6 +9,7 @@ public class Framework {
     private FrameworkCategories category;
     private String description;
     private String introduction;
+    private FrameworkType type;
     private String logo;
     private double stars;
     private int votesCant;
@@ -27,7 +28,7 @@ public class Framework {
         return Objects.hash(id, name);
     }
 
-    public Framework(long id, String name, FrameworkCategories category, String description, String introduction, String logo, double stars, int votesCant) {
+    public Framework(long id, String name, FrameworkCategories category, String description, String introduction, String logo, double stars, int votesCant,FrameworkType type) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -36,6 +37,7 @@ public class Framework {
         this.logo = logo;
         this.stars = stars;
         this.votesCant = votesCant;
+        this.type = type;
     }
 
     public int getVotesCant() {
@@ -63,6 +65,13 @@ public class Framework {
     }
     public FrameworkCategories getFrameCategory(){
         return category;
+    }
+
+    public String getType(){
+        return type.getType();
+    }
+    public FrameworkType getFrameType() {
+        return type;
     }
 
     public String getDescription() {

@@ -13,10 +13,6 @@ import java.util.Optional;
 public class FrameworkVoteServiceImpl implements FrameworkVoteService {
     @Autowired
     FrameworkVoteDao vs;
-    @Override
-    public List<FrameworkVote> getAll() {
-        return vs.getAll();
-    }
 
     @Override
     public List<FrameworkVote> getByFramework(long frameworkId) {
@@ -38,10 +34,6 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
         return vs.getAllByUser(userId);
     }
 
-    @Override
-    public List<FrameworkVote> getAllByUserWithFrameworkName(long userId) {
-        return vs.getAllByUserWithFrameworkName(userId);
-    }
 
     @Override
     public FrameworkVote insert(long frameworkId, long userId, int stars) {

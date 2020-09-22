@@ -2,8 +2,10 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.CommentVote;
+import ar.edu.itba.paw.models.VerifyUser;
 import ar.edu.itba.paw.persistence.CommentDao;
 import ar.edu.itba.paw.persistence.CommentVoteDao;
+import ar.edu.itba.paw.persistence.VerifyUserDao;
 import ar.edu.itba.paw.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,14 @@ import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService {
+    private static int VOTES_FOR_VERIFY =10;
 
     @Autowired
     CommentDao cmts;
+
+    @Autowired
+    VerifyUserDao verifyUserDao;
+
     @Autowired
     CommentVoteDao cmtVotes;
 
@@ -84,7 +91,18 @@ public class CommentServiceImpl implements CommentService {
             cmtVotes.insert(commentId, userId, 1);
         }
         Optional<Comment> comment = cmts.getById(commentId);
+        checkForVerify(comment);
         return comment;
+    }
+
+    private void checkForVerify(Optional<Comment> comment) {
+        if(comment.isPresent() && comment.get().getVotesUp()==VOTES_FOR_VERIFY){
+            Comment c=comment.get();
+            Optional<VerifyUser> v = verifyUserDao.getByFrameworkAndUser(c.getFrameworkId(),c.getUserId());
+            if(!v.isPresent()){
+                verifyUserDao.create(c.getUserId(),c.getFrameworkId(),c.getCommentId());
+            }
+        }
     }
 
     @Override

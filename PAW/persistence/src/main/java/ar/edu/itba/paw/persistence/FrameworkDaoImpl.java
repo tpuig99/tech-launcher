@@ -17,8 +17,8 @@ public class FrameworkDaoImpl implements FrameworkDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final static RowMapper<Framework> ROW_MAPPER = FrameworkDaoImpl::mapRow;
-    private final String SELECTION="select frameworks.framework_id,framework_name,category,description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant from frameworks left join framework_votes on frameworks.framework_id = framework_votes.framework_id ";
-    private final String GROUP_BY=" group by framework_name, frameworks.framework_id, category, description, introduction, logo";
+    private final String SELECTION="select frameworks.framework_id,type,framework_name,category,description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant from frameworks left join framework_votes on frameworks.framework_id = framework_votes.framework_id ";
+    private final String GROUP_BY=" group by framework_name, frameworks.framework_id, category, type, description, introduction, logo";
     @Autowired
     public FrameworkDaoImpl(final DataSource ds) {
         this.jdbcTemplate = new JdbcTemplate(ds);
@@ -37,7 +37,8 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 rs.getString("introduction"),
                 rs.getString("logo"),
                 rs.getDouble("stars"),
-                rs.getInt("votes_cant"));
+                rs.getInt("votes_cant"),
+                FrameworkType.getByName(rs.getString("type")));
     }
 
     @Override
@@ -53,10 +54,43 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> getByNameOrCategory(String toSearch) {
+    public List<Framework> getByType(FrameworkType type) {
+        String value=SELECTION+"WHERE type = ?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[]{ type.getType() }, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByCategoryAndType(FrameworkType type, FrameworkCategories category) {
+        String value=SELECTION+"WHERE type = ? and category = ?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[]{ type.getType(),category.getNameCat() }, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByCategoryAndWord(FrameworkCategories category, String toSearch) {
         String value = "%"+toSearch+"%";
         String query=SELECTION+"WHERE framework_name ILIKE ? OR category ILIKE ?"+GROUP_BY;
         return jdbcTemplate.query(query, new Object[]{ value, value }, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByTypeAndWord(FrameworkType type, String toSearch) {
+        String value = "%"+toSearch+"%";
+        String query=SELECTION+"WHERE framework_name ILIKE ? and type = ?"+GROUP_BY;
+        return jdbcTemplate.query(query, new Object[]{ type.getType(),value}, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByCategoryAndTypeAndWord(FrameworkType type, FrameworkCategories category, String toSearch) {
+        String value = "%"+toSearch+"%";
+        String query=SELECTION+"WHERE framework_name ILIKE ? and type = ? and category = ?"+GROUP_BY;
+        return jdbcTemplate.query(query, new Object[]{ type.getType(),category.getNameCat(),value}, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByWord(String toSearch) {
+        String value = "%"+toSearch+"%";
+        String query=SELECTION+"WHERE framework_name ILIKE ? OR category ILIKE ? OR type ILIKE ?"+GROUP_BY;
+        return jdbcTemplate.query(query, new Object[]{ value, value, value}, ROW_MAPPER);
     }
 
     @Override
@@ -64,14 +98,15 @@ public class FrameworkDaoImpl implements FrameworkDao {
         return jdbcTemplate.query(SELECTION+GROUP_BY, ROW_MAPPER);
     }
 
-    private Framework create(String framework_name,FrameworkCategories category,String description,String introduction,String logo) {
+    private Framework create(String framework_name,FrameworkCategories category,String description,String introduction,String logo,FrameworkType type) {
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_name", framework_name); // la key es el nombre de la columna
         args.put("category", category.name()); // la key es el nombre de la columna
         args.put("description", description); // la key es el nombre de la columna
         args.put("introduction",introduction);
         args.put("logo",logo);
+        args.put("type",type.getType());
         final Number frameworkId = jdbcInsert.executeAndReturnKey(args);
-        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction,logo,0,0);
+        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction,logo,0,0,type);
     }
 }
