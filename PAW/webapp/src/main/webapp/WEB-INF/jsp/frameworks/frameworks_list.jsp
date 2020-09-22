@@ -14,7 +14,8 @@
 </head>
 <body>
 
-<jsp:include page="../components/navbar.jsp">
+
+<jsp:include page="../components/navbar-search.jsp">
     <jsp:param name="connected" value="${user}"/>
     <jsp:param name="username" value="${user.name}"/>
     <jsp:param name="isMod" value="${user_isMod}"/>
@@ -22,6 +23,7 @@
 <jsp:include page="../components/sidebar.jsp"/>
 
 <div class="content">
+
     <div class="page-title">
         <h2>Search Results for: ${search_result}</h2>
     </div>
