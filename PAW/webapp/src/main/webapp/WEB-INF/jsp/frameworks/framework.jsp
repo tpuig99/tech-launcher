@@ -415,12 +415,6 @@
 
                     function publishComment(commentId) {
 
-                    $(document).ready(function(){
-                        $('[data-toggle="tooltip"]').tooltip();
-                    });
-
-                    function publishComment() {
-                        let content = document.getElementById("commentInput").value;
                         let id= ${framework.id};
                         let path;
                         let content;

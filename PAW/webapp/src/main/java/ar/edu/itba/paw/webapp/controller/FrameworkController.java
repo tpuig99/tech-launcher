@@ -45,7 +45,8 @@ public class FrameworkController {
         Optional<Framework> framework = fs.findById(id);
 
         if (framework.isPresent()) {
-            List<Comment> comments = commentService.getCommentsByFramework(id);
+            List<Comment> comments = commentService.getCommentsWithoutReferenceByFramework(id);
+            Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
             mav.addObject("framework", framework.get());
 
             mav.addObject("books", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.book));
@@ -54,7 +55,8 @@ public class FrameworkController {
             mav.addObject("category", category);
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-
+            mav.addObject("comments", comments);
+            mav.addObject("replies", replies);
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             if( us.findByUsername(username).isPresent()){
                 User user = us.findByUsername(username).get();
@@ -63,20 +65,18 @@ public class FrameworkController {
                 mav.addObject("isAdmin",user.isAdmin());
             }
 
-            mav.addObject("comments", comments);
-
             return mav;
         }
         return ErrorController.redirectToErrorView();
     }
 
     @RequestMapping(path={"/create"}, method= RequestMethod.GET)
-    public ModelAndView saveComment(@RequestParam("id") final long id, @RequestParam("content") final String content) throws UserAlreadyExistException {
+    public ModelAndView saveComment(@RequestParam("id") final long id, @RequestParam("content") final String content, @RequestParam(name="commentId", required= false) final Long commentId) throws UserAlreadyExistException {
 
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (us.findByUsername(authentication.getName()).isPresent()) {
-                final Comment comment = commentService.insertComment(id, us.findByUsername(authentication.getName()).get().getId(), content, null);
+                final Comment comment = commentService.insertComment(id, us.findByUsername(authentication.getName()).get().getId(), content, commentId);
 
             return FrameworkController.redirectToFramework(id, comment.getCategory());
         }
