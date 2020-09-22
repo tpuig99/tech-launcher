@@ -59,7 +59,7 @@
                         <c:choose>
                             <c:when test="${user.name != 'anonymousUser'}">
                                 <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal">
-                                    <i class="fa fa-plus"></i>
+                                    <!--<i class="fa fa-plus"></i>--> ADD CONTENT
                                 </button>
                             </c:when>
                             <c:otherwise>
@@ -78,22 +78,8 @@
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
                 <div>
-                   <span><h4 class="title">Bibliography</h4></span>
-                   <span>
-                       <c:choose>
-                           <c:when test="${user.name != 'anonymousUser'}">
-                               <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
-                                   <i class="fa fa-plus"></i>
-                               </button>
-                           </c:when>
-                           <c:otherwise>
-                               <button class="btn fab-button" type="button" data-toggle="modal" data-target="#loginModal"> <!--onclick="uploadContent()"-->
-                                    <i class="fa fa-plus"></i>
-                               </button>
-                           </c:otherwise>
-                       </c:choose>
-                   </span>
-                    <ul class="list-group margin-left list-group-flush description">
+                   <span><h4 class="subtitle margin-left">Bibliography</h4></span>
+                    <ul class="margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
                         <li class="list-group-item"><a target="_blank" href="${book.link}">${book.title}</a></li>
                         </c:forEach>
@@ -398,7 +384,7 @@
                     </div>
                 </div>
 
-                <div id="snackbar">Your content is now pending approval !</div>
+                <div id="snackbar">Your content has been uploaded !</div>
 
                 <!-- Scripts -->
                 <script>
