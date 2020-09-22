@@ -93,7 +93,7 @@
                             <div class="card-body">
                                 <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
                             </div>
-                            <div class="card-footer text-dark">${framework.name} - ${framework.category}</div>
+                            <div class="card-footer text-dark">${framework.name}</div>
                         </a>
                     </div>
                 </c:forEach>
