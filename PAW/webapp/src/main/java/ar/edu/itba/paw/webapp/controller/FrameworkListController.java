@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.FrameworkCategories;
+import ar.edu.itba.paw.models.FrameworkType;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserService;
@@ -24,11 +26,10 @@ public class FrameworkListController {
     @Autowired
     private UserService us;
 
-    @RequestMapping(path={"/search"}, method= RequestMethod.GET)
-    public ModelAndView matchedFrameworks(@RequestParam("toSearch") final String toSearch) {
-
+    @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
+    public ModelAndView advancedSearch(@RequestParam(value = "toSearch") final String toSearch,@RequestParam(value = "category") final String category, @RequestParam(value = "type") final String type){
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
-        mav.addObject("matchingFrameworks", fs.getByWord(toSearch));
+        mav.addObject("matchingFrameworks", fs.search(toSearch, FrameworkCategories.getByName(category), FrameworkType.getByName(type)));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("search_result", toSearch );
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

@@ -66,7 +66,7 @@
         let input = document.getElementById("searchInput").value
 
         if( !isEmpty(input) ) {
-            window.location.href = "/search?toSearch=" + input;
+            window.location.href = "/search?toSearch=" + input + '&category=&type=';
             return;
         }
         window.location.reload();
