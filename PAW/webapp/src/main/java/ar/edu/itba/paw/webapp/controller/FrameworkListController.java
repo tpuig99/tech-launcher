@@ -27,7 +27,7 @@ public class FrameworkListController {
     private UserService us;
 
     @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
-    public ModelAndView advancedSearch(@RequestParam(value = "toSearch") final String toSearch,@RequestParam(value = "category") final String category, @RequestParam(value = "type") final String type){
+    public ModelAndView advancedSearch(@RequestParam(value = "toSearch", required = false) final String toSearch,@RequestParam(value = "category", required = false) final String category, @RequestParam(value = "type", required = false) final String type){
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
         mav.addObject("matchingFrameworks", fs.search(toSearch, FrameworkCategories.getByName(category), FrameworkType.getByName(type)));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());

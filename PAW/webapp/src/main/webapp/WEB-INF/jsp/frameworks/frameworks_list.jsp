@@ -103,13 +103,23 @@
 </div>
 
 <script>
+    function isEmpty( input ){
+        for (let i = 0; i < input.length; i++) {
+            if(input.charAt(i) !== " " ){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     function searchFrameworks() {
         let input = document.getElementById("searchInput").value
         let category = document.getElementById("categories").value
         let type = document.getElementById("types").value
 
         if( !(isEmpty(input) && isEmpty(category) && isEmpty(type)) ) {
-            window.location.href = "<c:url value="/advanced-search"/>" + '?toSearch=' + input + "&category=" + category + '&type=' + type;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + input + '&category=' + category + '&type=' + type;
             return;
         }
         window.location.reload();
@@ -119,6 +129,7 @@
         e.preventDefault();
         searchFrameworks();
     })
+
 </script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
