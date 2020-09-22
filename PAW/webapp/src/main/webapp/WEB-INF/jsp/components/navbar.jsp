@@ -26,11 +26,15 @@
                 <button class="btn my-2 my-sm-0" type="button" onclick="searchFrameworks()"><i class="fas fa-search"></i></button>
             </form>
         </div>
-        <div class="nav-item dropdown">
+        <div class="nav-item dropdown" id="profile-settings">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-user"></i>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                <c:if test="${param.isMod}">
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/mod">Moderate</a>
+                </c:if>
                 <c:choose>
                     <c:when test="${param.username != 'anonymousUser'}">
                         <a class="dropdown-item" href="${pageContext.request.contextPath}/users/${param.username}">Profile</a>

@@ -15,9 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.net.Authenticator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class FrameworkController {
@@ -48,10 +46,7 @@ public class FrameworkController {
 
         if (framework.isPresent()) {
             List<Comment> comments = commentService.getCommentsWithoutReferenceByFramework(id);
-            Map<Long, String> commentsUsernames = us.getUsernamesByComments(commentService.getCommentsByFramework(id));
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
-            Map<Long, String> repliesUsernames = us.getUsernamesByReplies(replies);
-
             mav.addObject("framework", framework.get());
 
             mav.addObject("books", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.book));
@@ -61,9 +56,14 @@ public class FrameworkController {
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
             mav.addObject("comments", comments);
-            mav.addObject("commentsUsernames", us.getUsernamesByComments(comments));
             mav.addObject("replies", replies);
-            mav.addObject("repliesUsernames", repliesUsernames);
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            if( us.findByUsername(username).isPresent()){
+                User user = us.findByUsername(username).get();
+                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+                mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
+                mav.addObject("isAdmin",user.isAdmin());
+            }
 
             return mav;
         }
@@ -72,16 +72,13 @@ public class FrameworkController {
 
     @RequestMapping(path={"/create"}, method= RequestMethod.GET)
     public ModelAndView saveComment(@RequestParam("id") final long id, @RequestParam("content") final String content, @RequestParam(name="commentId", required= false) final Long commentId) throws UserAlreadyExistException {
-        Optional<Framework> framework = fs.findById(id);
 
-        if (framework.isPresent()) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (us.findByUsername(authentication.getName()).isPresent()) {
-                final Comment comment = commentService.insertComment(framework.get().getId(), us.findByUsername(authentication.getName()).get().getId(), content, commentId);
-            }
+                final Comment comment = commentService.insertComment(id, us.findByUsername(authentication.getName()).get().getId(), content, commentId);
 
-            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
+            return FrameworkController.redirectToFramework(id, comment.getCategory());
         }
 
         return ErrorController.redirectToErrorView();
@@ -90,32 +87,28 @@ public class FrameworkController {
 
     @RequestMapping(path={"/voteup"}, method= RequestMethod.GET)
     public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
-        Optional<Framework> framework = fs.findById(frameworkId);
 
-        if (framework.isPresent()) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (us.findByUsername(authentication.getName()).isPresent()) {
                 final Optional<Comment> comment = commentService.voteUp(commentId, us.findByUsername(authentication.getName()).get().getId());
+                if(comment.isPresent()){
+                    return FrameworkController.redirectToFramework(comment.get().getFrameworkId(), comment.get().getCategory());
+                }
             }
-
-            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
-        }
 
         return ErrorController.redirectToErrorView();
     }
 
     @RequestMapping(path={"/votedown"}, method= RequestMethod.GET)
     public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
-        Optional<Framework> framework = fs.findById(frameworkId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (framework.isPresent()) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (us.findByUsername(authentication.getName()).isPresent()) {
-                final Optional<Comment> comment = commentService.voteDown(commentId, us.findByUsername(authentication.getName()).get().getId());
+        if (us.findByUsername(authentication.getName()).isPresent()) {
+            final Optional<Comment> comment = commentService.voteDown(commentId, us.findByUsername(authentication.getName()).get().getId());
+            if(comment.isPresent()){
+                return FrameworkController.redirectToFramework(comment.get().getFrameworkId(), comment.get().getCategory());
             }
-
-            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
         }
 
         return ErrorController.redirectToErrorView();
@@ -123,16 +116,13 @@ public class FrameworkController {
 
     @RequestMapping(path={"/rate"}, method = RequestMethod.GET)
     public ModelAndView rateComment(@RequestParam("id") final long id, @RequestParam("rating") final int rating) throws UserAlreadyExistException {
-        Optional<Framework> framework = fs.findById(id);
-
-        if (framework.isPresent()) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (us.findByUsername(authentication.getName()).isPresent()) {
                 final FrameworkVote frameworkVote = frameworkVoteService.insert(id, us.findByUsername(authentication.getName()).get().getId(), rating);
+
+            return FrameworkController.redirectToFramework(id, frameworkVote.getCategory());
             }
-            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
-        }
 
         return ErrorController.redirectToErrorView();
     }

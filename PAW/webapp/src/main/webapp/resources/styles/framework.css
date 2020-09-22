@@ -213,3 +213,10 @@ label:hover:before {
     to {bottom: 0; opacity: 0;}
 }
 
+.rocket-color {
+    color: #48bfe3;
+}
+
+.rocket-color:hover {
+    text-shadow: 0 0 5px black;
+}

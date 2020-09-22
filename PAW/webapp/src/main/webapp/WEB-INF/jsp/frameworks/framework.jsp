@@ -20,6 +20,7 @@
             <jsp:include page="../components/navbar.jsp">
                 <jsp:param name="connected" value="${user.authenticated}"/>
                 <jsp:param name="username" value="${user.name}"/>
+                <jsp:param name="isMod" value="${user_isMod}"/>
             </jsp:include>
             <jsp:include page="../components/sidebar.jsp"/>
 
@@ -170,7 +171,12 @@
                         <div class="col">
                             <div class="row">
                                 <div class="col secondary-font">
-                                    <c:out value="${commentsUsernames.get(comment.commentId)}" default=""/>
+                                    <a href="<c:url value='/users/${comment.userName}'/>">
+                                        <c:if test="${comment.verify}">
+                                            <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="This user is verified!"></i>
+                                        </c:if>
+                                        <c:out value="${comment.userName}" default=""/>
+                                    </a>
                                 </div>
                                 <div class="col third-font d-flex justify-content-flex-end">
                                     <c:out value="${comment.timestamp.toLocaleString()}" default=""/>
@@ -312,6 +318,12 @@
                             </div>
                         </div>
                     </div>
+                    <c:if test="${!verifyForFramework && !isAdmin}">
+                        <div class="row">
+                            <div class="row">Want to help us? Be a mod!</div>
+                            <button class="btn primary-button" onclick="applyForMod()">APPLY</button>
+                        </div>
+                    </c:if>
                 </div>
 
                 <!-- Competition Cards -->
@@ -463,7 +475,9 @@
                         });
                     });
 
-
+                    function applyForMod(){
+                        window.location.href = '<c:url value="/apply"/>?id=' + ${framework.id}
+                    }
 
                     function selectFiles() {
                         let el = document.getElementById("fileElem");
