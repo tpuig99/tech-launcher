@@ -13,6 +13,12 @@
     text-align: justify;
 }
 
+
+.secondary-badge{
+    color: white;
+    background-color: #b4b6b7;
+}
+
 .reply {
     color: grey;
     font-size: small;
