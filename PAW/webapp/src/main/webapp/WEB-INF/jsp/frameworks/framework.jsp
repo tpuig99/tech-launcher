@@ -364,13 +364,13 @@
 
 
                 <div class="container d-flex">
-                    <c:forEach var="i" begin="0" end="4">
+                    <c:forEach items="${competitors}" var="competitor">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="<c:url value="/${competitors[i].frameCategory}/${competitors[i].id}"/>">
+                        <a href="<c:url value="/${competitor.frameCategory}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
-                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitors[i].logo}" alt="${framework.name} logo"></div>
+                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitor.logo}" alt="${framework.name} logo"></div>
                             </div>
-                            <div class="card-footer text-dark">${competitors[i].name}</div>
+                            <div class="card-footer text-dark">${competitor.name}</div>
                         </a>
                     </div>
 
