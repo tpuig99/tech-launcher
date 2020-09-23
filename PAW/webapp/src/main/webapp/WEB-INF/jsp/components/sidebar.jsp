@@ -12,7 +12,6 @@
     <a href="<c:url value="/Security"/>">Security</a>
     <a href="<c:url value="/Front-End%20Development"/>">Front-End Development</a>
     <a href="<c:url value="/Platforms"/>">Platforms</a>
-    <a href="<c:url value="/Programming%20Languages"/>">Programming Languages</a>
     <a href="<c:url value="/Gaming"/>">Gaming</a>
     <a href="<c:url value="/Editors"/>">Editors</a>
     <a href="<c:url value="/Development%20Environment"/>">Development Environment</a>

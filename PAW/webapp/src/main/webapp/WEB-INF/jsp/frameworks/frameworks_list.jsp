@@ -34,7 +34,6 @@
                 <option value="Security">Security</option>
                 <option value="Front-End Development">Front-End Development</option>
                 <option value="Platforms">Platforms</option>
-                <option value="Programming Languages">Programming Languages</option>
                 <option value="Gaming">Gaming</option>
                 <option value="Editors">Editors</option>
                 <option value="Development Environment">Development Environment</option>
@@ -70,7 +69,7 @@
     <div class="search-bar">
         <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" size="80">
-            <button class="btn my-2 my-sm-0 btn-primary" type="button" onclick="searchFrameworks()">SEARCH</button>
+            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()">SEARCH</button>
         </form>
     </div>
     <div class="page-description"></div>

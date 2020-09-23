@@ -14,8 +14,9 @@
 <body>
 
 <jsp:include page="../components/navbar.jsp">
-    <jsp:param name="connected" value="${user}"/>
+    <jsp:param name="connected" value="${user.authenticated}"/>
     <jsp:param name="username" value="${user.name}"/>
+    <jsp:param name="isMod" value="${user_isMod}"/>
 </jsp:include>
 
 <jsp:include page="../components/sidebar.jsp"/>
