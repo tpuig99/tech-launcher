@@ -64,7 +64,7 @@
                             </c:when>
                             <c:otherwise>
                                 <button class="btn primary-button" type="button" data-toggle="modal" data-target="#loginModal">
-                                    <i class="fa fa-plus"></i>
+                                    ADD CONTENT
                                 </button>
                             </c:otherwise>
                         </c:choose>
@@ -86,9 +86,11 @@
                                 <div class="col-10">
                                     <a target="_blank" href="${book.link}">${book.title}</a>
                                 </div>
-                                <div class="col d-flex justify-content-end align-items-end">
-                                    <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
-                                </div>
+                                <c:if test="${isAdmin}">
+                                    <div class="col d-flex justify-content-end align-items-end">
+                                        <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                    </div>
+                                </c:if>
                             </div>
                         </li>
                         </c:forEach>

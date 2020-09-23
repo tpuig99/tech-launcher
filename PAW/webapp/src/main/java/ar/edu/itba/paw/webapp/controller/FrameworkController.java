@@ -157,7 +157,7 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
-    //TODO Should it be a .POST? 
+    //TODO Should it be a .POST?
     @RequestMapping(path={"/content/delete"}, method = RequestMethod.GET)
     public ModelAndView deleteContent(@RequestParam("id") final long frameworkId, @RequestParam("content_id") final long contentId){
         Optional<Framework> framework = fs.findById(frameworkId);
