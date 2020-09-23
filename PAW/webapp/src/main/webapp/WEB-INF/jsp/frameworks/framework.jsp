@@ -64,7 +64,7 @@
                             </c:when>
                             <c:otherwise>
                                 <button class="btn primary-button" type="button" data-toggle="modal" data-target="#loginModal">
-                                    <i class="fa fa-plus"></i>
+                                    ADD CONTENT
                                 </button>
                             </c:otherwise>
                         </c:choose>
@@ -81,7 +81,18 @@
                    <span><h4 class="subtitle margin-left">Bibliography</h4></span>
                     <ul class="margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
-                        <li class="list-group-item"><a target="_blank" href="${book.link}">${book.title}</a></li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-10">
+                                    <a target="_blank" href="${book.link}">${book.title}</a>
+                                </div>
+                                <c:if test="${isAdmin}">
+                                    <div class="col d-flex justify-content-end align-items-end">
+                                        <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                    </div>
+                                </c:if>
+                            </div>
+                        </li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -95,7 +106,18 @@
                     <ul class=" margin-bottom list-group margin-left list-group-flush description">
 
                         <c:forEach var="course" items="${courses}">
-                            <li class="list-group-item"><a target="_blank" href="${course.link}">${course.title}</a></li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <a target="_blank" href="${course.link}">${course.title}</a>
+                                    </div>
+                                    <c:if test="${isAdmin}">
+                                        <div class="col d-flex justify-content-end align-items-end">
+                                            <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -107,7 +129,19 @@
                    <h4 class="subtitle margin-left"> Tutorials</h4>
                     <ul class="  margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">
-                            <li class="list-group-item"><a target="_blank" href="${tutorial.link}">${tutorial.title}</a></li>
+
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <a target="_blank" href="${tutorial.link}">${tutorial.title}</a>
+                                    </div>
+                                    <c:if test="${isAdmin}">
+                                        <div class="col d-flex justify-content-end align-items-end">
+                                            <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -340,7 +374,9 @@
 
                 </c:if>
                 
-                <!-- Modal -->
+                <!-- Modals -->
+
+                <!--Login Modal -->
 
                 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -390,6 +426,31 @@
                 </div>
 
                 <div id="snackbar">Your content has been uploaded !</div>
+
+                <!--Delete Content Modal -->
+
+                <div class="modal fade" id="deleteContentModal" tabindex="-1" role="dialog" aria-labelledby="deleteContentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div id="contentId" hidden></div>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteContentModalLabel">Delete</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row  justify-content-center align-items-center margin-top">
+                                    <div>Are you sure you want to delete this content?</div>
+                                </div>
+                                <div class="row justify-content-center align-items-center margin-top">
+                                    <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">CANCEL</button></span>
+                                    <span class="margin-left"> <button type="button" class="btn btn-danger" onclick="deleteContent()">DELETE</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Scripts -->
                 <script>
@@ -483,6 +544,22 @@
                     function uploadContent(){
                         let id= ${framework.id};
                         window.location.href = '<c:url value="/content" />?id=' + id;
+                    }
+
+                    function openDeleteContentModal(contentId){
+                        console.log("contenId en open");
+                        console.log(contentId);
+                        $('#contentId').val(contentId);
+                        $('#deleteContentModal').modal('show');
+                    }
+
+                    function deleteContent(){
+
+                        let id= ${framework.id};
+                        let contentId= document.getElementById('contentId').value;
+                        console.log("contenId en delete");
+                        console.log(contentId);
+                        window.location.href = '<c:url value="/content/delete" />?id='+id+'&content_id='+contentId;
                     }
 
                     function showSnackbar() {

@@ -162,5 +162,22 @@ public class FrameworkController {
         }
         return ErrorController.redirectToErrorView();
     }
+
+    //TODO Should it be a .POST?
+    @RequestMapping(path={"/content/delete"}, method = RequestMethod.GET)
+    public ModelAndView deleteContent(@RequestParam("id") final long frameworkId, @RequestParam("content_id") final long contentId){
+        Optional<Framework> framework = fs.findById(frameworkId);
+
+        if (framework.isPresent()) {
+            int deleted = contentService.deleteContent(contentId);
+            if (deleted != 1) {
+                return ErrorController.redirectToErrorView();
+            }
+
+            return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
+        }
+        return ErrorController.redirectToErrorView();
+
+    }
 }
 
