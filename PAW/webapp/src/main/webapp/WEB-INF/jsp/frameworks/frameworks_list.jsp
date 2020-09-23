@@ -34,7 +34,6 @@
                 <option value="Security">Security</option>
                 <option value="Front-End Development">Front-End Development</option>
                 <option value="Platforms">Platforms</option>
-                <option value="Programming Languages">Programming Languages</option>
                 <option value="Gaming">Gaming</option>
                 <option value="Editors">Editors</option>
                 <option value="Development Environment">Development Environment</option>
