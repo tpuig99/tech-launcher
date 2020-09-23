@@ -81,7 +81,16 @@
                    <span><h4 class="subtitle margin-left">Bibliography</h4></span>
                     <ul class="margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
-                        <li class="list-group-item"><a target="_blank" href="${book.link}">${book.title}</a></li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-10">
+                                    <a target="_blank" href="${book.link}">${book.title}</a>
+                                </div>
+                                <div class="col d-flex justify-content-end align-items-end">
+                                    <button class="btn btn-link" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -335,7 +344,9 @@
 
                 </c:if>
                 
-                <!-- Modal -->
+                <!-- Modals -->
+
+                <!--Login Modal -->
 
                 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -385,6 +396,32 @@
                 </div>
 
                 <div id="snackbar">Your content has been uploaded !</div>
+
+                <!--Delete Content Modal -->
+
+                <div class="modal fade" id="deleteContentModal" tabindex="-1" role="dialog" aria-labelledby="deleteContentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteContentModalLabel">Delete</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row  justify-content-center align-items-center margin-top">
+                                    <div>Are you sure you want to delete this content?</div>
+                                </div>
+                                <div class="row justify-content-center align-items-center margin-top">
+                                    <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">CANCEL</button></span>
+                                    <span class="margin-left"> <button type="button" class="btn btn-danger" onclick="">DELETE</button></span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Scripts -->
                 <script>
