@@ -36,8 +36,8 @@
                             <div class="row">
                                 <div class="col">
                                 <span class="framework-title"><h2>${framework.name}</h2></span>
-                                    <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Category"> ${framework.category}</span>
-                                    <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Type"> ${framework.type}</span>
+                                    <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="It can be applied to"> ${framework.category}</span>
+                                    <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="This is a"> ${framework.type}</span>
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star color-star"></span>
