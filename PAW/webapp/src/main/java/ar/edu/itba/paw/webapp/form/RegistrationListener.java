@@ -61,7 +61,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         email.setFrom("confirmemailonly@gmail.com");
         email.setTo(recipientAddress);
         email.setSubject(subject);
-        email.setText(message + "\r\n" + "http://pawserver.it.itba.edu.ar/paw-2020b-1/" + confirmationUrl);
+        email.setText(message + "\r\n" + "http://pawserver.it.itba.edu.ar" + confirmationUrl);
         mailSender.send(email);
     }
 }

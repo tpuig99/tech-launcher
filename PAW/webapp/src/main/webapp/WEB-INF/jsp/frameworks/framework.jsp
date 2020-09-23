@@ -397,10 +397,10 @@
                                 <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
                                 </div>
                                <div class="row justify-content-center align-items-center margin-top">
-                                    <button type="button" class="btn primary-button" onclick="window.location.href = '/login'">LOG IN</button>
+                                    <button type="button" class="btn primary-button" onclick="window.location.href = '<c:url value="/login"/>'">LOG IN</button>
                                 </div>
                                 <div class="row  justify-content-center align-items-center margin-top">
-                                    <div>Don't have an account yet? <a href="/register">Sign Up</a>
+                                    <div>Don't have an account yet? <a href="<c:url value="/register"/>">Sign Up</a>
                                     </div>
                                 </div>
 
