@@ -417,6 +417,9 @@
                         console.log(location.href);
                     }
 
+                    $(document).ready(function(){
+                        $('[data-toggle="tooltip"]').tooltip();
+                    });
 
                     function voteUpComment(commentId) {
                         let frameworkId = ${framework.id};
