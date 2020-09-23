@@ -306,10 +306,10 @@
 
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button type="button" onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
+                                        <button type="button" id="commentButton" disabled onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
                                     </c:when>
                                     <c:otherwise>
-                                        <button type="button" class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">SUBMIT</button>
+                                        <button type="button" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">SUBMIT</button>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -539,6 +539,26 @@
                         window.location.href = path;
                         console.log(location.href);
                     }
+
+                    $(document).ready(function () {
+                        $('#commentInput').on('keyup', function () {
+                            if ($.trim($('#commentInput').val()).length < 1) {
+                                $("#commentButton").prop("disabled",true);
+                            } else {
+                                $("#commentButton").prop("disabled",false);
+                            }
+                        });
+                    });
+
+                    $(document).ready(function () {
+                        $('#commentInput').change(function () {
+                            if ($.trim($('#commentInput').val()).length < 1) {
+                                $("#commentButton").prop("disabled",true);
+                            } else {
+                                $("#commentButton").prop("disabled",false);
+                            }
+                        });
+                    });
 
                     $(document).ready(function() {
                         $('#rating-form').on('submit', function(e){
