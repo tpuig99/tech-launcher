@@ -115,7 +115,7 @@
                     <div class="card emphasis emph-content row mb-2">
                         <div class="card-body row mt-1">
                             <div class="col-3 secondary-font">
-                                <a href="/${content.category}">
+                                <a href="<c:url value="/Framework/${content.frameworkId}"/>">
                                     <c:out value="${content.frameworkName}" default=""/>
                                 </a>
                             </div>
@@ -137,7 +137,7 @@
                     <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
                         <div class="card-body row mt-1">
                             <div class="col secondary-font">
-                                <a href="/${vote.category}/${vote.frameworkId}">
+                                <a href="<c:url value="/${vote.category}/${vote.frameworkId}"/>">
                                     <c:out value="${vote.frameworkName}" default=""/>
                                 </a>
                             </div>

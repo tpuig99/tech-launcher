@@ -25,9 +25,7 @@ public class FrameworkMenuController {
     public ModelAndView frameworkMenu(@PathVariable String category) {
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_menu");
 
-        FrameworkCategories frameworkCategories = FrameworkCategories.getByName(category);
-
-        if (frameworkCategories != null && !fs.getByCategory(frameworkCategories).isEmpty()) {
+        if (!fs.getByCategory(FrameworkCategories.getByName(category)).isEmpty()) {
             mav.addObject("category",category);
             mav.addObject("frameworksList", fs.getByCategory(FrameworkCategories.getByName(category)));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
