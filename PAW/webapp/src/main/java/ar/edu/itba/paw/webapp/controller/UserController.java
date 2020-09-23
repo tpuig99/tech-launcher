@@ -86,7 +86,7 @@ public class UserController {
             email.setFrom("confirmemailonly@gmail.com");
             email.setTo(user.get().getMail());
             email.setSubject("Moderator of " + vu.get().getFrameworkName());
-            email.setText("Hey! You were accepted as a moderator of " + vu.get().getFrameworkName() + ".\n If you don't want to, just get to your profile and set off the moderator option. \n\n Thanks!");
+            email.setText("Hey! You were accepted as a moderator of " + vu.get().getFrameworkName() + ".\n\n Thanks!");
             mailSender.send(email);
         }
         final ModelAndView mav = new ModelAndView("admin/mod_page");

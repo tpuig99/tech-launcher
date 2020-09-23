@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/register.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/form.css"/>"/>
 </head>
 <body>
 <jsp:include page="components/navbar.jsp">
@@ -23,7 +24,11 @@
             Login
         </div>
         <div class="page-description"></div>
-
+        <c:if test="${param.error != null}">
+            <div class="formError" id="error">
+                The username or password is incorrect.
+            </div>
+        </c:if>
         <c:url value="/login" var="loginUrl" />
         <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
             <div class="form-group">
