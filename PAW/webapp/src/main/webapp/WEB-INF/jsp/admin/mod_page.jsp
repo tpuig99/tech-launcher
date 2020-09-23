@@ -29,7 +29,7 @@
                             <div class="card-body row mt-1">
                                 <div class="col-3 secondary-font"> <a href="/users/${pendingUser.userName}"><c:out value="${pendingUser.userName}" default=""/></a>
                                     <c:out value="/" default=""/>
-                                    <a href="${pendingUser.frameworkName}/${pendingUser.frameworkId}"><c:out value="${pendingUser.frameworkName}" default=""/></a>
+                                    <a href="<c:out value="${pendingUser.frameworkName}/${pendingUser.frameworkId}"/>"><c:out value="${pendingUser.frameworkName}" default=""/></a>
                                 </div>
                                 <div class="col-6 text-left"> <c:out value="${pendingUser.comment.description}" default=""/> </div>
                                 <div class="col third-font text-right"> <c:out value="${pendingUser.comment.timestamp.toLocaleString()}" default=""/> </div>
@@ -53,7 +53,7 @@
                         <c:forEach var = "applicant" items="${pendingApplicants}">
                             <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
                                 <div class="card-body mt-1">
-                                    <div class="secondary-font"> <a href="/users/${applicant.userName}"><c:out value="${applicant.userName}" default=""/></a>
+                                    <div class="secondary-font"> <a href="<c:url value="/users/${applicant.userName}"/>"><c:out value="${applicant.userName}" default=""/></a>
                                         <c:out value="/" default=""/>
                                         <a href="${applicant.frameworkName}/${applicant.frameworkId}"><c:out value="${applicant.frameworkName}" default=""/></a>
                                     </div>
