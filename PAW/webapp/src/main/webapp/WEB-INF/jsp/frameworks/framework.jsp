@@ -106,7 +106,18 @@
                     <ul class=" margin-bottom list-group margin-left list-group-flush description">
 
                         <c:forEach var="course" items="${courses}">
-                            <li class="list-group-item"><a target="_blank" href="${course.link}">${course.title}</a></li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <a target="_blank" href="${course.link}">${course.title}</a>
+                                    </div>
+                                    <c:if test="${isAdmin}">
+                                        <div class="col d-flex justify-content-end align-items-end">
+                                            <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -118,7 +129,19 @@
                    <h4 class="subtitle margin-left"> Tutorials</h4>
                     <ul class="  margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">
-                            <li class="list-group-item"><a target="_blank" href="${tutorial.link}">${tutorial.title}</a></li>
+
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <a target="_blank" href="${tutorial.link}">${tutorial.title}</a>
+                                    </div>
+                                    <c:if test="${isAdmin}">
+                                        <div class="col d-flex justify-content-end align-items-end">
+                                            <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </li>
                         </c:forEach>
                     </ul>
                 </div>
