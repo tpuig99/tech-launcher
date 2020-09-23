@@ -281,7 +281,6 @@
                                 </div>
 
                             </div>
-
                         </div>
 
                     </div>
@@ -460,6 +459,13 @@
 
                 <!-- Scripts -->
                 <script>
+                    $(window).on('load', function (){
+                        <c:if test="${user.name != 'anonymousUser' && stars > 0}">
+                            let starId = "star-" + ${stars};
+                            $('#' + starId).prop("checked",true);
+                        </c:if>
+                    })
+
                     <c:if test="${not empty contentFormError}">
                         $(window).on('load', function() {
                             console.log(${contentFormError});
@@ -496,6 +502,7 @@
                     $(document).ready(function(){
                         $('[data-toggle="tooltip"]').tooltip();
                     });
+
 
                     function voteUpComment(commentId) {
                         let frameworkId = ${framework.id};
