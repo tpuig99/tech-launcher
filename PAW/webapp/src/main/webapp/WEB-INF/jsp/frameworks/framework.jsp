@@ -86,7 +86,7 @@
                                 <div class="col-10">
                                     <a target="_blank" href="${book.link}">${book.title}</a>
                                 </div>
-                                <c:if test="${isAdmin}">
+                                <c:if test="${isAdmin || verifyForFramework}">
                                     <div class="col d-flex justify-content-end align-items-end">
                                         <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                     </div>
@@ -111,7 +111,7 @@
                                     <div class="col-10">
                                         <a target="_blank" href="${course.link}">${course.title}</a>
                                     </div>
-                                    <c:if test="${isAdmin}">
+                                    <c:if test="${isAdmin || verifyForFramework}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
@@ -135,7 +135,7 @@
                                     <div class="col-10">
                                         <a target="_blank" href="${tutorial.link}">${tutorial.title}</a>
                                     </div>
-                                    <c:if test="${isAdmin}">
+                                    <c:if test="${isAdmin || verifyForFramework}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
