@@ -82,7 +82,7 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public List<Framework> getCompetitors(Framework framework) {
-        List<Framework> competitors = getByCategory(framework.getFrameCategory());
+        List<Framework> competitors = frameworkDao.getByCategoryOrType(framework.getFrameType(),framework.getFrameCategory());
         competitors.remove(framework);
         return competitors;
     }
