@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 public class UserForm {
     @NotNull
     @Size(min = 3, max = 100)
-    @Pattern(regexp = "[a-zA-Z0-9]+")
+    @Pattern(regexp = "[a-zA-Z0-9]+", message = "Username must only have alphanumerical characters")
     private String username;
     @NotNull
     @NotEmpty

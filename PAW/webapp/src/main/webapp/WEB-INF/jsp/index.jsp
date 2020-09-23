@@ -21,7 +21,7 @@
     </jsp:include>
 
     <div class="introduction">
-        <img class="mb-2" src="../../resources/assets/logo.png" alt="Page logo">
+        <img class="mb-2" src="<c:url value="/resources/assets/logo.png"/>" alt="Page logo">
         <h1> Welcome to Tech Launcher </h1>
         <h4> Starting a project is hard, we know it. That's why we created Tech Launcher. Here, you will be able to gather information from a large amount of technologies useful in the world of development.</h4>
     </div>

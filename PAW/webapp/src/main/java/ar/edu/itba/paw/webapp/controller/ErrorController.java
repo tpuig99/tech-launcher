@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,7 +22,7 @@ public class ErrorController {
         private static final String ERROR_VIEW = "/error";
 
         public static ModelAndView redirectToErrorView() { return new ModelAndView("redirect:" + ERROR_VIEW); }
-
+        @RequestMapping("/error")
         @ExceptionHandler(value = Exception.class)
         public ModelAndView
         defaultErrorHandler(HttpServletRequest req, Exception e) {
@@ -58,4 +59,6 @@ public class ErrorController {
         }
         return mav;
     }
+
+
 }
