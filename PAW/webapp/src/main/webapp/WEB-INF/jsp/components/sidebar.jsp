@@ -17,4 +17,7 @@
     <a href="<c:url value="/Development%20Environment"/>">Development Environment</a>
     <a href="<c:url value="/Databases"/>">Databases</a>
     <a href="<c:url value="/Media"/>">Media</a>
+    <a href="<c:url value="/Functional"/>">Functional</a>
+    <a href="<c:url value="/Imperative"/>">Imperative</a>
+    <a href="<c:url value="/Object%20Oriented"/>">Object Oriented</a>
 </div>
