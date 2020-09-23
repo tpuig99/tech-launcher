@@ -1,6 +1,12 @@
 nav {
     background: #733bce;
     height: 4em;
+
+}
+
+.navbar{
+    z-index:1;
+    box-shadow: 0 1em 0.5em -0.5em rgba(0,0,0,.2);
 }
 
 #profile-settings{
@@ -23,13 +29,12 @@ nav a:hover {
     position: fixed;
     height: 100%;
     width: 13em;
-    z-index: 1;
     top: 4em;
     left: 0;
-    border-top: 0.05em solid white;
     background-color: #733bce;
     overflow-x: hidden;
     padding-top: 20px;
+    z-index:0;
 }
 
 .sidenav a {
