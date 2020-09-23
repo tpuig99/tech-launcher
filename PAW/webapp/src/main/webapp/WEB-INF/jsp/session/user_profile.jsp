@@ -48,7 +48,7 @@
                                 <c:when test="${profile.admin}">
                                     <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color-admin" data-toggle="tooltip" title="This user is an Admin!"></i>
                                 </c:when>
-                                <c:when test="${profile.enable}">
+                                <c:when test="${profile.verify}">
                                     <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip" title="This user is a Moderator!"></i>
                                 </c:when>
                             </c:choose>
@@ -57,7 +57,7 @@
                         <c:if test="${not empty profile.description}">
                             <p><strong>Description: </strong><c:out value="${profile.description}"/></p>
                         </c:if>
-                        <c:if test="${not empty verifiedList}">
+                        <c:if test="${profile.verify}">
                             <p><strong>Moderator: </strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
                                 <c:if test="${!verifiedTech.pending}">
