@@ -39,6 +39,9 @@
                 <option value="Development Environment">Development Environment</option>
                 <option value="Databases">Databases</option>
                 <option value="Media">Media</option>
+                <option value="Imperative Programming">Imperative Programming</option>
+                <option value="Object Oriented Programming">Object Oriented Programming</option>
+                <option value="Functional Programming">Functional Programming</option>
             </select>
         </section>
         <section class="option">
@@ -49,9 +52,8 @@
                 <option value="Framework">Framework</option>
                 <option value="Service">Service</option>
                 <option value="Database System">Database System</option>
-                <option value="Programming Languages">Programming Languages</option>
                 <option value="Operating System">Operating System</option>
-                <option value="Runtime Plataform">Runtime Plataform</option>
+                <option value="Runtime Platform">Runtime Platform</option>
                 <option value="Libraries">Libraries</option>
                 <option value="Engine">Engine</option>
                 <option value="Shell">Shell</option>
@@ -62,6 +64,7 @@
                 <option value="API">API</option>
                 <option value="Toolkit">Toolkit</option>
                 <option value="IDE">IDE</option>
+                <option value="Programming Language">Programming Language</option>
             </select>
         </section>
     </div>
