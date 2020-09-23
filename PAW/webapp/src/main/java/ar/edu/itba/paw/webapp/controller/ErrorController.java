@@ -37,8 +37,12 @@ public class ErrorController {
             ModelAndView mav = new ModelAndView("error");
             mav.addObject("exception", e);
             mav.addObject("url", req.getRequestURL());
-            User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            if( us.findByUsername(username).isPresent()){
+                User user = us.findByUsername(username).get();
+                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            }
             return mav;
         }
 
