@@ -23,7 +23,11 @@
             Login
         </div>
         <div class="page-description"></div>
-
+        <c:if test="${param.error != null}">
+            <div id="error">
+                The username or password is incorrect.
+            </div>
+        </c:if>
         <c:url value="/login" var="loginUrl" />
         <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
             <div class="form-group">
