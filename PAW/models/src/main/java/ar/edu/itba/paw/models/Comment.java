@@ -15,8 +15,9 @@ public class Comment {
     private String userName;
     private FrameworkCategories category;
     private boolean isVerify;
+    private boolean isAdmin;
 
-    public Comment(long commentId, long frameworkId, long userId, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify) {
+    public Comment(long commentId, long frameworkId, long userId, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin) {
         this.commentId = commentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
@@ -29,6 +30,7 @@ public class Comment {
         this.userName = userName;
         this.category = category;
         this.isVerify = isVerify;
+        this.isAdmin = isAdmin;
     }
 
     public long getCommentId() {
@@ -80,5 +82,9 @@ public class Comment {
 
     public boolean isVerify() {
         return isVerify;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
     }
 }

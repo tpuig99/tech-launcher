@@ -30,7 +30,7 @@ public class UserDaoImpl implements UserDao {
 
 
     private final static String SELECTION="select users.user_id,user_name,mail,password,enabled,user_description,allow_moderator,CASE WHEN admin_id IS NULL THEN false ELSE true END AS is_admin from users left join admins a on users.user_id = a.user_id ";
-    private final static String SELECTION_VERIFY="select v.verification_id, v.framework_id,v.user_id,v.comment_id,v.pending,user_name,framework_name,c.description,c.tstamp,(CASE WHEN v.comment_id IS NULL THEN false ELSE true END) AS has_comment, count(case when vote=-1 then vote end) as neg, reference, count(case when vote=1 then vote end) as pos,(CASE WHEN v.pending IS false THEN true ELSE false END) AS is_verify,f.category from verify_users v left join frameworks f on f.framework_id = v.framework_id left join comments c on c.comment_id = v.comment_id left join users u on u.user_id = v.user_id left join comment_votes cv on v.comment_id = cv.comment_id WHERE v.user_id=? group by v.verification_id,u.user_name,f.framework_name,c.description, v.framework_id, v.user_id, v.comment_id, v.pending, user_name, framework_name, v.verification_id, c.tstamp, (CASE WHEN v.comment_id IS NULL THEN false ELSE true END),c.reference,f.category";
+    private final static String SELECTION_VERIFY="select v.verification_id, v.framework_id,v.user_id,v.comment_id,v.pending,user_name,framework_name,c.description,c.tstamp,(CASE WHEN v.comment_id IS NULL THEN false ELSE true END) AS has_comment, count(case when vote=-1 then vote end) as neg, reference, count(case when vote=1 then vote end) as pos,(CASE WHEN v.pending IS false THEN true ELSE false END) AS is_verify,f.category,CASE WHEN admin_id IS NULL THEN false ELSE true END AS is_admin from verify_users v left join frameworks f on f.framework_id = v.framework_id left join comments c on c.comment_id = v.comment_id left join users u on u.user_id = v.user_id left join comment_votes cv on v.comment_id = cv.comment_id left join admins a on c.user_id = a.user_id WHERE v.user_id=? group by v.verification_id,u.user_name,f.framework_name,c.description, v.framework_id, v.user_id, v.comment_id, v.pending, user_name, framework_name, v.verification_id, c.tstamp, (CASE WHEN v.comment_id IS NULL THEN false ELSE true END),c.reference,f.category,a.admin_id";
     @Autowired
     public UserDaoImpl(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -71,7 +71,9 @@ public class UserDaoImpl implements UserDao {
                     rs.getString("framework_name"),
                     rs.getString("user_name"),
                     FrameworkCategories.getByName(rs.getString("category")),
-                    rs.getBoolean("is_verify")
+                    rs.getBoolean("is_verify"),
+                    rs.getBoolean("is_admin")
+
             );
             return new VerifyUser(rs.getInt("verification_id"),comment,rs.getBoolean("pending"));
         }

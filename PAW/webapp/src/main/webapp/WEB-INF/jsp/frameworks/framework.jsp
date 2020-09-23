@@ -210,7 +210,7 @@
                                             <div class="vertical-divider margin-left">
                                                 <div class="padding-left">
                                                     <span class="secondary-font medium-font ">
-                                                        <c:out value="${repliesUsernames.get(reply.commentId)}" default=""/>
+                                                        <c:out value="${reply.userName}" default=""/>
                                                     </span>
                                                     <span class="third-font">
                                                         <c:out value="${reply.timestamp.toLocaleString()}" default=""/>
