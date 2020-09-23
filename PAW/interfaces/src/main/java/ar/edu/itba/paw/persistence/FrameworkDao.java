@@ -1,16 +1,20 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.FrameworkCategories;
+import ar.edu.itba.paw.models.*;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Optional;
 
 public interface FrameworkDao {
-    Framework findById(long id);
+    Optional<Framework> findById(long id);
     List<Framework> getByCategory(FrameworkCategories category);
+    List<Framework> getByType(FrameworkType type);
+    List<Framework> getByCategoryAndType(FrameworkType type, FrameworkCategories category);
+    List<Framework> getByCategoryAndWord(FrameworkCategories category,String word);
+    List<Framework> getByTypeAndWord(FrameworkType type, String word);
+    List<Framework> getByCategoryAndTypeAndWord(FrameworkType type, FrameworkCategories category, String word);
     List<Framework> getAll();
-    List<Framework> getByNameOrCategory(String toSearch);
+    List<Framework> getByWord(String toSearch);
+    List<Framework> getUserInterests(long userId);
 }

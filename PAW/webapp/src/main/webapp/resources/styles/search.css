@@ -1,0 +1,37 @@
+.option {
+    margin-bottom: 2em;
+    margin-top: 2em;
+    width: 80%;
+}
+
+.sidebar-search {
+    position: fixed;
+    height: 100%;
+    width: 20em;
+    z-index: 1;
+    top: 4em;
+    left: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+    margin-left: 1em;
+}
+
+.content-search {
+    position: absolute;
+    top: 4.5em;
+    left: 20.5em;
+    margin-right: 1em;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.sidebar-search select {
+    padding: 0.5em 0.5em 0.5em 1em;
+    text-decoration: none;
+    font-size: 1em;
+    display: block;
+    height: 3em;
+}
+
+.sidebar-search select:hover {
+}

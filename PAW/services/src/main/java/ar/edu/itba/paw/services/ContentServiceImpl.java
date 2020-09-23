@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ContentServiceImpl implements ContentService {
@@ -17,7 +18,7 @@ public class ContentServiceImpl implements ContentService {
     ContentDao content;
 
     @Override
-    public Content getById(long contentId) {
+    public Optional<Content> getById(long contentId) {
         return content.getById(contentId);
     }
 
@@ -42,8 +43,18 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
-        return content.insertContent(frameworkId, userId, title, link, type);
+    public List<Content> getNotPendingContentByFrameworkAndType(long frameworkId, ContentTypes type) {
+        return content.getNotPendingContentByFrameworkAndType(frameworkId, type);
+    }
+
+    @Override
+    public List<Content> getPendingContentByFrameworkAndType(long frameworkId, ContentTypes type) {
+        return content.getPendingContentByFrameworkAndType(frameworkId, type);
+    }
+
+    @Override
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type, Boolean pending) {
+        return content.insertContent(frameworkId, userId, title, link, type, pending);
     }
 
     @Override
@@ -52,7 +63,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public Content changeContent(long contentId, String title, String link, ContentTypes types) {
+    public Optional<Content> changeContent(long contentId, String title, String link, ContentTypes types) {
         return content.changeContent(contentId, title, link, types);
     }
 }

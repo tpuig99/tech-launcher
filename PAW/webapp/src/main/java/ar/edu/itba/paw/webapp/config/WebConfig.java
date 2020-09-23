@@ -11,6 +11,10 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,7 +59,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ds.setUrl("jdbc:postgresql://ec2-52-22-216-69.compute-1.amazonaws.com:5432/d86l7934jmqblf");
         ds.setUsername("gbhbqhgxqihynh");
         ds.setPassword("959523c108bbcbbf94a86d25428acea2051845a79486cc83f71163d39ee834b9");
-        /*ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
+        
+        //ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
+        /*ds.setUrl("jdbc:postgresql://localhost:5600/paw-2020b-1");
         ds.setUsername("paw-2020b-1");
         ds.setPassword("uygwr2BX7");*/
         return ds;
@@ -82,10 +88,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         messageSource.setCacheSeconds(5);
         return messageSource;
     }
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 }
 
 

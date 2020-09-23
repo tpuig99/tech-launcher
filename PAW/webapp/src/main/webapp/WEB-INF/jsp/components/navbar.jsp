@@ -4,7 +4,7 @@
 
 <head>
     <c:url value="/resources/js/search.js" var="searchJs"/>
-
+   <!-- <script src="/resources/js/search.js"></script>-->
 </head>
 <body>
 
@@ -19,6 +19,9 @@
             <li class="nav-item active">
                 <a class="nav-link" href="<c:url value="/"/>">Home</a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="<c:url value="/frameworks"/>">Techs</a>
+            </li>
         </ul>
         <div>
             <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
@@ -26,13 +29,26 @@
                 <button class="btn my-2 my-sm-0" type="button" onclick="searchFrameworks()"><i class="fas fa-search"></i></button>
             </form>
         </div>
-        <div class="nav-item dropdown">
+        <div class="nav-item dropdown" id="profile-settings">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <c:if test="${param.username != 'anonymousUser'}">${param.username}</c:if>
                 <i class="fas fa-user"></i>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="${pageContext.request.contextPath}/register">Sign Up</a>
-                <a class="dropdown-item" href="#">Log in</a>
+
+                <c:if test="${param.isMod}">
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/mod">Moderate</a>
+                </c:if>
+                <c:choose>
+                    <c:when test="${param.username != 'anonymousUser'}">
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/users/${param.username}">Profile</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Log out</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/register">Sign Up</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/login">Log in</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>
@@ -51,11 +67,13 @@
     }
 
     function searchFrameworks() {
-        let input = document.getElementById("searchInput").value;
-        if( isEmpty(input) ) {
-            window.location.href = "/search?toSearch=" + input;
+        let input = document.getElementById("searchInput").value
+
+        if( !isEmpty(input) ) {
+            window.location.href = "/search?toSearch=" + input + '&category=&type=';
+            return;
         }
-        window.location.href = "/";
+        window.location.reload();
     }
 
     form = document.getElementById("search").addEventListener('submit', e => {

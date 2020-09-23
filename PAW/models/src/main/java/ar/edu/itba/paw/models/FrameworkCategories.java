@@ -2,7 +2,6 @@ package ar.edu.itba.paw.models;
 
 public enum FrameworkCategories {
     Platforms("Platforms"),
-    Programming_Languages("Programming Languages"),
     Front_End_Development("Front-End Development"),
     Back_End_Development("Back-End Development"),
     Computer_Science("Computer Science"),
@@ -22,7 +21,10 @@ public enum FrameworkCategories {
     Events("Events"),
     Testing("Testing"),
     Miscellaneous("Miscellaneous"),
-    Related("Related");
+    Related("Related"),
+    Functional("Functional Programming"),
+    OO("Object Oriented Programming"),
+    Imperative("Imperative Programming");
     private String nameCat;
     FrameworkCategories(String nameCat) {
         this.nameCat=nameCat;

@@ -10,15 +10,27 @@ public class Comment {
     private long votesUp;
     private long votesDown;
     private Timestamp timestamp;
-    private long reference;
+    private Long reference;
+    private String frameworkName;
+    private String userName;
+    private FrameworkCategories category;
+    private boolean isVerify;
+    private boolean isAdmin;
 
-    public Comment(long commentId, long frameworkId, long userId, String description, Timestamp timestamp, long reference) {
+    public Comment(long commentId, long frameworkId, long userId, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin) {
         this.commentId = commentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
         this.description = description;
+        this.votesUp = votesUp;
+        this.votesDown = votesDown;
         this.timestamp = timestamp;
         this.reference = reference;
+        this.frameworkName = frameworkName;
+        this.userName = userName;
+        this.category = category;
+        this.isVerify = isVerify;
+        this.isAdmin = isAdmin;
     }
 
     public long getCommentId() {
@@ -49,15 +61,30 @@ public class Comment {
         return timestamp;
     }
 
-    public long getReference() {
+    public Long getReference() {
         return reference;
     }
 
-    public void setVotesUp(long votesUp) {
-        this.votesUp = votesUp;
+    public String getFrameworkName() {
+        return frameworkName;
     }
 
-    public void setVotesDown(long votesDown) {
-        this.votesDown = votesDown;
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getCategory(){
+        return category.getNameCat();
+    }
+    public FrameworkCategories getEnumCategory() {
+        return category;
+    }
+
+    public boolean isVerify() {
+        return isVerify;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
     }
 }

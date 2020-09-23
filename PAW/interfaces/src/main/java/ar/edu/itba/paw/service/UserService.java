@@ -3,20 +3,32 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
+import ar.edu.itba.paw.models.VerifyUser;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface UserService {
-    User findById(int id);
-    User findByUsername(String username);
-    User create(String username,String mail) throws UserAlreadyExistException;
-    User create(String username,String mail,String password) throws UserAlreadyExistException;;
+    Optional<User> findById(long id);
+    Optional<User> findByUsername(String username);
+    User create(String username,String mail,String password) throws UserAlreadyExistException;
     int delete(long userId);
-    User update(long userId,String username,String mail,String password);
-    Map<Long, String> getUsernamesByComments(List<Comment> comments);
+    void updatePassword(long userId,String password);
     void createVerificationToken(User user, String token);
-    VerificationToken getVerificationToken(String token);
+    Optional<VerificationToken> getVerificationToken(String token);
     void saveRegisteredUser(User user);
     void generateNewVerificationToken(User user, String token);
+    void updateDescription(long userId,String description);
+    VerifyUser createVerify(long userId, long frameworkId, long commentId);
+    VerifyUser createVerify(long userId, long frameworkId);
+    List<VerifyUser> getVerifyByUser(long userId,boolean pending);
+    List<VerifyUser> getVerifyByFramework(long frameworkId,boolean pending);
+    List<VerifyUser> getAllVerifyByUser(long userId);
+    List<VerifyUser> getAllVerifyByFramework(long frameworkId);
+    Optional<VerifyUser> getVerifyById(long verificationId);
+    List<VerifyUser> getVerifyByPending(boolean pending);
+    void deleteVerification(long verificationId);
+    void verify(long verificationId);
+    Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId);
 }

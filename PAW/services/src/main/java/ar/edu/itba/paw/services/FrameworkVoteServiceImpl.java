@@ -7,15 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FrameworkVoteServiceImpl implements FrameworkVoteService {
     @Autowired
     FrameworkVoteDao vs;
-    @Override
-    public List<FrameworkVote> getAll() {
-        return vs.getAll();
-    }
 
     @Override
     public List<FrameworkVote> getByFramework(long frameworkId) {
@@ -23,20 +20,28 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
     }
 
     @Override
-    public FrameworkVote getById(long voteId) {
+    public Optional<FrameworkVote> getById(long voteId) {
         return vs.getById(voteId);
     }
 
     @Override
-    public FrameworkVote getByFrameworkAndUser(long frameworkId, long userId) {
+    public Optional<FrameworkVote> getByFrameworkAndUser(long frameworkId, long userId) {
         return vs.getByFrameworkAndUser(frameworkId,userId);
     }
 
     @Override
+    public List<FrameworkVote> getAllByUser(long userId) {
+        return vs.getAllByUser(userId);
+    }
+
+
+    @Override
     public FrameworkVote insert(long frameworkId, long userId, int stars) {
-        FrameworkVote frameworkVote = getByFrameworkAndUser(frameworkId,userId);
-        if(frameworkVote !=null){
-            update(frameworkVote.getVoteId(),stars);
+        Optional<FrameworkVote> frameworkVote = getByFrameworkAndUser(frameworkId,userId);
+        if(frameworkVote.isPresent()){
+            update(frameworkVote.get().getVoteId(),stars);
+            frameworkVote.get().setStars(stars);
+            return frameworkVote.get();
         }
         return vs.insert(frameworkId,userId,stars);
     }
@@ -47,7 +52,7 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
     }
 
     @Override
-    public FrameworkVote update(long voteId, int stars) {
+    public Optional<FrameworkVote> update(long voteId, int stars) {
         return vs.update(voteId,stars);
     }
 }
