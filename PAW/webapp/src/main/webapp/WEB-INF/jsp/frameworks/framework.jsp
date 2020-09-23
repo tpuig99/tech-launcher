@@ -87,7 +87,7 @@
                                     <a target="_blank" href="${book.link}">${book.title}</a>
                                 </div>
                                 <div class="col d-flex justify-content-end align-items-end">
-                                    <button class="btn btn-link" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                    <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                 </div>
                             </div>
                         </li>
@@ -402,6 +402,7 @@
                 <div class="modal fade" id="deleteContentModal" tabindex="-1" role="dialog" aria-labelledby="deleteContentModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
+                            <div id="contentId" hidden></div>
                             <div class="modal-header">
                                 <h5 class="modal-title" id="deleteContentModalLabel">Delete</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -414,10 +415,8 @@
                                 </div>
                                 <div class="row justify-content-center align-items-center margin-top">
                                     <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">CANCEL</button></span>
-                                    <span class="margin-left"> <button type="button" class="btn btn-danger" onclick="">DELETE</button></span>
+                                    <span class="margin-left"> <button type="button" class="btn btn-danger" onclick="deleteContent()">DELETE</button></span>
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
@@ -512,6 +511,22 @@
                     function uploadContent(){
                         let id= ${framework.id};
                         window.location.href = '<c:url value="/content" />?id=' + id;
+                    }
+
+                    function openDeleteContentModal(contentId){
+                        console.log("contenId en open");
+                        console.log(contentId);
+                        $('#contentId').val(contentId);
+                        $('#deleteContentModal').modal('show');
+                    }
+
+                    function deleteContent(){
+
+                        let id= ${framework.id};
+                        let contentId= document.getElementById('contentId').value;
+                        console.log("contenId en delete");
+                        console.log(contentId);
+                        window.location.href = '<c:url value="/content/delete" />?id='+id+'&content_id='+contentId;
                     }
 
                     function showSnackbar() {
