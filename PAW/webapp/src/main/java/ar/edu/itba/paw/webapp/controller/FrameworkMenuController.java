@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.awt.*;
+
 @Controller
 public class FrameworkMenuController {
 
@@ -23,7 +25,9 @@ public class FrameworkMenuController {
     public ModelAndView frameworkMenu(@PathVariable String category) {
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_menu");
 
-        if (!fs.getByCategory(FrameworkCategories.getByName(category)).isEmpty()) {
+        FrameworkCategories frameworkCategories = FrameworkCategories.getByName(category);
+
+        if (frameworkCategories != null && !fs.getByCategory(frameworkCategories).isEmpty()) {
             mav.addObject("category",category);
             mav.addObject("frameworksList", fs.getByCategory(FrameworkCategories.getByName(category)));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
