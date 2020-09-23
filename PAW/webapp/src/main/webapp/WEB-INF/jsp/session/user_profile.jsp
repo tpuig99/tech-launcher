@@ -54,11 +54,15 @@
                             </c:choose>
                         </div>
                         <p><strong>Email: </strong><c:out value="${profile.mail}"/></p>
-                        <p><strong>Description: </strong><c:out value="${profile.description}"/></p>
+                        <c:if test="${not empty profile.description}">
+                            <p><strong>Description: </strong><c:out value="${profile.description}"/></p>
+                        </c:if>
                         <c:if test="${not empty verifiedList}">
                             <p><strong>Moderator: </strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
-                                <a class="tags" href="<c:url value="/Framework/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                                <c:if test="${!verifiedTech.pending}">
+                                    <a class="tags" href="<c:url value="/Framework/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                                </c:if>
                             </c:forEach>
                             </p>
                         </c:if>
