@@ -341,7 +341,7 @@
                             </div>
                         </div>
                     </div>
-                    <c:if test="${!verifyForFramework && !isAdmin}">
+                    <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser'}">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center">
                             <div class="card-header subtitle"><h5>Be a Mod!</h5></div>
@@ -431,6 +431,8 @@
                 </div>
 
                 <div id="snackbar">Your content has been uploaded !</div>
+
+                <div id="snackbarModApplication">Your application is now pending approval !</div>
 
                 <!--Delete Content Modal -->
 
@@ -548,7 +550,12 @@
                     });
 
                     function applyForMod(){
-                        window.location.href = '<c:url value="/apply"/>?id=' + ${framework.id}
+                        let x = document.getElementById("snackbarModApplication");
+                        window.location.href = '<c:url value="/apply"/>?id=' + ${framework.id};
+                        x.className = "show";
+                        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
+
+
                     }
 
                     function selectFiles() {

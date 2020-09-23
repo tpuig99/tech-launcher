@@ -31,7 +31,7 @@
                         <div class="mx-auto mt-4">
                             <h4>There was an error with the requested resource</h4></div>
                         <div class="mx-auto mt-4">
-                            <a class="btn btn-primary" href="<c:url value="/"/>" role="button">GO BACK TO HOME PAGE</a>
+                            <a class="btn primary-button" href="<c:url value="/"/>" role="button">GO BACK TO HOME PAGE</a>
                         </div>
                     </div>
                 </div>
