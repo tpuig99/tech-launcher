@@ -42,25 +42,25 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public List<Framework> search(String toSearch, FrameworkCategories category, FrameworkType type) {
-        if(toSearch!=null && category==null && type==null){
+        if(!toSearch.isEmpty() && category==null && type==null){
             return  frameworkDao.getByWord(toSearch);
         }
-        if(toSearch!=null && category!=null && type==null){
+        if(!toSearch.isEmpty() && category!=null && type==null){
             return  frameworkDao.getByCategoryAndWord(category,toSearch);
         }
-        if(toSearch!=null && category==null && type!=null){
+        if(!toSearch.isEmpty() && category==null && type!=null){
             return  frameworkDao.getByTypeAndWord(type,toSearch);
         }
-        if(toSearch!=null && category!=null && type!=null){
+        if(!toSearch.isEmpty() && category!=null && type!=null){
             return  frameworkDao.getByCategoryAndTypeAndWord(type,category,toSearch);
         }
-        if(toSearch==null && category==null && type!=null){
+        if(toSearch.isEmpty() && category==null && type!=null){
             return  frameworkDao.getByType(type);
         }
-        if(toSearch==null && category!=null && type!=null){
+        if(toSearch.isEmpty() && category!=null && type!=null){
             return  frameworkDao.getByCategoryAndType(type,category);
         }
-        if(toSearch==null && category!=null && type==null){
+        if(toSearch.isEmpty() && category!=null && type==null){
             return  frameworkDao.getByCategory(category);
         }
         return new ArrayList<Framework>();

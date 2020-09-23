@@ -217,6 +217,14 @@ label:hover:before {
     color: #48bfe3;
 }
 
+.rocket-color-admin {
+    color: #733bce;
+}
+
 .rocket-color:hover {
+    text-shadow: 0 0 5px black;
+}
+
+.rocket-color-admin:hover {
     text-shadow: 0 0 5px black;
 }

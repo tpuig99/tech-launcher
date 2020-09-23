@@ -63,6 +63,12 @@ public class FrameworkController {
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
                 mav.addObject("isAdmin",user.isAdmin());
+                Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
+                if(fv.isPresent()){
+                    mav.addObject("stars",fv.get().getStars());
+                }else{
+                    mav.addObject("stars",0);
+                }
             }
 
             return mav;

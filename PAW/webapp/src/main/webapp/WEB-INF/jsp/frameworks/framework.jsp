@@ -192,9 +192,14 @@
                             <div class="row">
                                 <div class="col secondary-font">
                                     <a href="<c:url value='/users/${comment.userName}'/>">
-                                        <c:if test="${comment.verify}">
-                                            <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="This user is verified!"></i>
-                                        </c:if>
+                                        <c:choose>
+                                            <c:when test="${comment.admin}">
+                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-admin" data-toggle="tooltip" title="This user is an Admin!"></i>
+                                            </c:when>
+                                            <c:when test="${comment.verify}">
+                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="This user is a Moderator!"></i>
+                                            </c:when>
+                                        </c:choose>
                                         <c:out value="${comment.userName}" default=""/>
                                     </a>
                                 </div>
@@ -244,7 +249,7 @@
                                             <div class="vertical-divider margin-left">
                                                 <div class="padding-left">
                                                     <span class="secondary-font medium-font ">
-                                                        <c:out value="${repliesUsernames.get(reply.commentId)}" default=""/>
+                                                        <c:out value="${reply.userName}" default=""/>
                                                     </span>
                                                     <span class="third-font">
                                                         <c:out value="${reply.timestamp.toLocaleString()}" default=""/>
@@ -478,6 +483,9 @@
                         console.log(location.href);
                     }
 
+                    $(document).ready(function(){
+                        $('[data-toggle="tooltip"]').tooltip();
+                    });
 
                     function voteUpComment(commentId) {
                         let frameworkId = ${framework.id};

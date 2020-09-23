@@ -44,9 +44,14 @@
                         <img src="https://picsum.photos/536/354" alt="" class="rounded-circle img-slot">
                         <div class="row justify-content-center">
                         <h2><c:out value="${profile.username}"/></h2>
-                        <c:if test="${profile.enable}">
-                            <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip" title="This user is verified!"></i>
-                        </c:if>
+                            <c:choose>
+                                <c:when test="${profile.admin}">
+                                    <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color-admin" data-toggle="tooltip" title="This user is an Admin!"></i>
+                                </c:when>
+                                <c:when test="${profile.enable}">
+                                    <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip" title="This user is a Moderator!"></i>
+                                </c:when>
+                            </c:choose>
                         </div>
                         <p><strong>Email: </strong><c:out value="${profile.mail}"/></p>
                         <p><strong>Description: </strong><c:out value="${profile.description}"/></p>
@@ -110,7 +115,9 @@
                     <div class="card emphasis emph-content row mb-2">
                         <div class="card-body row mt-1">
                             <div class="col-3 secondary-font">
-                                <c:out value="${content.frameworkName}" default=""/>
+                                <a href="/${content.category}">
+                                    <c:out value="${content.frameworkName}" default=""/>
+                                </a>
                             </div>
                             <div class="col-6 text-left"> <c:out value="${content.type.name()}: ${content.title}" default=""/> </div>
                             <div class="col third-font text-right"> <c:out value="${content.timestamp.toLocaleString()}" default=""/> </div>
