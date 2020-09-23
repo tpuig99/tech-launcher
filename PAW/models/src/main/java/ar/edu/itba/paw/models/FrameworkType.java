@@ -1,13 +1,13 @@
 package ar.edu.itba.paw.models;
 
 public enum FrameworkType {
-    Online_Plataform("Online Plataform"),
+    Online_Plataform("Online Platform"),
     Framework("Framework"),
     Service("Service"),
     Database_System("Database System"),
-    Programming_Languages("Programming Languages"),
+    Programming_Languages("Programming Language"),
     Operating_System("Operating System"),
-    Runtime_Plataform("Runtime Plataform"),
+    Runtime_Plataform("Runtime Platform"),
     Libraries("Libraries"),
     Engine("Engine"),
     Shell("Shell"),

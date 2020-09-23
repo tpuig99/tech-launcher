@@ -22,9 +22,9 @@ public enum FrameworkCategories {
     Testing("Testing"),
     Miscellaneous("Miscellaneous"),
     Related("Related"),
-    Functional("Functional"),
-    OO("Object Oriented"),
-    Imperative("Imperative");
+    Functional("Functional Programming"),
+    OO("Object Oriented Programming"),
+    Imperative("Imperative Programming");
     private String nameCat;
     FrameworkCategories(String nameCat) {
         this.nameCat=nameCat;
