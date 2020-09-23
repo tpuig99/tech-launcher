@@ -47,6 +47,11 @@ public class HomeController {
         mav.addObject("hottestList", fs.getBestRatedFrameworks());
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         user.ifPresent(value -> mav.addObject("interestsList", fs.getUserInterests(value.getId())));
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if( us.findByUsername(username).isPresent()){
+            User user1 = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user1.isVerify() || user1.isAdmin());
+        }
         return mav;
     }
 

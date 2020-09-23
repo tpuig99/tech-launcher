@@ -31,6 +31,7 @@
         </div>
         <div class="nav-item dropdown" id="profile-settings">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <c:if test="${param.username != 'anonymousUser'}">${param.username}</c:if>
                 <i class="fas fa-user"></i>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
