@@ -343,10 +343,17 @@
                         </div>
                     </div>
                     <c:if test="${!verifyForFramework && !isAdmin}">
-                        <div class="row">
-                            <div class="row">Want to help us? Be a mod!</div>
-                            <button class="btn primary-button" onclick="applyForMod()">APPLY</button>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="card text-center">
+                            <div class="card-header subtitle"><h5>Be a Mod!</h5></div>
+                            <div class="card-body">
+                                <p class="card-text">Want to help us? Be a moderator! You will be able to manage content in this tech</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn primary-button" onclick="applyForMod()">APPLY</button>
+                            </div>
                         </div>
+                    </div>
                     </c:if>
                 </div>
 

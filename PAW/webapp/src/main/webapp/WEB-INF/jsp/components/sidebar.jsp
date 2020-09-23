@@ -3,7 +3,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!-- Sidebar -->
-<div class="sidenav">
+<div class="sidenav overflow-auto">
     <a href="<c:url value="/Back-End%20Development"/>">Back-End Development</a>
     <a href="<c:url value="/Big%20Data"/>">Big Data</a>
     <a href="<c:url value="/Business"/>">Business</a>
