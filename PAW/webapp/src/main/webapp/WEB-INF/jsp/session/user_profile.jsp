@@ -110,7 +110,9 @@
                     <div class="card emphasis emph-content row mb-2">
                         <div class="card-body row mt-1">
                             <div class="col-3 secondary-font">
-                                <c:out value="${content.frameworkName}" default=""/>
+                                <a href="/${content.category}">
+                                    <c:out value="${content.frameworkName}" default=""/>
+                                </a>
                             </div>
                             <div class="col-6 text-left"> <c:out value="${content.type.name()}: ${content.title}" default=""/> </div>
                             <div class="col third-font text-right"> <c:out value="${content.timestamp.toLocaleString()}" default=""/> </div>
