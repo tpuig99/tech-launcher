@@ -473,9 +473,13 @@
 
                         if(commentId !== undefined){
                             content = document.getElementById(commentId+"ReplyInput").value;
+                            if(content === "")
+                                return;
                             console.log(content);    path = '<c:url value="/create" />?id='+id+'&content='+content+'&commentId='+commentId;
                         }else{
                             content = document.getElementById("commentInput").value;
+                            if(content === "")
+                                return;
                             path = '<c:url value="/create" />?id='+id+'&content='+content;
                         }
 
