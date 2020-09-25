@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.frameworks.ContentForm;
+import ar.edu.itba.paw.webapp.form.frameworks.RatingForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -118,16 +119,22 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
-    @RequestMapping(path={"/rate"}, method = RequestMethod.GET)
-    public ModelAndView rateComment(@RequestParam("id") final long id, @RequestParam("rating") final int rating) throws UserAlreadyExistException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @RequestMapping(path={"/rate"}, method = RequestMethod.POST)
+    public ModelAndView rateComment(@Valid @ModelAttribute("ratingForm") final RatingForm form, final BindingResult errors) throws UserAlreadyExistException {
+
+        long frameworkId = form.getFrameworkId();
+        Optional<Framework> framework = fs.findById(frameworkId);
+
+        if (framework.isPresent()) {
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (us.findByUsername(authentication.getName()).isPresent()) {
-                final FrameworkVote frameworkVote = frameworkVoteService.insert(id, us.findByUsername(authentication.getName()).get().getId(), rating);
-
-            return FrameworkController.redirectToFramework(id, frameworkVote.getCategory());
+                final FrameworkVote frameworkVote = frameworkVoteService.insert(frameworkId, us.findByUsername(authentication.getName()).get().getId(), form.getRating());
+                return FrameworkController.redirectToFramework(frameworkId, frameworkVote.getCategory());
             }
-
+            return ErrorController.redirectToErrorView();
+        }
         return ErrorController.redirectToErrorView();
     }
 

@@ -318,7 +318,7 @@
                             <h5>Rating</h5>
 
                             <div class="stars">
-                                <form id="rating-form">
+                               <%-- <form id="rating-form">
                                     <input class="star star-5" id="star-5" type="radio" name="star"/>
                                     <label class="star star-5" for="star-5"></label>
                                     <input class="star star-4" id="star-4" type="radio" name="star"/>
@@ -337,7 +337,11 @@
                                             <button class="btn primary-button"  data-toggle="modal" data-target="#loginModal">RATE</button>
                                         </c:otherwise>
                                     </c:choose>
-                                </form>
+                                </form>--%>
+                               <jsp:include page="ratingForm.jsp">
+                                   <jsp:param name="frameworkId" value="${framework.id}" />
+                                   <jsp:param name="username" value="${user.name}" />
+                               </jsp:include>
                             </div>
                         </div>
                     </div>
@@ -560,15 +564,15 @@
                         });
                     });
 
-                    $(document).ready(function() {
+                   /* $(document).ready(function() {
                         $('#rating-form').on('submit', function(e){
-                            if(${user.name != 'anonymousUser'}) {
+                            if(<%--${user.name != 'anonymousUser'}--%>) {
                                 publishRating();
                             }
                             e.preventDefault();
                         });
                     });
-
+*/
                     function applyForMod(){
                         let x = document.getElementById("snackbarModApplication");
                         window.location.href = '<c:url value="/apply"/>?id=' + ${framework.id};
