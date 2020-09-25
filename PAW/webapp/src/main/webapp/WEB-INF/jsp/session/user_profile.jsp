@@ -44,16 +44,29 @@
                         <img src="https://picsum.photos/536/354" alt="" class="rounded-circle img-slot">
                         <div class="row justify-content-center">
                         <h2><c:out value="${profile.username}"/></h2>
-                        <c:if test="${profile.enable}">
-                            <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip" title="This user is verified!"></i>
-                        </c:if>
+                            <c:choose>
+                                <c:when test="${profile.admin}">
+                                    <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color-admin" data-toggle="tooltip" title="This user is an Admin!"></i>
+                                </c:when>
+                                <c:when test="${profile.verify}">
+                                    <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip" title="This user is a Moderator!"></i>
+                                </c:when>
+                            </c:choose>
                         </div>
                         <p><strong>Email: </strong><c:out value="${profile.mail}"/></p>
-                        <p><strong>Description: </strong><c:out value="${profile.description}"/></p>
-                        <p><strong>Guide of: </strong>
-                            <a class="tags" href="<c:url value="/Front_End_Development/22"/>">HTML5</a>
-                            <a class="tags" href="<c:url value="/Programming_Languages/269"/>">C</a>
-                        </p>
+                        <c:if test="${not empty profile.description}">
+                            <p><strong>Description: </strong><c:out value="${profile.description}"/></p>
+                        </c:if>
+                        <c:if test="${profile.verify}">
+                            <p><strong>Moderator: </strong>
+                            <c:forEach items="${verifiedList}" var="verifiedTech">
+                                <c:if test="${!verifiedTech.pending}">
+                                    <a class="tags" href="<c:url value="/Framework/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                                </c:if>
+                            </c:forEach>
+                            </p>
+                        </c:if>
+
                     </div>
                 </div>
                 <div class="row mx-2 justify-content-center">
@@ -106,7 +119,9 @@
                     <div class="card emphasis emph-content row mb-2">
                         <div class="card-body row mt-1">
                             <div class="col-3 secondary-font">
-                                <c:out value="${content.frameworkName}" default=""/>
+                                <a href="<c:url value="/Framework/${content.frameworkId}"/>">
+                                    <c:out value="${content.frameworkName}" default=""/>
+                                </a>
                             </div>
                             <div class="col-6 text-left"> <c:out value="${content.type.name()}: ${content.title}" default=""/> </div>
                             <div class="col third-font text-right"> <c:out value="${content.timestamp.toLocaleString()}" default=""/> </div>
@@ -126,7 +141,7 @@
                     <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
                         <div class="card-body row mt-1">
                             <div class="col secondary-font">
-                                <a href="/${vote.category}/${vote.frameworkId}">
+                                <a href="<c:url value="/${vote.category}/${vote.frameworkId}"/>">
                                     <c:out value="${vote.frameworkName}" default=""/>
                                 </a>
                             </div>

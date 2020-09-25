@@ -15,11 +15,24 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="<c:url value="/"/>">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="<c:url value="/frameworks"/>">Techs</a>
+            </li>
+        </ul>
+
         <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <c:if test="${param.username != 'anonymousUser'}">${param.username}</c:if>
                 <i class="fas fa-user"></i>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <c:if test="${param.isMod}">
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/mod">Moderate</a>
+                </c:if>
                 <c:choose>
                     <c:when test="${param.username != 'anonymousUser'}">
                         <a class="dropdown-item" href="${pageContext.request.contextPath}/users/${param.username}">Profile</a>

@@ -49,9 +49,9 @@ public class FrameworkController {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
             mav.addObject("framework", framework.get());
 
-            mav.addObject("books", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.book));
-            mav.addObject("courses", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.course));
-            mav.addObject("tutorials", contentService.getNotPendingContentByFrameworkAndType(id, ContentTypes.tutorial));
+            mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book));
+            mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course));
+            mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial));
             mav.addObject("category", category);
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
@@ -63,6 +63,12 @@ public class FrameworkController {
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
                 mav.addObject("isAdmin",user.isAdmin());
+                Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
+                if(fv.isPresent()){
+                    mav.addObject("stars",fv.get().getStars());
+                }else{
+                    mav.addObject("stars",0);
+                }
             }
 
             return mav;
@@ -134,26 +140,44 @@ public class FrameworkController {
         Optional<Framework> framework = fs.findById(frameworkId);
 
         if (framework.isPresent()) {
-            if(errors.hasErrors()){
-                // redirectAttributes.addFlashAttribute("contentFormMessage","Error.");
-                //redirectAttributes.addFlashAttribute("contentFormError",true);
 
+            if(errors.hasErrors()){
                 final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form);
                 framework1.addObject("contentFormError", true);
                 return framework1;
-                //return new ModelAndView("redirect:/" + framework.getCategory() + "/"+frameworkId);
             }
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
             redirectAttributes.addFlashAttribute("contentFormError",false);
             redirectAttributes.addFlashAttribute("contentFormMessage","Your content is now pending approval.");
 
 
             ContentTypes type = ContentTypes.valueOf(form.getType());
-
-            final Content content = contentService.insertContent(frameworkId, 1, form.getTitle(), form.getLink(), type, true );
-
-            return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
+            if (us.findByUsername(authentication.getName()).isPresent()) {
+                final Content content = contentService.insertContent(frameworkId, us.findByUsername(authentication.getName()).get().getId(), form.getTitle(), form.getLink(), type, true);
+                return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
+            }
+            return ErrorController.redirectToErrorView();
         }
         return ErrorController.redirectToErrorView();
+    }
+
+    //TODO Should it be a .POST? -> It should be a .DELETE, Deletes with get are BAD STYLE
+    @RequestMapping(path={"/content/delete"}, method = RequestMethod.GET)
+    public ModelAndView deleteContent(@RequestParam("id") final long frameworkId, @RequestParam("content_id") final long contentId){
+        Optional<Framework> framework = fs.findById(frameworkId);
+
+        if (framework.isPresent()) {
+            int deleted = contentService.deleteContent(contentId);
+            if (deleted != 1) {
+                return ErrorController.redirectToErrorView();
+            }
+
+            return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
+        }
+        return ErrorController.redirectToErrorView();
+
     }
 }
 

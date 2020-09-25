@@ -19,6 +19,9 @@
             <li class="nav-item active">
                 <a class="nav-link" href="<c:url value="/"/>">Home</a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="<c:url value="/frameworks"/>">Techs</a>
+            </li>
         </ul>
         <div>
             <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
@@ -28,6 +31,7 @@
         </div>
         <div class="nav-item dropdown" id="profile-settings">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <c:if test="${param.username != 'anonymousUser'}">${param.username}</c:if>
                 <i class="fas fa-user"></i>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -66,7 +70,7 @@
         let input = document.getElementById("searchInput").value
 
         if( !isEmpty(input) ) {
-            window.location.href = "/search?toSearch=" + input + '&category=&type=';
+            window.location.href = '<c:url value="/search?toSearch="/>' + input + '&category=&type=';
             return;
         }
         window.location.reload();

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FrameworkServiceImpl implements FrameworkService {
@@ -41,29 +42,38 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public List<Framework> search(String toSearch, FrameworkCategories category, FrameworkType type) {
-        if(toSearch!=null && category==null && type==null){
+        if(!toSearch.isEmpty() && category==null && type==null){
             return  frameworkDao.getByWord(toSearch);
         }
-        if(toSearch!=null && category!=null && type==null){
+        if(!toSearch.isEmpty() && category!=null && type==null){
             return  frameworkDao.getByCategoryAndWord(category,toSearch);
         }
-        if(toSearch!=null && category==null && type!=null){
+        if(!toSearch.isEmpty() && category==null && type!=null){
             return  frameworkDao.getByTypeAndWord(type,toSearch);
         }
-        if(toSearch!=null && category!=null && type!=null){
+        if(!toSearch.isEmpty() && category!=null && type!=null){
             return  frameworkDao.getByCategoryAndTypeAndWord(type,category,toSearch);
         }
-        if(toSearch==null && category==null && type!=null){
+        if(toSearch.isEmpty() && category==null && type!=null){
             return  frameworkDao.getByType(type);
         }
-        if(toSearch==null && category!=null && type!=null){
+        if(toSearch.isEmpty() && category!=null && type!=null){
             return  frameworkDao.getByCategoryAndType(type,category);
         }
-        if(toSearch==null && category!=null && type==null){
+        if(toSearch.isEmpty() && category!=null && type==null){
             return  frameworkDao.getByCategory(category);
         }
         return new ArrayList<Framework>();
     }
+
+    @Override
+    public List<Framework> getBestRatedFrameworks() {
+        List<Framework> toReturn = getAll().stream().filter(framework -> framework.getStars() > 4).collect(Collectors.toList());
+        return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
+    }
+
+    @Override
+    public List<Framework> getUserInterests(long userId) { return frameworkDao.getUserInterests(userId); }
 
     @Override
     public List<Framework> getAll() {
@@ -72,9 +82,9 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public List<Framework> getCompetitors(Framework framework) {
-        List<Framework> competitors = getByCategory(framework.getFrameCategory());
-        competitors.remove(framework);
-        return competitors;
+        List<Framework> toReturn = getByCategory(framework.getFrameCategory());
+        toReturn.remove(framework);
+        return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
     }
 
 }

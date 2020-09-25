@@ -56,6 +56,7 @@ public class UserProfileController {
             final List<Content> contentList = contentService.getContentByUser(userId);
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
 
+            mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
             mav.addObject("contents", contentList);
             mav.addObject("comments", commentList);
             mav.addObject("votes", votesList);

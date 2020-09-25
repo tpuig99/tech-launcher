@@ -13,6 +13,12 @@
     text-align: justify;
 }
 
+
+.secondary-badge{
+    color: white;
+    background-color: #b4b6b7;
+}
+
 .reply {
     color: grey;
     font-size: small;
@@ -193,6 +199,28 @@ label:hover:before {
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
+#snackbarModApplication {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: green;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+}
+
+#snackbarModApplication.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
 @-webkit-keyframes fadein {
     from {bottom: 0; opacity: 0;}
     to {bottom: 30px; opacity: 1;}
@@ -217,6 +245,14 @@ label:hover:before {
     color: #48bfe3;
 }
 
+.rocket-color-admin {
+    color: #733bce;
+}
+
 .rocket-color:hover {
+    text-shadow: 0 0 5px black;
+}
+
+.rocket-color-admin:hover {
     text-shadow: 0 0 5px black;
 }

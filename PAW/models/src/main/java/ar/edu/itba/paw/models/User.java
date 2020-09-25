@@ -70,8 +70,10 @@ public class User {
 
     public boolean isVerifyForFramework(long frameworkId){
         for (VerifyUser v: verifications) {
-            if(v.getFrameworkId()==frameworkId)
-                return true;
+            if(v.getFrameworkId()==frameworkId){
+                return !v.isPending();
+            }
+
         }
         return false;
     }

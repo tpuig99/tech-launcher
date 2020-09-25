@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>
-        Tech Launcher/Search Result
+        Search Result - Tech Launcher
     </title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
@@ -34,12 +34,14 @@
                 <option value="Security">Security</option>
                 <option value="Front-End Development">Front-End Development</option>
                 <option value="Platforms">Platforms</option>
-                <option value="Programming Languages">Programming Languages</option>
                 <option value="Gaming">Gaming</option>
                 <option value="Editors">Editors</option>
                 <option value="Development Environment">Development Environment</option>
                 <option value="Databases">Databases</option>
                 <option value="Media">Media</option>
+                <option value="Imperative Programming">Imperative Programming</option>
+                <option value="Object Oriented Programming">Object Oriented Programming</option>
+                <option value="Functional Programming">Functional Programming</option>
             </select>
         </section>
         <section class="option">
@@ -50,9 +52,8 @@
                 <option value="Framework">Framework</option>
                 <option value="Service">Service</option>
                 <option value="Database System">Database System</option>
-                <option value="Programming Languages">Programming Languages</option>
                 <option value="Operating System">Operating System</option>
-                <option value="Runtime Plataform">Runtime Plataform</option>
+                <option value="Runtime Platform">Runtime Platform</option>
                 <option value="Libraries">Libraries</option>
                 <option value="Engine">Engine</option>
                 <option value="Shell">Shell</option>
@@ -63,6 +64,7 @@
                 <option value="API">API</option>
                 <option value="Toolkit">Toolkit</option>
                 <option value="IDE">IDE</option>
+                <option value="Programming Language">Programming Language</option>
             </select>
         </section>
     </div>
@@ -70,7 +72,7 @@
     <div class="search-bar">
         <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" size="80">
-            <button class="btn my-2 my-sm-0 btn-primary" type="button" onclick="searchFrameworks()">SEARCH</button>
+            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()">SEARCH</button>
         </form>
     </div>
     <div class="page-description"></div>
@@ -93,7 +95,7 @@
                             <div class="card-body">
                                 <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
                             </div>
-                            <div class="card-footer text-dark">${framework.name} - ${framework.category}</div>
+                            <div class="card-footer text-dark">${framework.name}</div>
                         </a>
                     </div>
                 </c:forEach>

@@ -5,7 +5,7 @@
 
 <html>
     <head>
-        <title>${framework.name}</title>
+        <title>${framework.name} - Tech Launcher</title>
 
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
@@ -36,6 +36,8 @@
                             <div class="row">
                                 <div class="col">
                                 <span class="framework-title"><h2>${framework.name}</h2></span>
+                                    <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Category"> ${framework.category}</span>
+                                    <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Type"> ${framework.type}</span>
                                 </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star color-star"></span>
@@ -59,12 +61,12 @@
                         <c:choose>
                             <c:when test="${user.name != 'anonymousUser'}">
                                 <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal">
-                                    <i class="fa fa-plus"></i>
+                                    <!--<i class="fa fa-plus"></i>--> ADD CONTENT
                                 </button>
                             </c:when>
                             <c:otherwise>
                                 <button class="btn primary-button" type="button" data-toggle="modal" data-target="#loginModal">
-                                    <i class="fa fa-plus"></i>
+                                    ADD CONTENT
                                 </button>
                             </c:otherwise>
                         </c:choose>
@@ -78,24 +80,21 @@
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
                 <div>
-                   <span><h4 class="title">Bibliography</h4></span>
-                   <span>
-                       <c:choose>
-                           <c:when test="${user.name != 'anonymousUser'}">
-                               <button class="btn fab-button" type="button" data-toggle="modal" data-target="#addContentModal"> <!--onclick="uploadContent()"-->
-                                   <i class="fa fa-plus"></i>
-                               </button>
-                           </c:when>
-                           <c:otherwise>
-                               <button class="btn fab-button" type="button" data-toggle="modal" data-target="#loginModal"> <!--onclick="uploadContent()"-->
-                                    <i class="fa fa-plus"></i>
-                               </button>
-                           </c:otherwise>
-                       </c:choose>
-                   </span>
-                    <ul class="list-group margin-left list-group-flush description">
+                   <span><h4 class="subtitle margin-left">Bibliography</h4></span>
+                    <ul class="margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
-                        <li class="list-group-item"><a target="_blank" href="${book.link}">${book.title}</a></li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-10">
+                                    <a target="_blank" href="${book.link}">${book.title}</a>
+                                </div>
+                                <c:if test="${isAdmin || verifyForFramework}">
+                                    <div class="col d-flex justify-content-end align-items-end">
+                                        <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                    </div>
+                                </c:if>
+                            </div>
+                        </li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -109,7 +108,18 @@
                     <ul class=" margin-bottom list-group margin-left list-group-flush description">
 
                         <c:forEach var="course" items="${courses}">
-                            <li class="list-group-item"><a target="_blank" href="${course.link}">${course.title}</a></li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <a target="_blank" href="${course.link}">${course.title}</a>
+                                    </div>
+                                    <c:if test="${isAdmin || verifyForFramework}">
+                                        <div class="col d-flex justify-content-end align-items-end">
+                                            <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -121,7 +131,19 @@
                    <h4 class="subtitle margin-left"> Tutorials</h4>
                     <ul class="  margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">
-                            <li class="list-group-item"><a target="_blank" href="${tutorial.link}">${tutorial.title}</a></li>
+
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <a target="_blank" href="${tutorial.link}">${tutorial.title}</a>
+                                    </div>
+                                    <c:if test="${isAdmin || verifyForFramework}">
+                                        <div class="col d-flex justify-content-end align-items-end">
+                                            <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -172,9 +194,14 @@
                             <div class="row">
                                 <div class="col secondary-font">
                                     <a href="<c:url value='/users/${comment.userName}'/>">
-                                        <c:if test="${comment.verify}">
-                                            <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="This user is verified!"></i>
-                                        </c:if>
+                                        <c:choose>
+                                            <c:when test="${comment.admin}">
+                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-admin" data-toggle="tooltip" title="This user is an Admin!"></i>
+                                            </c:when>
+                                            <c:when test="${comment.verify}">
+                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="This user is a Moderator!"></i>
+                                            </c:when>
+                                        </c:choose>
                                         <c:out value="${comment.userName}" default=""/>
                                     </a>
                                 </div>
@@ -224,7 +251,7 @@
                                             <div class="vertical-divider margin-left">
                                                 <div class="padding-left">
                                                     <span class="secondary-font medium-font ">
-                                                        <c:out value="${repliesUsernames.get(reply.commentId)}" default=""/>
+                                                        <c:out value="${reply.userName}" default=""/>
                                                     </span>
                                                     <span class="third-font">
                                                         <c:out value="${reply.timestamp.toLocaleString()}" default=""/>
@@ -254,7 +281,6 @@
                                 </div>
 
                             </div>
-
                         </div>
 
                     </div>
@@ -280,19 +306,16 @@
 
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button type="button" onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
+                                        <button type="button" id="commentButton" disabled onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
                                     </c:when>
                                     <c:otherwise>
-                                        <button type="button" class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">SUBMIT</button>
+                                        <button type="button" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">SUBMIT</button>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
                         </div>
                         <div class="col">
                             <h5>Rating</h5>
-
-
-
 
                             <div class="stars">
                                 <form id="rating-form">
@@ -318,11 +341,18 @@
                             </div>
                         </div>
                     </div>
-                    <c:if test="${!verifyForFramework && !isAdmin}">
-                        <div class="row">
-                            <div class="row">Want to help us? Be a mod!</div>
-                            <button class="btn primary-button" onclick="applyForMod()">APPLY</button>
+                    <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser'}">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="card text-center">
+                            <div class="card-header subtitle"><h5>Be a Mod!</h5></div>
+                            <div class="card-body">
+                                <p class="card-text">Want to help us? Be a moderator! You will be able to manage content in this tech</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn primary-button" onclick="applyForMod()">APPLY</button>
+                            </div>
                         </div>
+                    </div>
                     </c:if>
                 </div>
 
@@ -334,13 +364,13 @@
 
 
                 <div class="container d-flex">
-                    <c:forEach var="i" begin="0" end="4">
+                    <c:forEach items="${competitors}" var="competitor">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="<c:url value="/${competitors[i].frameCategory}/${competitors[i].id}"/>">
+                        <a href="<c:url value="/${competitor.frameCategory}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
-                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitors[i].logo}" alt="${framework.name} logo"></div>
+                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitor.logo}" alt="${framework.name} logo"></div>
                             </div>
-                            <div class="card-footer text-dark">${competitors[i].name}</div>
+                            <div class="card-footer text-dark">${competitor.name}</div>
                         </a>
                     </div>
 
@@ -349,7 +379,9 @@
 
                 </c:if>
                 
-                <!-- Modal -->
+                <!-- Modals -->
+
+                <!--Login Modal -->
 
                 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -365,10 +397,10 @@
                                 <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
                                 </div>
                                <div class="row justify-content-center align-items-center margin-top">
-                                    <button type="button" class="btn primary-button" onclick="window.location.href = '/login'">LOG IN</button>
+                                    <button type="button" class="btn primary-button" onclick="window.location.href = '<c:url value="/login"/>'">LOG IN</button>
                                 </div>
                                 <div class="row  justify-content-center align-items-center margin-top">
-                                    <div>Don't have an account yet? <a href="/register">Sign Up</a>
+                                    <div>Don't have an account yet? <a href="<c:url value="/register"/>">Sign Up</a>
                                     </div>
                                 </div>
 
@@ -398,10 +430,44 @@
                     </div>
                 </div>
 
-                <div id="snackbar">Your content is now pending approval !</div>
+                <div id="snackbar">Your content has been uploaded !</div>
+
+                <div id="snackbarModApplication">Your application is now pending approval !</div>
+
+                <!--Delete Content Modal -->
+
+                <div class="modal fade" id="deleteContentModal" tabindex="-1" role="dialog" aria-labelledby="deleteContentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div id="contentId" hidden></div>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteContentModalLabel">Delete</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row  justify-content-center align-items-center margin-top">
+                                    <div>Are you sure you want to delete this content?</div>
+                                </div>
+                                <div class="row justify-content-center align-items-center margin-top">
+                                    <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">CANCEL</button></span>
+                                    <span class="margin-left"> <button type="button" class="btn btn-danger" onclick="deleteContent()">DELETE</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Scripts -->
                 <script>
+                    $(window).on('load', function (){
+                        <c:if test="${user.name != 'anonymousUser' && stars > 0}">
+                            let starId = "star-" + ${stars};
+                            $('#' + starId).prop("checked",true);
+                        </c:if>
+                    })
+
                     <c:if test="${not empty contentFormError}">
                         $(window).on('load', function() {
                             console.log(${contentFormError});
@@ -421,15 +487,23 @@
 
                         if(commentId !== undefined){
                             content = document.getElementById(commentId+"ReplyInput").value;
+                            if(content === "")
+                                return;
                             console.log(content);    path = '<c:url value="/create" />?id='+id+'&content='+content+'&commentId='+commentId;
                         }else{
                             content = document.getElementById("commentInput").value;
+                            if(content === "")
+                                return;
                             path = '<c:url value="/create" />?id='+id+'&content='+content;
                         }
 
                         window.location.href = path;
                         console.log(location.href);
                     }
+
+                    $(document).ready(function(){
+                        $('[data-toggle="tooltip"]').tooltip();
+                    });
 
 
                     function voteUpComment(commentId) {
@@ -466,6 +540,26 @@
                         console.log(location.href);
                     }
 
+                    $(document).ready(function () {
+                        $('#commentInput').on('keyup', function () {
+                            if ($.trim($('#commentInput').val()).length < 1) {
+                                $("#commentButton").prop("disabled",true);
+                            } else {
+                                $("#commentButton").prop("disabled",false);
+                            }
+                        });
+                    });
+
+                    $(document).ready(function () {
+                        $('#commentInput').change(function () {
+                            if ($.trim($('#commentInput').val()).length < 1) {
+                                $("#commentButton").prop("disabled",true);
+                            } else {
+                                $("#commentButton").prop("disabled",false);
+                            }
+                        });
+                    });
+
                     $(document).ready(function() {
                         $('#rating-form').on('submit', function(e){
                             if(${user.name != 'anonymousUser'}) {
@@ -476,7 +570,12 @@
                     });
 
                     function applyForMod(){
-                        window.location.href = '<c:url value="/apply"/>?id=' + ${framework.id}
+                        let x = document.getElementById("snackbarModApplication");
+                        window.location.href = '<c:url value="/apply"/>?id=' + ${framework.id};
+                        x.className = "show";
+                        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
+
+
                     }
 
                     function selectFiles() {
@@ -489,6 +588,22 @@
                     function uploadContent(){
                         let id= ${framework.id};
                         window.location.href = '<c:url value="/content" />?id=' + id;
+                    }
+
+                    function openDeleteContentModal(contentId){
+                        console.log("contenId en open");
+                        console.log(contentId);
+                        $('#contentId').val(contentId);
+                        $('#deleteContentModal').modal('show');
+                    }
+
+                    function deleteContent(){
+
+                        let id= ${framework.id};
+                        let contentId= document.getElementById('contentId').value;
+                        console.log("contenId en delete");
+                        console.log(contentId);
+                        window.location.href = '<c:url value="/content/delete" />?id='+id+'&content_id='+contentId;
                     }
 
                     function showSnackbar() {

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.awt.*;
+
 @Controller
 public class FrameworkMenuController {
 
@@ -22,15 +24,20 @@ public class FrameworkMenuController {
     @RequestMapping("/{category}")
     public ModelAndView frameworkMenu(@PathVariable String category) {
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_menu");
-        mav.addObject("category",category);
-        mav.addObject("frameworksList", fs.getByCategory(FrameworkCategories.getByName(category)));
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if( us.findByUsername(username).isPresent()){
-            User user = us.findByUsername(username).get();
-            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+
+        if (!fs.getByCategory(FrameworkCategories.getByName(category)).isEmpty()) {
+            mav.addObject("category",category);
+            mav.addObject("frameworksList", fs.getByCategory(FrameworkCategories.getByName(category)));
+            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            if( us.findByUsername(username).isPresent()){
+                User user = us.findByUsername(username).get();
+                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            }
+            return mav;
         }
 
-        return mav;
+        return ErrorController.redirectToErrorView();
     }
 }
