@@ -25,7 +25,7 @@
     <div class="sidebar-search">
 
         <div class="subtitle"><h4>Categories </h4></div>
-            <c:forEach items="${categories}" var="category" begin="1" end="5">
+            <c:forEach items="${categories}" var="category" begin="0" end="5">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="check${category}">
                     <label class="form-check-label" for="check${category}">
@@ -52,7 +52,7 @@
 
 
         <div class="subtitle"> <h4>Types </h4></div>
-        <c:forEach items="${types}" var="type" begin="1" end="5">
+        <c:forEach items="${types}" var="type" begin="0" end="5">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="check${type}">
                 <label class="form-check-label" for="check${type}">
@@ -93,12 +93,19 @@
         <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" size="80">
             <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()">SEARCH</button>
+
         </form>
+        <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="getCheckedTypes()">test</button>
     </div>
     <div class="page-description"></div>
     <div class="page-title">
         <h2>Search Results for: ${search_result}</h2>
     </div>
+    <c:forEach items="${types}" var="type">
+        <span id="badge${type}" class="hide my-badge-inline badge-pill secondary-badge "> ${type}</span>
+    </c:forEach>
+
+
     <div class="page-description"></div>
 
     <c:choose>
@@ -162,6 +169,15 @@
         document.getElementById("hidden"+element).style.display = "none";
         document.getElementById("showMore"+element).style.display = "block";
         document.getElementById("showLess"+element).style.display = "none";
+    }
+
+    function getCheckedTypes(types){
+        console.log(types)
+
+        if(document.getElementById("checkOnline_Plataform").checked) {
+            document.getElementById("badgeOnline_Plataform").style.display = "inline";
+        }
+
     }
 
 </script>

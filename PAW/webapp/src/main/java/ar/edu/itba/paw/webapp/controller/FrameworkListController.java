@@ -35,8 +35,8 @@ public class FrameworkListController {
         mav.addObject("matchingFrameworks", fs.search(toSearch, FrameworkCategories.getByName(category), FrameworkType.getByName(type)));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("search_result", toSearch );
-        mav.addObject("categories", FrameworkCategories.values());
-        mav.addObject("types", FrameworkType.values());
+        mav.addObject("categories", FrameworkCategories.getAllCategories());
+        mav.addObject("types", FrameworkType.getAllTypes());
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 

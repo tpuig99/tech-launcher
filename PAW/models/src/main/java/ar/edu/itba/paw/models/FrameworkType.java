@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum FrameworkType {
     Online_Plataform("Online Platform"),
     Framework("Framework"),
@@ -37,6 +40,14 @@ public enum FrameworkType {
             }
         }
         return null;
+    }
+
+    public static List<String> getAllTypes(){
+        List<String> types = new ArrayList<>();
+        for (FrameworkType ft:FrameworkType.values()) {
+            types.add(ft.type);
+        }
+        return types;
     }
 
 
