@@ -120,7 +120,7 @@
     <c:choose>
         <c:when test="${matchingFrameworks.size() == 0 }">
             <div>
-                We are sorry, there were no results matching "${search_result}", but you can try again some other day, as we are continuously adding content!
+                We are sorry, there were no results found, but you can try again some other day, as we are continuously adding content!
             </div>
         </c:when>
         <c:otherwise>
