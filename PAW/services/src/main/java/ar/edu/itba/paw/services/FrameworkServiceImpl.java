@@ -67,6 +67,26 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars) {
+        return frameworkDao.search(toSearch,categories,types,stars);
+    }
+
+    @Override
+    public List<Framework> getByMultipleCategories(List<FrameworkCategories> categories) {
+        return frameworkDao.getByMultipleCategories(categories);
+    }
+
+    @Override
+    public List<Framework> getByMultipleTypes(List<FrameworkType> types) {
+        return frameworkDao.getByMultipleTypes(types);
+    }
+
+    @Override
+    public List<Framework> getByMinStars(int stars) {
+        return frameworkDao.getByMinStars(stars);
+    }
+
+    @Override
     public List<Framework> getBestRatedFrameworks() {
         List<Framework> toReturn = getAll().stream().filter(framework -> framework.getStars() > 4).collect(Collectors.toList());
         return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
