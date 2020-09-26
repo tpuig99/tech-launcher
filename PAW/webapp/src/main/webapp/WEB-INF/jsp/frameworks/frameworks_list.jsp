@@ -1,5 +1,6 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
@@ -79,10 +80,10 @@
 
         <div class="subtitle"><h4>Rating</h4></div>
         <span>
-        <input type="text" class="my-form-inline" placeholder="From" aria-label="From" aria-describedby="basic-addon1">
+        <input id="leftRate" type="text" class="my-form-inline" placeholder="From" aria-label="From" aria-describedby="basic-addon1">
         </span>
         <span>
-        <input type="text" class="my-form-inline" placeholder="To" aria-label="To" aria-describedby="basic-addon1">
+        <input id="rightRate" type="text" class="my-form-inline" placeholder="To" aria-label="To" aria-describedby="basic-addon1">
         </span>
 
 
@@ -95,15 +96,23 @@
             <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()">SEARCH</button>
 
         </form>
-        <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="getCheckedTypes()">test</button>
+        <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="getFilters()">test</button>
     </div>
     <div class="page-description"></div>
     <div class="page-title">
-        <h2>Search Results for: ${search_result}</h2>
+        <h2>Search Results for </h2>
     </div>
-    <c:forEach items="${types}" var="type">
-        <span id="badge${type}" class="hide my-badge-inline badge-pill secondary-badge "> ${type}</span>
+    <div class="margin-top">
+        <span id="name" class="my-badge-inline badge-pill secondary-badge "> ${search_result}</span>
+    <c:forEach items="${categories}" var="category">
+        <span id="badge${category}" class="hide my-badge-inline badge-pill secondary-badge "> ${category}</span>
     </c:forEach>
+    <c:forEach items="${types}" var="type">
+    <span id="badge${type}" class="hide my-badge-inline badge-pill secondary-badge "> ${type}</span>
+    </c:forEach>
+        <span id="badgeRating" class="hide my-badge-inline badge-pill secondary-badge "></span>
+
+    </div>
 
 
     <div class="page-description"></div>
@@ -171,12 +180,59 @@
         document.getElementById("showLess"+element).style.display = "none";
     }
 
-    function getCheckedTypes(types){
-        console.log(types)
+    function getFilters(){
+        getCheckedCategories();
+        getCheckedTypes();
+        getRating();
+    }
 
-        if(document.getElementById("checkOnline_Plataform").checked) {
-            document.getElementById("badgeOnline_Plataform").style.display = "inline";
+    function getCheckedTypes(){
+
+        <c:forEach items="${types}" var="type" >
+
+        if(document.getElementById('check'+'${type}').checked) {
+            document.getElementById('badge'+'${type}').style.display = "inline";
+        }else{
+            document.getElementById('badge'+'${type}').style.display = "none";
         }
+        </c:forEach>
+    }
+
+    function getCheckedCategories(){
+
+        <c:forEach items="${categories}" var="category" >
+
+        if(document.getElementById('check'+'${category}').checked) {
+            document.getElementById('badge'+'${category}').style.display = "inline";
+        }else{
+            document.getElementById('badge'+'${category}').style.display = "none";
+        }
+        </c:forEach>
+    }
+
+    function getRating(){
+        let left = document.getElementById("leftRate").value;
+        let right = document.getElementById("rightRate").value;
+ 
+        if(left ==="" && right !==""){
+            $("#badgeRating").text(right+' stars');
+            document.getElementById('badgeRating').style.display = "inline";
+
+        }else if(left !=="" && right ===""){
+            $("#badgeRating").text(left+' stars');
+            document.getElementById('badgeRating').style.display = "inline";
+
+        }else if(left !=="" && right !==""){
+            $("#badgeRating").text(left+' to '+right+' stars');
+            document.getElementById('badgeRating').style.display = "inline";
+        }else{
+            document.getElementById('badgeRating').style.display = "none";
+        }
+
+
+
+
+
 
     }
 

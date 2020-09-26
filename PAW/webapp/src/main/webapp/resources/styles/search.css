@@ -56,7 +56,7 @@
 
 .my-badge-inline{
     padding: .25em .4em;
-    font-size: 75%;
+    font-size: 1em;
     font-weight: 700;
     line-height: 1;
     text-align: center;
@@ -73,4 +73,8 @@
 .secondary-badge{
     color: white;
     background-color: #b4b6b7;
+}
+
+.margin-top{
+    margin-top: 1em;
 }
