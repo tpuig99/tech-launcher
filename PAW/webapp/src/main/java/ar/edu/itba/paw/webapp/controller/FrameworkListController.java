@@ -28,11 +28,18 @@ public class FrameworkListController {
 
     @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
     public ModelAndView advancedSearch(@RequestParam(value = "toSearch", required = false) final String toSearch,@RequestParam(value = "category", required = false) final String category, @RequestParam(value = "type", required = false) final String type){
+
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
+
+
         mav.addObject("matchingFrameworks", fs.search(toSearch, FrameworkCategories.getByName(category), FrameworkType.getByName(type)));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("search_result", toSearch );
+        mav.addObject("categories", FrameworkCategories.values());
+        mav.addObject("types", FrameworkType.values());
+
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
         if( us.findByUsername(username).isPresent()){
             User user = us.findByUsername(username).get();
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());

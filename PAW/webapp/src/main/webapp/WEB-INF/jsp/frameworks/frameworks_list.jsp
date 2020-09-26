@@ -1,10 +1,11 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
 <head>
     <title>
-        Search Result - Tech Launcher
+        Tech Launcher - Explore
     </title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
@@ -22,51 +23,70 @@
 
 <div class="content-search">
     <div class="sidebar-search">
-        <section class="option">
-            <div>Category:</div>
-            <select class="browser-default custom-select" aria-label="categories" id="categories">
-                <option value="" disabled selected hidden>Select Category</option>
-                <option value="Back-End Development">Back-End Development</option>
-                <option value="Big Data">Big Data</option>
-                <option value="Business">Business</option>
-                <option value="Artificial Intelligence">Artificial Intelligence</option>
-                <option value="Networking">Networking</option>
-                <option value="Security">Security</option>
-                <option value="Front-End Development">Front-End Development</option>
-                <option value="Platforms">Platforms</option>
-                <option value="Gaming">Gaming</option>
-                <option value="Editors">Editors</option>
-                <option value="Development Environment">Development Environment</option>
-                <option value="Databases">Databases</option>
-                <option value="Media">Media</option>
-                <option value="Imperative Programming">Imperative Programming</option>
-                <option value="Object Oriented Programming">Object Oriented Programming</option>
-                <option value="Functional Programming">Functional Programming</option>
-            </select>
-        </section>
-        <section class="option">
-            <div>Type:</div>
-            <select class="browser-default custom-select" aria-label="types" id="types">
-                <option value="" disabled selected hidden>Select Type</option>
-                <option value="Online Platform">Online Platform</option>
-                <option value="Framework">Framework</option>
-                <option value="Service">Service</option>
-                <option value="Database System">Database System</option>
-                <option value="Operating System">Operating System</option>
-                <option value="Runtime Platform">Runtime Platform</option>
-                <option value="Libraries">Libraries</option>
-                <option value="Engine">Engine</option>
-                <option value="Shell">Shell</option>
-                <option value="Terminal">Terminal</option>
-                <option value="Application">Application</option>
-                <option value="Text Editor">Text Editor</option>
-                <option value="CSS Modifier">CSS Modifier</option>
-                <option value="API">API</option>
-                <option value="Toolkit">Toolkit</option>
-                <option value="IDE">IDE</option>
-                <option value="Programming Language">Programming Language</option>
-            </select>
-        </section>
+
+        <div class="subtitle"><h4>Categories </h4></div>
+            <c:forEach items="${categories}" var="category" begin="1" end="5">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="check${category}">
+                    <label class="form-check-label" for="check${category}">
+                            ${category}
+                    </label>
+                </div>
+            </c:forEach>
+            <div>
+                <button id="showMoreCategories" class="btn btn-link" onclick="showMore('Categories')"> Show More </button>
+            </div>
+            <div class="hide" id="hiddenCategories">
+                <c:forEach items="${categories}" var="category" begin="6" end="${fn:length(categories)}">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="check${category}">
+                        <label class="form-check-label" for="check${category}">
+                                ${category}
+                        </label>
+                    </div>
+                </c:forEach>
+                <div>
+                    <button id="showLessCategories" class="btn btn-link" onclick="showLess('Categories')"> Show Less </button>
+                </div>
+            </div>
+
+
+        <div class="subtitle"> <h4>Types </h4></div>
+        <c:forEach items="${types}" var="type" begin="1" end="5">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="check${type}">
+                <label class="form-check-label" for="check${type}">
+                        ${type}
+                </label>
+            </div>
+        </c:forEach>
+        <div>
+            <button id="showMoreTypes" class="btn btn-link" onclick="showMore('Types')"> Show More </button>
+        </div>
+        <div class="hide" id="hiddenTypes">
+            <c:forEach items="${types}" var="type" begin="6" end="${fn:length(types)}">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="check${type}">
+                    <label class="form-check-label" for="check${type}">
+                            ${type}
+                    </label>
+                </div>
+            </c:forEach>
+            <div>
+                <button id="showLessTypes" class="btn btn-link" onclick="showLess('Types')"> Show Less </button>
+            </div>
+        </div>
+
+        <div class="subtitle"><h4>Rating</h4></div>
+        <span>
+        <input type="text" class="my-form-inline" placeholder="From" aria-label="From" aria-describedby="basic-addon1">
+        </span>
+        <span>
+        <input type="text" class="my-form-inline" placeholder="To" aria-label="To" aria-describedby="basic-addon1">
+        </span>
+
+
+
     </div>
 
     <div class="search-bar">
@@ -131,6 +151,18 @@
         e.preventDefault();
         searchFrameworks();
     })
+
+    function showMore(element){
+        document.getElementById("hidden"+element).style.display = "block";
+        document.getElementById("showMore"+element).style.display = "none";
+        document.getElementById("showLess"+element).style.display = "block";
+    }
+
+    function showLess(element){
+        document.getElementById("hidden"+element).style.display = "none";
+        document.getElementById("showMore"+element).style.display = "block";
+        document.getElementById("showLess"+element).style.display = "none";
+    }
 
 </script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
