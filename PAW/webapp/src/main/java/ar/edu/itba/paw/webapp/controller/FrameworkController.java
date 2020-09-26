@@ -155,7 +155,11 @@ public class FrameworkController {
 
             ContentTypes type = ContentTypes.valueOf(form.getType());
             if (us.findByUsername(authentication.getName()).isPresent()) {
-                final Content content = contentService.insertContent(frameworkId, us.findByUsername(authentication.getName()).get().getId(), form.getTitle(), form.getLink(), type, true);
+                String pathToContent = form.getLink();
+                if( !pathToContent.contains("://")){
+                    pathToContent = "http://".concat(pathToContent);
+                }
+                final Content content = contentService.insertContent(frameworkId, us.findByUsername(authentication.getName()).get().getId(), form.getTitle(), pathToContent, type, true);
                 return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
             }
             return ErrorController.redirectToErrorView();
