@@ -10,14 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class FrameworkServiceImpl implements FrameworkService {
-
-    @Autowired
+   @Autowired
     private FrameworkDao frameworkDao;
 
     @Override
@@ -67,8 +67,30 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars) {
-        return frameworkDao.search(toSearch,categories,types,stars);
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars,Integer order) {
+        List<Framework> frameworks = frameworkDao.search(toSearch,categories,types,stars);
+        if(order==null || order==0)
+            return frameworks;
+        return orderByStars(frameworks,order);
+    }
+
+    private List<Framework> orderByStars(List<Framework> frameworks, Integer order) {
+        if(order>0){
+            frameworks.sort(new Comparator<Framework>() {
+                @Override
+                public int compare(Framework o1, Framework o2) {
+                    return Double.compare(o1.getStars(),o2.getStars());
+                }
+            });
+            return frameworks;
+        }
+            frameworks.sort(new Comparator<Framework>() {
+                @Override
+                public int compare(Framework o1, Framework o2) {
+                    return Double.compare(o2.getStars(),o1.getStars());
+                }
+            });
+        return frameworks;
     }
 
     @Override
