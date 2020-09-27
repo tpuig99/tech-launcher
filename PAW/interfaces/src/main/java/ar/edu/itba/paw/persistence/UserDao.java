@@ -21,4 +21,5 @@ public interface UserDao {
     void setEnable(long id);
     void updateDescription(long userId,String description);
     void updatePassword(long userId, String password);
+    void updateModAllow(long userId,boolean allow);
 }

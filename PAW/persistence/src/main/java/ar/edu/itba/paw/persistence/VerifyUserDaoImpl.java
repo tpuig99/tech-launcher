@@ -135,6 +135,11 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
     }
 
     @Override
+    public void deleteVerificationByUser(long userId) {
+        jdbcTemplate.update("DELETE FROM verify_users WHERE user_id = ?", new Object[]{userId});
+    }
+
+    @Override
     public void verify(long verificationId) {
         jdbcTemplate.update("UPDATE verify_users SET pending = false WHERE verification_id = ?", new Object[]{verificationId});
     }

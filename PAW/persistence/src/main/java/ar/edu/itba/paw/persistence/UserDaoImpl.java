@@ -189,4 +189,9 @@ public class UserDaoImpl implements UserDao {
     public void updatePassword(long id, String password) {
         jdbcTemplate.update("UPDATE users set password=? where user_id=?",password,id);
     }
+
+    @Override
+    public void updateModAllow(long id, boolean allow) {
+        jdbcTemplate.update("UPDATE users set allow_moderator=? where user_id=?",allow,id);
+    }
 }

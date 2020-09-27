@@ -341,7 +341,7 @@
                             </div>
                         </div>
                     </div>
-                    <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser'}">
+                    <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser' && allowMod}">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center">
                             <div class="card-header subtitle"><h5>Be a Mod!</h5></div>

@@ -54,8 +54,9 @@ public class UserController {
         mav.addObject("pendingToVerify",us.getVerifyByPending(true));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if( us.findByUsername(username).isPresent()){
-            User user = us.findByUsername(username).get();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
         }
         return mav;
@@ -101,8 +102,9 @@ public class UserController {
 
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if( us.findByUsername(username).isPresent()){
-            User user = us.findByUsername(username).get();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             if( user.isAdmin()) {
                 List<VerifyUser> verify = us.getVerifyByPending(true);
@@ -120,7 +122,7 @@ public class UserController {
             else if( user.isVerify() ){
                 List<VerifyUser> verify = new LinkedList<>();
                 user.getVerifications().forEach(verifyUser -> {
-                    verify.addAll(us.getVerifyByUser(verifyUser.getFrameworkId(),true));
+                    verify.addAll(us.getVerifyByFramework(verifyUser.getFrameworkId(),true));
                 });
                 List<VerifyUser> applicants = new LinkedList<>();
                 verify.forEach(verifyUser -> {
@@ -136,4 +138,50 @@ public class UserController {
         }
         return ErrorController.redirectToErrorView();
     }
+    @RequestMapping("/dismiss")
+    public ModelAndView DismissMod(@RequestParam("id") final long verificationId) {
+        //check the mav you want
+        final ModelAndView mav = new ModelAndView("admin/mod_page");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            if(!user.isAdmin()){
+                //raise error --> only admins
+                return ErrorController.redirectToErrorView();
+            }
+            Optional<VerifyUser> vu = us.getVerifyById(verificationId);
+            if (vu.isPresent()) {
+                us.deleteVerification(verificationId);
+            }
+            return mav;
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping("/quit")
+    public ModelAndView QuitMod(@RequestParam("id") final long verificationId) {
+        //check the mav you want
+        final ModelAndView mav = new ModelAndView("admin/mod_page");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            Optional<VerifyUser> vu = us.getVerifyById(verificationId);
+            if (vu.isPresent()) {
+                VerifyUser verifyUser = vu.get();
+                if(verifyUser.getUserId()!=user.getId()){
+                    //raise error --> only owner
+                    return ErrorController.redirectToErrorView();
+                }
+                us.deleteVerification(verificationId);
+            }
+            return mav;
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
 }
