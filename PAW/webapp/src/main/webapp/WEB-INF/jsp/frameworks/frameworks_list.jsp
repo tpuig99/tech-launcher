@@ -102,17 +102,34 @@
     <div class="page-title">
         <h2>Search Results for </h2>
     </div>
-    <div class="margin-top">
-        <span id="name" class="my-badge-inline badge-pill secondary-badge "> ${search_result}</span>
-    <c:forEach items="${categories}" var="category">
-        <span id="badge${category}" class="hide my-badge-inline badge-pill secondary-badge "> ${category}</span>
-    </c:forEach>
-    <c:forEach items="${types}" var="type">
-    <span id="badge${type}" class="hide my-badge-inline badge-pill secondary-badge "> ${type}</span>
-    </c:forEach>
-        <span id="badgeRating" class="hide my-badge-inline badge-pill secondary-badge "></span>
+    <div class="row">
+        <div class="col-10">
+            <div class="margin-top">
+                <span id="name" class="my-badge-inline badge-pill secondary-badge "> ${search_result}</span>
+                <c:forEach items="${categories}" var="category">
+                    <span id="badge${category}" class="hide my-badge-inline badge-pill secondary-badge "> ${category}</span>
+                </c:forEach>
+                <c:forEach items="${types}" var="type">
+                    <span id="badge${type}" class="hide my-badge-inline badge-pill secondary-badge "> ${type}</span>
+                </c:forEach>
+                <span id="badgeRating" class="hide my-badge-inline badge-pill secondary-badge "></span>
 
+            </div>
+        </div>
+        <div class="col">
+            <div class="btn-group d-flex justify-content-end margin-top">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sort By
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <button class="dropdown-item" type="button">Rating: High to Low</button>
+                    <button class="dropdown-item" type="button">Rating: Low to High</button>
+                </div>
+            </div>
+        </div>
     </div>
+
+
 
 
     <div class="page-description"></div>
@@ -120,7 +137,7 @@
     <c:choose>
         <c:when test="${matchingFrameworks.size() == 0 }">
             <div>
-                We are sorry, there were no results found, but you can try again some other day, as we are continuously adding content!
+                We are sorry, there were no results found. You can try again some other day, as we are continuously adding content!
             </div>
         </c:when>
         <c:otherwise>
