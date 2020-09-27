@@ -40,6 +40,11 @@ public class UserServiceImpl implements UserService {
         return userDao.findByUsername(username);
     }
 
+    @Override
+    public Optional<User> findByMail(String mail) {
+        return userDao.findByMail(mail);
+    }
+
 
     private long checkIfUserExists(String username, String mail) throws UserAlreadyExistException {
         Optional<User> user = findByUsernameOrMail(username,mail);
