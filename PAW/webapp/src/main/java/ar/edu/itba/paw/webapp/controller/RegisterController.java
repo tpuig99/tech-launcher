@@ -1,18 +1,14 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.GenericResponse;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
-import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.OnRegistrationCompleteEvent;
+import ar.edu.itba.paw.webapp.form.PasswordForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -148,10 +144,32 @@ public class RegisterController {
 
         return "redirect:/error";
     }
-    /*@ModelAttribute("userId")
-    public Integer loggedUser(final HttpSession session)
-    {
-        return (Integer) session.getAttribute();
-    }*/
+    @RequestMapping("/chgpassword")
+    public ModelAndView passwordChange(@ModelAttribute("passwordForm") final PasswordForm form,@RequestParam(value = "id",required = false) Long UserId) {
+        ModelAndView mav = new ModelAndView("session/passwordForm");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> optionalUser = us.findByUsername(username);
+        if( optionalUser.isPresent()){
+            User user = optionalUser.get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("user_id",user.getId());
+        }else if(UserId!=null){
+            mav.addObject("user_id",UserId);
+        } else{
+            return ErrorController.redirectToErrorView();
+        }
+        return mav;
+    }
+
+    @RequestMapping(value = "/updpassword", method = { RequestMethod.POST })
+    public ModelAndView updpassword(@Valid @ModelAttribute("passwordForm") final PasswordForm form, final BindingResult errors, HttpServletRequest request) {
+        if (errors.hasErrors()) {
+            return passwordChange(form, form.getUserId());
+        }
+        us.updatePassword(form.getUserId(), form.getPassword());
+        return new ModelAndView("redirect:/register/success/1");
+    }
+
 
 }
