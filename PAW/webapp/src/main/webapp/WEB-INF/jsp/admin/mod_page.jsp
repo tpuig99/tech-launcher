@@ -28,18 +28,20 @@
                     <c:choose>
                         <c:when test="${not empty mods}">
                             <c:forEach var = "moderator" items="${mods}">
-                                <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
-                                    <div class="card-body mt-1">
-                                        <div class="secondary-font">
-                                            <a href="/users/${moderator.userName}"><c:out value="${moderator.userName}" default=""/></a>
-                                            <c:out value="/" default=""/>
-                                            <a href="<c:out value="${moderator.frameworkName}/${moderator.frameworkId}"/>"><c:out value="${moderator.frameworkName}" default=""/></a>
+                                <c:if test="${!moderator.admin}">
+                                    <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
+                                        <div class="card-body mt-1">
+                                            <div class="secondary-font">
+                                                <a href="/users/${moderator.userName}"><c:out value="${moderator.userName}" default=""/></a>
+                                                <c:out value="/" default=""/>
+                                                <a href="<c:out value="${moderator.frameworkName}/${moderator.frameworkId}"/>"><c:out value="${moderator.frameworkName}" default=""/></a>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <button type="button" class="btn btn-danger" onclick="revokePromotion(${moderator.verificationId})">Demote</button>
                                         </div>
                                     </div>
-                                    <div class="card-footer">
-                                        <button type="button" class="btn btn-danger" onclick="revokePromotion(${moderator.verificationId})">Demote</button>
-                                    </div>
-                                </div>
+                                </c:if>
                             </c:forEach>
                         </c:when>
                         <c:otherwise>
