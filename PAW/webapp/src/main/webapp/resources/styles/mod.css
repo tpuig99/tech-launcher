@@ -11,3 +11,8 @@
 .verified .btn {
     float: right;
 }
+
+.btn-danger {
+    float: none;
+    justify-content: center;
+}
