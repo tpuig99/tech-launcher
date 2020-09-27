@@ -32,7 +32,6 @@
             <c:url value="/updpassword" var="postPath"/>
             <form:form modelAttribute="passwordForm" action="${postPath}" method="post">
                 <form:label path="userId"><form:input  class="input-wrap" path="userId" type="hidden" value="${user_id}"/></form:label>
-
                 <div class="form-group">
                     <form:label path="password">Password: </form:label>
                     <form:input class="form-control" type="password" path="password" placeholder="mypassword"/>
