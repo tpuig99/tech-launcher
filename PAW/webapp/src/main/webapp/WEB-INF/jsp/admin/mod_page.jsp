@@ -24,27 +24,29 @@
             <c:if test="${isAdmin}">
                 <div class="page-title">Mods</div>
                 <div class="page-description"></div>
-                <c:choose>
-                    <c:when test="${not empty mods}">
-                        <c:forEach var = "moderator" items="${mods}">
-                            <div class="card emphasis emph-comment col-4 mb-2 verified">
-                                <div class="card-body row mt-1">
-                                    <div class="secondary-font">
-                                        <a href="/users/${moderator.userName}"><c:out value="${moderator.userName}" default=""/></a>
-                                        <c:out value="/" default=""/>
-                                        <a href="<c:out value="${moderator.frameworkName}/${moderator.frameworkId}"/>"><c:out value="${moderator.frameworkName}" default=""/></a>
+                <div class="row">
+                    <c:choose>
+                        <c:when test="${not empty mods}">
+                            <c:forEach var = "moderator" items="${mods}">
+                                <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
+                                    <div class="card-body mt-1">
+                                        <div class="secondary-font">
+                                            <a href="/users/${moderator.userName}"><c:out value="${moderator.userName}" default=""/></a>
+                                            <c:out value="/" default=""/>
+                                            <a href="<c:out value="${moderator.frameworkName}/${moderator.frameworkId}"/>"><c:out value="${moderator.frameworkName}" default=""/></a>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="button" class="btn btn-danger" onclick="revokePromotion(${moderator.verificationId})">Demote</button>
                                     </div>
                                 </div>
-                                <div class="card-footer">
-                                    <button type="button" class="btn btn-danger" onclick="revokePromotion(${moderator.verificationId})">Demote</button>
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <div>It seems there are no mods. You'll have to promote someone first..</div>
-                    </c:otherwise>
-                </c:choose>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div>It seems there are no mods. You'll have to promote someone first..</div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
             </c:if>
             <div class="page-title">Pending to Verify by Comments</div>
             <div class="page-description"></div>
