@@ -152,15 +152,15 @@
     }
 
     function searchFrameworks() {
-        let input = document.getElementById("searchInput").value
-        let category = document.getElementById("categories").value
-        let type = document.getElementById("types").value
+        let name = document.getElementById("searchInput").value;
+        let categories = getCheckedCategories();
+        let types = getCheckedTypes();
+        let stars = 1;
+        let order = 1;
+        console.log(categories);
+        console.log(types);
+        window.location.href = "<c:url value="/search"/>?"+'toSearch='+name+'&categories='+categories+'&types='+types+'&stars='+stars+'&order='+order;
 
-        if( !(isEmpty(input) && isEmpty(category) && isEmpty(type)) ) {
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + input + '&category=' + category + '&type=' + type;
-            return;
-        }
-        window.location.reload();
     }
 
     form = document.getElementById("search").addEventListener('submit', e => {
@@ -188,26 +188,38 @@
 
     function getCheckedTypes(){
 
+        let queryTypes = "";
+
         <c:forEach items="${types}" var="type" >
 
         if(document.getElementById('check'+'${type}').checked) {
             document.getElementById('badge'+'${type}').style.display = "inline";
+            queryTypes = queryTypes.concat('${type},');
         }else{
             document.getElementById('badge'+'${type}').style.display = "none";
         }
         </c:forEach>
+
+        queryTypes = queryTypes.substring(0,queryTypes.length-1);
+        return queryTypes;
     }
 
     function getCheckedCategories(){
+        let queryCategories = "";
 
         <c:forEach items="${categories}" var="category" >
 
         if(document.getElementById('check'+'${category}').checked) {
             document.getElementById('badge'+'${category}').style.display = "inline";
+            queryCategories = queryCategories.concat('${category},');
+
         }else{
             document.getElementById('badge'+'${category}').style.display = "none";
         }
         </c:forEach>
+        console.log(queryCategories.substring(0,queryCategories.length-1));
+        queryCategories = queryCategories.substring(0,queryCategories.length-1);
+        return queryCategories;
     }
 
     function getRating(){
@@ -225,15 +237,9 @@
         }else if(left !=="" && right !==""){
             $("#badgeRating").text(left+' to '+right+' stars');
             document.getElementById('badgeRating').style.display = "inline";
-        }else{
+        }else {
             document.getElementById('badgeRating').style.display = "none";
         }
-
-
-
-
-
-
     }
 
 </script>

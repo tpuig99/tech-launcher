@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -27,12 +28,31 @@ public class FrameworkListController {
     private UserService us;
 
     @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
-    public ModelAndView advancedSearch(@RequestParam(value = "toSearch", required = false) final String toSearch,@RequestParam(value = "category", required = false) final String category, @RequestParam(value = "type", required = false) final String type){
+    public ModelAndView advancedSearch(@RequestParam(required = false) final String toSearch,
+                                       @RequestParam(required = false) final List<String> categories,
+                                       @RequestParam(required = false) final List<String> types,
+                                       @RequestParam(required = false) final Integer stars,
+                                       @RequestParam(required = false) final Integer order){
 
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
+        List<FrameworkCategories> categoriesList = new ArrayList<>();
+        List<FrameworkType> typesList = new ArrayList<>();
 
+        if(categories!=null){
+            for( String c : categories){
+                String aux = c.replaceAll("%20", " ");
+                categoriesList.add(FrameworkCategories.getByName(aux));
+            }
+        }
 
-        mav.addObject("matchingFrameworks", fs.search(toSearch, FrameworkCategories.getByName(category), FrameworkType.getByName(type)));
+        if(types!=null){
+            for( String c : types){
+                String aux = c.replaceAll("%20", " ");
+                typesList.add(FrameworkType.getByName(aux));
+            }
+        }
+
+        mav.addObject("matchingFrameworks", fs.search(toSearch, categoriesList ,typesList,stars,order));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("search_result", toSearch );
         mav.addObject("categories", FrameworkCategories.getAllCategories());

@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.models.*;
-import jdk.jfr.Category;
 
 import java.awt.*;
 import java.net.URL;
