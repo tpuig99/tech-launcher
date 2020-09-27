@@ -93,7 +93,7 @@
     <div class="search-bar">
         <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" size="80">
-            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()">SEARCH</button>
+            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)">SEARCH</button>
 
         </form>
         <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="getFilters()">test</button>
@@ -122,8 +122,8 @@
                     Sort By
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <button class="dropdown-item" type="button">Rating: High to Low</button>
-                    <button class="dropdown-item" type="button">Rating: Low to High</button>
+                    <button class="dropdown-item" type="button" onclick="searchFrameworks(1)">Rating: High to Low</button>
+                    <button class="dropdown-item" type="button" onclick="searchFrameworks(-1)">Rating: Low to High</button>
                 </div>
             </div>
         </div>
@@ -168,12 +168,11 @@
         return true;
     }
 
-    function searchFrameworks() {
+    function searchFrameworks(order) {
         let name = document.getElementById("searchInput").value;
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
-        let stars = 1;
-        let order = 1;
+        let stars = getRating();
         console.log(categories);
         console.log(types);
         window.location.href = "<c:url value="/search"/>?"+'toSearch='+name+'&categories='+categories+'&types='+types+'&stars='+stars+'&order='+order;
@@ -257,6 +256,8 @@
         }else {
             document.getElementById('badgeRating').style.display = "none";
         }
+
+        return left;
     }
 
 </script>
