@@ -19,7 +19,37 @@
             <jsp:param name="isMod" value="${user_isMod}"/>
         </jsp:include>
 
+
         <div class="content-no-sidebar">
+            <c:if test="${isAdmin}">
+                <div class="page-title">Mods</div>
+                <div class="page-description"></div>
+                <div class="row">
+                    <c:choose>
+                        <c:when test="${not empty mods}">
+                            <c:forEach var = "moderator" items="${mods}">
+                                <c:if test="${!moderator.admin}">
+                                    <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
+                                        <div class="card-body mt-1">
+                                            <div class="secondary-font">
+                                                <a href="/users/${moderator.userName}"><c:out value="${moderator.userName}" default=""/></a>
+                                                <c:out value="/" default=""/>
+                                                <a href="<c:out value="${moderator.frameworkName}/${moderator.frameworkId}"/>"><c:out value="${moderator.frameworkName}" default=""/></a>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <button type="button" class="btn btn-danger" onclick="revokePromotion(${moderator.verificationId})">Demote</button>
+                                        </div>
+                                    </div>
+                                </c:if>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div>It seems there are no mods. You'll have to promote someone first..</div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </c:if>
             <div class="page-title">Pending to Verify by Comments</div>
             <div class="page-description"></div>
             <c:choose>
@@ -79,6 +109,10 @@
 
             function rejectUser(verificationId){
                 window.location.href = '<c:url value="/reject" />?id=' + verificationId;
+            }
+
+            function revokePromotion(verificationId){
+                window.location.href = '<c:url value="/demote" />?id=' + verificationId;
             }
         </script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

@@ -50,15 +50,8 @@ public class UserController {
         if(vu.isPresent() && vu.get().isPending()) {
             us.deleteVerification(verificationId);
         }
-        final ModelAndView mav = new ModelAndView("admin/mod_page");
-        mav.addObject("pendingToVerify",us.getVerifyByPending(true));
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if( us.findByUsername(username).isPresent()){
-            User user = us.findByUsername(username).get();
-            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-        }
-        return mav;
+
+        return modPage();
     }
 
     @RequestMapping("/accept")
@@ -89,9 +82,16 @@ public class UserController {
             email.setText("Hey! You were accepted as a moderator of " + vu.get().getFrameworkName() + ".\n\n Thanks!");
             mailSender.send(email);
         }
-        final ModelAndView mav = new ModelAndView("admin/mod_page");
-        mav.addObject("pendingToVerify",us.getVerifyByPending(true));
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        return modPage();
+    }
+
+    @RequestMapping("/demote")
+    public ModelAndView demote(@RequestParam("id") final long verificationId){
+        Optional<VerifyUser> vu = us.getVerifyById(verificationId);
+        if( vu.isPresent() && !vu.get().isPending() ){
+            us.deleteVerification(verificationId);
+        }
+
         return modPage();
     }
 
@@ -104,7 +104,9 @@ public class UserController {
         if( us.findByUsername(username).isPresent()){
             User user = us.findByUsername(username).get();
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("isAdmin",user.isAdmin());
             if( user.isAdmin()) {
+                List<VerifyUser> mods = us.getVerifyByPending(false);
                 List<VerifyUser> verify = us.getVerifyByPending(true);
                 List<VerifyUser> applicants = new LinkedList<>();
                 verify.forEach(verifyUser -> {
@@ -113,6 +115,7 @@ public class UserController {
                     }
                 });
                 verify.removeAll(applicants);
+                mav.addObject("mods",mods);
                 mav.addObject("pendingToVerify", verify);
                 mav.addObject("pendingApplicants", applicants);
                 return mav;
