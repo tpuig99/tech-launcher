@@ -17,4 +17,5 @@ public interface FrameworkDao {
     List<Framework> getAll();
     List<Framework> getByWord(String toSearch);
     List<Framework> getUserInterests(long userId);
+    List<Framework> getByCategoryOrType(FrameworkType frameType, FrameworkCategories frameCategory);
 }

@@ -48,17 +48,21 @@
                                 <c:when test="${profile.admin}">
                                     <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color-admin" data-toggle="tooltip" title="This user is an Admin!"></i>
                                 </c:when>
-                                <c:when test="${profile.enable}">
+                                <c:when test="${profile.verify}">
                                     <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip" title="This user is a Moderator!"></i>
                                 </c:when>
                             </c:choose>
                         </div>
                         <p><strong>Email: </strong><c:out value="${profile.mail}"/></p>
-                        <p><strong>Description: </strong><c:out value="${profile.description}"/></p>
-                        <c:if test="${not empty verifiedList}">
+                        <c:if test="${not empty profile.description}">
+                            <p><strong>Description: </strong><c:out value="${profile.description}"/></p>
+                        </c:if>
+                        <c:if test="${profile.verify}">
                             <p><strong>Moderator: </strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
-                                <a class="tags" href="<c:url value="/Framework/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                                <c:if test="${!verifiedTech.pending}">
+                                    <a class="tags" href="<c:url value="/Framework/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                                </c:if>
                             </c:forEach>
                             </p>
                         </c:if>
@@ -115,7 +119,7 @@
                     <div class="card emphasis emph-content row mb-2">
                         <div class="card-body row mt-1">
                             <div class="col-3 secondary-font">
-                                <a href="/${content.category}">
+                                <a href="<c:url value="/Framework/${content.frameworkId}"/>">
                                     <c:out value="${content.frameworkName}" default=""/>
                                 </a>
                             </div>
@@ -137,7 +141,7 @@
                     <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
                         <div class="card-body row mt-1">
                             <div class="col secondary-font">
-                                <a href="/${vote.category}/${vote.frameworkId}">
+                                <a href="<c:url value="/${vote.category}/${vote.frameworkId}"/>">
                                     <c:out value="${vote.frameworkName}" default=""/>
                                 </a>
                             </div>

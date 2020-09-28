@@ -106,6 +106,12 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
+    public List<Framework> getByCategoryOrType(FrameworkType type, FrameworkCategories category) {
+        String value=SELECTION+"WHERE type = ? or category = ?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[]{ type.getType(),category.getNameCat() }, ROW_MAPPER);
+    }
+
+    @Override
     public List<Framework> getAll() {
         return jdbcTemplate.query(SELECTION+GROUP_BY, ROW_MAPPER);
     }

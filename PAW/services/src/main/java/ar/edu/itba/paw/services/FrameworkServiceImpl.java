@@ -82,9 +82,9 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public List<Framework> getCompetitors(Framework framework) {
-        List<Framework> competitors = getByCategory(framework.getFrameCategory());
-        competitors.remove(framework);
-        return competitors;
+        List<Framework> toReturn = getByCategory(framework.getFrameCategory());
+        toReturn.remove(framework);
+        return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
     }
 
 }
