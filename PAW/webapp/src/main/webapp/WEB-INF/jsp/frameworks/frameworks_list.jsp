@@ -137,8 +137,8 @@
                     Sort By
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <button class="dropdown-item" type="button" onclick="searchFrameworks(1)">Rating: High to Low</button>
-                    <button class="dropdown-item" type="button" onclick="searchFrameworks(-1)">Rating: Low to High</button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)">Rating: High to Low</button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(1)">Rating: Low to High</button>
                 </div>
             </div>
         </div>
@@ -160,7 +160,10 @@
                             <div class="card-body">
                                 <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
                             </div>
-                            <div class="card-footer text-dark">${framework.name}</div>
+                            <div class="card-footer text-dark">
+                                <span>${framework.name}</span>
+                                <span>${framework.stars}</span>
+                            </div>
                         </a>
                     </div>
                 </c:forEach>
@@ -181,6 +184,8 @@
     }
 
     function searchFrameworks(order) {
+        console.log("The order is ")
+        console.log(order);
         let name = document.getElementById("searchInput").value;
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
@@ -189,6 +194,41 @@
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(stars))) {
             window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
         }
+
+    }
+
+    function sortFrameworks(order){
+        let name ="";
+        let categories="";
+        let types="";
+        let stars="";
+
+        <c:if test="${not empty techNameQuery}">
+            name = ${techNameQuery};
+        </c:if>
+
+        <c:if test="${not empty categoriesQuery}">
+            <c:forEach items="${categoriesQuery}" var="element">
+                categories = categories.concat('${element},');
+            </c:forEach>
+            categories = categories.substring(0,categories.length-1);
+        <%--categories = parseListToString(${categoriesQuery});--%>
+        </c:if>
+
+        <c:if test="${not empty typesQuery}">
+            <c:forEach items="${typesQuery}" var="element">
+                types = types.concat('${element},');
+            </c:forEach>
+            types = types.substring(0,types.length-1);
+        </c:if>
+
+        <c:if test="${not empty starsQuery}">
+            stars =  ${starsQuery};
+        </c:if>
+
+        <c:if test="${fn:length(matchingFrameworks) > 1}">
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
+        </c:if>
     }
 
     form = document.getElementById("search").addEventListener('submit', e => {
@@ -267,6 +307,16 @@
 
         return left;
     }
+
+    function parseListToString(list){
+        let string = ""
+        <c:forEach items="list" var="element">
+            string = string.concat('${element},');
+        </c:forEach>
+        string = string.substring(0,string.length-1);
+        return string;
+    }
+    
 
 </script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
