@@ -96,7 +96,6 @@
             <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)">SEARCH</button>
 
         </form>
-        <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="getFilters()">test</button>
     </div>
     <div class="page-description"></div>
     <div class="page-title">
@@ -145,9 +144,6 @@
         </div>
     </div>
 
-
-
-
     <div class="page-description"></div>
 
     <c:choose>
@@ -189,10 +185,10 @@
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
         let stars = getRating();
-        console.log(categories);
-        console.log(types);
-        window.location.href = "<c:url value="/search"/>?"+'toSearch='+name+'&categories='+categories+'&types='+types+'&stars='+stars+'&order='+order;
 
+        if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(stars))) {
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
+        }
     }
 
     form = document.getElementById("search").addEventListener('submit', e => {
@@ -212,11 +208,7 @@
         document.getElementById("showLess"+element).style.display = "none";
     }
 
-    function getFilters(){
-        getCheckedCategories();
-        getCheckedTypes();
-        getRating();
-    }
+
 
     function getCheckedTypes(){
 
