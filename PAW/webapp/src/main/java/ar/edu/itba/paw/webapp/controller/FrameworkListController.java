@@ -40,7 +40,7 @@ public class FrameworkListController {
         List<FrameworkType> typesList = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
 
-        if(categories!=null){
+        if(!categories.isEmpty()){
             for( String c : categories){
                 String aux = c.replaceAll("%20", " ");
                 categoriesQuery.add(aux);
@@ -48,7 +48,7 @@ public class FrameworkListController {
             }
         }
 
-        if(types!=null){
+        if(!types.isEmpty()){
             for( String c : types){
                 String aux = c.replaceAll("%20", " ");
                 typesQuery.add(aux);
@@ -56,7 +56,7 @@ public class FrameworkListController {
             }
         }
 
-        mav.addObject("matchingFrameworks", fs.search(toSearch, categoriesList ,typesList,stars,order));
+        mav.addObject("matchingFrameworks", fs.search(toSearch, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars, order));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("categories", FrameworkCategories.getAllCategories());
         mav.addObject("types", FrameworkType.getAllTypes());
