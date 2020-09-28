@@ -49,6 +49,9 @@
         <div>
             <span>Don't have an account? </span><span><a href="${pageContext.request.contextPath}/register">Sign Up</a></span>
         </div>
+        <div>
+            <span>Forget your password? </span><span><a href="${pageContext.request.contextPath}/forgetpassword">Recovery Password</a></span>
+        </div>
     </div>
 
 

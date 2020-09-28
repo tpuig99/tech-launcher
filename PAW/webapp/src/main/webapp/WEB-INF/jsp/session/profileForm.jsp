@@ -14,6 +14,9 @@
         <div><form:label path="description">Description</form:label></div>
         <div><form:input  path="description"  class="form-control" type="text" value="${param.description}"/></div>
         <form:errors path="description" element="p" cssError="formError"/>
+        <div>
+            <span><a href="${pageContext.request.contextPath}/chgpassword">Change your password</a></span>
+        </div>
     </div>
 
     <!--<input type="file" id="fileElem" multiple accept="application/pdf" style="display:none" onchange="handleFiles(this.files)">

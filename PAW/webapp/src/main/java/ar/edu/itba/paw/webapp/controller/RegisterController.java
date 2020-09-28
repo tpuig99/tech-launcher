@@ -1,19 +1,21 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.GenericResponse;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
-import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.webapp.form.ForgetPassForm;
 import ar.edu.itba.paw.webapp.form.OnRegistrationCompleteEvent;
+import ar.edu.itba.paw.webapp.form.PasswordForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,11 +26,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class RegisterController {
@@ -37,6 +40,9 @@ public class RegisterController {
 
     @Autowired
     ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/register")
     public ModelAndView index(@ModelAttribute("registerForm") final UserForm form) {
@@ -99,7 +105,7 @@ public class RegisterController {
         return mav;
     }
 
-    @RequestMapping(value="/regitrationConfirm", method = { RequestMethod.GET })
+    @RequestMapping(value="/registrationConfirm", method = { RequestMethod.GET })
     public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
         Locale locale = request.getLocale();
         Optional<VerificationToken> verificationToken = us.getVerificationToken(token);
@@ -148,10 +154,104 @@ public class RegisterController {
 
         return "redirect:/error";
     }
-    /*@ModelAttribute("userId")
-    public Integer loggedUser(final HttpSession session)
-    {
-        return (Integer) session.getAttribute();
-    }*/
 
+    @RequestMapping("/chgpassword")
+    public ModelAndView passwordChange(@ModelAttribute("passwordForm") final PasswordForm form,@RequestParam(value = "id",required = false) Long userId) {
+        ModelAndView mav = new ModelAndView("session/passwordForm");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> optionalUser = us.findByUsername(username);
+        if( optionalUser.isPresent()){
+            User user = optionalUser.get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("user_id",user.getId());
+        }else if(userId!=null){
+            mav.addObject("user_id",userId);
+        } else{
+            return ErrorController.redirectToErrorView();
+        }
+        return mav;
+    }
+
+    @RequestMapping(value = "/updpassword", method = { RequestMethod.POST })
+    public ModelAndView updpassword(@Valid @ModelAttribute("passwordForm") final PasswordForm form, final BindingResult errors, HttpServletRequest request) {
+        if (errors.hasErrors()) {
+            return passwordChange(form, form.getUserId());
+        }
+        us.updatePassword(form.getUserId(), form.getPassword());
+        ModelAndView mav = new ModelAndView("/session/successful_cngPassw");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        mav.addObject("message","Password changed! Now you can continue browsing!");
+        mav.addObject("title","Password Changed");
+        return mav;
+    }
+    @RequestMapping(value = "/forgetpassword")
+    public ModelAndView forgetPassword(@ModelAttribute("ForgetPassForm") final ForgetPassForm form) {
+        ModelAndView mav = new ModelAndView("session/recoveryPassForm");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if( us.findByUsername(username).isPresent()){
+            User user = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+        }
+        return mav;
+    }
+
+    @RequestMapping(value = "/recoveringToken")
+    public ModelAndView recoverToken(@RequestParam("token") String token){
+        String[] strings = token.split("--_-ss-");
+        Long userId = Long.valueOf(strings[strings.length-1]);
+        return new ModelAndView("redirect:/chgpassword?id="+userId);
+    }
+
+    @RequestMapping(value= "/recoverpassword", method = RequestMethod.POST)
+    public ModelAndView recoverPassword(@Valid @ModelAttribute("ForgetPassForm") final ForgetPassForm form, final BindingResult errors, HttpServletRequest request) {
+        if (errors.hasErrors()) {
+            return forgetPassword(form);
+        }
+        Optional<User> optionalUser = us.findByMail(form.getEmail());
+        if(!optionalUser.isPresent()){
+            ModelAndView mav = new ModelAndView("session/recoveryPassForm");
+            mav.addObject("errorMessage", "Wrong email. There is no user with this email address.");
+            return mav;
+        }
+        User user = optionalUser.get();
+        SendEmail(user);
+        ModelAndView mav = new ModelAndView("/session/successful_cngPassw");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        mav.addObject("message","Mail sent! Click on the link to finish changing your password");
+        mav.addObject("title","Mail sent!");
+        return mav;
+    }
+    void SendEmail(User user){
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true");
+        prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        mailSender.setJavaMailProperties(prop);
+        Session session = Session.getInstance(prop, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("confirmemailonly", "pawserver");
+            }
+        });
+        mailSender.setSession(session);
+        String recipientAddress = user.getMail();
+        String subject = "Password Recovery";
+
+        String token = UUID.randomUUID().toString()+"--_-ss-"+user.getId();
+        String confirmationUrl = "/recoveringToken?token=" + token;
+        String message = "Click link to change your password!! ";
+
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setFrom("confirmemailonly@gmail.com");
+        email.setTo(recipientAddress);
+        email.setSubject(subject);
+        //email.setText(message + "\r\n" + "http://pawserver.it.itba.edu.ar" + confirmationUrl);
+        email.setText(message + "\r\n" + "http://localhost:8080" + confirmationUrl);
+        mailSender.send(email);
+    }
 }
