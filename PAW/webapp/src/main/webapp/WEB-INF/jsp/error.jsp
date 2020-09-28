@@ -1,10 +1,11 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
 <head>
-    <title>Error</title>
+    <title><spring:message code="error.wref"/></title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
@@ -29,9 +30,9 @@
                             <img src="<c:url value="/resources/assets/error_image.png"/>" class="d-block align-top" alt="Error image">
                         </div>
                         <div class="mx-auto mt-4">
-                            <h4>There was an error with the requested resource</h4></div>
+                            <h4><spring:message code="error.description"/></h4></div>
                         <div class="mx-auto mt-4">
-                            <a class="btn primary-button" href="<c:url value="/"/>" role="button">GO BACK TO HOME PAGE</a>
+                            <a class="btn primary-button" href="<c:url value="/"/>" role="button"><spring:message code="error.go_back"/></a>
                         </div>
                     </div>
                 </div>
