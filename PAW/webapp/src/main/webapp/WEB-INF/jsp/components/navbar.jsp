@@ -67,7 +67,7 @@
         let input = document.getElementById("searchInput").value
 
         if( !isEmpty(input) ) {
-            window.location.href = '<c:url value="/search?toSearch="/>' + input;
+            window.location.href = '<c:url value="/search?toSearch="/>' + input+'&categories=&types=&stars=&order=';
             return;
         }
         window.location.reload();
