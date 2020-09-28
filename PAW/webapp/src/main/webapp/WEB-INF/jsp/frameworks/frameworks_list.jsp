@@ -80,11 +80,8 @@
 
         <div class="subtitle"><h4>Rating</h4></div>
 
+        <span>From</span>
         <span>
-            From
-        </span>
-        <span>
-
             <select id="stars-dropdown">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -93,9 +90,7 @@
                 <option value="5">5</option>
             </select>
          </span>
-        <span>
-            to 5 stars
-        </span>
+        <span>to 5 stars</span>
 
     </div>
 
@@ -127,7 +122,7 @@
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty starsQuery}">
-                    <span id="stars" class="my-badge-inline badge-pill secondary-badge "> ${starsQuery} stars</span>
+                    <span id="stars" class="my-badge-inline badge-pill secondary-badge "> ${starsQuery} to 5 stars</span>
                 </c:if>
 
             </div>
@@ -162,8 +157,9 @@
                                 <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
                             </div>
                             <div class="card-footer text-dark">
-                                <span>${framework.name}</span>
-                                <span>${framework.stars}</span>
+                                <span>${framework.name} | </span>
+                                <span class="fa fa-star fa-sm"></span>
+                                <span>${framework.starsFormated}</span>
                             </div>
                         </a>
                     </div>
