@@ -105,14 +105,30 @@
     <div class="row">
         <div class="col-10">
             <div class="margin-top">
-                <span id="name" class="my-badge-inline badge-pill secondary-badge "> ${search_result}</span>
-                <c:forEach items="${categories}" var="category">
+                <c:if test="${not empty techNameQuery}">
+                    <span id="name" class="my-badge-inline badge-pill secondary-badge "> ${techNameQuery}</span>
+                </c:if>
+                <c:if test="${not empty categoriesQuery}">
+                    <c:forEach items="${categoriesQuery}" var="categoryQuery">
+                        <span id="name${categoryQuery}" class="my-badge-inline badge-pill secondary-badge "> ${categoryQuery}</span>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${not empty typesQuery}">
+                    <c:forEach items="${typesQuery}" var="typeQuery">
+                        <span id="name${typeQuery}" class="my-badge-inline badge-pill secondary-badge "> ${typeQuery}</span>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${not empty starsQuery}">
+                    <span id="stars" class="my-badge-inline badge-pill secondary-badge "> ${starsQuery} stars</span>
+                </c:if>
+
+               <%-- <c:forEach items="${categories}" var="category">
                     <span id="badge${category}" class="hide my-badge-inline badge-pill secondary-badge "> ${category}</span>
                 </c:forEach>
                 <c:forEach items="${types}" var="type">
                     <span id="badge${type}" class="hide my-badge-inline badge-pill secondary-badge "> ${type}</span>
                 </c:forEach>
-                <span id="badgeRating" class="hide my-badge-inline badge-pill secondary-badge "></span>
+                <span id="badgeRating" class="hide my-badge-inline badge-pill secondary-badge "></span>--%>
 
             </div>
         </div>
@@ -209,10 +225,10 @@
         <c:forEach items="${types}" var="type" >
 
         if(document.getElementById('check'+'${type}').checked) {
-            document.getElementById('badge'+'${type}').style.display = "inline";
+            <%--document.getElementById('badge'+'${type}').style.display = "inline";--%>
             queryTypes = queryTypes.concat('${type},');
         }else{
-            document.getElementById('badge'+'${type}').style.display = "none";
+            <%--document.getElementById('badge'+'${type}').style.display = "none";--%>
         }
         </c:forEach>
 
@@ -226,14 +242,14 @@
         <c:forEach items="${categories}" var="category" >
 
         if(document.getElementById('check'+'${category}').checked) {
-            document.getElementById('badge'+'${category}').style.display = "inline";
+            <%--document.getElementById('badge'+'${category}').style.display = "inline";--%>
             queryCategories = queryCategories.concat('${category},');
 
         }else{
-            document.getElementById('badge'+'${category}').style.display = "none";
+            <%--document.getElementById('badge'+'${category}').style.display = "none";--%>
         }
         </c:forEach>
-        console.log(queryCategories.substring(0,queryCategories.length-1));
+
         queryCategories = queryCategories.substring(0,queryCategories.length-1);
         return queryCategories;
     }
@@ -244,17 +260,17 @@
  
         if(left ==="" && right !==""){
             $("#badgeRating").text(right+' stars');
-            document.getElementById('badgeRating').style.display = "inline";
+            // document.getElementById('badgeRating').style.display = "inline";
 
         }else if(left !=="" && right ===""){
             $("#badgeRating").text(left+' stars');
-            document.getElementById('badgeRating').style.display = "inline";
+            // document.getElementById('badgeRating').style.display = "inline";
 
         }else if(left !=="" && right !==""){
             $("#badgeRating").text(left+' to '+right+' stars');
-            document.getElementById('badgeRating').style.display = "inline";
+            // document.getElementById('badgeRating').style.display = "inline";
         }else {
-            document.getElementById('badgeRating').style.display = "none";
+            // document.getElementById('badgeRating').style.display = "none";
         }
 
         return left;

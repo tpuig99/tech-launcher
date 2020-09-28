@@ -36,11 +36,14 @@ public class FrameworkListController {
 
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
         List<FrameworkCategories> categoriesList = new ArrayList<>();
+        List<String> categoriesQuery = new ArrayList<>();
         List<FrameworkType> typesList = new ArrayList<>();
+        List<String> typesQuery = new ArrayList<>();
 
         if(categories!=null){
             for( String c : categories){
                 String aux = c.replaceAll("%20", " ");
+                categoriesQuery.add(aux);
                 categoriesList.add(FrameworkCategories.getByName(aux));
             }
         }
@@ -48,15 +51,22 @@ public class FrameworkListController {
         if(types!=null){
             for( String c : types){
                 String aux = c.replaceAll("%20", " ");
+                typesQuery.add(aux);
                 typesList.add(FrameworkType.getByName(aux));
             }
         }
 
         mav.addObject("matchingFrameworks", fs.search(toSearch, categoriesList ,typesList,stars,order));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("search_result", toSearch );
         mav.addObject("categories", FrameworkCategories.getAllCategories());
         mav.addObject("types", FrameworkType.getAllTypes());
+
+        //Search Results For:
+        mav.addObject("techNameQuery", toSearch );
+        mav.addObject("categoriesQuery", categoriesQuery );
+        mav.addObject("typesQuery", typesQuery );
+        mav.addObject("starsQuery", stars );
+        mav.addObject("orderQuery", order );
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
