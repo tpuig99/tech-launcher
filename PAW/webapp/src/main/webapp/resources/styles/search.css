@@ -29,9 +29,50 @@
     padding: 0.5em 0.5em 0.5em 1em;
     text-decoration: none;
     font-size: 1em;
-    display: block;
-    height: 3em;
 }
 
 .sidebar-search select:hover {
+}
+
+.hide{
+    display: none;
+}
+
+.my-form-inline {
+    width: 4em;
+    display: inline;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.my-badge-inline{
+    padding: .25em .4em;
+    font-size: 1em;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
+
+.subtitle {
+    color: #733bce;
+}
+
+
+.secondary-badge{
+    color: white;
+    background-color: #b4b6b7;
+}
+
+.margin-top{
+    margin-top: 1em;
 }

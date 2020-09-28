@@ -18,4 +18,8 @@ public interface FrameworkDao {
     List<Framework> getByWord(String toSearch);
     List<Framework> getUserInterests(long userId);
     List<Framework> getByCategoryOrType(FrameworkType frameType, FrameworkCategories frameCategory);
+    List<Framework> getByMultipleCategories(List<FrameworkCategories> categories);
+    List<Framework> getByMinStars(int stars);
+    List<Framework> getByMultipleTypes(List<FrameworkType> types);
+    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars);
 }

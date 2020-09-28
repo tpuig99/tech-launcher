@@ -17,10 +17,10 @@
 
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="<c:url value="/"/>">Home</a>
+                <a class="nav-link" href="<c:url value="/frameworks"/>">Techs</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="<c:url value="/frameworks"/>">Techs</a>
+                <a class="nav-link" href="<c:url value="/search?toSearch=&categories=&types=&stars=&order="/>">Explore</a>
             </li>
         </ul>
 

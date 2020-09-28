@@ -1,10 +1,12 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
 <head>
     <title>
-        Search Result - Tech Launcher
+        Tech Launcher - Explore
     </title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
@@ -22,69 +24,136 @@
 
 <div class="content-search">
     <div class="sidebar-search">
-        <section class="option">
-            <div>Category:</div>
-            <select class="browser-default custom-select" aria-label="categories" id="categories">
-                <option value="" disabled selected hidden>Select Category</option>
-                <option value="Back-End Development">Back-End Development</option>
-                <option value="Big Data">Big Data</option>
-                <option value="Business">Business</option>
-                <option value="Artificial Intelligence">Artificial Intelligence</option>
-                <option value="Networking">Networking</option>
-                <option value="Security">Security</option>
-                <option value="Front-End Development">Front-End Development</option>
-                <option value="Platforms">Platforms</option>
-                <option value="Gaming">Gaming</option>
-                <option value="Editors">Editors</option>
-                <option value="Development Environment">Development Environment</option>
-                <option value="Databases">Databases</option>
-                <option value="Media">Media</option>
-                <option value="Imperative Programming">Imperative Programming</option>
-                <option value="Object Oriented Programming">Object Oriented Programming</option>
-                <option value="Functional Programming">Functional Programming</option>
+
+        <div class="subtitle"><h4>Categories </h4></div>
+            <c:forEach items="${categories}" var="category" begin="0" end="5">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="check${category}">
+                    <label class="form-check-label" for="check${category}">
+                            ${category}
+                    </label>
+                </div>
+            </c:forEach>
+            <div>
+                <button id="showMoreCategories" class="btn btn-link" onclick="showMore('Categories')"> Show More </button>
+            </div>
+            <div class="hide" id="hiddenCategories">
+                <c:forEach items="${categories}" var="category" begin="6" end="${fn:length(categories)}">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="check${category}">
+                        <label class="form-check-label" for="check${category}">
+                                ${category}
+                        </label>
+                    </div>
+                </c:forEach>
+                <div>
+                    <button id="showLessCategories" class="btn btn-link" onclick="showLess('Categories')"> Show Less </button>
+                </div>
+            </div>
+
+
+        <div class="subtitle"> <h4>Types </h4></div>
+        <c:forEach items="${types}" var="type" begin="0" end="5">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="check${type}">
+                <label class="form-check-label" for="check${type}">
+                        ${type}
+                </label>
+            </div>
+        </c:forEach>
+        <div>
+            <button id="showMoreTypes" class="btn btn-link" onclick="showMore('Types')"> Show More </button>
+        </div>
+        <div class="hide" id="hiddenTypes">
+            <c:forEach items="${types}" var="type" begin="6" end="${fn:length(types)}">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="check${type}">
+                    <label class="form-check-label" for="check${type}">
+                            ${type}
+                    </label>
+                </div>
+            </c:forEach>
+            <div>
+                <button id="showLessTypes" class="btn btn-link" onclick="showLess('Types')"> Show Less </button>
+            </div>
+        </div>
+
+        <div class="subtitle"><h4>Rating</h4></div>
+
+        <span>From</span>
+        <span>
+            <select id="stars-dropdown">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
             </select>
-        </section>
-        <section class="option">
-            <div>Type:</div>
-            <select class="browser-default custom-select" aria-label="types" id="types">
-                <option value="" disabled selected hidden>Select Type</option>
-                <option value="Online Platform">Online Platform</option>
-                <option value="Framework">Framework</option>
-                <option value="Service">Service</option>
-                <option value="Database System">Database System</option>
-                <option value="Operating System">Operating System</option>
-                <option value="Runtime Platform">Runtime Platform</option>
-                <option value="Libraries">Libraries</option>
-                <option value="Engine">Engine</option>
-                <option value="Shell">Shell</option>
-                <option value="Terminal">Terminal</option>
-                <option value="Application">Application</option>
-                <option value="Text Editor">Text Editor</option>
-                <option value="CSS Modifier">CSS Modifier</option>
-                <option value="API">API</option>
-                <option value="Toolkit">Toolkit</option>
-                <option value="IDE">IDE</option>
-                <option value="Programming Language">Programming Language</option>
-            </select>
-        </section>
+         </span>
+        <span>to 5 stars</span>
+
     </div>
 
     <div class="search-bar">
         <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" size="80">
-            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()">SEARCH</button>
+            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)">SEARCH</button>
+
         </form>
     </div>
     <div class="page-description"></div>
     <div class="page-title">
-        <h2>Search Results for: ${search_result}</h2>
+        <c:choose>
+            <c:when test="${empty techNameQuery and empty starsQuery and empty categoriesQuery and empty typesQuery and empty orderQuery}">
+            <h2>Explore </h2>
+            </c:when>
+            <c:otherwise>
+                <h2>Search Results for </h2>
+            </c:otherwise>
+        </c:choose>
+
     </div>
+    <div class="row">
+        <div class="col-10">
+            <div class="margin-top">
+                <c:if test="${not empty techNameQuery}">
+                    <span id="name" class="my-badge-inline badge-pill secondary-badge "> ${techNameQuery}</span>
+                </c:if>
+                <c:if test="${not empty categoriesQuery}">
+                    <c:forEach items="${categoriesQuery}" var="categoryQuery">
+                        <span id="name${categoryQuery}" class="my-badge-inline badge-pill secondary-badge "> ${categoryQuery}</span>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${not empty typesQuery}">
+                    <c:forEach items="${typesQuery}" var="typeQuery">
+                        <span id="name${typeQuery}" class="my-badge-inline badge-pill secondary-badge "> ${typeQuery}</span>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${not empty starsQuery}">
+                    <span id="stars" class="my-badge-inline badge-pill secondary-badge "> ${starsQuery} to 5 stars</span>
+                </c:if>
+
+            </div>
+        </div>
+        <div class="col">
+            <div class="btn-group d-flex justify-content-end margin-top">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sort By
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)">Rating: High to Low</button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(1)">Rating: Low to High</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="page-description"></div>
 
     <c:choose>
         <c:when test="${matchingFrameworks.size() == 0 }">
             <div>
-                We are sorry, there were no results matching "${search_result}", but you can try again some other day, as we are continuously adding content!
+                We are sorry, there were no results found. You can try again some other day, as we are continuously adding content!
             </div>
         </c:when>
         <c:otherwise>
@@ -95,7 +164,11 @@
                             <div class="card-body">
                                 <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
                             </div>
-                            <div class="card-footer text-dark">${framework.name}</div>
+                            <div class="card-footer text-dark">
+                                <span>${framework.name} | </span>
+                                <span class="fa fa-star fa-sm"></span>
+                                <span>${framework.starsFormated}</span>
+                            </div>
                         </a>
                     </div>
                 </c:forEach>
@@ -115,22 +188,145 @@
         return true;
     }
 
-    function searchFrameworks() {
-        let input = document.getElementById("searchInput").value
-        let category = document.getElementById("categories").value
-        let type = document.getElementById("types").value
+    function searchFrameworks(order) {
+        console.log("The order is ")
+        console.log(order);
+        let name = document.getElementById("searchInput").value;
+        let categories = getCheckedCategories();
+        let types = getCheckedTypes();
+        let stars = getRating();
 
-        if( !(isEmpty(input) && isEmpty(category) && isEmpty(type)) ) {
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + input + '&category=' + category + '&type=' + type;
-            return;
+        if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(stars))) {
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
         }
-        window.location.reload();
+
+    }
+
+    function sortFrameworks(order){
+        let name ="";
+        let categories="";
+        let types="";
+        let stars="";
+
+        <c:if test="${not empty techNameQuery}">
+            name = ${techNameQuery};
+        </c:if>
+
+        <c:if test="${not empty categoriesQuery}">
+            <c:forEach items="${categoriesQuery}" var="element">
+                categories = categories.concat('${element},');
+            </c:forEach>
+            categories = categories.substring(0,categories.length-1);
+        <%--categories = parseListToString(${categoriesQuery});--%>
+        </c:if>
+
+        <c:if test="${not empty typesQuery}">
+            <c:forEach items="${typesQuery}" var="element">
+                types = types.concat('${element},');
+            </c:forEach>
+            types = types.substring(0,types.length-1);
+        </c:if>
+
+        <c:if test="${not empty starsQuery}">
+            stars =  ${starsQuery};
+        </c:if>
+
+        <c:if test="${fn:length(matchingFrameworks) > 1}">
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
+        </c:if>
     }
 
     form = document.getElementById("search").addEventListener('submit', e => {
         e.preventDefault();
         searchFrameworks();
     })
+
+    function showMore(element){
+        document.getElementById("hidden"+element).style.display = "block";
+        document.getElementById("showMore"+element).style.display = "none";
+        document.getElementById("showLess"+element).style.display = "block";
+    }
+
+    function showLess(element){
+        document.getElementById("hidden"+element).style.display = "none";
+        document.getElementById("showMore"+element).style.display = "block";
+        document.getElementById("showLess"+element).style.display = "none";
+    }
+
+
+
+    function getCheckedTypes(){
+
+        let queryTypes = "";
+
+        <c:forEach items="${types}" var="type" >
+
+        if(document.getElementById('check'+'${type}').checked) {
+            <%--document.getElementById('badge'+'${type}').style.display = "inline";--%>
+            queryTypes = queryTypes.concat('${type},');
+        }else{
+            <%--document.getElementById('badge'+'${type}').style.display = "none";--%>
+        }
+        </c:forEach>
+
+        queryTypes = queryTypes.substring(0,queryTypes.length-1);
+        return queryTypes;
+    }
+
+    function getCheckedCategories(){
+        let queryCategories = "";
+
+        <c:forEach items="${categories}" var="category" >
+
+        if(document.getElementById('check'+'${category}').checked) {
+            <%--document.getElementById('badge'+'${category}').style.display = "inline";--%>
+            queryCategories = queryCategories.concat('${category},');
+
+        }else{
+            <%--document.getElementById('badge'+'${category}').style.display = "none";--%>
+        }
+        </c:forEach>
+
+        queryCategories = queryCategories.substring(0,queryCategories.length-1);
+        return queryCategories;
+    }
+
+    function getRating(){
+
+        let left = document.getElementById("stars-dropdown").value;
+        console.log(left)
+ /*
+        if(left ==="" && right !==""){
+            $("#badgeRating").text(right+' stars');
+            // document.getElementById('badgeRating').style.display = "inline";
+
+        }else if(left !=="" && right ===""){
+            $("#badgeRating").text(left+' stars');
+            // document.getElementById('badgeRating').style.display = "inline";
+
+        }else if(left !=="" && right !==""){
+            $("#badgeRating").text(left+' to '+right+' stars');
+            // document.getElementById('badgeRating').style.display = "inline";
+        }else {
+            // document.getElementById('badgeRating').style.display = "none";
+        }
+*/
+        return left;
+    }
+
+    function parseListToString(list){
+        let string = ""
+        <c:forEach items="list" var="element">
+            string = string.concat('${element},');
+        </c:forEach>
+        string = string.substring(0,string.length-1);
+        return string;
+    }
+
+    function setDropDownValue(value){
+        $(document).getElementById("stars-dropdown").value(value);
+    }
+
 
 </script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

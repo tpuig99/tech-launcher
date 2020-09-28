@@ -17,10 +17,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="<c:url value="/"/>">Home</a>
+                <a class="nav-link" href="<c:url value="/frameworks"/>">Techs</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="<c:url value="/frameworks"/>">Techs</a>
+                <a class="nav-link" href="<c:url value="/search?toSearch=&categories=&types=&stars=&order="/>">Explore</a>
             </li>
         </ul>
         <div>
@@ -70,7 +70,7 @@
         let input = document.getElementById("searchInput").value
 
         if( !isEmpty(input) ) {
-            window.location.href = '<c:url value="/search?toSearch="/>' + input + '&category=&type=';
+            window.location.href = '<c:url value="/search?toSearch="/>' + input+'&categories=&types=&stars=&order=';
             return;
         }
         window.location.reload();
