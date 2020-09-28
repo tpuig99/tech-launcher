@@ -56,7 +56,7 @@ public class FrameworkListController {
             }
         }
 
-        mav.addObject("matchingFrameworks", fs.search(toSearch, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars, order));
+        mav.addObject("matchingFrameworks", fs.search(toSearch != "" ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars, order));
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("categories", FrameworkCategories.getAllCategories());
         mav.addObject("types", FrameworkType.getAllTypes());

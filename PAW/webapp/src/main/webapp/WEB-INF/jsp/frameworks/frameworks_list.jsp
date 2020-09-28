@@ -103,7 +103,15 @@
     </div>
     <div class="page-description"></div>
     <div class="page-title">
-        <h2>Search Results for </h2>
+        <c:choose>
+            <c:when test="${empty techNameQuery and empty starsQuery and empty categoriesQuery and empty typesQuery and empty orderQuery}">
+            <h2>Explore </h2>
+            </c:when>
+            <c:otherwise>
+                <h2>Search Results for </h2>
+            </c:otherwise>
+        </c:choose>
+
     </div>
     <div class="row">
         <div class="col-10">
