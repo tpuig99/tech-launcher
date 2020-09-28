@@ -79,14 +79,23 @@
         </div>
 
         <div class="subtitle"><h4>Rating</h4></div>
+
         <span>
-        <input id="leftRate" type="text" class="my-form-inline" placeholder="From" aria-label="From" aria-describedby="basic-addon1">
+            From
         </span>
         <span>
-        <input id="rightRate" type="text" class="my-form-inline" placeholder="To" aria-label="To" aria-describedby="basic-addon1">
+
+            <select id="stars-dropdown">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+         </span>
+        <span>
+            to 5 stars
         </span>
-
-
 
     </div>
 
@@ -120,14 +129,6 @@
                 <c:if test="${not empty starsQuery}">
                     <span id="stars" class="my-badge-inline badge-pill secondary-badge "> ${starsQuery} stars</span>
                 </c:if>
-
-               <%-- <c:forEach items="${categories}" var="category">
-                    <span id="badge${category}" class="hide my-badge-inline badge-pill secondary-badge "> ${category}</span>
-                </c:forEach>
-                <c:forEach items="${types}" var="type">
-                    <span id="badge${type}" class="hide my-badge-inline badge-pill secondary-badge "> ${type}</span>
-                </c:forEach>
-                <span id="badgeRating" class="hide my-badge-inline badge-pill secondary-badge "></span>--%>
 
             </div>
         </div>
@@ -287,9 +288,10 @@
     }
 
     function getRating(){
-        let left = document.getElementById("leftRate").value;
-        let right = document.getElementById("rightRate").value;
- 
+
+        let left = document.getElementById("stars-dropdown").value;
+        console.log(left)
+ /*
         if(left ==="" && right !==""){
             $("#badgeRating").text(right+' stars');
             // document.getElementById('badgeRating').style.display = "inline";
@@ -304,7 +306,7 @@
         }else {
             // document.getElementById('badgeRating').style.display = "none";
         }
-
+*/
         return left;
     }
 
@@ -316,7 +318,11 @@
         string = string.substring(0,string.length-1);
         return string;
     }
-    
+
+    function setDropDownValue(value){
+        $(document).getElementById("stars-dropdown").value(value);
+    }
+
 
 </script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
