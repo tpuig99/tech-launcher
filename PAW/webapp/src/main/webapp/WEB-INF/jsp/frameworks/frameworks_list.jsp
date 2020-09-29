@@ -95,7 +95,7 @@
     </div>
 
     <div class="search-bar">
-        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
+        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks(0)" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" size="80">
             <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)">SEARCH</button>
 
@@ -238,7 +238,7 @@
 
     form = document.getElementById("search").addEventListener('submit', e => {
         e.preventDefault();
-        searchFrameworks();
+        searchFrameworks(0);
     })
 
     function showMore(element){
