@@ -11,6 +11,7 @@ import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,9 @@ public class UserServiceImpl implements UserService {
     private VerificationTokenDao tokenDao;
     @Autowired
     private VerifyUserDao verifyUserDao;
+
+    @Autowired
+    MessageSource messageSource;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -52,9 +56,9 @@ public class UserServiceImpl implements UserService {
             if(user.get().getMail().equals(mail) && user.get().getPassword()==null)
                 return user.get().getId();
             if(user.get().getMail().equals(mail)){
-                throw new UserAlreadyExistException("There is an account with that email address: " +  user.get().getMail());
+                throw new UserAlreadyExistException(messageSource.getMessage("uae.email",new Object[]{user.get().getMail()},Locale.getDefault()));
             }
-            throw new UserAlreadyExistException("There is an account with that username " +  user.get().getUsername());
+            throw new UserAlreadyExistException(messageSource.getMessage("uae.username",new Object[]{user.get().getUsername()},Locale.getDefault()));
         }
         return USER_NOT_EXISTS;
     }
