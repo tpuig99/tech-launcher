@@ -50,7 +50,7 @@
             <span><spring:message code="login.sign_up_question"/></span><span><a href="${pageContext.request.contextPath}/register"> <spring:message code="login.sign_up"/></a></span>
         </div>
         <div>
-            <span>Forget your password? </span><span><a href="${pageContext.request.contextPath}/forgetpassword">Recovery Password</a></span>
+            <span><spring:message code="login.forgot_question"/></span><span><a href="${pageContext.request.contextPath}/forgetpassword"> <spring:message code="login.forgot_password"/></a></span>
         </div>
     </div>
 
