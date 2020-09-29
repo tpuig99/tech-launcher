@@ -24,7 +24,7 @@
 
         <div class="content-no-sidebar">
             <c:if test="${isAdmin}">
-                <div class="page-title">Mods</div>
+                <div class="page-title"><spring:message code="moderator.title"/></div>
                 <div class="page-description"></div>
                 <div class="row">
                     <c:choose>
@@ -40,19 +40,19 @@
                                             </div>
                                         </div>
                                         <div class="card-footer">
-                                            <button type="button" class="btn btn-danger" onclick="revokePromotion(${moderator.verificationId})">Demote</button>
+                                            <button type="button" class="btn btn-danger" onclick="revokePromotion(${moderator.verificationId})"><spring:message code="button.demote"/></button>
                                         </div>
                                     </div>
                                 </c:if>
                             </c:forEach>
                         </c:when>
                         <c:otherwise>
-                            <div>It seems there are no mods. You'll have to promote someone first..</div>
+                            <div><spring:message code="moderator.no_mods"/></div>
                         </c:otherwise>
                     </c:choose>
                 </div>
             </c:if>
-            <div class="page-title">Pending to Verify by Comments</div>
+            <div class="page-title"><spring:message code="moderator.pending"/></div>
             <div class="page-description"></div>
             <c:choose>
                 <c:when test="${not empty pendingToVerify}">
