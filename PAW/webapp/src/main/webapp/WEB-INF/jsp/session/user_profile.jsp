@@ -62,7 +62,7 @@
                             <p><strong><spring:message code="profile.moderator"/></strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
                                 <c:if test="${!verifiedTech.pending}">
-                                    <a class="tags" href="<c:url value="/Framework/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                                    <a class="tags" href="<c:url value="/${verifiedTech.category}/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
                                 </c:if>
                             </c:forEach>
                             </p>
