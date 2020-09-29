@@ -2,11 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
 <head>
     <title>
-        Tech Launcher - Explore
+        <spring:message code="explore.wref"/>
     </title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
@@ -25,7 +26,7 @@
 <div class="content-search">
     <div class="sidebar-search">
 
-        <div class="subtitle"><h4>Categories </h4></div>
+        <div class="subtitle"><h4><spring:message code="explore.categories"/></h4></div>
             <c:forEach items="${categories}" var="category" begin="0" end="5">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="check${category}">
@@ -35,7 +36,7 @@
                 </div>
             </c:forEach>
             <div>
-                <button id="showMoreCategories" class="btn btn-link" onclick="showMore('Categories')"> Show More </button>
+                <button id="showMoreCategories" class="btn btn-link" onclick="showMore('Categories')"><spring:message code="explore.show_more"/></button>
             </div>
             <div class="hide" id="hiddenCategories">
                 <c:forEach items="${categories}" var="category" begin="6" end="${fn:length(categories)}">
@@ -47,12 +48,12 @@
                     </div>
                 </c:forEach>
                 <div>
-                    <button id="showLessCategories" class="btn btn-link" onclick="showLess('Categories')"> Show Less </button>
+                    <button id="showLessCategories" class="btn btn-link" onclick="showLess('Categories')"><spring:message code="explore.show_less"/></button>
                 </div>
             </div>
 
 
-        <div class="subtitle"> <h4>Types </h4></div>
+        <div class="subtitle"> <h4><spring:message code="explore.types"/></h4></div>
         <c:forEach items="${types}" var="type" begin="0" end="5">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="check${type}">
@@ -62,7 +63,7 @@
             </div>
         </c:forEach>
         <div>
-            <button id="showMoreTypes" class="btn btn-link" onclick="showMore('Types')"> Show More </button>
+            <button id="showMoreTypes" class="btn btn-link" onclick="showMore('Types')"><spring:message code="explore.show_more"/></button>
         </div>
         <div class="hide" id="hiddenTypes">
             <c:forEach items="${types}" var="type" begin="6" end="${fn:length(types)}">
@@ -74,13 +75,13 @@
                 </div>
             </c:forEach>
             <div>
-                <button id="showLessTypes" class="btn btn-link" onclick="showLess('Types')"> Show Less </button>
+                <button id="showLessTypes" class="btn btn-link" onclick="showLess('Types')"><spring:message code="explore.show_less"/></button>
             </div>
         </div>
 
-        <div class="subtitle"><h4>Rating</h4></div>
+        <div class="subtitle"><h4><spring:message code="explore.rating"/></h4></div>
 
-        <span>From</span>
+        <span><spring:message code="explore.from"/></span>
         <span>
             <select id="stars-dropdown">
                 <option value="1">1</option>
@@ -90,14 +91,14 @@
                 <option value="5">5</option>
             </select>
          </span>
-        <span>to 5 stars</span>
+        <span><spring:message code="explore.to_5_stars"/></span>
 
     </div>
 
     <div class="search-bar">
         <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks(0)" id="search">
-            <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" size="80">
-            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)">SEARCH</button>
+            <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
+            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)"><spring:message code="search.title"/></button>
 
         </form>
     </div>
@@ -105,10 +106,10 @@
     <div class="page-title">
         <c:choose>
             <c:when test="${empty techNameQuery and empty starsQuery and empty categoriesQuery and empty typesQuery and empty orderQuery}">
-            <h2>Explore </h2>
+            <h2><spring:message code="explore.title"/></h2>
             </c:when>
             <c:otherwise>
-                <h2>Search Results for </h2>
+                <h2><spring:message code="explore.search_results"/></h2>
             </c:otherwise>
         </c:choose>
 
@@ -117,20 +118,24 @@
         <div class="col-10">
             <div class="margin-top">
                 <c:if test="${not empty techNameQuery}">
-                    <span id="name" class="my-badge-inline badge-pill secondary-badge "> ${techNameQuery}</span>
+                    <span id="name" class="my-badge-inline badge-pill secondary-badge "><c:out value="${techNameQuery}"/></span>
                 </c:if>
                 <c:if test="${not empty categoriesQuery}">
                     <c:forEach items="${categoriesQuery}" var="categoryQuery">
-                        <span id="name${categoryQuery}" class="my-badge-inline badge-pill secondary-badge "> ${categoryQuery}</span>
+                        <span id="name${categoryQuery}" class="my-badge-inline badge-pill secondary-badge "><c:out value="${categoryQuery}"/></span>
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty typesQuery}">
                     <c:forEach items="${typesQuery}" var="typeQuery">
-                        <span id="name${typeQuery}" class="my-badge-inline badge-pill secondary-badge "> ${typeQuery}</span>
+                        <span id="name${typeQuery}" class="my-badge-inline badge-pill secondary-badge "><c:out value="${typeQuery}"/></span>
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty starsQuery}">
-                    <span id="stars" class="my-badge-inline badge-pill secondary-badge "> ${starsQuery} to 5 stars</span>
+                    <span id="stars" class="my-badge-inline badge-pill secondary-badge ">
+                        <spring:message code="explore.stars_query"
+                                        arguments="${starsQuery}"
+                                        htmlEscape="true"/>
+                    </span>
                 </c:if>
 
             </div>
@@ -138,11 +143,11 @@
         <div class="col">
             <div class="btn-group d-flex justify-content-end margin-top">
                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Sort By
+                    <spring:message code="explore.sort_by"/>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)">Rating: High to Low</button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(1)">Rating: Low to High</button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)"><spring:message code="explore.rating_high_to_low"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(1)"><spring:message code="explore.rating_low_to_high"/></button>
                 </div>
             </div>
         </div>
@@ -153,7 +158,7 @@
     <c:choose>
         <c:when test="${matchingFrameworks.size() == 0 }">
             <div>
-                We are sorry, there were no results found. You can try again some other day, as we are continuously adding content!
+                <spring:message code="explore.not_found"/>
             </div>
         </c:when>
         <c:otherwise>
