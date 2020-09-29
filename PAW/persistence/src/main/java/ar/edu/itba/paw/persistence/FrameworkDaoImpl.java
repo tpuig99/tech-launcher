@@ -178,15 +178,16 @@ public class FrameworkDaoImpl implements FrameworkDao {
         return jdbcTemplate.query(SELECTION+GROUP_BY, ROW_MAPPER);
     }
 
-    private Framework create(String framework_name,FrameworkCategories category,String description,String introduction,String logo,FrameworkType type) {
+    @Override
+    public Framework create(String framework_name,FrameworkCategories category,String description,String introduction,FrameworkType type) {
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_name", framework_name); // la key es el nombre de la columna
         args.put("category", category.name()); // la key es el nombre de la columna
         args.put("description", description); // la key es el nombre de la columna
         args.put("introduction",introduction);
-        args.put("logo",logo);
+        args.put("logo",null);
         args.put("type",type.getType());
         final Number frameworkId = jdbcInsert.executeAndReturnKey(args);
-        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction,logo,0,0,type);
+        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction,null,0,0,type);
     }
 }
