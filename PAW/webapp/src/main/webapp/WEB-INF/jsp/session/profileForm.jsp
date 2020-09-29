@@ -17,7 +17,7 @@
         <div><form:input  path="description"  class="form-control" type="text" value="${param.description}"/></div>
         <form:errors path="description" element="p" cssError="formError"/>
         <div>
-            <span><a href="${pageContext.request.contextPath}/chgpassword">Change your password</a></span>
+            <span><a href="${pageContext.request.contextPath}/chgpassword"><spring:message code="profile.change_password"/></a></span>
         </div>
     </div>
 

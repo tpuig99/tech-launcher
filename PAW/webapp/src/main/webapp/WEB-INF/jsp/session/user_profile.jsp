@@ -112,7 +112,7 @@
             </c:when>
             <c:otherwise>
                 <div>
-                    There are no comments here yet!
+                    <spring:message code="profile.empty.comments"/>
                 </div>
             </c:otherwise>
         </c:choose>
@@ -149,7 +149,7 @@
                 </div>
             </c:when>
             <c:otherwise>
-                There are no contents here yet!
+                <spring:message code="profile.empty.contents"/>
             </c:otherwise>
         </c:choose>
 
@@ -180,7 +180,7 @@
                 </div>
             </c:when>
             <c:otherwise>
-                There are no votes here yet!
+                <spring:message code="profile.empty.votes"/>
             </c:otherwise>
         </c:choose>
     </div>
