@@ -189,12 +189,12 @@
     }
 
     function searchFrameworks(order) {
-        console.log("The order is ")
-        console.log(order);
         let name = document.getElementById("searchInput").value;
+        console.log(name);
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
         let stars = getRating();
+        console.log("<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order);
 
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(stars))) {
             window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
@@ -209,7 +209,7 @@
         let stars="";
 
         <c:if test="${not empty techNameQuery}">
-            name = ${techNameQuery};
+            name = "${techNameQuery}";
         </c:if>
 
         <c:if test="${not empty categoriesQuery}">
