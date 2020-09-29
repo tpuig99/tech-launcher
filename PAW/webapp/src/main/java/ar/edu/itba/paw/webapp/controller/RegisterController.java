@@ -7,6 +7,7 @@ import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.mail.Authenticator;
@@ -46,6 +48,15 @@ public class RegisterController {
     ApplicationEventPublisher eventPublisher;
 
     @Autowired
+    MessageSource messageSource;
+
+    @Autowired
+    LocaleResolver localeResolver;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    @autowired
     AuthenticationManager authManager;
 
     @RequestMapping("/register")
@@ -76,7 +87,7 @@ public class RegisterController {
         } catch (RuntimeException ex) {
             ModelAndView mav = new ModelAndView("session/registerForm");
             System.out.println(ex.getMessage());
-            mav.addObject("errorMessage", "Something went wrong! Please, try again. \n"+ex.getMessage());
+            mav.addObject("errorMessage", messageSource.getMessage("register.error.try_again",new Object[]{},Locale.getDefault()));
             return mav;
         }
         return new ModelAndView("redirect:/register/success/1");
@@ -86,8 +97,8 @@ public class RegisterController {
     public ModelAndView success1(){
         ModelAndView mav = new ModelAndView("session/successful");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("message","We sent you an email to verify your account. Here's a button to the Home page, so you can start browsing ");
-        mav.addObject("title","Created account successfully!");
+        mav.addObject("message",messageSource.getMessage("register.success.email.sent",new Object[]{},Locale.getDefault()));
+        mav.addObject("title",messageSource.getMessage("register.success.account.created",new Object[]{},Locale.getDefault()));
         return mav;
     }
 
@@ -95,8 +106,8 @@ public class RegisterController {
     public ModelAndView success2(){
         ModelAndView mav = new ModelAndView("session/successful");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("message","Yay!! You are now a user of Tech Launcher, our page! Press the Home button and start contributing to our community ");
-        mav.addObject("title","Your email has been confirmed!");
+        mav.addObject("message",messageSource.getMessage("register.success.account.validated",new Object[]{},Locale.getDefault()));
+        mav.addObject("title",messageSource.getMessage("register.success.email.validated",new Object[]{},Locale.getDefault()));
         return mav;
     }
 
@@ -104,8 +115,8 @@ public class RegisterController {
     public ModelAndView success3(){
         ModelAndView mav = new ModelAndView("session/successful");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("message","We sent you an email to verify your account again. Here's a button to the Home page, so you can start browsing");
-        mav.addObject("title","Verification email resent");
+        mav.addObject("message",messageSource.getMessage("register.success.email.resent",new Object[]{},Locale.getDefault()));
+        mav.addObject("title",messageSource.getMessage("register.success.account.resent",new Object[]{},Locale.getDefault()));
         return mav;
     }
 
@@ -123,7 +134,7 @@ public class RegisterController {
                 }
                 Calendar cal = Calendar.getInstance();
                 if ((verificationToken.get().getexpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
-                    model.addAttribute("message", "The link has expired! Do you want to send another confirmation link?");
+                    model.addAttribute("message", messageSource.getMessage("register.error.link_expired",new Object[]{},Locale.getDefault()));
                     model.addAttribute("expired", true);
                     model.addAttribute("token", token);
                     return "session/badUser";
@@ -136,7 +147,7 @@ public class RegisterController {
             }
             return "redirect:/error";
         }
-        model.addAttribute("message", "Something went wrong! Do you want to send another confirmation link?");
+        model.addAttribute("message", messageSource.getMessage("register.error.resend",new Object[]{},Locale.getDefault()));
         return "session/badUser";
     }
 
@@ -192,8 +203,8 @@ public class RegisterController {
         }
         ModelAndView mav = new ModelAndView("/session/successful_cngPassw");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("message","Password changed! Now you can continue browsing!");
-        mav.addObject("title","Password Changed");
+        mav.addObject("message",messageSource.getMessage("register.changed_password.description",new Object[]{},Locale.getDefault()));
+        mav.addObject("title",messageSource.getMessage("register.changed_password.title",new Object[]{},Locale.getDefault()));
         return mav;
     }
     private void internalLogin(String user,String pass, HttpServletRequest req){
@@ -233,15 +244,15 @@ public class RegisterController {
         Optional<User> optionalUser = us.findByMail(form.getEmail());
         if(!optionalUser.isPresent()){
             ModelAndView mav = new ModelAndView("session/recoveryPassForm");
-            mav.addObject("errorMessage", "Wrong email. There is no user with this email address.");
+            mav.addObject("errorMessage", messageSource.getMessage("register.error.wrong_email",new Object[]{},Locale.getDefault()));
             return mav;
         }
         User user = optionalUser.get();
         SendEmail(user);
         ModelAndView mav = new ModelAndView("/session/successful_cngPassw");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("message","Mail sent! Click on the link to finish changing your password");
-        mav.addObject("title","Mail sent!");
+        mav.addObject("message",messageSource.getMessage("register.change_password.message",new Object[]{},Locale.getDefault()));
+        mav.addObject("title",messageSource.getMessage("register.change_password.title",new Object[]{},Locale.getDefault()));
         return mav;
     }
     void SendEmail(User user){
@@ -261,11 +272,13 @@ public class RegisterController {
         });
         mailSender.setSession(session);
         String recipientAddress = user.getMail();
-        String subject = "Password Recovery";
 
         String token = UUID.randomUUID().toString()+"--_-ss-"+user.getId();
         String confirmationUrl = "/recoveringToken?token=" + token;
-        String message = "Click link to change your password!! ";
+
+        String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, Locale.getDefault());
+        String message = messageSource.getMessage("email.recovery.body",new Object[]{}, Locale.getDefault());
+
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom("confirmemailonly@gmail.com");
