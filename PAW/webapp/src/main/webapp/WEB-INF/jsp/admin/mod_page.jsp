@@ -1,10 +1,12 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
 <html>
     <head>
         <title>
-            Mod Options - Tech Launcher
+            <spring:message code="moderator.wref"/>
         </title>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -20,7 +22,7 @@
         </jsp:include>
 
         <div class="content-no-sidebar">
-            <div class="page-title">Pending to Verify by Comments</div>
+            <div class="page-title"><spring:message code="moderator.pending"/></div>
             <div class="page-description"></div>
             <c:choose>
                 <c:when test="${not empty pendingToVerify}">
@@ -35,17 +37,17 @@
                                 <div class="col third-font text-right"> <c:out value="${pendingUser.comment.timestamp.toLocaleString()}" default=""/> </div>
                             </div>
                             <div class="card-footer">
-                                <button type="button" class="btn btn-secondary" onclick="rejectUser(${pendingUser.verificationId})">Ignore</button>
-                                <button type="button" class="btn primary-button" onclick="promoteUser(${pendingUser.verificationId})">Promote</button>
+                                <button type="button" class="btn btn-secondary" onclick="rejectUser(${pendingUser.verificationId})"><spring:message code="button.deny"/></button>
+                                <button type="button" class="btn primary-button" onclick="promoteUser(${pendingUser.verificationId})"><spring:message code="button.promote"/></button>
                             </div>
                         </div>
                     </c:forEach>
                 </c:when>
                 <c:otherwise>
-                    <div>It seems you have no work here. You'll have to wait for more comments to reach hot..</div>
+                    <div><spring:message code="moderator.emptyPending"/></div>
                 </c:otherwise>
             </c:choose>
-            <div class="page-title">Pending Applicants</div>
+            <div class="page-title"><spring:message code="moderator.pendingApplicants"/></div>
             <div class="page-description"></div>
             <div class="row">
                 <c:choose>
@@ -59,14 +61,14 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button type="button" class="btn primary-button" onclick="promoteUser(${applicant.verificationId})">Promote</button>
-                                    <button type="button" class="btn btn-secondary" onclick="rejectUser(${applicant.verificationId})">Ignore</button>
+                                    <button type="button" class="btn primary-button" onclick="promoteUser(${applicant.verificationId})"><spring:message code="button.promote"/></button>
+                                    <button type="button" class="btn btn-secondary" onclick="rejectUser(${applicant.verificationId})"><spring:message code="button.deny"/></button>
                                 </div>
                             </div>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <div>It seems you have no work here. You'll have to wait for more users to apply for mod..</div>
+                        <div><spring:message code="moderator.emptyApplicants"/></div>
                     </c:otherwise>
                 </c:choose>
             </div>

@@ -1,5 +1,6 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!--NavBar -->
 
 <head>
@@ -11,16 +12,16 @@
 <nav class="navbar fixed-top navbar-expand-lg">
     <a class="navbar-brand" href="<c:url value="/"/>">
         <img src="<c:url value="/resources/assets/logo.png"/>" width="30" height="30" class="d-inline-block align-top" alt="">
-        TECH LAUNCHER
+        <spring:message code="navbar.title"/>
     </a>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="<c:url value="/frameworks"/>">Techs</a>
+                <a class="nav-link" href="<c:url value="/frameworks"/>"><spring:message code="home.techs.title"/></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="<c:url value="/search?toSearch=&categories=&types=&stars=&order="/>">Explore</a>
+                <a class="nav-link" href="<c:url value="/search?toSearch=&categories=&types=&stars=&order="/>"><spring:message code="explore.title"/></a>
             </li>
         </ul>
         <div class="nav-item dropdown" id="profile-settings">
@@ -31,16 +32,16 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
                 <c:if test="${param.isMod}">
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/mod">Moderate</a>
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/mod"><spring:message code="button.moderate"/></a>
                 </c:if>
                 <c:choose>
                     <c:when test="${param.username != 'anonymousUser'}">
-                        <a class="dropdown-item" href="${pageContext.request.contextPath}/users/${param.username}">Profile</a>
-                        <a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Log out</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/users/${param.username}"><spring:message code="button.profile"/></a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/logout"><spring:message code="button.logout"/></a>
                     </c:when>
                     <c:otherwise>
-                        <a class="dropdown-item" href="${pageContext.request.contextPath}/register">Sign Up</a>
-                        <a class="dropdown-item" href="${pageContext.request.contextPath}/login">Log in</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/register"><spring:message code="button.sign_up"/></a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/login"><spring:message code="button.login"/></a>
                     </c:otherwise>
                 </c:choose>
             </div>

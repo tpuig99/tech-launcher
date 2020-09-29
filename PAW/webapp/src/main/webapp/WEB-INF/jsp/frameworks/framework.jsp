@@ -349,7 +349,7 @@
                     <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser'}">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center">
-                            <div class="card-header subtitle"><h5>Be a Mod!</h5></div>
+                            <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>
                             <div class="card-body">
                                 <p class="card-text"><spring:message code="tech.apply.message"/></p>
                             </div>

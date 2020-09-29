@@ -32,7 +32,7 @@
                         <div class="mx-auto mt-4">
                             <h4><spring:message code="error.description"/></h4></div>
                         <div class="mx-auto mt-4">
-                            <a class="btn primary-button" href="<c:url value="/"/>" role="button"><spring:message code="error.go_back"/></a>
+                            <a class="btn primary-button" href="<c:url value="/"/>" role="button"><spring:message code="button.back_to_home"/></a>
                         </div>
                     </div>
                 </div>
