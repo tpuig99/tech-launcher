@@ -1,10 +1,11 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
 <head>
     <title>
-        Tech Launcher
+        <spring:message code="techs.wref"/>
     </title>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
@@ -23,14 +24,14 @@
 
 <div class="content">
     <div class="page-title">
-        <h2>Techs</h2>
+        <h2><spring:message code="home.techs.title"/></h2>
     </div>
     <div class="page-description">
 
     </div>
 
     <div>
-        <h4 class="title">Best Rated</h4>
+        <h4 class="title"><spring:message code="techs.best_rated"/></h4>
 
         <div class="row equal">
             <c:forEach items="${hottestList}" var="framework">
@@ -49,7 +50,7 @@
     <div>
         <c:if test="${user.name != 'anonymousUser'}">
                 <c:if test="${not empty interestsList}">
-                    <h4 class="title">Based on your tastes</h4>
+                    <h4 class="title"><spring:message code="techs.tastes"/></h4>
                     <div class="row equal">
                         <c:forEach items="${interestsList}" var="framework">
                             <div class="card mx-4 mb-4">

@@ -3,18 +3,26 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Array;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class FrameworkDaoImpl implements FrameworkDao {
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final static RowMapper<Framework> ROW_MAPPER = FrameworkDaoImpl::mapRow;
     private final String SELECTION="select frameworks.framework_id,type,framework_name,category,description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant from frameworks left join framework_votes on frameworks.framework_id = framework_votes.framework_id ";
@@ -28,7 +36,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
     @Autowired
     public FrameworkDaoImpl(final DataSource ds) {
         this.jdbcTemplate = new JdbcTemplate(ds);
-
+        this.namedJdbcTemplate = new NamedParameterJdbcTemplate(ds);
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("frameworks")
                 .usingGeneratedKeyColumns("framework_id");
@@ -109,6 +117,60 @@ public class FrameworkDaoImpl implements FrameworkDao {
     public List<Framework> getByCategoryOrType(FrameworkType type, FrameworkCategories category) {
         String value=SELECTION+"WHERE type = ? or category = ?"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[]{ type.getType(),category.getNameCat() }, ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByMultipleCategories(List<FrameworkCategories> categories) {
+        List<String> catNames = categories.stream().map(FrameworkCategories::getNameCat).collect(Collectors.toList());
+        SqlParameterSource parameters = new MapSqlParameterSource("categories", catNames);
+        String value = SELECTION+"where category in (:categories)"+GROUP_BY;
+
+        return namedJdbcTemplate.query(value,parameters,ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> getByMinStars(int stars) {
+        String value=SELECTION+"WHERE stars>=?"+GROUP_BY;
+        return jdbcTemplate.query(value, new Object[]{ stars }, ROW_MAPPER);
+
+    }
+
+    @Override
+    public List<Framework> getByMultipleTypes(List<FrameworkType> types) {
+        List<String> typesNames = types.stream().map(FrameworkType::getType).collect(Collectors.toList());
+        SqlParameterSource parameters = new MapSqlParameterSource("types", typesNames);
+        String value = SELECTION+"where type in (:types)"+GROUP_BY;
+
+        return namedJdbcTemplate.query(value,parameters,ROW_MAPPER);
+    }
+
+    @Override
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars) {
+        if(toSearch==null && categories==null && types == null && (stars == null || stars == 0))
+            return jdbcTemplate.query(SELECTION+GROUP_BY,ROW_MAPPER);
+        String aux="where ";
+        Map<String,List<String>> params = new HashMap<>();
+        if(toSearch!=null && !toSearch.isEmpty()){
+            aux = aux.concat("frameworks.framework_name ILIKE '%"+toSearch+"%' ");
+        }
+        if(categories!=null){
+            if(!aux.equals("where "))
+                aux =aux.concat("and ");
+            aux = aux.concat("category in (:cat) ");
+            params.put("cat",categories.stream().map(FrameworkCategories::getNameCat).collect(Collectors.toList()));
+        }
+        if(types!=null){
+            if(!aux.equals("where "))
+                aux =aux.concat("and ");
+            aux = aux.concat("type in (:type) ");
+            params.put("type",types.stream().map(FrameworkType::getType).collect(Collectors.toList()));
+        }
+        if(stars!=null && stars!=0){
+            if(!aux.equals("where "))
+                aux =aux.concat("and ");
+            aux = aux.concat("stars>="+stars+" ");
+        }
+        return namedJdbcTemplate.query(SELECTION+aux+GROUP_BY,params,ROW_MAPPER);
     }
 
     @Override

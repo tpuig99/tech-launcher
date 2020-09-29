@@ -1,10 +1,11 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
     <head>
         <title>
-            Tech Launcher
+            <spring:message code="home.wref"/>
         </title>
         
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
@@ -22,18 +23,18 @@
 
     <div class="introduction">
         <img class="mb-2" src="<c:url value="/resources/assets/logo.png"/>" alt="Page logo">
-        <h1> Welcome to Tech Launcher </h1>
-        <h4> Starting a project is hard, we know it. That's why we created Tech Launcher. Here, you will be able to gather information from a large amount of technologies useful in the world of development.</h4>
+        <h1><spring:message code="home.title"/></h1>
+        <h4><spring:message code="home.subtitle"/></h4>
     </div>
 
     <div class="d-flex justify-content-center align-items-center">
         <div class="card text-center">
-            <div class="card-header title-background-frameworks"><h3 class="card-title">Techs</h3></div>
+            <div class="card-header title-background-frameworks"><h3 class="card-title"><spring:message code="home.techs.title"/></h3></div>
             <div class="card-body">
-                <p class="card-text">Here you can se a wide number of technologies that you may be interested in </p>
+                <p class="card-text"><spring:message code="home.techs.description"/></p>
             </div>
             <div class="card-footer">
-                <a href="<c:url value="/frameworks" />" class="btn btn-homepage">Visit Techs</a>
+                <a href="<c:url value="/frameworks" />" class="btn btn-homepage"><spring:message code="home.techs.button"/></a>
             </div>
         </div>
     </div>

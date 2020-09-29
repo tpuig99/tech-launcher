@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum FrameworkCategories {
     Platforms("Platforms"),
     Front_End_Development("Front-End Development"),
@@ -46,5 +49,12 @@ public enum FrameworkCategories {
         return null;
     }
 
+    public static List<String> getAllCategories(){
+        List<String> categories = new ArrayList<>();
+        for (FrameworkCategories fc:FrameworkCategories.values()) {
+            categories.add(fc.nameCat);
+        }
+        return categories;
+    }
     
 }
