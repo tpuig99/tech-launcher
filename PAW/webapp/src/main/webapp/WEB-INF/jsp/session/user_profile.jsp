@@ -62,7 +62,7 @@
                             <p><strong><spring:message code="profile.moderator"/></strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
                                 <c:if test="${!verifiedTech.pending}">
-                                    <a class="tags" href="<c:url value="/Framework/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                                    <a class="tags" href="<c:url value="/${verifiedTech.category}/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
                                 </c:if>
                             </c:forEach>
                             </p>
@@ -120,7 +120,7 @@
                     <div class="card emphasis emph-content row mb-2">
                         <div class="card-body row mt-1">
                             <div class="col-3 secondary-font">
-                                <a href="<c:url value="/Framework/${content.frameworkId}"/>">
+                                <a href="<c:url value="/${content.category}/${content.frameworkId}"/>">
                                     <c:out value="${content.frameworkName}" default=""/>
                                 </a>
                             </div>

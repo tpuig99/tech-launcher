@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface UserService {
     Optional<User> findById(long id);
     Optional<User> findByUsername(String username);
+    Optional<User> findByMail(String mail);
     User create(String username,String mail,String password) throws UserAlreadyExistException;
     int delete(long userId);
     void updatePassword(long userId,String password);

@@ -96,7 +96,7 @@
     </div>
 
     <div class="search-bar">
-        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
+        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks(0)" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
             <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)"><spring:message code="search.title"/></button>
 
@@ -194,12 +194,12 @@
     }
 
     function searchFrameworks(order) {
-        console.log("The order is ")
-        console.log(order);
         let name = document.getElementById("searchInput").value;
+        console.log(name);
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
         let stars = getRating();
+        console.log("<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order);
 
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(stars))) {
             window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
@@ -214,7 +214,7 @@
         let stars="";
 
         <c:if test="${not empty techNameQuery}">
-            name = ${techNameQuery};
+            name = "${techNameQuery}";
         </c:if>
 
         <c:if test="${not empty categoriesQuery}">
@@ -243,7 +243,7 @@
 
     form = document.getElementById("search").addEventListener('submit', e => {
         e.preventDefault();
-        searchFrameworks();
+        searchFrameworks(0);
     })
 
     function showMore(element){

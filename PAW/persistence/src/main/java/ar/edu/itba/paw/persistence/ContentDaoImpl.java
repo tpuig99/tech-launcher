@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.ContentTypes;
+import ar.edu.itba.paw.models.FrameworkCategories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -60,7 +61,8 @@ public class ContentDaoImpl implements ContentDao {
                 rs.getString("link"),
                 Enum.valueOf(ContentTypes.class, rs.getString("type")),
                 rs.getBoolean("pending"),
-                rs.getString("framework_name")
+                rs.getString("framework_name"),
+                FrameworkCategories.getByName(rs.getString("category"))
         );
     }
 
@@ -96,7 +98,7 @@ public class ContentDaoImpl implements ContentDao {
 
     @Override
     public List<Content> getContentByUser(long userId) {
-        return jdbcTemplate.query("select content_id,title, frameworks.framework_id,user_id,votes_up,votes_down,tstamp,link,content.type,pending,framework_name from content join frameworks on content.framework_id = frameworks.framework_id where user_id=?",
+        return jdbcTemplate.query("select content_id,title, frameworks.framework_id,user_id,votes_up,votes_down,tstamp,link,content.type,pending,framework_name,category from content join frameworks on content.framework_id = frameworks.framework_id where user_id=?",
                 new Object[] { userId }, ROW_MAPPER_PROFILE);
     }
 
