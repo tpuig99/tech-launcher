@@ -56,7 +56,7 @@ public class RegisterController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
-    @autowired
+    @Autowired
     AuthenticationManager authManager;
 
     @RequestMapping("/register")
