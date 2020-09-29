@@ -4,15 +4,16 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.webapp.form.ForgetPassForm;
-import ar.edu.itba.paw.webapp.form.OnRegistrationCompleteEvent;
-import ar.edu.itba.paw.webapp.form.PasswordForm;
-import ar.edu.itba.paw.webapp.form.UserForm;
+import ar.edu.itba.paw.webapp.form.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,8 +33,11 @@ import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.*;
+
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Controller
 public class RegisterController {
@@ -51,6 +55,9 @@ public class RegisterController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @autowired
+    AuthenticationManager authManager;
 
     @RequestMapping("/register")
     public ModelAndView index(@ModelAttribute("registerForm") final UserForm form) {
@@ -187,12 +194,29 @@ public class RegisterController {
             return passwordChange(form, form.getUserId());
         }
         us.updatePassword(form.getUserId(), form.getPassword());
+        if(SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")){
+            Optional<User> optionalUser = us.findById(form.getUserId());
+            if (optionalUser.isPresent()){
+                User user = optionalUser.get();
+                internalLogin(user.getUsername(),form.getPassword(),request);
+            }
+        }
         ModelAndView mav = new ModelAndView("/session/successful_cngPassw");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("message",messageSource.getMessage("register.changed_password.description",new Object[]{},Locale.getDefault()));
         mav.addObject("title",messageSource.getMessage("register.changed_password.title",new Object[]{},Locale.getDefault()));
         return mav;
     }
+    private void internalLogin(String user,String pass, HttpServletRequest req){
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user, pass);
+        Authentication auth = authManager.authenticate(authReq);
+
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+        HttpSession session = req.getSession(true);
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+    }
+
     @RequestMapping(value = "/forgetpassword")
     public ModelAndView forgetPassword(@ModelAttribute("ForgetPassForm") final ForgetPassForm form) {
         ModelAndView mav = new ModelAndView("session/recoveryPassForm");
