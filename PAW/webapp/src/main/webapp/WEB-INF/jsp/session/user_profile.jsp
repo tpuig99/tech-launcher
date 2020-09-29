@@ -89,83 +89,100 @@
     </div>
     <div class="col-8">
         <!-- Comments -->
-        <c:if test="${not empty comments}">
-            <div class="page-title mb-4 ml-2 text-left">
-                <h2><spring:message code="profile.comments"/></h2>
-            </div>
-            <div class="container d-flex justify-content-center">
-                <c:forEach var="comment" items="${comments}">
-                    <div class="card emphasis emph-comment row mb-2">
-                        <div class="card-body row mt-1">
-                            <div class="col-3 secondary-font">
-                                <a href="<c:url value="/${comment.category}/${comment.frameworkId}"/>">
-                                    <c:out value="${comment.frameworkName}" default=""/>
-                                </a>
+        <div class="page-title mb-4 ml-2 text-left">
+            <h2><spring:message code="profile.comments"/></h2>
+        </div>
+        <c:choose>
+            <c:when test="${not empty comments}">
+                <div class="container d-flex justify-content-center">
+                    <c:forEach var="comment" items="${comments}">
+                        <div class="card emphasis emph-comment row mb-2">
+                            <div class="card-body row mt-1">
+                                <div class="col-3 secondary-font">
+                                    <a href="<c:url value="/${comment.category}/${comment.frameworkId}"/>">
+                                        <c:out value="${comment.frameworkName}" default=""/>
+                                    </a>
+                                </div>
+                                <div class="col-6 text-left"> <c:out value="${comment.description}" default=""/> </div>
+                                <div class="col third-font text-right"> <c:out value="${comment.timestamp.toLocaleString()}" default=""/> </div>
                             </div>
-                            <div class="col-6 text-left"> <c:out value="${comment.description}" default=""/> </div>
-                            <div class="col third-font text-right"> <c:out value="${comment.timestamp.toLocaleString()}" default=""/> </div>
                         </div>
-                    </div>
-                </c:forEach>
-            </div>
-        </c:if>
+                    </c:forEach>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div>
+                    <spring:message code="profile.empty.comments"/>
+                </div>
+            </c:otherwise>
+        </c:choose>
 
         <!-- Contents -->
-        <c:if test="${not empty contents}">
-            <div class="page-title mb-4 ml-2 text-left">
-                <h2><spring:message code="profile.contents"/></h2>
-            </div>
-            <div class="container d-flex justify-content-center">
-                <c:forEach var="content" items="${contents}">
-                    <div class="card emphasis emph-content row mb-2">
-                        <div class="card-body row mt-1">
-                            <div class="col-3 secondary-font">
-                                <a href="<c:url value="/${content.category}/${content.frameworkId}"/>">
-                                    <c:out value="${content.frameworkName}" default=""/>
-                                </a>
-                            </div>
+        <div class="page-title mb-4 ml-2 text-left">
+            <h2><spring:message code="profile.contents"/></h2>
+        </div>
+        <c:choose>
+            <c:when test="${not empty contents}">
+                <div class="container d-flex justify-content-center">
+                    <c:forEach var="content" items="${contents}">
+                        <div class="card emphasis emph-content row mb-2">
+                            <div class="card-body row mt-1">
+                                <div class="col-3 secondary-font">
+                                    <a href="<c:url value="/${content.category}/${content.frameworkId}"/>">
+                                        <c:out value="${content.frameworkName}" default=""/>
+                                    </a>
+                                </div>
 
-                            <div class="col-6 text-left">
-                                <c:choose>
-                                    <c:when test="${content.type.name() == 'course'}"><spring:message code="profile.content.course" /></c:when>
-                                    <c:when test="${content.type.name() == 'book'}"><spring:message code="profile.content.bibliography" /></c:when>
-                                    <c:when test="${content.type.name() == 'tutorial'}"><spring:message code="profile.content.tutorial" /></c:when>
-                                </c:choose>
-                                <c:out value=" ${content.title}" default=""/>
-                            </div>
+                                <div class="col-6 text-left">
+                                    <c:choose>
+                                        <c:when test="${content.type.name() == 'course'}"><spring:message code="profile.content.course" /></c:when>
+                                        <c:when test="${content.type.name() == 'book'}"><spring:message code="profile.content.bibliography" /></c:when>
+                                        <c:when test="${content.type.name() == 'tutorial'}"><spring:message code="profile.content.tutorial" /></c:when>
+                                    </c:choose>
+                                    <c:out value=" ${content.title}" default=""/>
+                                </div>
 
-                            <div class="col third-font text-right"> <c:out value="${content.timestamp.toLocaleString()}" default=""/> </div>
+                                <div class="col third-font text-right"> <c:out value="${content.timestamp.toLocaleString()}" default=""/> </div>
+                            </div>
                         </div>
-                    </div>
-                </c:forEach>
-            </div>
-        </c:if>
+                    </c:forEach>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <spring:message code="profile.empty.contents"/>
+            </c:otherwise>
+        </c:choose>
 
         <!-- Votes -->
-        <c:if test="${not empty votes}">
-            <div class="page-title mb-4 ml-2 text-left">
-                <h2><spring:message code="profile.votes"/></h2>
-            </div>
-            <div class="container row equal justify-content-center">
-                <c:forEach var="vote" items="${votes}">
-                    <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
-                        <div class="card-body row mt-1">
-                            <div class="col secondary-font">
-                                <a href="<c:url value="/${vote.category}/${vote.frameworkId}"/>">
-                                    <c:out value="${vote.frameworkName}" default=""/>
-                                </a>
-                            </div>
-                            <div class="col">
-                                <spring:message code="profile.votes_over_5"
-                                                arguments="${vote.stars}"
-                                                htmlEscape="true"
-                                />
+        <div class="page-title mb-4 ml-2 text-left">
+            <h2><spring:message code="profile.votes"/></h2>
+        </div>
+        <c:choose>
+            <c:when test="${not empty votes}">
+                <div class="container row equal justify-content-center">
+                    <c:forEach var="vote" items="${votes}">
+                        <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
+                            <div class="card-body row mt-1">
+                                <div class="col secondary-font">
+                                    <a href="<c:url value="/${vote.category}/${vote.frameworkId}"/>">
+                                        <c:out value="${vote.frameworkName}" default=""/>
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <spring:message code="profile.votes_over_5"
+                                                    arguments="${vote.stars}"
+                                                    htmlEscape="true"
+                                    />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </c:forEach>
-            </div>
-        </c:if>
+                    </c:forEach>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <spring:message code="profile.empty.votes"/>
+            </c:otherwise>
+        </c:choose>
     </div>
 
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
