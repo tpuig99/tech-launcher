@@ -170,7 +170,15 @@
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
                                         <button class=" btn upVote btn-link" onclick="voteUpComment(${comment.commentId})">
-                                            <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                            <c:choose>
+                                                <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote > 0}">
+                                                    <i class="fa fa-arrow-up arrow votedUp"> ${comment.votesUp}</i>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                                </c:otherwise>
+                                            </c:choose>
+
                                         </button>
                                     </c:when>
                                     <c:otherwise>
@@ -183,8 +191,15 @@
                             <div>
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button class="btn downVote  btn-link" onclick="voteDownComment(${comment.commentId})">
-                                            <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                        <button class=" btn upVote btn-link" onclick="voteDownComment(${comment.commentId})">
+                                        <c:choose>
+                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote < 0}">
+                                                <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fa fa-arrow-down arrow"> ${comment.votesUp}</i>
+                                            </c:otherwise>
+                                        </c:choose>
                                         </button>
                                     </c:when>
                                     <c:otherwise>

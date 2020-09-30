@@ -57,6 +57,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         mailSender.setSession(session);
         String recipientAddress = user.getMail();
         String subject = messageSource.getMessage("email.subject",new Object[]{}, Locale.getDefault());
+
         String confirmationUrl
                 = event.getAppUrl() + "/registrationConfirm.html?token=" + token;
         String message = messageSource.getMessage("email.body",new Object[]{}, Locale.getDefault());
@@ -65,7 +66,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         email.setFrom("confirmemailonly@gmail.com");
         email.setTo(recipientAddress);
         email.setSubject(subject);
-        email.setText(message + "\r\n" + "http://pawserver.it.itba.edu.ar" + confirmationUrl);
+        email.setText(message + "\r\n" + confirmationUrl);
         mailSender.send(email);
     }
 }

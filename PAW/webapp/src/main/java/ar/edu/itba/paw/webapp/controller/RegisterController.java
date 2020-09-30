@@ -78,7 +78,9 @@ public class RegisterController {
         }
         try {
         User registered = us.create(form.getUsername(), form.getEmail(), form.getPassword());
-        String appUrl = request.getContextPath();
+        // GET URL - GET URI + GETCONTEXTPATH
+        String appUrl = request.getRequestURL().toString();
+        appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl,false));
         } catch (UserAlreadyExistException uaeEx) {
                 ModelAndView mav = new ModelAndView("session/registerForm");
@@ -159,8 +161,8 @@ public class RegisterController {
 
         if (verificationToken.isPresent()) {
             Optional<User> registered = us.findById((int) verificationToken.get().getUserId());
-            String appUrl = request.getRequestURL().substring(0, request.getRequestURL().indexOf(request.getPathInfo()));
-
+            String appUrl = request.getRequestURL().toString();
+            appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
             if (registered.isPresent()) {
                 eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered.get(), request.getLocale(), appUrl, true));
                 return "redirect:/register/success/3";
