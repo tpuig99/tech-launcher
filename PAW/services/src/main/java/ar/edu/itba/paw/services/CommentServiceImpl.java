@@ -91,7 +91,10 @@ public class CommentServiceImpl implements CommentService {
     public Optional<Comment> voteUp(long commentId,long userId) {
         Optional<CommentVote> vote = cmtVotes.getByCommentAndUser(commentId,userId);
         if(vote.isPresent()){
-            cmtVotes.update(vote.get().getCommentVoteId(),1);
+            if(vote.get().isVoteUp())
+                cmtVotes.delete(vote.get().getCommentVoteId());
+            else
+                cmtVotes.update(vote.get().getCommentVoteId(),1);
         }else {
             cmtVotes.insert(commentId, userId, 1);
         }
@@ -115,7 +118,10 @@ public class CommentServiceImpl implements CommentService {
         Optional<CommentVote> vote = cmtVotes.getByCommentAndUser(commentId,userId);
 
         if(vote.isPresent()){
-            cmtVotes.update(vote.get().getCommentVoteId(),-1);
+            if(!vote.get().isVoteUp())
+                cmtVotes.delete(vote.get().getCommentVoteId());
+            else
+                cmtVotes.update(vote.get().getCommentVoteId(),-1);
         }else {
             cmtVotes.insert(commentId, userId, -1);
         }

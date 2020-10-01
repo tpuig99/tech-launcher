@@ -197,7 +197,7 @@
                                                 <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
                                             </c:when>
                                             <c:otherwise>
-                                                <i class="fa fa-arrow-down arrow"> ${comment.votesUp}</i>
+                                                <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
                                             </c:otherwise>
                                         </c:choose>
                                         </button>

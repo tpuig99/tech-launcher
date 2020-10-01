@@ -60,30 +60,8 @@ public class UserController {
         if(vu.isPresent() && vu.get().isPending()) {
             us.verify(verificationId);
             Optional<User> user = us.findById(vu.get().getUserId());
-            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-            Properties prop = new Properties();
-            prop.put("mail.smtp.host", "smtp.gmail.com");
-            prop.put("mail.smtp.port", "587");
-            prop.put("mail.smtp.auth", "true");
-            prop.put("mail.smtp.starttls.enable", "true");
-            prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-            mailSender.setJavaMailProperties(prop);
-            Session session = Session.getInstance(prop, new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("confirmemailonly", "pawserver");
-                }
-            });
-            mailSender.setSession(session);
-            SimpleMailMessage email = new SimpleMailMessage();
-            email.setFrom("confirmemailonly@gmail.com");
-            email.setTo(user.get().getMail());
-            String subject = messageSource.getMessage("email.moderator.subject",new Object[]{vu.get().getFrameworkName()}, Locale.getDefault());
-            String message = messageSource.getMessage("email.moderator.body",new Object[]{vu.get().getFrameworkName()}, Locale.getDefault());
-
-            email.setSubject(subject);
-            email.setText(message);
-            mailSender.send(email);
+            if(user.isPresent())
+                us.modMailing(user.get(),vu.get().getFrameworkName());
         }
         return modPage();
     }
