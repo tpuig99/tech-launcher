@@ -106,4 +106,10 @@ public class ReportCommentDaoImpl implements ReportCommentDao{
          jdbcTemplate.update("DELETE FROM comment_report WHERE report_id = ?", new Object[]{reportId});
 
     }
+
+    @Override
+    public void deleteReportByComment(long commentId) {
+        jdbcTemplate.update("DELETE FROM comment_report WHERE comment_id = ?", new Object[]{commentId});
+
+    }
 }

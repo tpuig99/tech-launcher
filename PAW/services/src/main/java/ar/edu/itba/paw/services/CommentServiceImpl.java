@@ -154,4 +154,9 @@ public class CommentServiceImpl implements CommentService {
         rc.delete(reportId);
     }
 
+    @Override
+    public void deleteReportByComment(long commentId) {
+        rc.deleteReportByComment(commentId);
+    }
+
 }

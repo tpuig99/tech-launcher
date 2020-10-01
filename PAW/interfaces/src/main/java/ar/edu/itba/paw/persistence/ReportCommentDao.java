@@ -12,5 +12,6 @@ public interface ReportCommentDao {
     Optional<ReportComment> getByComment(long commentId);
     void add(long commentId,long userId,String description);
     void delete(long reportId);
+    void deleteReportByComment(long commentId);
 
 }

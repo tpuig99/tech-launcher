@@ -28,4 +28,5 @@ public interface CommentService {
     Optional<ReportComment> getReportByComment(long commentId);
     void addReport(long commentId,long userId,String description);
     void deleteReport(long reportId);
+    void deleteReportByComment(long commentId);
 }
