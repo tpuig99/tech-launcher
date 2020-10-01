@@ -63,14 +63,23 @@ CREATE TABLE IF NOT EXISTS content (
                                        framework_id int NOT NULL,
                                        user_id int NOT NULL,
                                        title varchar(100) NOT NULL,
-                                       votes_up int,
-                                       votes_down int,
                                        tstamp timestamp NOT NULL,
                                        link text NOT NULL,
                                        type varchar(10) NOT NULL,
-                                       pending boolean NOT NULL DEFAULT false,
                                        FOREIGN KEY(framework_id) REFERENCES frameworks ON DELETE CASCADE,
-                                       FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE
+                                       FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
+                                       UNIQUE(title,framework_id,type)
+);
+ALTER TABLE content DROP COLUMN IF EXISTS votes_up,DROP COLUMN IF EXISTS votes_down,DROP COLUMN IF EXISTS pending;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_content on content(title,type,framework_id);
+CREATE TABLE IF NOT EXISTS content_votes (
+                                             vote_id SERIAL PRIMARY KEY,
+                                             user_id integer NOT NULL,
+                                             content_id integer NOT NULL,
+                                             vote int,
+                                             FOREIGN KEY(content_id) REFERENCES content ON DELETE CASCADE,
+                                             FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
+                                             UNIQUE(user_id,content_id)
 );
 --ALTER TABLE content ADD COLUMN  pending boolean default false not null ;
 CREATE TABLE IF NOT EXISTS verify_users (

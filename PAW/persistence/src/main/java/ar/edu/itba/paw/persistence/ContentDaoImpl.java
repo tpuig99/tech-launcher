@@ -2,6 +2,8 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.ContentTypes;
+import ar.edu.itba.paw.models.FrameworkCategories;
+import ar.edu.itba.paw.models.FrameworkType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,6 +24,12 @@ public class ContentDaoImpl implements ContentDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
+    private final String SELECTION ="select c.content_id,c.framework_id,c.user_id,title,link,tstamp,c.type,count(case when vote=-1 then vote end) as neg,count(case when vote=1 then vote end) as pos, framework_name,category,(CASE WHEN vu.pending IS false THEN true ELSE false END) AS is_verify,(case when a.user_id is null then false else true end) as is_admin";
+    private final String FROM=" from content c left join content_votes cv on c.content_id = cv.content_id left join frameworks f on c.framework_id = f.framework_id left join verify_users vu on c.user_id=vu.user_id and f.framework_id = vu.framework_id left join admins a on c.user_id=a.user_id ";
+    private final String USER_AUTH_VOTE=",coalesce((select vote from content_votes where user_id=? and content_id=c.content_id),0) as user_vote ";
+    private final String GROUP_BY = " group by c.content_id ,framework_name,category,a.user_id,pending order by c.content_id";
+
+
     private final static RowMapper<Content> ROW_MAPPER = ContentDaoImpl::mapRow;
     private final static RowMapper<Content> ROW_MAPPER_PROFILE = ContentDaoImpl::mapRow2;
 
@@ -37,85 +45,76 @@ public class ContentDaoImpl implements ContentDao {
 
     private static Content mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Content(rs.getLong("content_id"),
-                rs.getInt("framework_id"),
+                rs.getLong("framework_id"),
                 rs.getLong("user_id"),
                 rs.getString("title"),
-                rs.getLong("votes_up"),
-                rs.getLong("votes_down"),
+                rs.getInt("pos"),
+                rs.getInt("neg"),
                 rs.getTimestamp("tstamp"),
                 rs.getString("link"),
                 Enum.valueOf(ContentTypes.class, rs.getString("type")),
-                rs.getBoolean("pending")
-        );
+                rs.getString("framework_name"),
+                FrameworkCategories.getByName(rs.getString("category")),
+                rs.getBoolean("is_verify"),
+                rs.getBoolean("is_admin"));
     }
 
     private static Content mapRow2(ResultSet rs, int rowNum) throws SQLException {
         return new Content(rs.getLong("content_id"),
-                rs.getInt("framework_id"),
+                rs.getLong("framework_id"),
                 rs.getLong("user_id"),
                 rs.getString("title"),
-                rs.getLong("votes_up"),
-                rs.getLong("votes_down"),
+                rs.getInt("pos"),
+                rs.getInt("neg"),
                 rs.getTimestamp("tstamp"),
                 rs.getString("link"),
                 Enum.valueOf(ContentTypes.class, rs.getString("type")),
-                rs.getBoolean("pending"),
-                rs.getString("framework_name")
-        );
+                rs.getString("framework_name"),
+                FrameworkCategories.getByName(rs.getString("category")),
+                rs.getBoolean("is_verify"),
+                rs.getBoolean("is_admin"),
+                rs.getInt("user_vote"));
     }
 
     @Override
     public Optional<Content> getById(long contentId) {
-        return jdbcTemplate.query("SELECT * FROM content WHERE content_id = ?", new Object[] {contentId}, ROW_MAPPER).stream().findFirst();
+        return jdbcTemplate.query(SELECTION+FROM+" WHERE c.content_id = ?"+GROUP_BY, new Object[] {contentId}, ROW_MAPPER).stream().findFirst();
     }
 
     @Override
     public List<Content> getContentByFramework(long frameworkId) {
-        return jdbcTemplate.query("SELECT * FROM content where framework_id = ?", new Object[] { frameworkId }, ROW_MAPPER);
+        return jdbcTemplate.query(SELECTION+FROM+" where c.framework_id = ?"+GROUP_BY, new Object[] { frameworkId }, ROW_MAPPER);
     }
 
     @Override
     public List<Content> getContentByFrameworkAndUser(long frameworkId, long userId) {
-        return jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND user_id = ?", new Object[] { frameworkId, userId }, ROW_MAPPER);
+        return jdbcTemplate.query(SELECTION+FROM+" WHERE c.framework_id = ? AND c.user_id = ?"+GROUP_BY, new Object[] { frameworkId, userId }, ROW_MAPPER);
     }
 
     @Override
     public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type) {
-        return jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND type = ?", new Object[] { frameworkId, type.name() }, ROW_MAPPER);
+        return jdbcTemplate.query(SELECTION+FROM+" WHERE c.framework_id = ? AND c.type = ?"+GROUP_BY, new Object[] { frameworkId, type.name() }, ROW_MAPPER);
     }
 
-    @Override
-    public List<Content> getNotPendingContentByFrameworkAndType(long frameworkId, ContentTypes type) {
-        return jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND type = ? AND pending = false", new Object[] { frameworkId, type.name() }, ROW_MAPPER);
-    }
-
-    @Override
-    public List<Content> getPendingContentByFrameworkAndType(long frameworkId, ContentTypes type) {
-        return jdbcTemplate.query("SELECT * FROM content WHERE framework_id = ? AND type = ? AND pending = true", new Object[] { frameworkId, type.name() }, ROW_MAPPER);
-    }
 
     @Override
     public List<Content> getContentByUser(long userId) {
-        return jdbcTemplate.query("select content_id,title, frameworks.framework_id,user_id,votes_up,votes_down,tstamp,link,content.type,pending,framework_name from content join frameworks on content.framework_id = frameworks.framework_id where user_id=?",
-                new Object[] { userId }, ROW_MAPPER_PROFILE);
+        return jdbcTemplate.query(SELECTION+FROM+" where c.user_id=?"+GROUP_BY, new Object[] { userId }, ROW_MAPPER);
     }
 
     @Override
-    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type, Boolean pending) {
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);
         args.put("user_id",userId);
         args.put("title", title);
-        args.put("votes_up", 0);
-        args.put("votes_down", 0);
         args.put("tstamp", ts);
         args.put("link", link);
         args.put("type", type.name());
-        args.put("pending", pending);
 
-        final Number voteId = jdbcInsert.executeAndReturnKey(args);
-        return new Content (voteId.longValue(), frameworkId, userId, title, 0, 0, ts, link, type, pending);
+        final Number contentId = jdbcInsert.executeAndReturnKey(args);
+        return getById(contentId.longValue()).get();
     }
 
     @Override

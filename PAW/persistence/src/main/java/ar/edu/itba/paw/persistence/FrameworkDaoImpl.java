@@ -146,7 +146,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars) {
-        if(toSearch==null && categories==null && types == null && stars == null)
+        if(toSearch==null && categories==null && types == null && (stars == null || stars == 0))
             return jdbcTemplate.query(SELECTION+GROUP_BY,ROW_MAPPER);
         String aux="where ";
         Map<String,List<String>> params = new HashMap<>();
@@ -165,7 +165,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
             aux = aux.concat("type in (:type) ");
             params.put("type",types.stream().map(FrameworkType::getType).collect(Collectors.toList()));
         }
-        if(stars!=null){
+        if(stars!=null && stars!=0){
             if(!aux.equals("where "))
                 aux =aux.concat("and ");
             aux = aux.concat("stars>="+stars+" ");

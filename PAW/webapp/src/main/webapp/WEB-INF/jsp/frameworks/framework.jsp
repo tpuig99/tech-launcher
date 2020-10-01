@@ -2,10 +2,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
     <head>
-        <title>${framework.name} - Tech Launcher</title>
+        <title>
+            <spring:message code="tech.wref"
+                            arguments="${framework.name}"
+                            htmlEscape="true"/>
+        </title>
 
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
@@ -56,17 +61,17 @@
 
                 <!-- Content -->
                 <div class="container">
-                    <div><h4 class="title">Content</h4></div>
+                    <div><h4 class="title"><spring:message code="tech.content"/></h4></div>
                     <div class="d-flex justify-content-end">
                         <c:choose>
                             <c:when test="${user.name != 'anonymousUser'}">
                                 <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal">
-                                    <!--<i class="fa fa-plus"></i>--> ADD CONTENT
+                                    <spring:message code="tech.content.button"/>
                                 </button>
                             </c:when>
                             <c:otherwise>
                                 <button class="btn primary-button" type="button" data-toggle="modal" data-target="#loginModal">
-                                    ADD CONTENT
+                                    <spring:message code="tech.content.button"/>
                                 </button>
                             </c:otherwise>
                         </c:choose>
@@ -74,13 +79,13 @@
                    </div>
                 </div>
                 <c:if test="${empty books && empty courses && empty tutorials}">
-                    <div class="d-flex align-items-center justify-content-center">There is no content available for this tech yet</div>
+                    <div class="d-flex align-items-center justify-content-center"><spring:message code="tech.content.not_available"/></div>
                 </c:if>
 
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
                 <div>
-                   <span><h4 class="subtitle margin-left">Bibliography</h4></span>
+                   <span><h4 class="subtitle margin-left"><spring:message code="tech.content.bibliography"/></h4></span>
                     <ul class="margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
                         <li class="list-group-item">
@@ -103,7 +108,7 @@
                 <!-- Courses -->
                 <c:if test="${not empty courses}">
                 <div>
-                    <h4 class="subtitle margin-left ">Courses</h4>
+                    <h4 class="subtitle margin-left "><spring:message code="tech.content.courses"/></h4>
 
                     <ul class=" margin-bottom list-group margin-left list-group-flush description">
 
@@ -128,7 +133,7 @@
                 <!-- Tutorials -->
                 <c:if test="${not empty tutorials}">
                 <div>
-                   <h4 class="subtitle margin-left"> Tutorials</h4>
+                   <h4 class="subtitle margin-left"><spring:message code="tech.content.tutorials"/></h4>
                     <ul class="  margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">
 
@@ -153,7 +158,7 @@
                 <!-- Comments -->
                 <c:if test="${not empty comments}">
                 <div>
-                    <h4 class="title">Comments </h4>
+                    <h4 class="title"><spring:message code="tech.comments"/></h4>
                 </div>
 
                 <div class="container d-flex">
@@ -165,7 +170,15 @@
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
                                         <button class=" btn upVote btn-link" onclick="voteUpComment(${comment.commentId})">
-                                            <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                            <c:choose>
+                                                <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote > 0}">
+                                                    <i class="fa fa-arrow-up arrow votedUp"> ${comment.votesUp}</i>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                                </c:otherwise>
+                                            </c:choose>
+
                                         </button>
                                     </c:when>
                                     <c:otherwise>
@@ -178,8 +191,15 @@
                             <div>
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button class="btn downVote  btn-link" onclick="voteDownComment(${comment.commentId})">
-                                            <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                        <button class=" btn upVote btn-link" onclick="voteDownComment(${comment.commentId})">
+                                        <c:choose>
+                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote < 0}">
+                                                <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                            </c:otherwise>
+                                        </c:choose>
                                         </button>
                                     </c:when>
                                     <c:otherwise>
@@ -196,10 +216,10 @@
                                     <a href="<c:url value='/users/${comment.userName}'/>">
                                         <c:choose>
                                             <c:when test="${comment.admin}">
-                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-admin" data-toggle="tooltip" title="This user is an Admin!"></i>
+                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-admin" data-toggle="tooltip" title="<spring:message code="tooltip.admin"/>"></i>
                                             </c:when>
                                             <c:when test="${comment.verify}">
-                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="This user is a Moderator!"></i>
+                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="<spring:message code="tooltip.moderator"/>"></i>
                                             </c:when>
                                         </c:choose>
                                         <c:out value="${comment.userName}" default=""/>
@@ -219,12 +239,12 @@
                                     <c:choose>
                                         <c:when test="${user.name != 'anonymousUser'}">
                                             <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
-                                               <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
+                                               <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.reply.button"/></span>
                                             </button>
                                         </c:when>
                                         <c:otherwise>
                                             <button type="button" class="btn btn-light" data-toggle="modal" data-target="#loginModal">
-                                               <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">Reply</span>
+                                               <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.reply.button"/></span>
                                             </button>
                                         </c:otherwise>
                                     </c:choose>
@@ -235,14 +255,14 @@
                                 </span>
                                 <span class="padding-left">
                                     <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}See" aria-expanded="false" aria-controls="multiCollapseExample1">
-                                        <i class="arrow fas fa-eye fa-xs"></i><span class="reply padding-left">See Replies</span>
+                                        <i class="arrow fas fa-eye fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.see_replies"/></span>
                                     </button>
                                 </span>
                             </div>
 
                             <div  class="collapse multi-collapse" id="${comment.commentId}See">
                                 <c:if test="${empty replies.get(comment.commentId)}">
-                                    <div>This comment has no replies yet</div>
+                                    <div><spring:message code="tech.comment.no_replies_yet"/></div>
                                 </c:if>
                                 <c:if test="${not empty replies.get(comment.commentId)}">
                                     <c:forEach var="reply" items="${replies.get(comment.commentId)}" varStatus="loop">
@@ -277,7 +297,7 @@
                                     <textarea id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"></textarea>
                                 </div>
                                 <div>
-                                    <button class="btn primary-button btn-sm padding-top" onclick="publishComment(${comment.commentId})">SUBMIT</button>
+                                    <button class="btn primary-button btn-sm padding-top" onclick="publishComment(${comment.commentId})"><spring:message code="button.submit"/></button>
                                 </div>
 
                             </div>
@@ -293,29 +313,29 @@
 
                 <!-- User Interaction -->
                 <div>
-                    <h4 class="title">Give your opinion</h4>
+                    <h4 class="title"><spring:message code="tech.interactions.title"/></h4>
                 </div>
 
 
                 <div class="margin-left">
                     <div class="row">
                         <div class="col-8">
-                            <h5>Leave your comment</h5>
+                            <h5><spring:message code="tech.interactions.leave_comment"/></h5>
                             <div>
                                 <textarea id="commentInput" class="form-control" aria-label="With textarea"></textarea>
 
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button type="button" id="commentButton" disabled onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end">SUBMIT</button>
+                                        <button type="button" id="commentButton" disabled onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
                                     </c:when>
                                     <c:otherwise>
-                                        <button type="button" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">SUBMIT</button>
+                                        <button type="button" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
                         </div>
                         <div class="col">
-                            <h5>Rating</h5>
+                            <h5><spring:message code="tech.rating"/></h5>
 
                             <div class="stars">
                                 <form id="rating-form">
@@ -331,10 +351,10 @@
                                     <label class="star star-1" for="star-1"></label>
                                     <c:choose>
                                         <c:when test="${user.name != 'anonymousUser'}">
-                                            <button class="btn primary-button" type="submit">RATE</button>
+                                            <button class="btn primary-button" type="submit"><spring:message code="tech.rating.button"/></button>
                                         </c:when>
                                         <c:otherwise>
-                                            <button class="btn primary-button"  data-toggle="modal" data-target="#loginModal">RATE</button>
+                                            <button class="btn primary-button"  data-toggle="modal" data-target="#loginModal"><spring:message code="tech.rating.button"/></button>
                                         </c:otherwise>
                                     </c:choose>
                                 </form>
@@ -344,12 +364,12 @@
                     <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser'}">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center">
-                            <div class="card-header subtitle"><h5>Be a Mod!</h5></div>
+                            <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>
                             <div class="card-body">
-                                <p class="card-text">Want to help us? Be a moderator! You will be able to manage content in this tech</p>
+                                <p class="card-text"><spring:message code="tech.apply.message"/></p>
                             </div>
                             <div class="card-footer">
-                                <button class="btn primary-button" onclick="applyForMod()">APPLY</button>
+                                <button class="btn primary-button" onclick="applyForMod()"><spring:message code="tech.apply.button"/></button>
                             </div>
                         </div>
                     </div>
@@ -359,7 +379,7 @@
                 <!-- Competition Cards -->
                 <c:if test="${not empty competitors}">
                 <div>
-                    <h4 class="title">You may also like</h4>
+                    <h4 class="title"><spring:message code="tech.competition"/></h4>
                 </div>
 
 
@@ -387,7 +407,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="loginModalLabel">You have to be logged in to do this</h5>
+                                <h5 class="modal-title" id="loginModalLabel"><spring:message code="user.not_logged"/></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -397,7 +417,7 @@
                                 <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
                                 </div>
                                <div class="row justify-content-center align-items-center margin-top">
-                                    <button type="button" class="btn primary-button" onclick="window.location.href = '<c:url value="/login"/>'">LOG IN</button>
+                                    <button type="button" class="btn primary-button" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
                                 </div>
                                 <div class="row  justify-content-center align-items-center margin-top">
                                     <div>Don't have an account yet? <a href="<c:url value="/register"/>">Sign Up</a>
@@ -415,7 +435,7 @@
                         <div class="modal-content">
                             <div class="modal-header container">
 
-                                <h5 class="modal-title" id="addContentLabel">Add Content</h5>
+                                <h5 class="modal-title" id="addContentLabel"><spring:message code="tech.content.form"/></h5>
 
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 </button>
@@ -430,9 +450,9 @@
                     </div>
                 </div>
 
-                <div id="snackbar">Your content has been uploaded !</div>
+                <div id="snackbar"><spring:message code="tech.content.uploaded_content"/></div>
 
-                <div id="snackbarModApplication">Your application is now pending approval !</div>
+                <div id="snackbarModApplication"><spring:message code="tech.content.pending_approval"/></div>
 
                 <!--Delete Content Modal -->
 
@@ -441,18 +461,18 @@
                         <div class="modal-content">
                             <div id="contentId" hidden></div>
                             <div class="modal-header">
-                                <h5 class="modal-title" id="deleteContentModalLabel">Delete</h5>
+                                <h5 class="modal-title" id="deleteContentModalLabel"><spring:message code="tech.content.delete"/></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
                                 <div class="row  justify-content-center align-items-center margin-top">
-                                    <div>Are you sure you want to delete this content?</div>
+                                    <div><spring:message code="tech.content.delete.message"/></div>
                                 </div>
                                 <div class="row justify-content-center align-items-center margin-top">
-                                    <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">CANCEL</button></span>
-                                    <span class="margin-left"> <button type="button" class="btn btn-danger" onclick="deleteContent()">DELETE</button></span>
+                                    <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button></span>
+                                    <span class="margin-left"> <button type="button" class="btn btn-danger" onclick="deleteContent()"><spring:message code="button.delete"/></button></span>
                                 </div>
                             </div>
                         </div>
