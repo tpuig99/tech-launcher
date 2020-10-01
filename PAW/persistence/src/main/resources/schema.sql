@@ -67,9 +67,11 @@ CREATE TABLE IF NOT EXISTS content (
                                        link text NOT NULL,
                                        type varchar(10) NOT NULL,
                                        FOREIGN KEY(framework_id) REFERENCES frameworks ON DELETE CASCADE,
-                                       FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE
+                                       FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
+                                       UNIQUE(title,framework_id,type)
 );
 ALTER TABLE content DROP COLUMN IF EXISTS votes_up,DROP COLUMN IF EXISTS votes_down,DROP COLUMN IF EXISTS pending;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_content on content(title,type,framework_id);
 CREATE TABLE IF NOT EXISTS content_votes (
                                              vote_id SERIAL PRIMARY KEY,
                                              user_id integer NOT NULL,
