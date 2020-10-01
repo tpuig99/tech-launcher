@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.frameworks.ContentForm;
 import ar.edu.itba.paw.webapp.form.frameworks.RatingForm;
+import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -90,13 +91,13 @@ public class FrameworkController {
     }
 
 
-    @RequestMapping(path={"/voteup"}, method= RequestMethod.GET)
-    public ModelAndView voteUpComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
+    @RequestMapping(path={"/{category}/{id}"},params="upvote", method= RequestMethod.POST)
+    public ModelAndView voteUpComment(@Valid @ModelAttribute("upVoteForm") final VoteForm form) throws UserAlreadyExistException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (us.findByUsername(authentication.getName()).isPresent()) {
-                final Optional<Comment> comment = commentService.voteUp(commentId, us.findByUsername(authentication.getName()).get().getId());
+                final Optional<Comment> comment = commentService.voteUp(form.getCommentId(), us.findByUsername(authentication.getName()).get().getId());
                 if(comment.isPresent()){
                     return FrameworkController.redirectToFramework(comment.get().getFrameworkId(), comment.get().getCategory());
                 }
