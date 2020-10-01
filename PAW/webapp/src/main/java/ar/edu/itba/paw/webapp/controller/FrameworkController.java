@@ -45,7 +45,6 @@ public class FrameworkController {
         Optional<Framework> framework = fs.findById(id);
 
         if (framework.isPresent()) {
-            List<Comment> comments = commentService.getCommentsWithoutReferenceByFramework(id);
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
             mav.addObject("framework", framework.get());
 
@@ -55,11 +54,13 @@ public class FrameworkController {
             mav.addObject("category", category);
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-            mav.addObject("comments", comments);
+
             mav.addObject("replies", replies);
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             if( us.findByUsername(username).isPresent()){
                 User user = us.findByUsername(username).get();
+                List<Comment> comments = commentService.getCommentsByFramework(id, user.getId());
+                mav.addObject("comments",comments);
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
                 mav.addObject("isAdmin",user.isAdmin());
@@ -70,6 +71,10 @@ public class FrameworkController {
                 }else{
                     mav.addObject("stars",0);
                 }
+            }
+            else{
+                List<Comment> comments = commentService.getCommentsByFramework(id, null);
+                mav.addObject("comments",comments);
             }
 
             return mav;
@@ -156,7 +161,11 @@ public class FrameworkController {
 
             ContentTypes type = ContentTypes.valueOf(form.getType());
             if (us.findByUsername(authentication.getName()).isPresent()) {
-                final Content content = contentService.insertContent(frameworkId, us.findByUsername(authentication.getName()).get().getId(), form.getTitle(), form.getLink(), type, true);
+                String pathToContent = form.getLink();
+                if( !pathToContent.contains("://")){
+                    pathToContent = "http://".concat(pathToContent);
+                }
+                final Content content = contentService.insertContent(frameworkId, us.findByUsername(authentication.getName()).get().getId(), form.getTitle(), pathToContent, type, true);
                 return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
             }
             return ErrorController.redirectToErrorView();

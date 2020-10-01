@@ -10,7 +10,11 @@ class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, O
 
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context){
-        UserForm user = (UserForm) obj;
-        return user.getPassword().equals(user.getRepeatPassword());
+        if(obj instanceof UserForm){
+            UserForm user = (UserForm) obj;
+            return user.getPassword().equals(user.getRepeatPassword());
+        }
+            PasswordForm user = (PasswordForm) obj;
+            return user.getPassword().equals(user.getRepeatPassword());
     }
 }

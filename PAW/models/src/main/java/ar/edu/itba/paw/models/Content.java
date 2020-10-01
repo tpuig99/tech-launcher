@@ -60,8 +60,8 @@ public class Content {
         this.category = category;
     }
 
-    public FrameworkCategories getCategory() {
-        return category;
+    public String getCategory() {
+        return category.getNameCat();
     }
 
     public void setCategory(FrameworkCategories category) {

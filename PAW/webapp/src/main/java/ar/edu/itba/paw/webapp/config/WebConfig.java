@@ -18,15 +18,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 @EnableWebMvc
 @ComponentScan({ "ar.edu.itba.paw.webapp.controller","ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence","ar.edu.itba.paw.webapp.form"})
@@ -91,10 +95,19 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public MessageSource messageSource() {
         final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:i18n/messages");
-                messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+        //messageSource.setDefaultEncoding("UTF-8");
         messageSource.setCacheSeconds(5);
         return messageSource;
     }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        SessionLocaleResolver slr = new SessionLocaleResolver();
+        slr.setDefaultLocale(Locale.getDefault());
+        return slr;
+    }
+
 
 }
 

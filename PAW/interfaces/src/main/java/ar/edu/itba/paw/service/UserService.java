@@ -13,6 +13,7 @@ public interface UserService {
     /** user **/
     Optional<User> findById(long id);
     Optional<User> findByUsername(String username);
+    Optional<User> findByMail(String mail);
     User create(String username,String mail,String password) throws UserAlreadyExistException;
     int delete(long userId);
     void updateDescription(long userId,String description);
@@ -37,4 +38,6 @@ public interface UserService {
     void deleteVerificationByUser(long userId);
     void verify(long verificationId);
     Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId);
+    void passwordMailing(User user, String appUrl);
+    void modMailing(User user,String frameworkName);
 }

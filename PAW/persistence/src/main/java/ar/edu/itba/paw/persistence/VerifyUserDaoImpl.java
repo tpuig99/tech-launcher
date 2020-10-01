@@ -59,7 +59,8 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
                 rs.getString("user_name"),
                 rs.getInt("framework_id"),
                 rs.getString("framework_name"),
-                rs.getBoolean("pending")
+                rs.getBoolean("pending"),
+                FrameworkCategories.getByName(rs.getString("category"))
         );
     }
 
