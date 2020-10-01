@@ -7,15 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.net.Authenticator;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 public class FrameworkController {
@@ -138,6 +137,24 @@ public class FrameworkController {
 
         return ErrorController.redirectToErrorView();
     }
+
+    @RequestMapping("/mod/quit")
+    public ModelAndView QuitMod(@RequestParam("fId") final long fId,@RequestParam("category") final String cat) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(us.findByUsername(authentication.getName()).isPresent()){
+            User user = us.findByUsername(authentication.getName()).get();
+            for( VerifyUser verifyUser : user.getVerifications() ){
+                if (verifyUser.getFrameworkId() == fId) {
+                    us.deleteVerification(verifyUser.getVerificationId());
+                    return FrameworkController.redirectToFramework(fId, cat);
+                }
+            }
+            return ErrorController.redirectToErrorView();
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
 
     @RequestMapping(path={"/content"}, method = RequestMethod.POST)
     public ModelAndView addContent(@Valid @ModelAttribute("contentForm") final ContentForm form, final BindingResult errors, final RedirectAttributes redirectAttributes){

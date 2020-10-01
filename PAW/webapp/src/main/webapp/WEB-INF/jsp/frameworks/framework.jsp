@@ -361,19 +361,34 @@
                             </div>
                         </div>
                     </div>
-                    <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser' && allowMod}">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <div class="card text-center">
-                            <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>
-                            <div class="card-body">
-                                <p class="card-text"><spring:message code="tech.apply.message"/></p>
+                    <c:choose>
+                        <c:when test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser' && allowMod}">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="card text-center">
+                                    <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>
+                                    <div class="card-body">
+                                        <p class="card-text"><spring:message code="tech.apply.message"/></p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn primary-button" onclick="applyForMod()"><spring:message code="tech.apply.button"/></button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-footer">
-                                <button class="btn primary-button" onclick="applyForMod()"><spring:message code="tech.apply.button"/></button>
+                        </c:when>
+                        <c:when test="${verifyForFramework}">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="card text-center">
+                                    <div class="card-header subtitle"><h5><spring:message code="tech.mod.stop.title"/></h5></div>
+                                    <div class="card-body">
+                                        <p class="card-text"><spring:message code="tech.mod.stop.message"/></p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-danger" onclick="stopBeingAMod()"><spring:message code="tech.mod.stop.button"/></button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    </c:if>
+                        </c:when>
+                    </c:choose>
                 </div>
 
                 <!-- Competition Cards -->
@@ -588,6 +603,10 @@
                             e.preventDefault();
                         });
                     });
+
+                    function stopBeingAMod(){
+                        window.location.href = '<c:url value="/mod/quit"/>?fId=${framework.id}&category=${framework.category}';
+                    }
 
                     function applyForMod(){
                         let x = document.getElementById("snackbarModApplication");
