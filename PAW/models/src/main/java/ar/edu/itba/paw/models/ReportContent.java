@@ -1,37 +1,57 @@
 package ar.edu.itba.paw.models;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class ReportComment {
-    private long commentId;
+public class ReportContent {
+    private long contentId;
     private long frameworkId;
     private long userId;
-    private String commentDescription;
-    private String reportDescription;
+    private String title;
     private Timestamp timestamp;
-    private Long reference;
+    private String link;
+    private ContentTypes type;
     private String frameworkName;
-    private String userNameOwner;
-    private Map<Long,String> userNameReporters;
     private FrameworkCategories category;
+    private String userNameOwner;
+    private String reportDescription;
+    private Map<Long,String> userNameReporters;
 
-    public ReportComment(long commentId, long frameworkId, long userId, String commentDescription,String reportDescription, Timestamp timestamp, Long reference, String frameworkName, String userNameOwner,FrameworkCategories category) {
-        this.commentId = commentId;
+    public ReportContent(long contentId, long frameworkId, long userId, String title, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, String userNameOwner, String reportDescription) {
+        this.contentId = contentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
-        this.commentDescription = commentDescription;
+        this.title = title;
+        this.timestamp = timestamp;
+        this.link = link;
+        this.type = type;
+        this.frameworkName = frameworkName;
+        this.category = category;
+        this.userNameOwner = userNameOwner;
+        this.reportDescription = reportDescription;
+        userNameReporters = new HashMap<>();
+    }
+
+    public ReportContent(long contentId, long frameworkId, long userId, String title, String reportDescription, Timestamp timestamp, String link, ContentTypes type, String frameworkName, String userNameOwner, FrameworkCategories category) {
+        this.contentId = contentId;
+        this.frameworkId = frameworkId;
+        this.userId = userId;
+        this.title = title;
         this.reportDescription = reportDescription;
         this.timestamp = timestamp;
-        this.reference = reference;
+        this.link = link;
+        this.type = type;
         this.frameworkName = frameworkName;
         this.userNameOwner = userNameOwner;
         this.userNameReporters = new HashMap<>();
         this.category = category;
     }
 
-    public long getCommentId() {
-        return commentId;
+    public long getContentId() {
+        return contentId;
     }
 
     public long getFrameworkId() {
@@ -42,8 +62,8 @@ public class ReportComment {
         return userId;
     }
 
-    public String getCommentDescription() {
-        return commentDescription;
+    public String getTitle() {
+        return title;
     }
 
     public String getReportDescription() {
@@ -54,9 +74,6 @@ public class ReportComment {
         return timestamp;
     }
 
-    public Long getReference() {
-        return reference;
-    }
 
     public String getFrameworkName() {
         return frameworkName;
@@ -73,7 +90,18 @@ public class ReportComment {
     public FrameworkCategories getCategory() {
         return category;
     }
+
     public String getCategoryAsString(){return category.getNameCat();}
+
+    public String getLink() {
+        return link;
+    }
+
+    public ContentTypes getType() {
+        return type;
+    }
+    public String getTypeAsString(){return type.name();}
+
     public List<Long> getReportsIds(){
         List<Long> list = new ArrayList<>();
         list.addAll(userNameReporters.keySet());

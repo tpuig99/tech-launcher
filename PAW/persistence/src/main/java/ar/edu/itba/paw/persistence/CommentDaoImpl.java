@@ -27,9 +27,6 @@ public class CommentDaoImpl implements CommentDao {
     private final String FROM =" from comments c left join comment_votes cv on c.comment_id = cv.comment_id left join frameworks f on c.framework_id = f.framework_id left join users cu on cu.user_id = c.user_id left join verify_users vu on c.user_id=vu.user_id and f.framework_id = vu.framework_id left join admins a on c.user_id=a.user_id left join comment_report cr on c.comment_id = cr.comment_id left join users cru on cru.user_id = cr.user_id ";
     private final String GROUP_BY = " group by c.comment_id , framework_name, cru.user_name,cu.user_name,f.category,pending,a.user_id order by c.comment_id";
     private final String USER_VOTE =",coalesce((select vote from comment_votes where user_id=? and comment_id=c.comment_id),0) as user_vote";
-    private final static RowMapper<Comment> ROW_MAPPER = CommentDaoImpl::mapRow;
-    private final static RowMapper<Comment> ROW_MAPPER_USER_VOTE = CommentDaoImpl::mapRowUserAuthVote;
-
 
     @Autowired
     public CommentDaoImpl(final DataSource ds) {

@@ -18,15 +18,14 @@ import java.util.*;
 public class ReportCommentDaoImpl implements ReportCommentDao{
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final String SELECTION ="select cr.comment_id, cr.report_id,c.framework_id,cr.user_id as user_id_report," +
+    private final String SELECTION ="select cr.comment_id, cr.report_id,c.framework_id," +
             " c.user_id as user_id_owner,c.description as comment_description,cr.description as report_description," +
             "c.tstamp,c.reference,f.framework_name,f.category, uc.user_name as user_name_owner, " +
             "ucr.user_name as user_name_reporter from comment_report cr left join comments c on c.comment_id = cr.comment_id " +
             "left join frameworks f on c.framework_id = f.framework_id left join users uc on uc.user_id = c.user_id " +
             "left join users ucr on ucr.user_id=cr.user_id ";
     private final String ORDER_BY=" order by cr.comment_id";
-    private final ResultSetExtractor<List<ReportComment>> resultSetExtractor;
-
+    private final ResultSetExtractor<List<ReportComment>> EXTRACTOR = ReportCommentDaoImpl::extractor;
 
     @Autowired
     public ReportCommentDaoImpl(final DataSource ds) {
@@ -34,42 +33,41 @@ public class ReportCommentDaoImpl implements ReportCommentDao{
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("comment_report")
                 .usingGeneratedKeyColumns("report_id");
-        resultSetExtractor = new ResultSetExtractor<List<ReportComment>>() {
-            @Override
-            public List<ReportComment> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                List<ReportComment> list=new ArrayList<>();
-                Long currentComment = null;
-                ReportComment rc = null;
-                while(rs.next()){
-                    Long nextComment=rs.getLong("comment_id");
-                    if(currentComment==null||currentComment!=nextComment){
-                        if(rc!=null){
-                            list.add(rc);
-                        }
-                        currentComment = nextComment;
-                        rc = new ReportComment(currentComment,
-                                rs.getLong("framework_id"),
-                                rs.getLong("user_id_owner"),
-                                rs.getString("comment_description"),
-                                rs.getString("report_description"),
-                                rs.getTimestamp("tstamp"),
-                                rs.getLong("reference"),
-                                rs.getString("framework_name"),
-                                rs.getString("user_name_owner"),
-                                FrameworkCategories.getByName(rs.getString("category"))
-                                );
-                        rc.addUserReporter(rs.getLong("report_id"),rs.getString("user_name_reporter"));
-                    }else{
-                        rc.addUserReporter(rs.getLong("report_id"),rs.getString("user_name_reporter"));
-                    }
-                }
+    }
+
+    private static List<ReportComment> extractor(ResultSet rs) throws SQLException {
+        List<ReportComment> list=new ArrayList<>();
+        Long currentComment = null;
+        ReportComment rc = null;
+        while(rs.next()){
+            Long nextComment=rs.getLong("comment_id");
+            if(currentComment==null||currentComment!=nextComment){
                 if(rc!=null){
                     list.add(rc);
                 }
-                return list;
+                currentComment = nextComment;
+                rc = new ReportComment(currentComment,
+                        rs.getLong("framework_id"),
+                        rs.getLong("user_id_owner"),
+                        rs.getString("comment_description"),
+                        rs.getString("report_description"),
+                        rs.getTimestamp("tstamp"),
+                        rs.getLong("reference"),
+                        rs.getString("framework_name"),
+                        rs.getString("user_name_owner"),
+                        FrameworkCategories.getByName(rs.getString("category"))
+                );
+                rc.addUserReporter(rs.getLong("report_id"),rs.getString("user_name_reporter"));
+            }else{
+                rc.addUserReporter(rs.getLong("report_id"),rs.getString("user_name_reporter"));
             }
-        };
+        }
+        if(rc!=null){
+            list.add(rc);
+        }
+        return list;
     }
+
 
     @Override
     public Optional<ReportComment> getById(long reportId) {
@@ -78,18 +76,18 @@ public class ReportCommentDaoImpl implements ReportCommentDao{
 
     @Override
     public List<ReportComment> getAll() {
-        return jdbcTemplate.query(SELECTION+ORDER_BY,resultSetExtractor);
+        return jdbcTemplate.query(SELECTION+ORDER_BY,EXTRACTOR);
     }
 
     @Override
     public List<ReportComment> getByFramework(long frameworkId) {
-        return jdbcTemplate.query(SELECTION+"where f.framework_id = ?"+ORDER_BY,new Object[]{frameworkId},resultSetExtractor);
+        return jdbcTemplate.query(SELECTION+"where f.framework_id = ?"+ORDER_BY,new Object[]{frameworkId},EXTRACTOR);
     }
 
     @Override
     public Optional<ReportComment> getByComment(long commentId) {
         String value = SELECTION+"where cr.comment_id = ?"+ORDER_BY;
-        return jdbcTemplate.query(value,new Object[]{commentId},resultSetExtractor).stream().findFirst();
+        return jdbcTemplate.query(value,new Object[]{commentId},EXTRACTOR).stream().findFirst();
     }
 
     @Override

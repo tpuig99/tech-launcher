@@ -2,6 +2,8 @@ package ar.edu.itba.paw.models;
 
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Content {
     private long contentId;
@@ -18,6 +20,7 @@ public class Content {
     private Integer userAuthVote;
     private boolean isVerify;
     private boolean isAdmin;
+    private List<String> reportersNames = new ArrayList<>();
 
     public Content(long contentId, long frameworkId, long userId, String title, int votesUp, int votesDown, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin, Integer userAuthVote) {
         this.contentId = contentId;
@@ -111,5 +114,15 @@ public class Content {
         if(userAuthVote == null)
             return false;
         return userAuthVote == 0 ? false : true;
+    }
+    public void addReporter(String name) {
+        reportersNames.add(name);
+    }
+    public boolean isReporter(String name){
+        for (String rn:reportersNames) {
+            if(rn.equals(name))
+                return true;
+        }
+        return false;
     }
 }
