@@ -23,9 +23,10 @@ public class CommentDaoImpl implements CommentDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final ResultSetExtractor<List<Comment>> SET_EXTRACTOR = CommentDaoImpl::extractor;
     private final ResultSetExtractor<List<Comment>> SET_EXTRACTOR_USER_VOTE = CommentDaoImpl::extractorUserVote;
-    private final String SELECTION ="select cru.user_name as user_name_reporter, (CASE WHEN vu.pending IS false THEN true ELSE false END) AS is_verify,c.comment_id,c.framework_id,c.user_id,c.description,tstamp,reference,framework_name,f.category,count(case when vote=-1 then vote end) as neg,count(case when vote=1 then vote end) as pos, cu.user_name,(case when a.user_id is null then false else true end) as is_admin from comments c left join comment_votes cv on c.comment_id = cv.comment_id left join frameworks f on c.framework_id = f.framework_id left join users cu on cu.user_id = c.user_id left join verify_users vu on c.user_id=vu.user_id and f.framework_id = vu.framework_id left join admins a on c.user_id=a.user_id left join comment_report cr on c.comment_id = cr.comment_id left join users cru on cru.user_id = cr.user_id ";
+    private final String SELECTION ="select cru.user_name as user_name_reporter, (CASE WHEN vu.pending IS false THEN true ELSE false END) AS is_verify,c.comment_id,c.framework_id,c.user_id,c.description,tstamp,reference,framework_name,f.category,count(case when vote=-1 then vote end) as neg,count(case when vote=1 then vote end) as pos, cu.user_name,(case when a.user_id is null then false else true end) as is_admin";
+    private final String FROM =" from comments c left join comment_votes cv on c.comment_id = cv.comment_id left join frameworks f on c.framework_id = f.framework_id left join users cu on cu.user_id = c.user_id left join verify_users vu on c.user_id=vu.user_id and f.framework_id = vu.framework_id left join admins a on c.user_id=a.user_id left join comment_report cr on c.comment_id = cr.comment_id left join users cru on cru.user_id = cr.user_id ";
     private final String GROUP_BY = " group by c.comment_id , framework_name, cru.user_name,cu.user_name,f.category,pending,a.user_id order by c.comment_id";
-    private final String SELECTION_USER_VOTE ="select cru.user_name as user_name_reporter, (CASE WHEN vu.pending IS false THEN true ELSE false END) AS is_verify,c.comment_id,c.framework_id,c.user_id,c.description,tstamp,reference,framework_name,f.category,count(case when vote=-1 then vote end) as neg,count(case when vote=1 then vote end) as pos, coalesce((select vote from comment_votes where user_id=? and comment_id=c.comment_id),0) as user_vote,cu.user_name,(case when a.user_id is null then false else true end) as is_admin from comments c left join comment_votes cv on c.comment_id = cv.comment_id left join frameworks f on c.framework_id = f.framework_id left join users cu on cu.user_id = c.user_id left join verify_users vu on c.user_id=vu.user_id and f.framework_id = vu.framework_id left join admins a on c.user_id=a.user_id left join comment_report cr on c.comment_id = cr.comment_id left join users cru on cru.user_id = cr.user_id  ";
+    private final String USER_VOTE =",coalesce((select vote from comment_votes where user_id=? and comment_id=c.comment_id),0) as user_vote";
     private final static RowMapper<Comment> ROW_MAPPER = CommentDaoImpl::mapRow;
     private final static RowMapper<Comment> ROW_MAPPER_USER_VOTE = CommentDaoImpl::mapRowUserAuthVote;
 
@@ -154,7 +155,7 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public Optional<Comment> getById(long commentId) {
-        String value = SELECTION+"WHERE c.comment_id = ?"+GROUP_BY;
+        String value = SELECTION+FROM+"WHERE c.comment_id = ?"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[] {commentId},SET_EXTRACTOR).stream().findFirst();
     }
 
@@ -163,28 +164,28 @@ public class CommentDaoImpl implements CommentDao {
         String value;
         if(userId!=null)
         {
-            value = SELECTION_USER_VOTE+"where c.framework_id = ?"+GROUP_BY;
+            value = SELECTION+USER_VOTE+FROM+"where c.framework_id = ?"+GROUP_BY;
             return jdbcTemplate.query(value, new Object[] {userId,frameworkId},SET_EXTRACTOR_USER_VOTE  );
         }
-        value = SELECTION+"where c.framework_id = ?"+GROUP_BY;
+        value = SELECTION+FROM+"where c.framework_id = ?"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[] {frameworkId},  SET_EXTRACTOR );
     }
 
     @Override
     public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
-        String value = SELECTION+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
+        String value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[] {frameworkId},  SET_EXTRACTOR );
     }
 
     @Override
     public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
-        String value = SELECTION+"WHERE c.framework_id = ? AND c.user_id = ?"+GROUP_BY;
+        String value = SELECTION+FROM+"WHERE c.framework_id = ? AND c.user_id = ?"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[] {frameworkId, userId},  SET_EXTRACTOR);
     }
 
     @Override
     public List<Comment> getCommentsByUser(long userId) {
-        String value = SELECTION+"WHERE c.user_id = ?"+GROUP_BY;
+        String value = SELECTION+FROM+"WHERE c.user_id = ?"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[] {userId}, SET_EXTRACTOR);
     }
 
@@ -198,7 +199,7 @@ public class CommentDaoImpl implements CommentDao {
         List<Comment> commentsWithoutRef = getCommentsWithoutReferenceByFramework(frameworkId);
 
         if(!commentsWithoutRef.isEmpty()) {
-            String value = SELECTION+"where c.framework_id = ? AND c.reference = ?"+GROUP_BY;
+            String value = SELECTION+FROM+"where c.framework_id = ? AND c.reference = ?"+GROUP_BY;
             for (Comment comment : commentsWithoutRef) {
                 commentId = comment.getCommentId();
                 toReturn.put(commentId, jdbcTemplate.query(value, new Object[]{frameworkId, commentId}, SET_EXTRACTOR));
