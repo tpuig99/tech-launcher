@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.ReportComment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,4 +20,12 @@ public interface CommentService {
     Optional<Comment> changeComment(long commentId, String description);
     Optional<Comment> voteUp(long commentId,long userId);
     Optional<Comment> voteDown(long commentId,long userId);
+
+    /****comment report*****/
+    Optional<ReportComment> getReportById(long reportId);
+    List<ReportComment> getAllReport();
+    List<ReportComment> getReportByFramework(long frameworkId);
+    Optional<ReportComment> getReportByComment(long commentId);
+    void addReport(long commentId,long userId,String description);
+    void deleteReport(long reportId);
 }

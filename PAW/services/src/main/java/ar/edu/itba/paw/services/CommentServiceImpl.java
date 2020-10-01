@@ -2,9 +2,11 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.CommentVote;
+import ar.edu.itba.paw.models.ReportComment;
 import ar.edu.itba.paw.models.VerifyUser;
 import ar.edu.itba.paw.persistence.CommentDao;
 import ar.edu.itba.paw.persistence.CommentVoteDao;
+import ar.edu.itba.paw.persistence.ReportCommentDao;
 import ar.edu.itba.paw.persistence.VerifyUserDao;
 import ar.edu.itba.paw.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     CommentVoteDao cmtVotes;
+
+    @Autowired
+    ReportCommentDao rc;
 
     @Override
     public Optional<Comment> getById(long contentId) {
@@ -117,6 +122,36 @@ public class CommentServiceImpl implements CommentService {
 
         Optional<Comment> comment = cmts.getById(commentId);
         return comment;
+    }
+
+    @Override
+    public Optional<ReportComment> getReportById(long reportId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<ReportComment> getAllReport() {
+        return rc.getAll();
+    }
+
+    @Override
+    public List<ReportComment> getReportByFramework(long frameworkId) {
+        return rc.getByFramework(frameworkId);
+    }
+
+    @Override
+    public Optional<ReportComment> getReportByComment(long commentId) {
+        return rc.getByComment(commentId);
+    }
+
+    @Override
+    public void addReport(long commentId, long userId, String description) {
+        rc.add(commentId,userId,description);
+    }
+
+    @Override
+    public void deleteReport(long reportId) {
+        rc.delete(reportId);
     }
 
 }
