@@ -40,8 +40,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getCommentsByFramework(long frameworkId) {
-        List<Comment> comments = cmts.getCommentsByFramework(frameworkId);
+    public List<Comment> getCommentsByFramework(long frameworkId,Long userId) {
+        List<Comment> comments = cmts.getCommentsByFramework(frameworkId,userId);
         return comments;
     }
 

@@ -18,6 +18,7 @@ public class Comment {
     private FrameworkCategories category;
     private boolean isVerify;
     private boolean isAdmin;
+    private Integer userAuthVote;
     private List<String> reportersNames = new ArrayList<>();
 
     public Comment(long commentId, long frameworkId, long userId, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin) {
@@ -35,6 +36,23 @@ public class Comment {
         this.isVerify = isVerify;
         this.isAdmin = isAdmin;
     }
+    public Comment(long commentId, long frameworkId, long userId, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin, Integer userAuthVote) {
+        this.commentId = commentId;
+        this.frameworkId = frameworkId;
+        this.userId = userId;
+        this.description = description;
+        this.votesUp = votesUp;
+        this.votesDown = votesDown;
+        this.timestamp = timestamp;
+        this.reference = reference;
+        this.frameworkName = frameworkName;
+        this.userName = userName;
+        this.category = category;
+        this.isVerify = isVerify;
+        this.isAdmin = isAdmin;
+        this.userAuthVote = userAuthVote;
+    }
+
 
     public long getCommentId() {
         return commentId;
@@ -90,6 +108,15 @@ public class Comment {
 
     public boolean isAdmin() {
         return isAdmin;
+    }
+
+    public int getUserAuthVote() {
+        return userAuthVote;
+    }
+    public boolean hasUserAuthVote(){
+        if(userAuthVote == null)
+            return false;
+        return userAuthVote == 0 ? false : true;
     }
 
     public void addReporter(String name) {
