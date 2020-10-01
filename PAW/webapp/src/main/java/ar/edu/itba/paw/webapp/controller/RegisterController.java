@@ -250,14 +250,17 @@ public class RegisterController {
             return mav;
         }
         User user = optionalUser.get();
-        SendEmail(user);
+        String appUrl = request.getRequestURL().toString();
+        appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
+
+        SendEmail(user, appUrl);
         ModelAndView mav = new ModelAndView("/session/successful_cngPassw");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("message",messageSource.getMessage("register.change_password.message",new Object[]{},Locale.getDefault()));
         mav.addObject("title",messageSource.getMessage("register.change_password.title",new Object[]{},Locale.getDefault()));
         return mav;
     }
-    void SendEmail(User user){
+    void SendEmail(User user, String appUrl){
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
@@ -286,8 +289,8 @@ public class RegisterController {
         email.setFrom("confirmemailonly@gmail.com");
         email.setTo(recipientAddress);
         email.setSubject(subject);
-        //email.setText(message + "\r\n" + "http://pawserver.it.itba.edu.ar" + confirmationUrl);
-        email.setText(message + "\r\n" + "http://localhost:8080" + confirmationUrl);
+
+        email.setText(message + "\r\n" + appUrl + confirmationUrl);
         mailSender.send(email);
     }
 }
