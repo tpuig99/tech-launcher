@@ -9,6 +9,7 @@ import ar.edu.itba.paw.service.FrameworkVoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -23,6 +24,11 @@ public class FrameworkServiceImpl implements FrameworkService {
     @Override
     public Optional<Framework> findById(long id) {
         return frameworkDao.findById(id);
+    }
+
+    @Override
+    public List<String> getFrameworkNames() {
+        return frameworkDao.getFrameworkNames();
     }
 
     @Override
@@ -88,6 +94,75 @@ public class FrameworkServiceImpl implements FrameworkService {
                     return Double.compare(o2.getStars(),o1.getStars());
                 }
             });
+    }
+
+    @Override
+    public void orderByInteraction(List<Framework> frameworks, Integer order) {
+        if(order<0){
+            frameworks.sort(new Comparator<Framework>() {
+                @Override
+                public int compare(Framework o1, Framework o2) {
+                    if(o1.getLastComment()==null && o2.getLastComment()==null)
+                        return 0;
+                    else if(o1.getLastComment()==null)
+                        return -1;
+                    else if(o2.getLastComment()==null)
+                        return 1;
+                    return o1.getLastComment().after(o2.getLastComment()) ? 1 : -1;
+                }
+            });
+            return;
+        }
+        frameworks.sort(new Comparator<Framework>() {
+            @Override
+            public int compare(Framework o1, Framework o2) {
+                if(o1.getLastComment()==null && o2.getLastComment()==null)
+                    return 0;
+                else if(o1.getLastComment()==null)
+                    return 1;
+                else if(o2.getLastComment()==null)
+                    return -1;
+                return o1.getLastComment().before(o2.getLastComment()) ? 1 : -1;
+            }
+        });
+    }
+
+    @Override
+    public void orderByReleaseDate(List<Framework> frameworks, Integer order) {
+        if(order<0){
+            frameworks.sort(new Comparator<Framework>() {
+                @Override
+                public int compare(Framework o1, Framework o2) {
+                    return o1.getPublish_date().after(o2.getPublish_date()) ? 1 : -1;
+                }
+            });
+            return;
+        }
+        frameworks.sort(new Comparator<Framework>() {
+            @Override
+            public int compare(Framework o1, Framework o2) {
+                return o1.getPublish_date().before(o2.getPublish_date()) ? 1 : -1;
+            }
+        });
+    }
+
+    @Override
+    public void orderByCommentsAmount(List<Framework> frameworks, Integer order) {
+        if(order<0){
+            frameworks.sort(new Comparator<Framework>() {
+                @Override
+                public int compare(Framework o1, Framework o2) {
+                    return o1.getCommentsAmount()-o2.getCommentsAmount();
+                }
+            });
+            return;
+        }
+        frameworks.sort(new Comparator<Framework>() {
+            @Override
+            public int compare(Framework o1, Framework o2) {
+                return o2.getCommentsAmount()-o1.getCommentsAmount();
+            }
+        });
     }
 
     @Override

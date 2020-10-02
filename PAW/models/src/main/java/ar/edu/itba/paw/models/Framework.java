@@ -16,6 +16,8 @@ public class Framework {
     private int votesCant;
     private String author;
     private Timestamp publish_date;
+    private Timestamp lastComment;
+    private int commentsAmount;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -30,7 +32,7 @@ public class Framework {
         return Objects.hash(id, name);
     }
 
-    public Framework(long id, String name, FrameworkCategories category, String description, String introduction, String logo, double stars, int votesCant,FrameworkType type,String author,Timestamp publish_date) {
+    public Framework(long id, String name, FrameworkCategories category, String description, String introduction, String logo, double stars, int votesCant,FrameworkType type,String author,Timestamp publish_date,Timestamp lastComment,int commentsAmount) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -42,6 +44,8 @@ public class Framework {
         this.type = type;
         this.author = author;
         this.publish_date = publish_date;
+        this.lastComment = lastComment;
+        this.commentsAmount = commentsAmount;
     }
 
     public int getVotesCant() {
@@ -96,5 +100,13 @@ public class Framework {
 
     public Timestamp getPublish_date() {
         return publish_date;
+    }
+
+    public Timestamp getLastComment() {
+        return lastComment;
+    }
+
+    public int getCommentsAmount() {
+        return commentsAmount;
     }
 }

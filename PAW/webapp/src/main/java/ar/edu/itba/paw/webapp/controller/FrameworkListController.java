@@ -66,12 +66,13 @@ public class FrameworkListController {
         }
 
         List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars);
-        if(order!=0)
-            fs.orderByStars(frameworks,order);
+        if(order!=null && order!=0)
+            fs.orderByCommentsAmount(frameworks,1);
         
         mav.addObject("matchingFrameworks", frameworks);
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("categories", allCategories );
+        mav.addObject("frameworkNames",fs.getFrameworkNames());
         mav.addObject("types", allTypes);
 
         //Search Results For:

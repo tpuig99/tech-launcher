@@ -22,8 +22,10 @@ public class FrameworkDaoImpl implements FrameworkDao {
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final static RowMapper<Framework> ROW_MAPPER = FrameworkDaoImpl::mapRow;
-    private final String SELECTION="select f.framework_id,f.type,framework_name,category,f.description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant,user_name as author,f.date from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author ";
-    private final String GROUP_BY=" group by framework_name, f.framework_id, category, f.type, description, introduction, logo,u.user_name";
+    private final static RowMapper<String> ROW_MAPPER_FRAMEWORK_NAME = FrameworkDaoImpl::mapRowNames;
+
+    private final String SELECTION="select f.framework_id, count(distinct comment_id) as comment_amount,f.type,framework_name,category,f.description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant,user_name as author,f.date, max(tstamp) as last_comment from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author left join comments c on f.framework_id=c.framework_id  ";
+    private final String GROUP_BY=" group by framework_name, f.framework_id, category, f.type, f.description, introduction, logo,u.user_name";
 
 
     @Autowired
@@ -35,7 +37,9 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 .usingGeneratedKeyColumns("framework_id");
 
     }
-
+    private static String mapRowNames(ResultSet rs, int i) throws SQLException {
+        return rs.getString("framework_name");
+    }
     private static Framework mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Framework(rs.getInt("framework_id"),
                 rs.getString("framework_name"),
@@ -47,7 +51,9 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 rs.getInt("votes_cant"),
                 FrameworkType.getByName(rs.getString("type")),
                 rs.getString("author"),
-                rs.getTimestamp("date"));
+                rs.getTimestamp("date"),
+                rs.getTimestamp("last_comment"),
+                rs.getInt("comment_amount"));
     }
 
     @Override
@@ -55,6 +61,11 @@ public class FrameworkDaoImpl implements FrameworkDao {
         String value=SELECTION+"WHERE f.framework_id = ?"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[]{ id }, ROW_MAPPER).stream().findFirst();
         }
+
+    @Override
+    public List<String> getFrameworkNames() {
+        return jdbcTemplate.query("select framework_name from frameworks",ROW_MAPPER_FRAMEWORK_NAME);
+    }
 
     @Override
     public List<Framework> getByCategory(FrameworkCategories category) {
