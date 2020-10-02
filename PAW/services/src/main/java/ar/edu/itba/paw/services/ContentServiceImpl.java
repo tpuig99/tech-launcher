@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.ContentTypes;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.ContentDao;
+import ar.edu.itba.paw.persistence.ContentVoteDao;
 import ar.edu.itba.paw.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,9 @@ public class ContentServiceImpl implements ContentService {
 
     @Autowired
     ContentDao content;
+
+    @Autowired
+    ContentVoteDao cv;
 
     @Override
     public Optional<Content> getById(long contentId) {
@@ -42,19 +45,10 @@ public class ContentServiceImpl implements ContentService {
         return content.getContentByFrameworkAndType(frameworkId, type);
     }
 
-    @Override
-    public List<Content> getNotPendingContentByFrameworkAndType(long frameworkId, ContentTypes type) {
-        return content.getNotPendingContentByFrameworkAndType(frameworkId, type);
-    }
 
     @Override
-    public List<Content> getPendingContentByFrameworkAndType(long frameworkId, ContentTypes type) {
-        return content.getPendingContentByFrameworkAndType(frameworkId, type);
-    }
-
-    @Override
-    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type, Boolean pending) {
-        return content.insertContent(frameworkId, userId, title, link, type, pending);
+    public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
+        return content.insertContent(frameworkId, userId, title, link, type);
     }
 
     @Override
@@ -66,4 +60,33 @@ public class ContentServiceImpl implements ContentService {
     public Optional<Content> changeContent(long contentId, String title, String link, ContentTypes types) {
         return content.changeContent(contentId, title, link, types);
     }
+
+    @Override
+    public void voteUp(long contentId, long userId) {
+        Optional<ContentVote> vote = cv.getByContentAndUser(contentId,userId);
+        if(vote.isPresent()){
+            if(vote.get().isVoteUp())
+                cv.delete(vote.get().getContentVoteId());
+            else
+                cv.update(vote.get().getContentVoteId(),1);
+        }else {
+            cv.insert(contentId, userId, 1);
+        }
+        Optional<Content> ct = content.getById(contentId);
+    }
+
+    @Override
+    public void voteDown(long contentId, long userId) {
+        Optional<ContentVote> vote = cv.getByContentAndUser(contentId,userId);
+        if(vote.isPresent()){
+            if(!vote.get().isVoteUp())
+                cv.delete(vote.get().getContentVoteId());
+            else
+                cv.update(vote.get().getContentVoteId(),-1);
+        }else {
+            cv.insert(contentId, userId, -1);
+        }
+        Optional<Content> ct = content.getById(contentId);
+    }
+
 }

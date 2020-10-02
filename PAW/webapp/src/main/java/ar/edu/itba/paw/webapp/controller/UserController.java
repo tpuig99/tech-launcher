@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.VerifyUser;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,10 +19,7 @@ import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 @Controller
 public class UserController {
@@ -29,6 +27,8 @@ public class UserController {
     UserService us;
     @Autowired
     FrameworkService fs;
+    @Autowired
+    MessageSource messageSource;
 
     @RequestMapping("/apply")
     public String AddCandidate(HttpServletRequest request, @RequestParam("id") final long frameworkId) {
@@ -60,27 +60,8 @@ public class UserController {
         if(vu.isPresent() && vu.get().isPending()) {
             us.verify(verificationId);
             Optional<User> user = us.findById(vu.get().getUserId());
-            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-            Properties prop = new Properties();
-            prop.put("mail.smtp.host", "smtp.gmail.com");
-            prop.put("mail.smtp.port", "587");
-            prop.put("mail.smtp.auth", "true");
-            prop.put("mail.smtp.starttls.enable", "true");
-            prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-            mailSender.setJavaMailProperties(prop);
-            Session session = Session.getInstance(prop, new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("confirmemailonly", "pawserver");
-                }
-            });
-            mailSender.setSession(session);
-            SimpleMailMessage email = new SimpleMailMessage();
-            email.setFrom("confirmemailonly@gmail.com");
-            email.setTo(user.get().getMail());
-            email.setSubject("Moderator of " + vu.get().getFrameworkName());
-            email.setText("Hey! You were accepted as a moderator of " + vu.get().getFrameworkName() + ".\n\n Thanks!");
-            mailSender.send(email);
+            if(user.isPresent())
+                us.modMailing(user.get(),vu.get().getFrameworkName());
         }
         return modPage();
     }

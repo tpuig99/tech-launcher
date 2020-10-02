@@ -12,10 +12,8 @@ public interface ContentDao {
     List<Content> getContentByFramework(long frameworkId);
     List<Content> getContentByFrameworkAndUser(long frameworkId, long userId);
     List<Content> getContentByFrameworkAndType(long userId, ContentTypes type);
-    List<Content> getNotPendingContentByFrameworkAndType(long frameworkId, ContentTypes type);
-    List<Content> getPendingContentByFrameworkAndType(long frameworkId, ContentTypes type);
     List<Content> getContentByUser(long userId);
-    Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type, Boolean pending);
+    Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type);
     int deleteContent(long contentId);
     Optional<Content> changeContent(long contentId, String title, String link, ContentTypes types);
 }
