@@ -43,8 +43,8 @@ public class RegisterController {
     @Autowired
     MessageSource messageSource;
 
-    @Autowired
-    LocaleResolver localeResolver;
+//    @Autowired
+//    LocaleResolver localeResolver;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
