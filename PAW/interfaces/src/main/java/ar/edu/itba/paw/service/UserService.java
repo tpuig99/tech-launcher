@@ -32,4 +32,6 @@ public interface UserService {
     void deleteVerification(long verificationId);
     void verify(long verificationId);
     Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId);
+    void passwordMailing(User user, String appUrl);
+    void modMailing(User user,String frameworkName);
 }
