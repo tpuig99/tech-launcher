@@ -1,13 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.webapp.form.LoginForm;
-import ar.edu.itba.paw.webapp.form.UserForm;
+import ar.edu.itba.paw.webapp.form.register.LoginForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import ar.edu.itba.paw.service.FrameworkService;
 
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

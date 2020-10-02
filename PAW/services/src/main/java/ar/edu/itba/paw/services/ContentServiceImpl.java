@@ -119,13 +119,19 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
+    public void acceptReport(long contentId) {
+        content.deleteContent(contentId);
+    }
+
+    @Override
+    public void denyReport(long contentId) {
+        rc.deleteByContent(contentId);
+    }
+
+    @Override
     public void deleteReport(long reportId) {
         rc.delete(reportId);
     }
 
-    @Override
-    public void deleteReportByContent(long contentId) {
-        rc.deleteByContent(contentId);
-    }
 
 }

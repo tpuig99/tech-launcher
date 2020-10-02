@@ -2,19 +2,19 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.form.ContentForm;
+import ar.edu.itba.paw.webapp.form.framework.ContentForm;
+import ar.edu.itba.paw.webapp.form.framework.ReportForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.Authenticator;
 import java.util.*;
 
 @Controller
@@ -188,5 +188,94 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
 
     }
+    @RequestMapping(path={"/content/report"}, method = RequestMethod.PUT)
+    public ModelAndView reportContent(@Valid @ModelAttribute("reportForm")ReportForm form, final BindingResult errors, HttpServletRequest request){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            contentService.addReport(form.getId(), user.getId(),form.getDescription());
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/content/report/cancel"}, method = RequestMethod.PUT)
+    public ModelAndView cancelReportContent(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            contentService.deleteReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/report/content/accept"}, method = RequestMethod.PUT)
+    public ModelAndView acceptReportContent(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            contentService.acceptReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/report/content/deny"}, method = RequestMethod.PUT)
+    public ModelAndView denyReportContent(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            contentService.denyReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/comment/report"}, method = RequestMethod.PUT)
+    public ModelAndView reportComment(@Valid @ModelAttribute("reportForm")ReportForm form, final BindingResult errors, HttpServletRequest request){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            commentService.addReport(form.getId(), user.getId(),form.getDescription());
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/report/comment/accept"}, method = RequestMethod.PUT)
+    public ModelAndView acceptReportComment(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            commentService.acceptReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/report/comment/deny"}, method = RequestMethod.PUT)
+    public ModelAndView denyReportComment(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            commentService.denyReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/comment/report/cancel"}, method = RequestMethod.PUT)
+    public ModelAndView cancelReportComment(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            commentService.deleteReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/reports"}, method = RequestMethod.GET)
+    public ModelAndView getReports(){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+                //acordate que admin solo puede ver comments y
+                //para los de content tener el user.isverifyfor(frameworkid)
+                List<ReportComment> reportComments = commentService.getAllReport();
+                List<ReportContent> reportContents = contentService.getAllReports();
+
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
 }
 

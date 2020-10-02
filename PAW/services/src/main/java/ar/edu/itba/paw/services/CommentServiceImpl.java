@@ -156,13 +156,19 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public void acceptReport(long commentId) {
+        cmts.deleteComment(commentId);
+    }
+
+    @Override
+    public void denyReport(long commentId) {
+        rc.deleteReportByComment(commentId);
+    }
+
+    @Override
     public void deleteReport(long reportId) {
         rc.delete(reportId);
     }
 
-    @Override
-    public void deleteReportByComment(long commentId) {
-        rc.deleteReportByComment(commentId);
-    }
 
 }

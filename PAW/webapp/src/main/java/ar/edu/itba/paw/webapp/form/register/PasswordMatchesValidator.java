@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.form;
+package ar.edu.itba.paw.webapp.form.register;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

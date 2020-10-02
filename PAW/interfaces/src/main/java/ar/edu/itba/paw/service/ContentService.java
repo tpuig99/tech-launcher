@@ -32,6 +32,7 @@ public interface ContentService {
     List<ReportContent> getReportsByFramework(long frameworkId);
     Optional<ReportContent> getReportsByContent(long contentId);
     void addReport(long contentId,long userId,String description);
+    void acceptReport(long contentId);
+    void denyReport(long contentId);
     void deleteReport(long reportId);
-    void deleteReportByContent(long contentId);
 }

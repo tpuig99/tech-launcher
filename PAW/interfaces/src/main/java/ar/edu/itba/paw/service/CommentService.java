@@ -32,6 +32,7 @@ public interface CommentService {
     List<ReportComment> getReportByFramework(long frameworkId);
     Optional<ReportComment> getReportByComment(long commentId);
     void addReport(long commentId,long userId,String description);
+    void acceptReport(long commentId);
+    void denyReport(long commentId);
     void deleteReport(long reportId);
-    void deleteReportByComment(long commentId);
 }
