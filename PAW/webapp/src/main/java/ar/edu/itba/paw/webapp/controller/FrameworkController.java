@@ -195,14 +195,14 @@ public class FrameworkController {
         return mav;
     }
 
-    @RequestMapping(value = "/create", method = { RequestMethod.POST })
+    @RequestMapping(value = "/createFramework", method = { RequestMethod.POST })
     public ModelAndView create(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) {
         if (errors.hasErrors()) {
             return addFramework(form);
         }
         FrameworkType type = FrameworkType.getByName(form.getType());
         FrameworkCategories category = FrameworkCategories.getByName(form.getCategory());
-        fs.create(form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type);
+        fs.create(form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,form.getUserId());
         return new ModelAndView("redirect:/...");
     }
 

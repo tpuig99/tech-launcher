@@ -33,7 +33,7 @@ public class FrameworkForm {
     @Size(max = 5000)
     @Pattern(regexp = "[a-zA-Z0-9]+")
     private String introduction;
-
+    private long userId;
     public String getFrameworkName() {
         return frameworkName;
     }
@@ -72,5 +72,13 @@ public class FrameworkForm {
 
     public void setIntroduction(String introduction) {
         this.introduction = introduction;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 }
