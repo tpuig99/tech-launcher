@@ -22,4 +22,4 @@ public interface FrameworkDao {
     List<Framework> getByMinStars(int stars);
     List<Framework> getByMultipleTypes(List<FrameworkType> types);
     List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars);
-}
+    void create(String name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId);    }

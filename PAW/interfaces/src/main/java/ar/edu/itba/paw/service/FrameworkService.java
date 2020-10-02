@@ -22,4 +22,5 @@ public interface FrameworkService {
     List<Framework> getByMultipleCategories(List<FrameworkCategories> categories);
     List<Framework> getByMultipleTypes(List<FrameworkType> types);
     List<Framework> getByMinStars(int stars);
+    void create(String name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId);
 }
