@@ -14,6 +14,8 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/search.css"/>"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.css" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -26,6 +28,7 @@
 <div class="content-search">
     <div class="sidebar-search">
 
+        <!-- Filter By Categories -->
         <div class="subtitle"><h4><spring:message code="explore.categories"/></h4></div>
             <c:forEach items="${categories}" var="category" begin="0" end="5">
                 <div class="form-check">
@@ -52,7 +55,7 @@
                 </div>
             </div>
 
-
+        <!-- Filter By Types -->
         <div class="subtitle"> <h4><spring:message code="explore.types"/></h4></div>
         <c:forEach items="${types}" var="type" begin="0" end="5">
             <div class="form-check">
@@ -79,6 +82,8 @@
             </div>
         </div>
 
+        <!--Filter By Rating-->
+
         <div class="subtitle"><h4><spring:message code="explore.rating"/></h4></div>
 
         <span><spring:message code="explore.from"/></span>
@@ -96,13 +101,16 @@
 
     </div>
 
+    <!-- Search Bar -->
     <div class="search-bar">
         <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks(0)" id="search">
-            <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
+            <input id="searchInput" class="form-control mr-sm-2" type="text" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
             <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)"><spring:message code="search.title"/></button>
 
         </form>
     </div>
+
+    <!--Search Results For / Explore -->
     <div class="page-description"></div>
     <div class="page-title">
         <c:choose>
@@ -115,6 +123,8 @@
         </c:choose>
 
     </div>
+
+    <!--Search Results Badges -->
     <div class="row">
         <div class="col-10">
             <div class="margin-top">
@@ -141,6 +151,8 @@
 
             </div>
         </div>
+
+        <!-- Sort Dropdown -->
         <div class="col">
             <div class="btn-group d-flex justify-content-end margin-top">
                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -155,7 +167,7 @@
     </div>
 
     <div class="page-description"></div>
-
+    <!-- Display Matching Techs -->
     <c:choose>
         <c:when test="${matchingFrameworks.size() == 0 }">
             <div>
@@ -184,6 +196,26 @@
 </div>
 
 <script>
+
+    $(document).ready(function() {
+        console.log("hola");
+
+        let tags = [];
+        <c:forEach items="${categories}" var="category">
+            tags.push('${category}');
+        </c:forEach>
+        <c:forEach items="${types}" var="type">
+        tags.push('${type}');
+        </c:forEach>
+
+        console.log(tags);
+        $('#searchInput').autocomplete({
+            source : tags,
+
+        })
+
+    });
+
     function isEmpty( input ){
         for (let i = 0; i < input.length; i++) {
             if(input.charAt(i) !== " " ){
@@ -334,9 +366,16 @@
     }
 
 
+
+
+
 </script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" crossorigin="anonymous"></script>
+<%--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>--%>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous">
+</script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
