@@ -40,7 +40,7 @@ public class FrameworkController {
     }
 
     @RequestMapping("/{category}/{id}")
-    public ModelAndView framework(@PathVariable long id, @PathVariable String category,@ModelAttribute("contentForm") final ContentForm form) {
+    public ModelAndView framework(@PathVariable long id, @PathVariable String category,@ModelAttribute("contentForm") final ContentForm form, @ModelAttribute("reportForm") final ReportForm reportForm) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Optional<Framework> framework = fs.findById(id);
 
@@ -147,7 +147,7 @@ public class FrameworkController {
         if (framework.isPresent()) {
 
             if(errors.hasErrors()){
-                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form);
+                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form, new ReportForm());
                 framework1.addObject("contentFormError", true);
                 return framework1;
             }
