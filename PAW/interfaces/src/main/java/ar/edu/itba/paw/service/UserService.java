@@ -21,6 +21,9 @@ public interface UserService {
     void saveRegisteredUser(User user);
     void generateNewVerificationToken(User user, String token);
     void updateDescription(long userId,String description);
+
+    void updatePicture(long userId, byte[] picture);
+
     VerifyUser createVerify(long userId, long frameworkId, long commentId);
     VerifyUser createVerify(long userId, long frameworkId);
     List<VerifyUser> getVerifyByUser(long userId,boolean pending);

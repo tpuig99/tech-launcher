@@ -5,11 +5,14 @@ CREATE TABLE IF NOT EXISTS users (
                                      password varchar(100),
                                      enabled boolean default false not null,
                                      user_description varchar(200) default '' not null,
-                                     allow_moderator boolean default true not null
+                                     allow_moderator boolean default true not null,
+                                     picture bytea default null
 );
 --ALTER TABLE users ADD COLUMN  enabled boolean default false not null ;
 --ALTER TABLE users ADD COLUMN  user_description varchar(200) default '' not null ;
 --ALTER TABLE users ADD COLUMN  allow_moderator boolean default true not null ;
+--ALTER TABLE users ADD COLUMN picture bytea default null;
+
 CREATE TABLE IF NOT EXISTS verification_token(
                                                  token_id SERIAL PRIMARY KEY,
                                                  user_id integer NOT NULL unique,
