@@ -67,14 +67,12 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars,Integer order) {
-        List<Framework> frameworks = frameworkDao.search(toSearch,categories,types,stars);
-        if(order==null || order==0)
-            return frameworks;
-        return orderByStars(frameworks,order);
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars) {
+        return frameworkDao.search(toSearch,categories,types,stars);
     }
 
-    private List<Framework> orderByStars(List<Framework> frameworks, Integer order) {
+    @Override
+    public void orderByStars(List<Framework> frameworks, Integer order) {
         if(order>0){
             frameworks.sort(new Comparator<Framework>() {
                 @Override
@@ -82,7 +80,7 @@ public class FrameworkServiceImpl implements FrameworkService {
                     return Double.compare(o1.getStars(),o2.getStars());
                 }
             });
-            return frameworks;
+            return;
         }
             frameworks.sort(new Comparator<Framework>() {
                 @Override
@@ -90,7 +88,6 @@ public class FrameworkServiceImpl implements FrameworkService {
                     return Double.compare(o2.getStars(),o1.getStars());
                 }
             });
-        return frameworks;
     }
 
     @Override

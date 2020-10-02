@@ -28,7 +28,7 @@ public class FrameworkListController {
     private UserService us;
 
     @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
-    public ModelAndView advancedSearch(@RequestParam(required = false) final String toSearch,
+    public ModelAndView advancedSearch(@RequestParam(required = false) String toSearch,
                                        @RequestParam(required = false) final List<String> categories,
                                        @RequestParam(required = false) final List<String> types,
                                        @RequestParam(required = false) final Integer stars,
@@ -55,11 +55,24 @@ public class FrameworkListController {
                 typesList.add(FrameworkType.getByName(aux));
             }
         }
+        List<String> allCategories = FrameworkCategories.getAllCategories();
+        List<String> allTypes = FrameworkType.getAllTypes();
+        if(allCategories.contains(toSearch)){
+            categoriesList.add(FrameworkCategories.getByName(toSearch));
+            toSearch="";
+        } else if(allTypes.contains(toSearch)){
+            typesList.contains(toSearch);
+            toSearch="";
+        }
 
-        mav.addObject("matchingFrameworks", fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars, order));
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars);
+        if(order!=0)
+            fs.orderByStars(frameworks,order);
+        
+        mav.addObject("matchingFrameworks", frameworks);
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("categories", FrameworkCategories.getAllCategories());
-        mav.addObject("types", FrameworkType.getAllTypes());
+        mav.addObject("categories", allCategories );
+        mav.addObject("types", allTypes);
 
         //Search Results For:
         mav.addObject("techNameQuery", toSearch );
