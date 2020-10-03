@@ -9,7 +9,7 @@
 <body>
 
 <c:url value="/content" var="postPath" />
-<form:form modelAttribute="contentForm" action="${postPath}" method="post">
+<form:form modelAttribute="contentForm" id="contentForm" action="${postPath}" method="post">
     <div class="form-group">
         <div><form:label path="title"><spring:message code="tech.content.form.title"/></form:label></div>
         <div><form:input  path="title"  class="form-control" type="text"/></div>
@@ -43,11 +43,22 @@
     <!--<input type="file" id="fileElem" multiple accept="application/pdf" style="display:none" onchange="handleFiles(this.files)">
     <a href="javascript:selectFiles()">Select some files</a>-->
     <div class="d-flex justify-content-center">
-        <input class="btn primary-button" type="submit" value="<spring:message code="button.submit"/>"/>
+        <input class="btn btn-primary" id="contentFormButton" type="submit" value="<spring:message code="button.submit"/>"/>
+        <div class="btn btn-primary" id="contentLoading" hidden>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <spring:message code="button.loading"/>
+        </div>
     </div>
-   <!-- <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>-->
 </form:form>
 
+<script>
+    $(document).ready(function() {
+        $('#contentForm').on('submit', function(e){
+            $("#contentFormButton").prop("hidden",true);
+            $("#contentLoading").prop("hidden",false);
+        });
+    });
+</script>
 
 </body>
 
