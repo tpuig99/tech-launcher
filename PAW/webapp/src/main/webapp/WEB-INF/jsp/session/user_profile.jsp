@@ -67,6 +67,15 @@
                         <c:if test="${not empty profile.description}">
                             <p><strong><spring:message code="profile.description"/></strong> <c:out value="${profile.description}"/></p>
                         </c:if>
+                        <c:if test="${user.name == profile.username && (user_isMod || !isAllowMod) && !isAdmin}">
+                            <div class="row allow-mod">
+                                <strong>Allow moderator: </strong>
+                                <label class="switch align-items-end">
+                                    <input type="checkbox" id="enableMod" onclick="setModEnable()">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </c:if>
                         <c:if test="${profile.verify}">
                             <p><strong><spring:message code="profile.moderator"/></strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
@@ -226,6 +235,7 @@
     </div>
 
     <div id="snackbar"><spring:message code="profile.updated"/></div>
+
 </div>
 
 
@@ -241,8 +251,13 @@
     });
     </c:if>
 
+    function setModEnable(){
+        window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/' +  $('#enableMod').is(":checked")
+    }
+
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
+        $("#enableMod").prop("checked", ${isAllowMod});
     });
 
     function editProfile(){

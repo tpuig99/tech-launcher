@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.ProfileForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -61,7 +62,8 @@ public class UserProfileController {
             mav.addObject("comments", commentList);
             mav.addObject("votes", votesList);
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-
+            mav.addObject("isAdmin", user.isAdmin());
+            mav.addObject("isAllowMod", user.isAllowMod());
             return mav;
         }
 
@@ -108,6 +110,22 @@ public class UserProfileController {
         }
 
         return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/user/{username}/enableMod/{value}"})
+    public ModelAndView enableMod( @PathVariable("username") String username, @PathVariable("value") Boolean value){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(us.findByUsername(authentication.getName()).isPresent()){
+            User user = us.findByUsername(authentication.getName()).get();
+            if( username.equals(user.getUsername())){
+                us.updateModAllow(user.getId(), value);
+                return UserProfileController.redirectToProfile(username);
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+
     }
 
 }
