@@ -298,13 +298,19 @@
 
                             </div>
                             <div class="row collapse multi-collapse" id="${comment.commentId}">
+                                <form:form modelAttribute="replyForm" id="replyForm${comment.commentId}" action="/reply" method="post">
+                                    <form:label path="replyFrameworkId"><form:input  class="input-wrap" path="replyFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                    <form:label path="replyCommentId"><form:input  class="input-wrap" path="replyCommentId" type="hidden" value="${comment.commentId}"/></form:label>
 
-                                <div>
-                                    <textarea id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"></textarea>
+                                    <div>
+
+                                    <form:label path="replyContent"/>
+                                    <form:textarea path="replyContent" id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"/>
                                 </div>
                                 <div>
-                                    <button class="btn primary-button btn-sm padding-top" onclick="publishComment(${comment.commentId})"><spring:message code="button.submit"/></button>
+                                    <button class="btn primary-button btn-sm padding-top" type="submit"><spring:message code="button.submit"/></button>
                                 </div>
+                                </form:form>
 
                             </div>
                         </div>
@@ -494,42 +500,12 @@
                         });
                     </c:if>
 
-                    function publishComment(commentId) {
-
-                        let id= ${framework.id};
-                        let path;
-                        let content;
-
-                        if(commentId !== undefined){
-                            content = document.getElementById(commentId+"ReplyInput").value;
-                            if(content === "")
-                                return;
-                            console.log(content);    path = '<c:url value="/create" />?id='+id+'&content='+content+'&commentId='+commentId;
-                        }else{
-                            content = document.getElementById("commentInput").value;
-                            if(content === "")
-                                return;
-                            path = '<c:url value="/create" />?id='+id+'&content='+content;
-                        }
-
-                        window.location.href = path;
-                        console.log(location.href);
-                    }
 
                     $(document).ready(function(){
                         $('[data-toggle="tooltip"]').tooltip();
                     });
 
-
-                    function voteUpComment(commentId) {
-                        let frameworkId = ${framework.id};
-                        window.location.href = '<c:url value="/voteup" />?id=' + frameworkId + '&comment_id=' + commentId;
-                    }
-
-                    function voteDownComment(commentId) {
-                        let frameworkId = ${framework.id};
-                        window.location.href = '<c:url value="/votedown" />?id=' + frameworkId + '&comment_id=' + commentId;
-                    }
+                    
 
                     $(document).ready(function () {
                         $('#commentInput').on('keyup', function () {
@@ -551,16 +527,7 @@
                         });
                     });
 
-                   /* $(document).ready(function() {
-                        $('#rating-form').on('submit', function(e){
-                            if(<%--${user.name != 'anonymousUser'}--%>) {
-                                publishRating();
-                            }
-                            e.preventDefault();
-                        });
-                    });
-*/
-                    function applyForMod(){
+                 function applyForMod(){
                         let x = document.getElementById("snackbarModApplication");
                         window.location.href = '<c:url value="/apply"/>?id=' + ${framework.id};
                         x.className = "show";

@@ -45,6 +45,7 @@ public class FrameworkController {
         mav.addObject("upVoteForm", new VoteForm());
         mav.addObject("downVoteForm", new DownVoteForm());
         mav.addObject("commentForm", new CommentForm());
+        mav.addObject("replyForm", new ReplyForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -84,7 +85,7 @@ public class FrameworkController {
     }
 
     @RequestMapping(path={"/comment"}, method= RequestMethod.POST)
-    public ModelAndView saveComment(@Valid @ModelAttribute("upVoteForm") final CommentForm form)   throws UserAlreadyExistException {
+    public ModelAndView saveComment(@Valid @ModelAttribute("commentForm") final CommentForm form)   throws UserAlreadyExistException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -92,6 +93,20 @@ public class FrameworkController {
                 final Comment comment = commentService.insertComment(form.getCommentFrameworkId(), us.findByUsername(authentication.getName()).get().getId(), form.getContent(), form.getCommentId());
 
             return FrameworkController.redirectToFramework(form.getCommentFrameworkId(), comment.getCategory());
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/reply"}, method= RequestMethod.POST)
+    public ModelAndView replyComment(@Valid @ModelAttribute("replyForm") final ReplyForm form)   throws UserAlreadyExistException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (us.findByUsername(authentication.getName()).isPresent()) {
+            final Comment comment = commentService.insertComment(form.getReplyFrameworkId(), us.findByUsername(authentication.getName()).get().getId(), form.getReplyContent(), form.getReplyCommentId());
+
+            return FrameworkController.redirectToFramework(form.getReplyFrameworkId(), comment.getCategory());
         }
 
         return ErrorController.redirectToErrorView();
@@ -161,6 +176,7 @@ public class FrameworkController {
                 framework1.addObject("upVoteForm", new VoteForm());
                 framework1.addObject("downVoteForm", new DownVoteForm());
                 framework1.addObject("commentForm", new CommentForm());
+                framework1.addObject("replyForm", new ReplyForm());
                 return framework1;
             }
 
