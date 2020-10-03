@@ -1,6 +1,7 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <head>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/form.css"/>"/>
@@ -29,16 +30,16 @@
         <c:when test="${param.username != 'anonymousUser'}">
 
             <c:choose>
-                <c:when test="${!isEnable}">
-                    <button class="btn btn-primary"  data-toggle="modal" data-target="#confirmMailModal"><spring:message code="tech.rating.button"/></button>
+                <c:when test="${!param.isEnable}">
+                    <button class="btn primary-button" type="button"  data-toggle="modal" data-target="#confirmMailModal"><spring:message code="tech.rating.button"/></button>
                 </c:when>
                 <c:otherwise>
-                    <input class="btn btn-primary" type="submit" value="RATE"/>
+                    <button class="btn primary-button" type="submit"><spring:message code="tech.rating.button"/></button>
                 </c:otherwise>
             </c:choose>
         </c:when>
         <c:otherwise>
-            <button class="btn btn-primary"  data-toggle="modal" data-target="#loginModal">RATE</button>
+            <button class="btn primary-button" type="button"  data-toggle="modal" data-target="#loginModal"><spring:message code="tech.rating.button"/></button>
         </c:otherwise>
     </c:choose>
 </form:form>
