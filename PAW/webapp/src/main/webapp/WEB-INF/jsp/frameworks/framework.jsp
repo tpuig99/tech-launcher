@@ -100,7 +100,7 @@
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${user.name != 'anonymousUser'}">
+                                    <c:when test="${user.name != 'anonymousUser' && !book.isReporter(user.name)}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="getContentId(${book.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
@@ -126,11 +126,18 @@
                                     <div class="col-10">
                                         <a target="_blank" href="${course.link}">${course.title}</a>
                                     </div>
-                                    <c:if test="${isAdmin || verifyForFramework}">
-                                        <div class="col d-flex justify-content-end align-items-end">
-                                            <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                    </c:if>
+                                    <c:choose>
+                                        <c:when test="${isAdmin || verifyForFramework}">
+                                            <div class="col d-flex justify-content-end align-items-end">
+                                                <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                            </div>
+                                        </c:when>
+                                        <c:when test="${user.name != 'anonymousUser' && !course.isReporter(user.name)}">
+                                            <div class="col d-flex justify-content-end align-items-end">
+                                                <button class="btn btn-link" onclick="getContentId(${course.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                                            </div>
+                                        </c:when>
+                                    </c:choose>
                                 </div>
                             </li>
                         </c:forEach>
@@ -150,10 +157,20 @@
                                     <div class="col-10">
                                         <a target="_blank" href="${tutorial.link}">${tutorial.title}</a>
                                     </div>
+                                    <c:choose>
+                                        <c:when test="${isAdmin || verifyForFramework}">
+                                            <div class="col d-flex justify-content-end align-items-end">
+                                                <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                            </div>
+                                        </c:when>
+                                        <c:when test="${user.name != 'anonymousUser' && !tutorial.isReporter(user.name)}">
+                                            <div class="col d-flex justify-content-end align-items-end">
+                                                <button class="btn btn-link" onclick="getContentId(${tutorial.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                                            </div>
+                                        </c:when>
+                                    </c:choose>
                                     <c:if test="${isAdmin || verifyForFramework}">
-                                        <div class="col d-flex justify-content-end align-items-end">
-                                            <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
-                                        </div>
+
                                     </c:if>
                                 </div>
                             </li>
