@@ -19,9 +19,9 @@ public class ContentDaoImpl implements ContentDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    private final String SELECTION ="select cru.user_name as user_name_reporter,c.content_id,c.framework_id,c.user_id,title,link,tstamp,c.type,count(case when vote=-1 then vote end) as neg,count(case when vote=1 then vote end) as pos, framework_name,category,(CASE WHEN vu.pending IS false THEN true ELSE false END) AS is_verify,(case when a.user_id is null then false else true end) as is_admin";
-    private final String FROM=" from content c left join content_votes cv on c.content_id = cv.content_id left join frameworks f on c.framework_id = f.framework_id left join verify_users vu on c.user_id=vu.user_id and f.framework_id = vu.framework_id left join admins a on c.user_id=a.user_id left join content_report cr on c.content_id = cr.content_id left join users cru on cru.user_id = cr.user_id ";
-    private final String GROUP_BY = " group by c.content_id ,framework_name,category,a.user_id,cru.user_name,pending order by c.content_id";
+    private final String SELECTION ="select cru.user_name as user_name_reporter,u.user_name,c.content_id,c.framework_id,c.user_id,title,link,tstamp,c.type,count(case when vote=-1 then vote end) as neg,count(case when vote=1 then vote end) as pos, framework_name,category,(CASE WHEN vu.pending IS false THEN true ELSE false END) AS is_verify,(case when a.user_id is null then false else true end) as is_admin";
+    private final String FROM=" from content c left join content_votes cv on c.content_id = cv.content_id left join frameworks f on c.framework_id = f.framework_id left join verify_users vu on c.user_id=vu.user_id and f.framework_id = vu.framework_id left join admins a on c.user_id=a.user_id left join content_report cr on c.content_id = cr.content_id left join users u on u.user_id = c.user_id left join users cru on cru.user_id = cr.user_id ";
+    private final String GROUP_BY = " group by c.content_id ,framework_name,category,a.user_id,cru.user_name,u.user_name, pending order by c.content_id";
     private final String USER_AUTH_VOTE=",coalesce((select vote from content_votes where user_id=? and content_id=c.content_id),0) as user_vote ";
 
     private final ResultSetExtractor<List<Content>> SET_EXTRACTOR = ContentDaoImpl::extractor;
@@ -60,7 +60,8 @@ public class ContentDaoImpl implements ContentDao {
                         rs.getString("framework_name"),
                         FrameworkCategories.getByName(rs.getString("category")),
                         rs.getBoolean("is_verify"),
-                        rs.getBoolean("is_admin"));
+                        rs.getBoolean("is_admin"),
+                        rs.getString("user_name"));
                 String report =rs.getString("user_name_reporter");
                 if(report!=null)
                     rc.addReporter(report);
@@ -98,6 +99,7 @@ public class ContentDaoImpl implements ContentDao {
                         FrameworkCategories.getByName(rs.getString("category")),
                         rs.getBoolean("is_verify"),
                         rs.getBoolean("is_admin"),
+                        rs.getString("user_name"),
                         rs.getInt("user_vote"));
                 String report =rs.getString("user_name_reporter");
                 if(report!=null)
@@ -110,40 +112,6 @@ public class ContentDaoImpl implements ContentDao {
             list.add(rc);
         }
         return list;
-    }
-
-
-    private static Content mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Content(rs.getLong("content_id"),
-                rs.getLong("framework_id"),
-                rs.getLong("user_id"),
-                rs.getString("title"),
-                rs.getInt("pos"),
-                rs.getInt("neg"),
-                rs.getTimestamp("tstamp"),
-                rs.getString("link"),
-                Enum.valueOf(ContentTypes.class, rs.getString("type")),
-                rs.getString("framework_name"),
-                FrameworkCategories.getByName(rs.getString("category")),
-                rs.getBoolean("is_verify"),
-                rs.getBoolean("is_admin"));
-    }
-
-    private static Content mapRow2(ResultSet rs, int rowNum) throws SQLException {
-        return new Content(rs.getLong("content_id"),
-                rs.getLong("framework_id"),
-                rs.getLong("user_id"),
-                rs.getString("title"),
-                rs.getInt("pos"),
-                rs.getInt("neg"),
-                rs.getTimestamp("tstamp"),
-                rs.getString("link"),
-                Enum.valueOf(ContentTypes.class, rs.getString("type")),
-                rs.getString("framework_name"),
-                FrameworkCategories.getByName(rs.getString("category")),
-                rs.getBoolean("is_verify"),
-                rs.getBoolean("is_admin"),
-                rs.getInt("user_vote"));
     }
 
     @Override
