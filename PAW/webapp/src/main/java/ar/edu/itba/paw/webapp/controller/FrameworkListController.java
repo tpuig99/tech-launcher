@@ -32,6 +32,7 @@ public class FrameworkListController {
                                        @RequestParam(required = false) final List<String> categories,
                                        @RequestParam(required = false) final List<String> types,
                                        @RequestParam(required = false) final Integer stars,
+                                       @RequestParam(required = false) final Boolean nameflag,
                                        @RequestParam(required = false) final Integer order){
 
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
@@ -66,9 +67,26 @@ public class FrameworkListController {
             toSearch="";
         }
 
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars,true);
-        if(order!=null && order!=0)
-            fs.orderByCommentsAmount(frameworks,1);
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars, nameflag);
+        if(order!=null && order!=0){
+            switch (order){
+                case -1:
+                    fs.orderByStars(frameworks,order);
+                case 1:
+                    fs.orderByCommentsAmount(frameworks,order);
+                case -2:
+                    fs.orderByCommentsAmount(frameworks,order);
+                case 3:
+                    fs.orderByReleaseDate(frameworks,order);
+                case -3:
+                    fs.orderByReleaseDate(frameworks,order);
+                case 4:
+                    fs.orderByInteraction(frameworks,order);
+                case -4:
+                    fs.orderByInteraction(frameworks,order);
+            }
+        }
+
         
         mav.addObject("matchingFrameworks", frameworks);
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());

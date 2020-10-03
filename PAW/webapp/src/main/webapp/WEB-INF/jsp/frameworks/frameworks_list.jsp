@@ -103,10 +103,16 @@
 
     <!-- Search Bar -->
     <div class="search-bar">
-        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks(0)" id="search">
+        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="text" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
-            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)"><spring:message code="search.title"/></button>
+            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="search.title"/></button>
         </form>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
+            <label class="form-check-label" for="searchOnlyByName">
+                Search only by Tech name
+            </label>
+        </div>
     </div>
 
     <!--Search Results For / Explore -->
@@ -160,6 +166,12 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)"><spring:message code="explore.rating_high_to_low"/></button>
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(1)"><spring:message code="explore.rating_low_to_high"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-2)">Comments: More to Least</button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(2)">Comments: Least to More</button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-3)">Tech Release Date: Oldest to Newest</button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(3)">Tech Release Date: Newest to Oldest</button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-4)">Tech: Most Recent Commented</button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(4)">Tech: Last Commented</button>
                 </div>
             </div>
         </div>
@@ -235,15 +247,16 @@
         return true;
     }
 
-    function searchFrameworks(order) {
+    function searchFrameworks() {
         let name = document.getElementById("searchInput").value;
-        console.log(name);
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
         let stars = getRating();
+        let nameFlag = getNameFlag();
+        let order = 0;
 
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(stars))) {
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&nameflag=' + nameFlag +'&order=' + order;
         }
 
     }
@@ -253,6 +266,7 @@
         let categories="";
         let types="";
         let stars="";
+        let nameFlag= getNameFlag();
 
         <c:if test="${not empty techNameQuery}">
             name = "${techNameQuery}";
@@ -278,7 +292,7 @@
         </c:if>
 
         <c:if test="${fn:length(matchingFrameworks) > 1}">
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&nameflag=' + nameFlag + '&order=' + order;
         </c:if>
     }
 
@@ -358,6 +372,10 @@
         }
 */
         return left;
+    }
+
+    function getNameFlag(){
+        return document.getElementById("searchOnlyByName").checked;
     }
 
     function parseListToString(list){
