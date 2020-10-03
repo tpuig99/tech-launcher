@@ -110,7 +110,7 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public List<Framework> getBestRatedFrameworks() {
-        List<Framework> toReturn = getAll().stream().filter(framework -> framework.getStars() > 4).collect(Collectors.toList());
+        List<Framework> toReturn = frameworkDao.getByMinStars(4);
         return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
     }
 

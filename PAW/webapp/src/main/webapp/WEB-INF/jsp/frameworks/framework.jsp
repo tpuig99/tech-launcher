@@ -14,7 +14,7 @@
 
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -37,7 +37,6 @@
                             <div class="max-logo"><img src="${framework.logo}" alt="${framework.name} logo"></div>
                         </div>
                         <div class="col-10">
-
                             <div class="row">
                                 <div class="col">
                                 <span class="framework-title"><h2>${framework.name}</h2></span>
@@ -65,17 +64,25 @@
                     <div class="d-flex justify-content-end">
                         <c:choose>
                             <c:when test="${user.name != 'anonymousUser'}">
-                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal">
-                                    <spring:message code="tech.content.button"/>
-                                </button>
+                                <c:choose>
+                                    <c:when test="${!isEnable}">
+                                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#confirmMailModal">
+                                            <spring:message code="tech.content.button"/>
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addContentModal">
+                                            <spring:message code="tech.content.button"/>
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:when>
                             <c:otherwise>
-                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#loginModal">
-                                    <spring:message code="tech.content.button"/>
-                                </button>
+                                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#loginModal">
+                                        <spring:message code="tech.content.button"/>
+                                    </button>
                             </c:otherwise>
                         </c:choose>
-
                    </div>
                 </div>
                 <c:if test="${empty books && empty courses && empty tutorials}">
@@ -169,22 +176,31 @@
                             <div>
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <form:form modelAttribute="upVoteForm" id="upVoteForm${comment.commentId}" action="/upvote" method="post">
-                                            <form:label path="frameworkId"><form:input id="upVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
-                                            <form:label path="commentId"><form:input id="upVoteFormCommentId${comment.commentId}" class="input-wrap" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
-
-                                            <button class="btn upVote btn-link" type="submit">
-                                            <c:choose>
-                                                <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote > 0}">
-                                                    <i class="fa fa-arrow-up arrow votedUp"> ${comment.votesUp}</i>
-                                                </c:when>
-                                                <c:otherwise>
+                                        <c:choose>
+                                            <c:when test="${!isEnable}">
+                                                <button class=" btn upVote btn-link" data-toggle="modal" data-target="#confirmMailModal">
                                                     <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
-                                                </c:otherwise>
-                                            </c:choose>
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form:form modelAttribute="upVoteForm" id="upVoteForm${comment.commentId}" action="/upvote" method="post">
+                                                    <form:label path="frameworkId"><form:input id="upVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                                    <form:label path="commentId"><form:input id="upVoteFormCommentId${comment.commentId}" class="input-wrap" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
 
-                                        </button>
-                                        </form:form>
+                                                    <button class="btn upVote btn-link" type="submit">
+                                                        <c:choose>
+                                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote > 0}">
+                                                                <i class="fa fa-arrow-up arrow votedUp"> ${comment.votesUp}</i>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                                            </c:otherwise>
+                                                        </c:choose>
+
+                                                    </button>
+                                                </form:form>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:when>
                                     <c:otherwise>
                                         <button class=" btn upVote btn-link" data-toggle="modal" data-target="#loginModal">
@@ -196,21 +212,30 @@
                             <div>
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <form:form modelAttribute="downVoteForm" id="downVoteForm${comment.commentId}" action="/downvote" method="post">
-                                        <form:label path="downVoteFrameworkId"><form:input id="downVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="downVoteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
-                                        <form:label path="downVoteCommentId"><form:input id="downVoteFormCommentId${comment.commentId}" class="input-wrap" path="downVoteCommentId" type="hidden" value="${comment.commentId}"/></form:label>
-
-                                        <button class=" btn upVote btn-link" type="submit">
                                         <c:choose>
-                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote < 0}">
-                                                <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
+                                            <c:when test="${!isEnable}">
+                                                <button class=" btn downVote btn-link" data-toggle="modal" data-target="#confirmMailModal">
+                                                    <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                                </button>
                                             </c:when>
                                             <c:otherwise>
-                                                <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                                <form:form modelAttribute="downVoteForm" id="downVoteForm${comment.commentId}" action="/downvote" method="post">
+                                                    <form:label path="downVoteFrameworkId"><form:input id="downVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="downVoteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                                    <form:label path="downVoteCommentId"><form:input id="downVoteFormCommentId${comment.commentId}" class="input-wrap" path="downVoteCommentId" type="hidden" value="${comment.commentId}"/></form:label>
+
+                                                    <button class=" btn upVote btn-link" type="submit">
+                                                        <c:choose>
+                                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote < 0}">
+                                                                <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </button>
+                                                </form:form>
                                             </c:otherwise>
                                         </c:choose>
-                                        </button>
-                                        </form:form>
                                     </c:when>
                                     <c:otherwise>
                                         <button class=" btn downVote btn-link" data-toggle="modal" data-target="#loginModal">
@@ -248,9 +273,18 @@
                                 <span>
                                     <c:choose>
                                         <c:when test="${user.name != 'anonymousUser'}">
-                                            <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
-                                               <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.reply.button"/></span>
-                                            </button>
+                                            <c:choose>
+                                                <c:when test="${!isEnable}">
+                                                    <button type="button" class="btn btn-light" data-toggle="modal" data-target="#confirmMailModal">
+                                                        <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.reply.button"/></span>
+                                                    </button>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
+                                                       <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.reply.button"/></span>
+                                                    </button>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </c:when>
                                         <c:otherwise>
                                             <button type="button" class="btn btn-light" data-toggle="modal" data-target="#loginModal">
@@ -342,7 +376,14 @@
 
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button type="submit" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                        <c:choose>
+                                            <c:when test="${!isEnable}">
+                                                <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button type="submit" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:when>
                                     <c:otherwise>
                                         <button type="button" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
@@ -362,7 +403,7 @@
                             </div>
                         </div>
                     </div>
-                    <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser'}">
+                    <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser' && isEnable}">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center">
                             <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>
@@ -418,13 +459,35 @@
                                 <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
                                 </div>
                                <div class="row justify-content-center align-items-center margin-top">
-                                    <button type="button" class="btn primary-button" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
+                                    <button type="button" class="btn btn-primary" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
                                 </div>
                                 <div class="row  justify-content-center align-items-center margin-top">
-                                    <div>Don't have an account yet? <a href="<c:url value="/register"/>">Sign Up</a>
+                                    <div><spring:message code="login.sign_up_question"/> <a href="<c:url value="/register"/>"><spring:message code="button.sign_up"/></a>
                                     </div>
                                 </div>
 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirm mail Modal -->
+                <div class="modal fade" id="confirmMailModal" tabindex="-1" role="dialog" aria-labelledby="confirmMailModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmMailModalLabel"><spring:message code="register.error.email_status"/></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row d-flex justify-content-center align-items-center">
+                                    <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
+                                </div>
+                                <div class="row justify-content-center align-items-center margin-top">
+                                    <div><spring:message code="register.error.confirm_email"/></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -505,7 +568,7 @@
                         $('[data-toggle="tooltip"]').tooltip();
                     });
 
-                    
+
 
                     $(document).ready(function () {
                         $('#commentInput').on('keyup', function () {
@@ -528,6 +591,16 @@
                     });
 
                  function applyForMod(){
+                    $(document).ready(function() {
+                        $('#rating-form').on('submit', function(e){
+                            if(${user.name != 'anonymousUser' && isEnable}) {
+                                publishRating();
+                            }
+                            e.preventDefault();
+                        });
+                    });
+
+                    function applyForMod(){
                         let x = document.getElementById("snackbarModApplication");
                         window.location.href = '<c:url value="/apply"/>?id=' + ${framework.id};
                         x.className = "show";
@@ -576,7 +649,7 @@
 
                 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
             </div>
             </div>
         </div>
