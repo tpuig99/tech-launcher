@@ -43,6 +43,7 @@ public class FrameworkController {
     public ModelAndView framework(@PathVariable long id, @PathVariable String category,@ModelAttribute("contentForm") final ContentForm form) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Optional<Framework> framework = fs.findById(id);
+        mav.addObject("ratingForm", new RatingForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -155,6 +156,7 @@ public class FrameworkController {
             if(errors.hasErrors()){
                 final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form);
                 framework1.addObject("contentFormError", true);
+                framework1.addObject("ratingForm", new RatingForm());
                 return framework1;
             }
 

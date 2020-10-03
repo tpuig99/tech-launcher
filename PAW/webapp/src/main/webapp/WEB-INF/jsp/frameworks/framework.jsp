@@ -334,7 +334,7 @@
                             <h5><spring:message code="tech.rating"/></h5>
 
                             <div class="stars">
-                               <form id="rating-form">
+                               <%--<form id="rating-form">
                                     <input class="star star-5" id="star-5" type="radio" name="star"/>
                                     <label class="star star-5" for="star-5"></label>
                                     <input class="star star-4" id="star-4" type="radio" name="star"/>
@@ -353,11 +353,11 @@
                                             <button class="btn primary-button"  data-toggle="modal" data-target="#loginModal"><spring:message code="tech.rating.button"/></button>
                                         </c:otherwise>
                                     </c:choose>
-                                </form>
-                                <%--<jsp:include page="ratingForm.jsp">
+                                </form>--%>
+                               <jsp:include page="ratingForm.jsp">
                                    <jsp:param name="frameworkId" value="${framework.id}" />
                                    <jsp:param name="username" value="${user.name}" />
-                               </jsp:include>--%>
+                               </jsp:include>
                             </div>
                         </div>
                     </div>
