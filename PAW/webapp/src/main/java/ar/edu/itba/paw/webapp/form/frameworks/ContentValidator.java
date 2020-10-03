@@ -1,10 +1,8 @@
-package ar.edu.itba.paw.webapp.form;
+package ar.edu.itba.paw.webapp.form.frameworks;
 
 import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.ContentTypes;
-import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.service.ContentService;
-import ar.edu.itba.paw.service.FrameworkService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
