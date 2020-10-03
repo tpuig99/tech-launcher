@@ -5,11 +5,14 @@ CREATE TABLE IF NOT EXISTS users (
                                      password varchar(100),
                                      enabled boolean default false not null,
                                      user_description varchar(200) default '' not null,
-                                     allow_moderator boolean default true not null
+                                     allow_moderator boolean default true not null,
+                                     picture bytea default null
 );
 --ALTER TABLE users ADD COLUMN  enabled boolean default false not null ;
 --ALTER TABLE users ADD COLUMN  user_description varchar(200) default '' not null ;
 --ALTER TABLE users ADD COLUMN  allow_moderator boolean default true not null ;
+--ALTER TABLE users ADD COLUMN picture bytea default null;
+
 CREATE TABLE IF NOT EXISTS verification_token(
                                                  token_id SERIAL PRIMARY KEY,
                                                  user_id integer NOT NULL unique,
@@ -24,9 +27,17 @@ CREATE TABLE IF NOT EXISTS frameworks (
                                           description varchar(500) NOT NULL,
                                           introduction varchar(5000) NOT NULL,
                                           logo varchar(150),
-                                          type varchar(100)
+                                          type varchar(100),
+                                          date timestamp NOT NULL,
+                                          author int NOT NULL default 1,
+                                          FOREIGN KEY(author) REFERENCES users ON DELETE set default,
+                                          UNIQUE (framework_name)
+
 );
 --ALTER TABLE frameworks ADD COLUMN  type varchar(100) default '' not null ;
+--ALTER TABLE frameworks ADD COLUMN author int NOT NULL default 1 REFERENCES users ON DELETE set default
+--ALTER TABLE frameworks ADD COLUMN date timestamp NOT NULL default '2020-08-03 16:56:37.125000'
+CREATE UNIQUE INDEX IF NOT EXISTS idx_framework on frameworks(framework_name);
 ALTER TABLE IF EXISTS  votes RENAME TO framework_votes;
 CREATE TABLE IF NOT EXISTS framework_votes (
                                                vote_id SERIAL PRIMARY KEY,

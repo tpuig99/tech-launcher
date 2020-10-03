@@ -205,6 +205,9 @@
         <c:forEach items="${types}" var="type">
         tags.push('${type}');
         </c:forEach>
+        <c:forEach items="${frameworkNames}" var="names">
+        tags.push('${names}');
+        </c:forEach>
 
         $('#searchInput').autocomplete({
             source : tags,

@@ -3,6 +3,9 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.ContentForm;
+import ar.edu.itba.paw.webapp.form.FrameworkForm;
+import ar.edu.itba.paw.webapp.form.OnRegistrationCompleteEvent;
+import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.Authenticator;
 import java.util.*;
@@ -188,5 +192,28 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
 
     }
+    @RequestMapping("/addFramewokr")
+    public ModelAndView addFramework(@ModelAttribute("frameworkForm") final FrameworkForm form) {
+        ModelAndView mav = new ModelAndView("session/...");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if( us.findByUsername(username).isPresent()){
+            User user = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+        }
+        return mav;
+    }
+
+    @RequestMapping(value = "/createFramework", method = { RequestMethod.POST })
+    public ModelAndView create(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) {
+        if (errors.hasErrors()) {
+            return addFramework(form);
+        }
+        FrameworkType type = FrameworkType.getByName(form.getType());
+        FrameworkCategories category = FrameworkCategories.getByName(form.getCategory());
+        fs.create(form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,form.getUserId());
+        return new ModelAndView("redirect:/...");
+    }
+
 }
 
