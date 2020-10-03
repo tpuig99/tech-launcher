@@ -11,12 +11,13 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -40,6 +41,20 @@ public class UserDaoImpl implements UserDao {
     }
 
     private static User userMapRow(ResultSet rs, int rowNum) throws SQLException {
+        byte[] image = rs.getBytes("picture");
+        String encodeBase64 = "";
+        String contentType = "";
+
+        if (image != null) {
+            byte[] encodedByteArray = Base64.getEncoder().encode(rs.getBytes("picture"));
+            encodeBase64 = new String(encodedByteArray, StandardCharsets.UTF_8);
+            try {
+                contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(rs.getBytes("picture")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return new User(rs.getInt("user_id"),
                 rs.getString("user_name"),
                 rs.getString("mail"),
@@ -48,7 +63,8 @@ public class UserDaoImpl implements UserDao {
                 rs.getString("user_description"),
                 rs.getBoolean("allow_moderator"),
                 rs.getBoolean("is_admin"),
-                rs.getBytes("picture"));
+                contentType,
+                encodeBase64);
     }
 
     private static String usernameMapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -152,7 +168,7 @@ public class UserDaoImpl implements UserDao {
         args.put("allow_moderator",true);
         args.put("picture",new byte[]{});
         final Number userId = jdbcInsert.executeAndReturnKey(args);
-        return new User(userId.longValue(), user_name,mail,password,false,"",true,false, new byte[]{});
+        return new User(userId.longValue(), user_name,mail,password,false,"",true,false, "", "");
     }
 
     @Override
