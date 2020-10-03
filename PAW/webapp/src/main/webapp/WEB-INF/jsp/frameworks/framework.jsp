@@ -101,11 +101,19 @@
                                 <div class="col-10">
                                     <a target="_blank" href="${book.link}">${book.title}</a>
                                 </div>
-                                <c:if test="${isAdmin || verifyForFramework}">
-                                    <div class="col d-flex justify-content-end align-items-end">
-                                        <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
-                                    </div>
-                                </c:if>
+
+                                <c:choose>
+                                    <c:when test="${isAdmin || verifyForFramework || user.name == book.userName}">
+                                        <div class="col d-flex justify-content-end align-items-end">
+                                            <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </c:when>
+                                    <c:when test="${user.name != 'anonymousUser' && book.userName!=user.name && !book.isReporter(user.name)}">
+                                        <div class="col d-flex justify-content-end align-items-end">
+                                            <button class="btn btn-link" onclick="getContentId(${book.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                                        </div>
+                                    </c:when>
+                                </c:choose>
                             </div>
                         </li>
                         </c:forEach>
@@ -126,11 +134,18 @@
                                     <div class="col-10">
                                         <a target="_blank" href="${course.link}">${course.title}</a>
                                     </div>
-                                    <c:if test="${isAdmin || verifyForFramework}">
-                                        <div class="col d-flex justify-content-end align-items-end">
-                                            <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                    </c:if>
+                                    <c:choose>
+                                        <c:when test="${isAdmin || verifyForFramework || user.name == course.userName}">
+                                            <div class="col d-flex justify-content-end align-items-end">
+                                                <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                            </div>
+                                        </c:when>
+                                        <c:when test="${user.name != 'anonymousUser' && user.name != course.userName && !course.isReporter(user.name)}">
+                                            <div class="col d-flex justify-content-end align-items-end">
+                                                <button class="btn btn-link" onclick="getContentId(${course.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                                            </div>
+                                        </c:when>
+                                    </c:choose>
                                 </div>
                             </li>
                         </c:forEach>
@@ -150,11 +165,18 @@
                                     <div class="col-10">
                                         <a target="_blank" href="${tutorial.link}">${tutorial.title}</a>
                                     </div>
-                                    <c:if test="${isAdmin || verifyForFramework}">
-                                        <div class="col d-flex justify-content-end align-items-end">
-                                            <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                    </c:if>
+                                    <c:choose>
+                                        <c:when test="${isAdmin || verifyForFramework || user.name == tutorial.userName}">
+                                            <div class="col d-flex justify-content-end align-items-end">
+                                                <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                                            </div>
+                                        </c:when>
+                                        <c:when test="${user.name != 'anonymousUser' && user.name != tutorial.userName && !tutorial.isReporter(user.name)}">
+                                            <div class="col d-flex justify-content-end align-items-end">
+                                                <button class="btn btn-link" onclick="getContentId(${tutorial.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                                            </div>
+                                        </c:when>
+                                    </c:choose>
                                 </div>
                             </li>
                         </c:forEach>
@@ -258,6 +280,12 @@
                                 <div class="col">
                                     <c:out value="${comment.description}" default=""/>
                                 </div>
+
+                                <c:if test="${user.name != 'anonymousUser' && user.name != comment.userName && !comment.isReporter(user.name) }">
+                                    <div class="col d-flex justify-content-end align-items-end">
+                                        <button class="btn btn-link" onclick="getCommentId(${comment.commentId})" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
+                                    </div>
+                                </c:if>
                             </div>
                             <div class="row padding-bottom">
                                 <span>
@@ -564,7 +592,88 @@
                     </div>
                 </div>
 
+                <!-- Report Modals -->
+                <div class="modal fade" id="reportContentModal" tabindex="-1" role="dialog" aria-labelledby="reportContentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header container">
+
+                                <h5 class="modal-title" id="reportContentLabel"><spring:message code="tech.content.report"/></h5>
+
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                </button>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
+                            <div class="modal-body container">
+                                <c:url value="/content/report" var="postPathReport" />
+                                <form:form modelAttribute="reportForm" action="${postPathReport}" method="post">
+                                    <div class="form-group">
+                                        <div><form:label path="description"><spring:message code="tech.content.report.reason"/></form:label></div>
+                                        <div><form:input  path="description"  class="form-control" type="text"/></div>
+                                        <form:errors path="description" element="p" cssClass="formError"/>
+                                    </div>
+                                    <form:label path="id">
+                                        <form:input  class="input-wrap" path="id" type="hidden" value="" id="reportContentId"/>
+                                    </form:label>
+                                    <form:label path="reportFrameworkId">
+                                        <form:input class="input-wrap" path="reportFrameworkId" type="hidden" value="${framework.id}"/>
+                                    </form:label>
+                                    <div class="d-flex justify-content-center">
+                                        <input class="btn btn-danger" type="submit" value="<spring:message code="button.submit"/>"/>
+                                    </div>
+                                    <!-- <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>-->
+                                </form:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="reportCommentModal" tabindex="-1" role="dialog" aria-labelledby="reportCommentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header container">
+
+                                <h5 class="modal-title" id="reportCommentLabel"><spring:message code="tech.comment.report"/></h5>
+
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                </button>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
+                            <div class="modal-body container">
+                                <c:url value="/comment/report" var="postPathReportComment" />
+                                <form:form modelAttribute="reportCommentForm" action="${postPathReportComment}" method="post">
+                                    <div class="form-group">
+                                        <div><form:label path="reportCommentDescription"><spring:message code="tech.comment.report.reason"/></form:label></div>
+                                        <div><form:input  path="reportCommentDescription" class="form-control" type="text"/></div>
+                                        <form:errors path="reportCommentDescription" element="p" cssClass="formError"/>
+                                    </div>
+                                    <form:label path="reportCommentId">
+                                        <form:input  class="input-wrap" path="reportCommentId" type="hidden" value="" id="reportCommentId"/>
+                                    </form:label>
+                                    <form:label path="reportCommentFrameworkId">
+                                        <form:input class="input-wrap" path="reportCommentFrameworkId" type="hidden" value="${framework.id}"/>
+                                    </form:label>
+                                    <div class="d-flex justify-content-center">
+                                        <input class="btn btn-danger" type="submit" value="<spring:message code="button.submit"/>"/>
+                                    </div>
+                                    <!-- <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>-->
+                                </form:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Scripts -->
+                <script>
+                    function getContentId(contentId){
+                        $('#reportContentId').val(contentId);
+                    }
+
+                    function getCommentId(commentId){
+                        $('#reportCommentId').val(commentId);
+                    }
+
+                </script>
                 <script>
                     $(window).on('load', function (){
                         <c:if test="${user.name != 'anonymousUser' && stars > 0}">
