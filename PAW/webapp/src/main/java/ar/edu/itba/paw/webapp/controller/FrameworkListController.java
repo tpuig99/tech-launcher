@@ -73,6 +73,8 @@ public class FrameworkListController {
                 case -1:
                     fs.orderByStars(frameworks,order);
                 case 1:
+                    fs.orderByStars(frameworks,order);
+                case 2:
                     fs.orderByCommentsAmount(frameworks,order);
                 case -2:
                     fs.orderByCommentsAmount(frameworks,order);
