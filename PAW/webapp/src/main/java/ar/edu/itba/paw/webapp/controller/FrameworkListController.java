@@ -57,6 +57,7 @@ public class FrameworkListController {
         }
         List<String> allCategories = FrameworkCategories.getAllCategories();
         List<String> allTypes = FrameworkType.getAllTypes();
+
         if(allCategories.contains(toSearch)){
             categoriesList.add(FrameworkCategories.getByName(toSearch));
             toSearch="";
@@ -65,7 +66,7 @@ public class FrameworkListController {
             toSearch="";
         }
 
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars);
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars,true);
         if(order!=null && order!=0)
             fs.orderByCommentsAmount(frameworks,1);
         

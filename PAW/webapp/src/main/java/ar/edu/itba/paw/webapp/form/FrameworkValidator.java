@@ -19,7 +19,7 @@ public class FrameworkValidator implements ConstraintValidator<FrameworkName, St
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        List<Framework> ls = fs.search(s,null,null,null);
+        List<Framework> ls = fs.search(s,null,null,null,true);
         return ls.isEmpty();
     }
 }
