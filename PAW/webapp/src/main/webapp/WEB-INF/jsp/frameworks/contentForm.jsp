@@ -14,6 +14,7 @@
         <div><form:label path="title"><spring:message code="tech.content.form.title"/></form:label></div>
         <div><form:input  path="title"  class="form-control" type="text"/></div>
         <form:errors path="title" element="p" cssClass="formError"/>
+        <form:errors cssClass="formError" element="p"/>
     </div>
     <form:label path="frameworkId"><form:input  class="input-wrap" path="frameworkId" type="hidden" value="${param.frameworkId}"/></form:label>
 
