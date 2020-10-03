@@ -44,6 +44,7 @@ public class FrameworkController {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Optional<Framework> framework = fs.findById(id);
         mav.addObject("ratingForm", new RatingForm());
+        mav.addObject("upVoteForm", new VoteForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -97,7 +98,7 @@ public class FrameworkController {
     }
 
 
-    @RequestMapping(path={"/{category}/{id}"},params="upvote", method= RequestMethod.POST)
+    @RequestMapping(path={"/upvote"}, method= RequestMethod.POST)
     public ModelAndView voteUpComment(@Valid @ModelAttribute("upVoteForm") final VoteForm form) throws UserAlreadyExistException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -157,6 +158,7 @@ public class FrameworkController {
                 final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form);
                 framework1.addObject("contentFormError", true);
                 framework1.addObject("ratingForm", new RatingForm());
+                framework1.addObject("upVoteForm", new VoteForm());
                 return framework1;
             }
 

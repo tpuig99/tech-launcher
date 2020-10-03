@@ -169,7 +169,11 @@
                             <div>
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button class=" btn upVote btn-link" onclick="voteUpComment(${comment.commentId})">
+                                        <form:form modelAttribute="upVoteForm" action="/upvote" method="post">
+                                            <form:label path="frameworkId"><form:input id="upVoteFormFrameworkId" class="input-wrap" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                            <form:label path="commentId"><form:input id="upVoteFormCommentId" class="input-wrap" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
+
+                                            <button class="btn upVote btn-link" type="submit">
                                             <c:choose>
                                                 <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote > 0}">
                                                     <i class="fa fa-arrow-up arrow votedUp"> ${comment.votesUp}</i>
@@ -180,6 +184,7 @@
                                             </c:choose>
 
                                         </button>
+                                        </form:form>
                                     </c:when>
                                     <c:otherwise>
                                         <button class=" btn upVote btn-link" data-toggle="modal" data-target="#loginModal">
@@ -334,26 +339,6 @@
                             <h5><spring:message code="tech.rating"/></h5>
 
                             <div class="stars">
-                               <%--<form id="rating-form">
-                                    <input class="star star-5" id="star-5" type="radio" name="star"/>
-                                    <label class="star star-5" for="star-5"></label>
-                                    <input class="star star-4" id="star-4" type="radio" name="star"/>
-                                    <label class="star star-4" for="star-4"></label>
-                                    <input class="star star-3" id="star-3" type="radio" name="star"/>
-                                    <label class="star star-3" for="star-3"></label>
-                                    <input class="star star-2" id="star-2" type="radio" name="star"/>
-                                    <label class="star star-2" for="star-2"></label>
-                                    <input class="star star-1" id="star-1" type="radio" name="star"/>
-                                    <label class="star star-1" for="star-1"></label>
-                                    <c:choose>
-                                        <c:when test="${user.name != 'anonymousUser'}">
-                                            <button class="btn primary-button" type="submit"><spring:message code="tech.rating.button"/></button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <button class="btn primary-button"  data-toggle="modal" data-target="#loginModal"><spring:message code="tech.rating.button"/></button>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </form>--%>
                                <jsp:include page="ratingForm.jsp">
                                    <jsp:param name="frameworkId" value="${framework.id}" />
                                    <jsp:param name="username" value="${user.name}" />
@@ -534,30 +519,6 @@
                     function voteDownComment(commentId) {
                         let frameworkId = ${framework.id};
                         window.location.href = '<c:url value="/votedown" />?id=' + frameworkId + '&comment_id=' + commentId;
-                    }
-
-                    function publishRating(){
-                        let rate_value = 0;
-                        if (document.getElementById('star-1').checked) {
-                            rate_value = 1;
-                        }else if(document.getElementById('star-2').checked){
-                            rate_value = 2;
-                        }else if(document.getElementById('star-3').checked){
-                            rate_value = 3;
-                        }
-                        else if(document.getElementById('star-4').checked){
-                            rate_value = 4;
-                        }
-                        else if(document.getElementById('star-5').checked){
-                            rate_value =  5;
-                        }
-                        console.log(rate_value);
-                        let id= ${framework.id};
-
-                        let path = '<c:url value="/rate" />?id='+id+'&rating='+rate_value;
-                        console.log(path);
-                        window.location.href = path;
-                        console.log(location.href);
                     }
 
                     $(document).ready(function () {
