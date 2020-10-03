@@ -12,7 +12,7 @@
     </title>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/user_profile.css"/>"/>
@@ -207,13 +207,17 @@
                     <span aria-hidden="true">&times;</span>
                 </div>
                 <div class="modal-body container">
-                    <form class="border-bottom" action="/users/${username}/upload"  method="post" enctype="multipart/form-data">
+                    <form id="updatePictureForm" class="border-bottom" action="/users/${username}/upload"  method="post" enctype="multipart/form-data">
                         <div class="mb-2"><spring:message code="profile.change_picture"/></div>
                         <div class="d-flex justify-content-center mb-4">
-                            <input id="upload_input" name="picture" type="file" accept="image/*" />
+                            <input id="uploadPictureInput" name="picture" type="file" accept="image/*" />
                         </div>
                         <div class="d-flex justify-content-center mb-4">
-                            <input class="btn btn-primary" disabled id="upload_button" type="submit" value="<spring:message code="button.change_picture"/>"/>
+                            <input class="btn btn-primary" disabled id="updatePictureButton" type="submit" value="<spring:message code="button.change_picture"/>"/>
+                            <div class="btn btn-primary disabled" id="updatePictureLoading" hidden>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <spring:message code="button.loading"/>
+                            </div>
                         </div>
                     </form>
                     <jsp:include page="profileForm.jsp">
@@ -256,8 +260,15 @@
     }
 
     $(document).ready(function () {
-        $('#upload_input').change(function () {
-            $("#upload_button").prop("disabled",false)
+        $('#uploadPictureInput').change(function () {
+            $("#updatePictureButton").prop("disabled",false)
+        });
+    });
+
+    $(document).ready(function() {
+        $('#updatePictureForm').on('submit', function(e){
+            $("#updatePictureButton").prop("hidden",true);
+            $("#updatePictureLoading").prop("hidden",false);
         });
     });
 
@@ -265,6 +276,6 @@
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

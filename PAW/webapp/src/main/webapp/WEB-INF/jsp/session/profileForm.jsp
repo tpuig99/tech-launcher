@@ -11,7 +11,7 @@
 
 <c:url value="/users/${param.username}" var="path" />
 
-<form:form modelAttribute="profileForm" action="${path}" method="post">
+<form:form id="editProfileForm" modelAttribute="profileForm" action="${path}" method="post">
 
     <div class="form-group">
         <div><form:label path="description"><spring:message code="user.description"/></form:label></div>
@@ -22,13 +22,22 @@
         </div>
     </div>
 
-    <!--<input type="file" id="fileElem" multiple accept="application/pdf" style="display:none" onchange="handleFiles(this.files)">
-    <a href="javascript:selectFiles()">Select some files</a>-->
     <div class="d-flex justify-content-center">
-        <input class="btn primary-button" type="submit" value="<spring:message code="button.submit"/>"/>
+        <input class="btn btn-primary" id="editProfileButton" type="submit" value="<spring:message code="button.submit"/>"/>
+        <div class="btn btn-primary disabled" id="editProfileLoading" hidden>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <spring:message code="button.loading"/>
+        </div>
     </div>
-    <!-- <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>-->
 </form:form>
 
+<script>
+    $(document).ready(function() {
+        $('#editProfileForm').on('submit', function(e){
+            $("#editProfileButton").prop("hidden",true);
+            $("#editProfileLoading").prop("hidden",false);
+        });
+    });
+</script>
 
 </body>
