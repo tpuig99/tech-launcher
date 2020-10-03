@@ -2,10 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.form.frameworks.ContentForm;
-import ar.edu.itba.paw.webapp.form.frameworks.DownVoteForm;
-import ar.edu.itba.paw.webapp.form.frameworks.RatingForm;
-import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
+import ar.edu.itba.paw.webapp.form.frameworks.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,6 +44,7 @@ public class FrameworkController {
         mav.addObject("ratingForm", new RatingForm());
         mav.addObject("upVoteForm", new VoteForm());
         mav.addObject("downVoteForm", new DownVoteForm());
+        mav.addObject("commentForm", new CommentForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -85,15 +83,15 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
-    @RequestMapping(path={"/create"}, method= RequestMethod.GET)
-    public ModelAndView saveComment(@RequestParam("id") final long id, @RequestParam("content") final String content, @RequestParam(name="commentId", required= false) final Long commentId) throws UserAlreadyExistException {
+    @RequestMapping(path={"/comment"}, method= RequestMethod.POST)
+    public ModelAndView saveComment(@Valid @ModelAttribute("upVoteForm") final CommentForm form)   throws UserAlreadyExistException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (us.findByUsername(authentication.getName()).isPresent()) {
-                final Comment comment = commentService.insertComment(id, us.findByUsername(authentication.getName()).get().getId(), content, commentId);
+                final Comment comment = commentService.insertComment(form.getCommentFrameworkId(), us.findByUsername(authentication.getName()).get().getId(), form.getContent(), form.getCommentId());
 
-            return FrameworkController.redirectToFramework(id, comment.getCategory());
+            return FrameworkController.redirectToFramework(form.getCommentFrameworkId(), comment.getCategory());
         }
 
         return ErrorController.redirectToErrorView();
@@ -162,6 +160,7 @@ public class FrameworkController {
                 framework1.addObject("ratingForm", new RatingForm());
                 framework1.addObject("upVoteForm", new VoteForm());
                 framework1.addObject("downVoteForm", new DownVoteForm());
+                framework1.addObject("commentForm", new CommentForm());
                 return framework1;
             }
 

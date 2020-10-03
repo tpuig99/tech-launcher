@@ -328,16 +328,21 @@
                         <div class="col-8">
                             <h5><spring:message code="tech.interactions.leave_comment"/></h5>
                             <div>
-                                <textarea id="commentInput" class="form-control" aria-label="With textarea"></textarea>
+                                <form:form modelAttribute="commentForm" action="/comment" method="post">
+                                    <form:label path="commentFrameworkId"><form:input  class="input-wrap" path="commentFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+
+                                    <form:label path="content"/>
+                                    <form:textarea path="content" id="commentInput" class="form-control" aria-label="With textarea"/>
 
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button type="button" id="commentButton" disabled onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                        <button type="submit" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
                                     </c:when>
                                     <c:otherwise>
                                         <button type="button" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
                                     </c:otherwise>
                                 </c:choose>
+                                </form:form>
                             </div>
                         </div>
                         <div class="col">
