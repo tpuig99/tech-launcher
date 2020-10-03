@@ -75,6 +75,7 @@ public class RegisterController {
             String appUrl = request.getRequestURL().toString();
             appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl, false));
+            internalLogin(form.getUsername(), form.getPassword(),request);
         } catch (UserAlreadyExistException uaeEx) {
             ModelAndView mav = new ModelAndView("session/registerForm");
             mav.addObject("errorMessage", uaeEx.getLocalizedMessage());
