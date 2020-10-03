@@ -106,7 +106,6 @@
         <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks(0)" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="text" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
             <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)"><spring:message code="search.title"/></button>
-
         </form>
     </div>
 
@@ -198,7 +197,6 @@
 <script>
 
     $(document).ready(function() {
-        console.log("hola");
 
         let tags = [];
         <c:forEach items="${categories}" var="category">
@@ -208,7 +206,6 @@
         tags.push('${type}');
         </c:forEach>
 
-        console.log(tags);
         $('#searchInput').autocomplete({
             source : tags,
 
@@ -232,7 +229,6 @@
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
         let stars = getRating();
-        console.log("<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order);
 
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(stars))) {
             window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
