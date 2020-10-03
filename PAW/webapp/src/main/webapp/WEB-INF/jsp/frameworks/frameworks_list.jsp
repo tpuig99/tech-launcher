@@ -203,16 +203,25 @@
             tags.push('${category}');
         </c:forEach>
         <c:forEach items="${types}" var="type">
-        tags.push('${type}');
+            tags.push('${type}');
         </c:forEach>
         <c:forEach items="${frameworkNames}" var="names">
-        tags.push('${names}');
+            tags.push('${names}');
         </c:forEach>
 
         $('#searchInput').autocomplete({
             source : tags,
 
         })
+
+        <c:forEach items="${categoriesQuery}" var="category">
+            document.getElementById("check${category}").checked = true;
+        </c:forEach>
+        <c:forEach items="${typesQuery}" var="type">
+            document.getElementById("check${type}").checked = true;
+        </c:forEach>
+
+
 
     });
 
