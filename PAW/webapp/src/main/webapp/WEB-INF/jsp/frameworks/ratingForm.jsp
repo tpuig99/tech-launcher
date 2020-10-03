@@ -27,10 +27,18 @@
     <form:label path="rating" class="star star-1" for="star-1"/>
     <c:choose>
         <c:when test="${param.username != 'anonymousUser'}">
-            <input class="btn primary-button" type="submit" value="RATE"/>
+
+            <c:choose>
+                <c:when test="${!isEnable}">
+                    <button class="btn btn-primary"  data-toggle="modal" data-target="#confirmMailModal"><spring:message code="tech.rating.button"/></button>
+                </c:when>
+                <c:otherwise>
+                    <input class="btn btn-primary" type="submit" value="RATE"/>
+                </c:otherwise>
+            </c:choose>
         </c:when>
         <c:otherwise>
-            <button class="btn primary-button"  data-toggle="modal" data-target="#loginModal">RATE</button>
+            <button class="btn btn-primary"  data-toggle="modal" data-target="#loginModal">RATE</button>
         </c:otherwise>
     </c:choose>
 </form:form>

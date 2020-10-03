@@ -342,7 +342,7 @@
                                     <form:textarea path="replyContent" id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"/>
                                 </div>
                                 <div>
-                                    <button class="btn primary-button btn-sm padding-top" type="submit"><spring:message code="button.submit"/></button>
+                                    <button class="btn btn-primary btn-sm padding-top" type="submit"><spring:message code="button.submit"/></button>
                                 </div>
                                 </form:form>
 
@@ -381,12 +381,12 @@
                                                 <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
                                             </c:when>
                                             <c:otherwise>
-                                                <button type="submit" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                                <button type="submit" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
                                             </c:otherwise>
                                         </c:choose>
                                     </c:when>
                                     <c:otherwise>
-                                        <button type="button" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
+                                        <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
                                     </c:otherwise>
                                 </c:choose>
                                 </form:form>
@@ -411,7 +411,7 @@
                                 <p class="card-text"><spring:message code="tech.apply.message"/></p>
                             </div>
                             <div class="card-footer">
-                                <button class="btn primary-button" onclick="applyForMod()"><spring:message code="tech.apply.button"/></button>
+                                <button class="btn btn-primary" onclick="applyForMod()"><spring:message code="tech.apply.button"/></button>
                             </div>
                         </div>
                     </div>
@@ -587,16 +587,6 @@
                             } else {
                                 $("#commentButton").prop("disabled",false);
                             }
-                        });
-                    });
-
-                 function applyForMod(){
-                    $(document).ready(function() {
-                        $('#rating-form').on('submit', function(e){
-                            if(${user.name != 'anonymousUser' && isEnable}) {
-                                publishRating();
-                            }
-                            e.preventDefault();
                         });
                     });
 

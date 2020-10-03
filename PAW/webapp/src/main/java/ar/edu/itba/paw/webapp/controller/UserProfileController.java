@@ -6,7 +6,6 @@ import ar.edu.itba.paw.models.FrameworkVote;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.session.ProfileForm;
-import ar.edu.itba.paw.webapp.form.ProfileForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
