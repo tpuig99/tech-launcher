@@ -151,13 +151,15 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars) {
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars,boolean nameFlag) {
         if(toSearch==null && categories==null && types == null && (stars == null || stars == 0))
             return jdbcTemplate.query(SELECTION+GROUP_BY,ROW_MAPPER);
         String aux="where ";
         Map<String,List<String>> params = new HashMap<>();
         if(toSearch!=null && !toSearch.isEmpty()){
             aux = aux.concat("f.framework_name ILIKE '%"+toSearch+"%' ");
+            if(toSearch.length()>3 && !nameFlag)
+                aux = aux.concat("or f.description ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%' ");
         }
         if(categories!=null){
             if(!aux.equals("where "))
