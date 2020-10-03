@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.frameworks.ContentForm;
+import ar.edu.itba.paw.webapp.form.frameworks.DownVoteForm;
 import ar.edu.itba.paw.webapp.form.frameworks.RatingForm;
 import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public class FrameworkController {
         Optional<Framework> framework = fs.findById(id);
         mav.addObject("ratingForm", new RatingForm());
         mav.addObject("upVoteForm", new VoteForm());
+        mav.addObject("downVoteForm", new DownVoteForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -113,12 +115,12 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
-    @RequestMapping(path={"/votedown"}, method= RequestMethod.GET)
-    public ModelAndView voteDownComment(@RequestParam("id") final long frameworkId, @RequestParam("comment_id") final long commentId) throws UserAlreadyExistException {
+    @RequestMapping(path={"/downvote"}, method= RequestMethod.POST)
+    public ModelAndView voteDownComment(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form) throws UserAlreadyExistException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (us.findByUsername(authentication.getName()).isPresent()) {
-            final Optional<Comment> comment = commentService.voteDown(commentId, us.findByUsername(authentication.getName()).get().getId());
+            final Optional<Comment> comment = commentService.voteDown(form.getDownVoteCommentId(), us.findByUsername(authentication.getName()).get().getId());
             if(comment.isPresent()){
                 return FrameworkController.redirectToFramework(comment.get().getFrameworkId(), comment.get().getCategory());
             }
@@ -159,6 +161,7 @@ public class FrameworkController {
                 framework1.addObject("contentFormError", true);
                 framework1.addObject("ratingForm", new RatingForm());
                 framework1.addObject("upVoteForm", new VoteForm());
+                framework1.addObject("downVoteForm", new DownVoteForm());
                 return framework1;
             }
 

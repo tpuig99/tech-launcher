@@ -169,9 +169,9 @@
                             <div>
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <form:form modelAttribute="upVoteForm" action="/upvote" method="post">
-                                            <form:label path="frameworkId"><form:input id="upVoteFormFrameworkId" class="input-wrap" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
-                                            <form:label path="commentId"><form:input id="upVoteFormCommentId" class="input-wrap" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
+                                        <form:form modelAttribute="upVoteForm" id="upVoteForm${comment.commentId}" action="/upvote" method="post">
+                                            <form:label path="frameworkId"><form:input id="upVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                            <form:label path="commentId"><form:input id="upVoteFormCommentId${comment.commentId}" class="input-wrap" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
 
                                             <button class="btn upVote btn-link" type="submit">
                                             <c:choose>
@@ -196,7 +196,11 @@
                             <div>
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button class=" btn upVote btn-link" onclick="voteDownComment(${comment.commentId})">
+                                        <form:form modelAttribute="downVoteForm" id="downVoteForm${comment.commentId}" action="/downvote" method="post">
+                                        <form:label path="downVoteFrameworkId"><form:input id="downVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="downVoteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                        <form:label path="downVoteCommentId"><form:input id="downVoteFormCommentId${comment.commentId}" class="input-wrap" path="downVoteCommentId" type="hidden" value="${comment.commentId}"/></form:label>
+
+                                        <button class=" btn upVote btn-link" type="submit">
                                         <c:choose>
                                             <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote < 0}">
                                                 <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
@@ -206,6 +210,7 @@
                                             </c:otherwise>
                                         </c:choose>
                                         </button>
+                                        </form:form>
                                     </c:when>
                                     <c:otherwise>
                                         <button class=" btn downVote btn-link" data-toggle="modal" data-target="#loginModal">
