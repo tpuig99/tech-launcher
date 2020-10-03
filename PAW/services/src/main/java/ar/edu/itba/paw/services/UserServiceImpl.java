@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Comment;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.models.VerifyUser;
@@ -11,9 +12,13 @@ import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import java.util.*;
 
 @Service
@@ -28,6 +33,9 @@ public class UserServiceImpl implements UserService {
     private VerifyUserDao verifyUserDao;
 
     @Autowired
+    MessageSource messageSource;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -40,6 +48,11 @@ public class UserServiceImpl implements UserService {
         return userDao.findByUsername(username);
     }
 
+    @Override
+    public Optional<User> findByMail(String mail) {
+        return userDao.findByMail(mail);
+    }
+
 
     private long checkIfUserExists(String username, String mail) throws UserAlreadyExistException {
         Optional<User> user = findByUsernameOrMail(username,mail);
@@ -47,9 +60,9 @@ public class UserServiceImpl implements UserService {
             if(user.get().getMail().equals(mail) && user.get().getPassword()==null)
                 return user.get().getId();
             if(user.get().getMail().equals(mail)){
-                throw new UserAlreadyExistException("There is an account with that email address: " +  user.get().getMail());
+                throw new UserAlreadyExistException(messageSource.getMessage("uae.email",new Object[]{user.get().getMail()},Locale.getDefault()));
             }
-            throw new UserAlreadyExistException("There is an account with that username " +  user.get().getUsername());
+            throw new UserAlreadyExistException(messageSource.getMessage("uae.username",new Object[]{user.get().getUsername()},Locale.getDefault()));
         }
         return USER_NOT_EXISTS;
     }
@@ -113,6 +126,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
+
+    @Override
     public VerifyUser createVerify(long userId, long frameworkId, long commentId) {
         return verifyUserDao.create(userId,frameworkId,commentId);
     }
@@ -165,5 +181,52 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId) {
         return verifyUserDao.getByFrameworkAndUser(frameworkId,userId);
+    }
+
+    @Override
+    public void passwordMailing(User user, String appUrl) {
+
+            String recipientAddress = user.getMail();
+
+            String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
+            String confirmationUrl = "/recoveringToken?token=" + token;
+
+            String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, Locale.getDefault());
+            String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, Locale.getDefault());
+            String message = inter_message+ "\r\n" + appUrl + confirmationUrl;
+
+            sendEmail(recipientAddress,subject,message);
+        }
+
+    @Override
+    public void modMailing(User user, String frameworkName) {
+        String subject = messageSource.getMessage("email.moderator.subject",new Object[]{frameworkName}, Locale.getDefault());
+        String message = messageSource.getMessage("email.moderator.body",new Object[]{frameworkName}, Locale.getDefault());
+        sendEmail(user.getMail(),subject,message);
+    }
+
+    private void sendEmail(String recipientAddress,String subject,String message){
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true");
+        prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        mailSender.setJavaMailProperties(prop);
+        Session session = Session.getInstance(prop, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("confirmemailonly", "pawserver");
+            }
+        });
+        mailSender.setSession(session);
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setFrom("confirmemailonly@gmail.com");
+        email.setTo(recipientAddress);
+        email.setSubject(subject);
+
+        email.setText(message);
+        mailSender.send(email);
     }
 }

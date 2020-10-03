@@ -1,12 +1,11 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <html>
 <head>
     <title>
-        <spring:message code="register.wref"/>
+        <spring:message code="change_password.wref"/>
     </title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -24,21 +23,16 @@
 
         <div class="content-no-sidebar">
             <div class="page-title">
-                <spring:message code="register.title"/>
+                <spring:message code="change_password.title"/>
             </div>
             <c:if test="${not empty errorMessage}">
                 <c:out value="${errorMessage}"/>
             </c:if>
             <div class="page-description"></div>
 
-            <c:url value="/create" var="postPath"/>
-            <form:form modelAttribute="registerForm" action="${postPath}" method="post">
-                <div class="form-group">
-                    <spring:message code="login.username.placeholder" var="user_placeholder" />
-                    <form:label path="username"><spring:message code="login.username"/></form:label>
-                    <form:input class="form-control" type="text" path="username" placeholder="${user_placeholder}"/>
-                    <form:errors path="username" cssClass="formError" element="p"/>
-                </div>
+            <c:url value="/updpassword" var="postPath"/>
+            <form:form modelAttribute="passwordForm" action="${postPath}" method="post">
+                <form:label path="userId"><form:input  class="input-wrap" path="userId" type="hidden" value="${user_id}"/></form:label>
                 <div class="form-group">
                     <spring:message code="login.password.placeholder" var="password_placeholder" />
                     <form:label path="password"><spring:message code="login.password"/></form:label>
@@ -48,18 +42,12 @@
                 <div class="form-group">
                     <spring:message code="login.password.placeholder" var="password_placeholder" />
                     <form:label path="repeatPassword"><spring:message code="login.password.repeat"/></form:label>
-                    <form:input class="form-control" type="password" path="repeatPassword"  placeholder="${password_placeholder}"/>
+                    <form:input class="form-control" type="password" path="repeatPassword" placeholder="${password_placeholder}"/>
                     <form:errors path="repeatPassword" cssClass="formError" element="p"/>
                     <form:errors cssClass="formError" element="p"/>
                 </div>
-                <div class="form-group">
-                    <spring:message code="login.email.placeholder" var="email_placeholder" />
-                    <form:label path="email"><spring:message code="login.email"/></form:label>
-                    <form:input class="form-control" type="email" path="email" placeholder="${email_placeholder}"/>
-                    <form:errors path="email" cssClass="formError" element="p"/>
-                </div>
                 <div class="d-flex justify-content-center">
-                    <input class="btn primary-button" type="submit" value="<spring:message code="button.sign_up"/>"/>
+                    <input class="btn primary-button" type="submit" value="<spring:message code="button.submit"/>"/>
                 </div>
             </form:form>
         </div>

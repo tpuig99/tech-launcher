@@ -14,9 +14,10 @@ public class User {
     private String description;
     private boolean allowMod;
     private boolean admin;
+    private byte [] picture;
     private List<VerifyUser> verifications;
 
-    public User(long id, String username, String mail, String password, boolean enable, String description, boolean allowMod,boolean admin) {
+    public User(long id, String username, String mail, String password, boolean enable, String description, boolean allowMod,boolean admin, byte[] picture) {
         this.id = id;
         this.username = username;
         this.mail = mail;
@@ -25,9 +26,13 @@ public class User {
         this.description = description;
         this.allowMod = allowMod;
         this.admin = admin;
+        this.picture = picture;
         verifications = new ArrayList<>();
     }
 
+    public byte[] getPicture() {
+        return picture;
+    }
 
     public String getDescription() {
         return description;
