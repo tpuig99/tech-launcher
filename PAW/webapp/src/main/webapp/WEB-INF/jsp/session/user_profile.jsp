@@ -37,7 +37,7 @@
                     <div>
                         <div class="row justify-content-end">
                             <c:if test="${profile.username == user.name}">
-                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#editProfileModal">
+                                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editProfileModal">
                                     <i class="far fa-edit fa-sm"></i>
                                 </button>
                             </c:if>
@@ -213,7 +213,7 @@
                             <input id="upload_input" name="picture" type="file" accept="image/*" />
                         </div>
                         <div class="d-flex justify-content-center mb-4">
-                            <input class="btn primary-button" disabled id="upload_button" type="submit" value="<spring:message code="button.change_picture"/>"/>
+                            <input class="btn btn-primary" disabled id="upload_button" type="submit" value="<spring:message code="button.change_picture"/>"/>
                         </div>
                     </form>
                     <jsp:include page="profileForm.jsp">
