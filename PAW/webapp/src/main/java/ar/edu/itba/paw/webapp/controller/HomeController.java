@@ -4,7 +4,6 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.LoginForm;
-import ar.edu.itba.paw.webapp.form.UserForm;
 import ar.edu.itba.paw.webapp.form.session.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

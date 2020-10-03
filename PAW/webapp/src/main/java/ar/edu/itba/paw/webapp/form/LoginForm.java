@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.form;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class LoginForm {
     private String username;
