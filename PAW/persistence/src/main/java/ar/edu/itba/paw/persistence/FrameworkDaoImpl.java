@@ -136,7 +136,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> getByMinStars(int stars) {
-        String value=SELECTION+"WHERE stars>=?"+GROUP_BY;
+        String value=SELECTION+GROUP_BY+" having COALESCE(avg(stars),0)>=?";
         return jdbcTemplate.query(value, new Object[]{ stars }, ROW_MAPPER);
 
     }
