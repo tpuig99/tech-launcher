@@ -169,9 +169,6 @@
                                             </div>
                                         </c:when>
                                     </c:choose>
-                                    <c:if test="${isAdmin || verifyForFramework}">
-
-                                    </c:if>
                                 </div>
                             </li>
                         </c:forEach>
@@ -258,6 +255,12 @@
                                 <div class="col">
                                     <c:out value="${comment.description}" default=""/>
                                 </div>
+
+                                <c:if test="${user.name != 'anonymousUser' && !comment.isReporter(user.name)}">
+                                    <div class="col d-flex justify-content-end align-items-end">
+                                        <button class="btn btn-link" onclick="getCommentId(${comment.commentId})" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
+                                    </div>
+                                </c:if>
                             </div>
                             <div class="row padding-bottom">
                                 <span>
@@ -504,7 +507,7 @@
                     </div>
                 </div>
 
-                <!-- Report Modal -->
+                <!-- Report Modals -->
                 <div class="modal fade" id="reportContentModal" tabindex="-1" role="dialog" aria-labelledby="reportContentModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -540,7 +543,52 @@
                     </div>
                 </div>
 
+                <div class="modal fade" id="reportCommentModal" tabindex="-1" role="dialog" aria-labelledby="reportCommentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header container">
+
+                                <h5 class="modal-title" id="reportCommentLabel"><spring:message code="tech.comment.report"/></h5>
+
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                </button>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
+                            <div class="modal-body container">
+                                <c:url value="/comment/report" var="postPathReportComment" />
+                                <form:form modelAttribute="reportCommentForm" action="${postPathReportComment}" method="post">
+                                    <div class="form-group">
+                                        <div><form:label path="reportCommentDescription"><spring:message code="tech.comment.report.reason"/></form:label></div>
+                                        <div><form:input  path="reportCommentDescription" class="form-control" type="text"/></div>
+                                        <form:errors path="reportCommentDescription" element="p" cssClass="formError"/>
+                                    </div>
+                                    <form:label path="reportCommentId">
+                                        <form:input  class="input-wrap" path="reportCommentId" type="hidden" value="" id="reportCommentId"/>
+                                    </form:label>
+                                    <form:label path="reportCommentFrameworkId">
+                                        <form:input class="input-wrap" path="reportCommentFrameworkId" type="hidden" value="${framework.id}"/>
+                                    </form:label>
+                                    <div class="d-flex justify-content-center">
+                                        <input class="btn btn-danger" type="submit" value="<spring:message code="button.submit"/>"/>
+                                    </div>
+                                    <!-- <button type="submit" class="btn primary-button d-flex align-items-center justify-content-center">SUBMIT</button>-->
+                                </form:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Scripts -->
+                <script>
+                    function getContentId(contentId){
+                        $('#reportContentId').val(contentId);
+                    }
+
+                    function getCommentId(commentId){
+                        $('#reportCommentId').val(commentId);
+                    }
+
+                </script>
                 <script>
                     $(window).on('load', function (){
                         <c:if test="${user.name != 'anonymousUser' && stars > 0}">
@@ -586,9 +634,6 @@
                         $('[data-toggle="tooltip"]').tooltip();
                     });
 
-                    function getContentId(contentId){
-                        $('#reportContentId').val(contentId);
-                    }
 
                     function voteUpComment(commentId) {
                         let frameworkId = ${framework.id};

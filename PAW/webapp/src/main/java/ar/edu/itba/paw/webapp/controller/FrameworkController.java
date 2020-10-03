@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.framework.ContentForm;
+import ar.edu.itba.paw.webapp.form.framework.ReportCommentForm;
 import ar.edu.itba.paw.webapp.form.framework.ReportForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -42,7 +43,7 @@ public class FrameworkController {
     }
 
     @RequestMapping("/{category}/{id}")
-    public ModelAndView framework(@PathVariable long id, @PathVariable String category,@ModelAttribute("contentForm") final ContentForm form, @ModelAttribute("reportForm") final ReportForm reportForm) {
+    public ModelAndView framework(@PathVariable long id, @PathVariable String category, @ModelAttribute("contentForm") final ContentForm form, @ModelAttribute("reportForm") final ReportForm reportForm, @ModelAttribute("reportCommentForm") final ReportCommentForm reportCommentForm) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Optional<Framework> framework = fs.findById(id);
 
@@ -149,7 +150,7 @@ public class FrameworkController {
         if (framework.isPresent()) {
 
             if(errors.hasErrors()){
-                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form, new ReportForm());
+                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form, new ReportForm(), new ReportCommentForm());
                 framework1.addObject("contentFormError", true);
                 return framework1;
             }
@@ -233,12 +234,18 @@ public class FrameworkController {
         }
         return ErrorController.redirectToErrorView();
     }
-    @RequestMapping(path={"/comment/report"}, method = RequestMethod.PUT)
-    public ModelAndView reportComment(@Valid @ModelAttribute("reportForm")ReportForm form, final BindingResult errors, HttpServletRequest request){
+    @RequestMapping(path={"/comment/report"}, method = RequestMethod.POST)
+    public ModelAndView reportComment(@Valid @ModelAttribute("reportCommentForm")ReportCommentForm form, final BindingResult errors, HttpServletRequest request){
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( userOptional.isPresent()){
             User user = userOptional.get();
-            commentService.addReport(form.getId(), user.getId(),form.getDescription());
+
+            Optional<Framework> framework = fs.findById(form.getReportCommentFrameworkId());
+            if( framework.isPresent() ) {
+                commentService.addReport(form.getReportCommentId(), user.getId(),form.getReportCommentDescription());
+                framework.get().getCategory();
+                return FrameworkController.redirectToFramework(form.getReportCommentFrameworkId(), framework.get().getCategory());
+            }
         }
         return ErrorController.redirectToErrorView();
     }
