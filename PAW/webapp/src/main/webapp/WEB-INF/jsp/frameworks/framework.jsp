@@ -102,7 +102,7 @@
                                     </c:when>
                                     <c:when test="${user.name != 'anonymousUser'}">
                                         <div class="col d-flex justify-content-end align-items-end">
-                                            <button class="btn btn-link" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                                            <button class="btn btn-link" onclick="getContentId(${book.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
                                     </c:when>
                                 </c:choose>
@@ -503,12 +503,16 @@
                                 <c:url value="/content/report" var="postPathReport" />
                                 <form:form modelAttribute="reportForm" action="${postPathReport}" method="post">
                                     <div class="form-group">
-                                        <div><form:label path="description"><spring:message code="tech.content.form.title"/></form:label></div>
+                                        <div><form:label path="description"><spring:message code="tech.content.report.reason"/></form:label></div>
                                         <div><form:input  path="description"  class="form-control" type="text"/></div>
                                         <form:errors path="description" element="p" cssClass="formError"/>
                                     </div>
-                                    <form:label path="id"><form:input  class="input-wrap" path="id" type="hidden" value="1"/></form:label>
-
+                                    <form:label path="id">
+                                        <form:input  class="input-wrap" path="id" type="hidden" value="" id="reportContentId"/>
+                                    </form:label>
+                                    <form:label path="reportFrameworkId">
+                                        <form:input class="input-wrap" path="reportFrameworkId" type="hidden" value="${framework.id}"/>
+                                    </form:label>
                                     <div class="d-flex justify-content-center">
                                         <input class="btn btn-danger" type="submit" value="<spring:message code="button.submit"/>"/>
                                     </div>
@@ -565,6 +569,9 @@
                         $('[data-toggle="tooltip"]').tooltip();
                     });
 
+                    function getContentId(contentId){
+                        $('#reportContentId').val(contentId);
+                    }
 
                     function voteUpComment(commentId) {
                         let frameworkId = ${framework.id};

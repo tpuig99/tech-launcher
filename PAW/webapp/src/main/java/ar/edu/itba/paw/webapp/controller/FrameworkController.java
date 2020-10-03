@@ -15,7 +15,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 @Controller
 public class FrameworkController {
@@ -188,12 +190,17 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
 
     }
-    @RequestMapping(path={"/content/report"}, method = RequestMethod.PUT)
+    @RequestMapping(path={"/content/report"}, method = RequestMethod.POST)
     public ModelAndView reportContent(@Valid @ModelAttribute("reportForm")ReportForm form, final BindingResult errors, HttpServletRequest request){
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( userOptional.isPresent()){
             User user = userOptional.get();
-            contentService.addReport(form.getId(), user.getId(),form.getDescription());
+            Optional<Framework> framework = fs.findById(form.getReportFrameworkId());
+            if( framework.isPresent() ) {
+                contentService.addReport(form.getId(), user.getId(), form.getDescription());
+                framework.get().getCategory();
+                return FrameworkController.redirectToFramework(form.getReportFrameworkId(), framework.get().getCategory());
+            }
         }
         return ErrorController.redirectToErrorView();
     }

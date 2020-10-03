@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.form.framework;
 
+import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.FrameworkCategories;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -12,6 +14,17 @@ public class ReportForm {
     private String description;
 
     private long id;
+
+    private long reportFrameworkId;
+
+
+    public long getReportFrameworkId() {
+        return reportFrameworkId;
+    }
+
+    public void setReportFrameworkId(long reportFrameworkId) {
+        this.reportFrameworkId = reportFrameworkId;
+    }
 
     public String getDescription() {
         return description;
