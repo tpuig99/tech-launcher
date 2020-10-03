@@ -63,6 +63,7 @@ public class FrameworkController {
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
                 mav.addObject("isAdmin",user.isAdmin());
+                mav.addObject("isEnable",user.isEnable());
                 mav.addObject("allowMod",user.isAllowMod());
                 Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
                 if(fv.isPresent()){
@@ -182,7 +183,7 @@ public class FrameworkController {
                 if( !pathToContent.contains("://")){
                     pathToContent = "http://".concat(pathToContent);
                 }
-                final Content content = contentService.insertContent(frameworkId, us.findByUsername(authentication.getName()).get().getId(), form.getTitle(), pathToContent, type, true);
+                final Content content = contentService.insertContent(frameworkId, us.findByUsername(authentication.getName()).get().getId(), form.getTitle(), pathToContent, type);
                 return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
             }
             return ErrorController.redirectToErrorView();

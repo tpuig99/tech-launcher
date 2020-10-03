@@ -133,6 +133,13 @@ public class UserServiceImpl implements UserService {
         userDao.updateDescription(userId,description);
     }
 
+    @Override
+    public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
+
+    @Override
+    public VerifyUser createVerify(long userId, long frameworkId, long commentId) {
+        return verifyUserDao.create(userId,frameworkId,commentId);
+    }
 
     @Override
     public VerifyUser createVerify(long userId, long frameworkId) {
