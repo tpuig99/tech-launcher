@@ -44,7 +44,7 @@
     <a href="javascript:selectFiles()">Select some files</a>-->
     <div class="d-flex justify-content-center">
         <input class="btn btn-primary" id="contentFormButton" type="submit" value="<spring:message code="button.submit"/>"/>
-        <div class="btn btn-primary" id="contentLoading" hidden>
+        <div class="btn btn-primary disabled" id="contentLoading" hidden>
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <spring:message code="button.loading"/>
         </div>
