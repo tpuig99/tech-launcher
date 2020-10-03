@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <html>
@@ -42,7 +43,15 @@
                             </c:if>
                         </div>
 
-                        <img src="https://picsum.photos/536/354" alt="" class="rounded-circle img-slot">
+                        <c:choose>
+                            <c:when test="${not empty profile.base64image}">
+                                <img src="data:${profile.contentType};base64,${profile.base64image}" alt="<spring:message code="image.profile"/>" class="rounded-circle img-slot" />
+                            </c:when>
+                            <c:otherwise>
+                                <img src="https://picsum.photos/536/354" alt="<spring:message code="image.profile.random"/>" class="rounded-circle img-slot">
+                            </c:otherwise>
+                        </c:choose>
+
                         <div class="row justify-content-center">
                         <h2><c:out value="${profile.username}"/></h2>
                             <c:choose>
@@ -84,6 +93,7 @@
                         <p><small><spring:message code="profile.votes_given"/></small></p>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -197,6 +207,15 @@
                     <span aria-hidden="true">&times;</span>
                 </div>
                 <div class="modal-body container">
+                    <form class="border-bottom" action="/users/${username}/upload"  method="post" enctype="multipart/form-data">
+                        <div class="mb-2"><spring:message code="profile.change_picture"/></div>
+                        <div class="d-flex justify-content-center mb-4">
+                            <input id="upload_input" name="picture" type="file" accept="image/*" />
+                        </div>
+                        <div class="d-flex justify-content-center mb-4">
+                            <input class="btn primary-button" disabled id="upload_button" type="submit" value="<spring:message code="button.change_picture"/>"/>
+                        </div>
+                    </form>
                     <jsp:include page="profileForm.jsp">
                         <jsp:param name="username" value="${profile.username}" />
                         <jsp:param name="description" value="${previousDescription}" />
@@ -235,6 +254,12 @@
         x.className = "show";
         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
     }
+
+    $(document).ready(function () {
+        $('#upload_input').change(function () {
+            $("#upload_button").prop("disabled",false)
+        });
+    });
 
 </script>
 

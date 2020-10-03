@@ -10,6 +10,7 @@
 <body>
 
 <c:url value="/users/${param.username}" var="path" />
+
 <form:form modelAttribute="profileForm" action="${path}" method="post">
 
     <div class="form-group">
