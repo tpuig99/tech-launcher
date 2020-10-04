@@ -298,6 +298,12 @@
                                         <i class="arrow fas fa-eye fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.see_replies"/></span>
                                     </button>
                                 </span>
+
+                               <c:if test="${isAdmin || verifyForFramework}">
+                                    <span class="col d-flex justify-content-end align-items-end">
+                                        <button class="btn btn-link" onclick="openDeleteCommentModal(${comment.commentId})"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
+                                    </span>
+                               </c:if>
                             </div>
 
                             <div  class="collapse multi-collapse" id="${comment.commentId}See">
@@ -544,6 +550,35 @@
                     </div>
                 </div>
 
+                <!--Delete Comment Modal -->
+
+                <div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteCommentModalLabel"><spring:message code="tech.comment.delete"/></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row  justify-content-center align-items-center margin-top">
+                                    <div><spring:message code="tech.comment.delete.message"/></div>
+                                </div>
+                                <div class="row justify-content-center align-items-center margin-top">
+                                    <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button></span>
+
+                                    <form:form modelAttribute="deleteCommentForm" action="/comment/delete" method="post">
+                                        <form:label path="commentDeleteFrameworkId"><form:input  class="input-wrap" path="commentDeleteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                        <form:label path="commentDeleteId"><form:input  class="input-wrap" path="commentDeleteId" type="hidden" id="commentIdDeleteInput"/></form:label>
+                                        <span class="margin-left"> <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button></span>
+                                    </form:form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Scripts -->
                 <script>
                     $(window).on('load', function (){
@@ -633,6 +668,12 @@
                         let x = document.getElementById("snackbar");
                         x.className = "show";
                         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
+                    }
+
+                    function openDeleteCommentModal(commentId){
+                        $('#commentIdDeleteInput').val(commentId);
+
+                        $('#deleteCommentModal').modal('show');
                     }
 
                 </script>

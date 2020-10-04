@@ -46,6 +46,7 @@ public class FrameworkController {
         mav.addObject("downVoteForm", new DownVoteForm());
         mav.addObject("commentForm", new CommentForm());
         mav.addObject("replyForm", new ReplyForm());
+        mav.addObject("deleteCommentForm", new DeleteCommentForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -178,6 +179,7 @@ public class FrameworkController {
                 framework1.addObject("downVoteForm", new DownVoteForm());
                 framework1.addObject("commentForm", new CommentForm());
                 framework1.addObject("replyForm", new ReplyForm());
+                framework1.addObject("deleteCommentForm", new DeleteCommentForm());
                 return framework1;
             }
 
@@ -213,6 +215,22 @@ public class FrameworkController {
             }
 
             return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
+        }
+        return ErrorController.redirectToErrorView();
+
+    }
+
+    @RequestMapping(path={"/comment/delete"}, method = RequestMethod.POST)
+    public ModelAndView deleteComment(@Valid @ModelAttribute("deleteCommentForm") final DeleteCommentForm form, final BindingResult errors){
+        Optional<Framework> framework = fs.findById(form.getCommentDeleteFrameworkId());
+
+        if (framework.isPresent()) {
+            int deleted = commentService.deleteComment(form.getCommentDeleteId());
+            if (deleted != 1) {
+                return ErrorController.redirectToErrorView();
+            }
+
+            return FrameworkController.redirectToFramework(form.getCommentDeleteFrameworkId(), framework.get().getCategory());
         }
         return ErrorController.redirectToErrorView();
 
