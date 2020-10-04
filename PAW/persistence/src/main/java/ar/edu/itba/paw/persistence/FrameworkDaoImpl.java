@@ -24,7 +24,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
     private final static RowMapper<Framework> ROW_MAPPER = FrameworkDaoImpl::mapRow;
     private final static RowMapper<String> ROW_MAPPER_FRAMEWORK_NAME = FrameworkDaoImpl::mapRowNames;
 
-    private final String SELECTION="select f.framework_id, count(distinct comment_id) as comment_amount,f.type,framework_name,category,f.description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant,user_name as author,f.date, max(tstamp) as last_comment from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author left join comments c on f.framework_id=c.framework_id  ";
+    private final String SELECTION="select f.framework_id, count(distinct comment_id) as comment_amount,f.type,framework_name,category,f.description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant,user_name as author,f.date, max(c.tstamp) as last_comment from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author left join comments c on f.framework_id=c.framework_id  ";
     private final String GROUP_BY=" group by framework_name, f.framework_id, category, f.type, f.description, introduction, logo,u.user_name";
 
 
@@ -115,7 +115,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> getUserInterests(long userId) {
-        String query = SELECTION + " inner join content as c on f.framework_id = c.framework_id where c.user_id = ? " + GROUP_BY;
+        String query = SELECTION + " inner join content as cont on f.framework_id = cont.framework_id where cont.user_id = ? " + GROUP_BY;
         return jdbcTemplate.query(query, new Object[] { userId }, ROW_MAPPER);
     }
 
