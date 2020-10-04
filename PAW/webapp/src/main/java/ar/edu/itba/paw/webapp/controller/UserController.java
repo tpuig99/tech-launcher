@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerifyUser;
+import ar.edu.itba.paw.service.CommentService;
+import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,6 +31,12 @@ public class UserController {
     UserService us;
     @Autowired
     FrameworkService fs;
+
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    ContentService contentService;
     @Autowired
     MessageSource messageSource;
 
@@ -100,6 +110,8 @@ public class UserController {
                 mav.addObject("mods",mods);
                 mav.addObject("pendingToVerify", verify);
                 mav.addObject("pendingApplicants", applicants);
+                mav.addObject("reportedComments", commentService.getAllReport());
+                //TODO: FIX mav.addObject("reportedContents", contentService.getAllReports());
                 return mav;
             }
             else if( user.isVerify() ){
@@ -131,15 +143,13 @@ public class UserController {
         Optional<User> userOptional = us.findByUsername(username);
         if( userOptional.isPresent()){
             User user = userOptional.get();
-            if(!user.isAdmin()){
-                //raise error --> only admins
-                return ErrorController.redirectToErrorView();
+            if(user.isAdmin()) {
+                Optional<VerifyUser> vu = us.getVerifyById(verificationId);
+                if (vu.isPresent()) {
+                    us.deleteVerification(verificationId);
+                }
+                return mav;
             }
-            Optional<VerifyUser> vu = us.getVerifyById(verificationId);
-            if (vu.isPresent()) {
-                us.deleteVerification(verificationId);
-            }
-            return mav;
         }
         return ErrorController.redirectToErrorView();
     }
@@ -164,6 +174,38 @@ public class UserController {
             }
             return mav;
         }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping("/mod/comment/delete")
+    public ModelAndView deleteComment(@RequestParam("commentId") final long commentId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                Optional<Comment> commentOptional = commentService.getById(commentId);
+                if( commentOptional.isPresent() ){
+                    commentService.acceptReport(commentId);
+                    return modPage();
+                }
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping("/mod/comment/ignore")
+    public ModelAndView ignoreComment(@RequestParam("commentId") final long commentId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                commentService.denyReport(commentId);
+
+                return modPage();
+            }
+        }
+
         return ErrorController.redirectToErrorView();
     }
 

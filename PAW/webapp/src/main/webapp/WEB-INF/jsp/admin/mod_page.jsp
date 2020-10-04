@@ -24,9 +24,40 @@
 
         <div class="content-no-sidebar">
             <c:if test="${isAdmin}">
-                <div class="page-title"><spring:message code="moderator.title"/></div>
+                <div class="page-title"><spring:message code="moderate.comment.title"/></div>
                 <div class="page-description"></div>
                 <div class="row">
+                    <c:choose>
+                        <c:when test="${not empty reportedComments}">
+                            <div class="d-flex flex-column">
+                                <c:forEach items="${reportedComments}" var="reportedComment">
+                                    <c:if test="${reportedComment.userNameOwner != user.name}">
+                                        <div class="card emphasis row emph-comment mb-2 verified">
+                                            <div class="card-body row mt-1">
+                                                <div class="col-3 secondary-font"> <a href="/users/${reportedComment.userNameOwner}"><c:out value="${reportedComment.userNameOwner}" default=""/></a>
+                                                    <c:out value="/" default=""/>
+                                                    <a href="<c:out value="${reportedComment.frameworkName}/${reportedComment.frameworkId}"/>"><c:out value="${reportedComment.frameworkName}" default=""/></a>
+                                                </div>
+                                                <div class="col-6 text-left"> <c:out value="${reportedComment.commentDescription}" default=""/> </div>
+                                                <div class="col third-font text-right"> <c:out value="${reportedComment.timestamp}" default=""/> </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <button type="button" class="btn btn-secondary" onclick="ignoreComment(${reportedComment.commentId})"><spring:message code="button.ignore"/></button>
+                                                <button type="button" class="btn btn-danger" onclick="deleteComment(${reportedComment.commentId})"><spring:message code="button.delete"/></button>
+                                            </div>
+                                        </div>
+                                    </c:if>
+                                </c:forEach>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div><spring:message code="moderate.comment.empty"/></div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="page-title"><spring:message code="moderator.title"/></div>
+                <div class="page-description"></div>
+                <div class="d-flex flex-wrap">
                     <c:choose>
                         <c:when test="${not empty mods}">
                             <c:forEach var = "moderator" items="${mods}">
@@ -54,6 +85,7 @@
             </c:if>
             <div class="page-title"><spring:message code="moderator.pending"/></div>
             <div class="page-description"></div>
+            <div class="d-flex flex-column">
             <c:choose>
                 <c:when test="${not empty pendingToVerify}">
                     <c:forEach var = "pendingUser" items="${pendingToVerify}">
@@ -77,9 +109,10 @@
                     <div><spring:message code="moderator.emptyPending"/></div>
                 </c:otherwise>
             </c:choose>
+            </div>
             <div class="page-title"><spring:message code="moderator.pendingApplicants"/></div>
             <div class="page-description"></div>
-            <div class="row">
+            <div class="d-flex flex-wrap">
                 <c:choose>
                     <c:when test="${not empty pendingApplicants}">
                         <c:forEach var = "applicant" items="${pendingApplicants}">
@@ -104,7 +137,17 @@
             </div>
         </div>
 
+
+
         <script>
+            function ignoreComment(commentId){
+                window.location.href = '<c:url value="/mod/comment/ignore" />?commentId=' + commentId;
+            }
+
+            function deleteComment(commentId){
+                window.location.href = '<c:url value="/mod/comment/delete" />?commentId=' + commentId;
+            }
+
             function promoteUser(verificationId){
                 window.location.href = '<c:url value="/accept" />?id=' + verificationId;
             }
