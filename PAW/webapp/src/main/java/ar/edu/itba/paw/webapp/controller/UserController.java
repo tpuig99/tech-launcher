@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.VerifyUser;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.CommentService;
 import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
@@ -129,6 +126,11 @@ public class UserController {
                 verify.removeAll(applicants);
                 mav.addObject("pendingToVerify",verify);
                 mav.addObject("pendingApplicants", applicants);
+                List<ReportContent> reportContents = new LinkedList<>();
+                user.getVerifications().forEach( verifyUser -> {
+                    reportContents.addAll(contentService.getReportsByFramework(verifyUser.getFrameworkId()));
+                });
+                mav.addObject("reportedContents", reportContents);
                 return mav;
             }
         }

@@ -53,35 +53,7 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
-                <div class="page-title"><spring:message code="moderate.content.title"/></div>
-                <div class="page-description"></div>
-                <div class="row justify-content-center">
-                    <c:choose>
-                        <c:when test="${not empty reportedContents}">
-                            <div class="d-flex flex-column">
-                                <c:forEach items="${reportedContents}" var="reportedContent">
-                                        <div class="card emphasis row emph-comment mb-2 verified">
-                                            <div class="card-body row mt-1">
-                                                <div class="col-3 secondary-font"> <a href="/users/${reportedContent.userNameOwner}"><c:out value="${reportedContent.userNameOwner}" default=""/></a>
-                                                    <c:out value="/" default=""/>
-                                                    <a href="<c:out value="/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a>
-                                                </div>
-                                                <div class="col-6 text-left"> <c:out value="${reportedContent.title}" default=""/> </div>
-                                                <div class="col third-font text-right"> <c:out value="${reportedContent.reportDescription}" default=""/> </div>
-                                            </div>
-                                            <div class="card-footer">
-                                                <button type="button" class="btn btn-secondary" onclick="ignoreContent(${reportedContent.contentId})"><spring:message code="button.ignore"/></button>
-                                                <button type="button" class="btn btn-danger" onclick="deleteContent(${reportedContent.contentId})"><spring:message code="button.delete"/></button>
-                                            </div>
-                                        </div>
-                                </c:forEach>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div><spring:message code="moderate.content.empty"/></div>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
+
                 <div class="page-title"><spring:message code="moderator.title"/></div>
                 <div class="page-description"></div>
                 <div class="d-flex flex-wrap justify-content-center">
@@ -106,6 +78,37 @@
                         </c:when>
                         <c:otherwise>
                             <div><spring:message code="moderator.no_mods"/></div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </c:if>
+            <c:if test="${!isAdmin}">
+                <div class="page-title"><spring:message code="moderate.content.title"/></div>
+                <div class="page-description"></div>
+                <div class="row justify-content-center">
+                    <c:choose>
+                        <c:when test="${not empty reportedContents}">
+                            <div class="d-flex flex-column">
+                                <c:forEach items="${reportedContents}" var="reportedContent">
+                                    <div class="card emphasis row emph-comment mb-2 verified">
+                                        <div class="card-body row mt-1">
+                                            <div class="col-3 secondary-font"> <a href="/users/${reportedContent.userNameOwner}"><c:out value="${reportedContent.userNameOwner}" default=""/></a>
+                                                <c:out value="/" default=""/>
+                                                <a href="<c:out value="/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a>
+                                            </div>
+                                            <div class="col-6 text-left"> <c:out value="${reportedContent.title}" default=""/> </div>
+                                            <div class="col third-font text-right"> <c:out value="${reportedContent.reportDescription}" default=""/> </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <button type="button" class="btn btn-secondary" onclick="ignoreContent(${reportedContent.contentId})"><spring:message code="button.ignore"/></button>
+                                            <button type="button" class="btn btn-danger" onclick="deleteContent(${reportedContent.contentId})"><spring:message code="button.delete"/></button>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div><spring:message code="moderate.content.empty"/></div>
                         </c:otherwise>
                     </c:choose>
                 </div>
