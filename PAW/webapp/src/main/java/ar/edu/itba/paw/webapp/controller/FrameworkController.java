@@ -217,5 +217,21 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
 
     }
+
+    @RequestMapping(path={"comment"}, method = RequestMethod.DELETE)
+    public ModelAndView deleteComment(@RequestParam("frameworkId") final long frameworkId, @RequestParam("commentId") final long commentId){
+        Optional<Framework> framework = fs.findById(frameworkId);
+
+        if (framework.isPresent()) {
+            int deleted = contentService.deleteContent(commentId);
+            if (deleted != 1) {
+                return ErrorController.redirectToErrorView();
+            }
+
+            return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
+        }
+        return ErrorController.redirectToErrorView();
+
+    }
 }
 
