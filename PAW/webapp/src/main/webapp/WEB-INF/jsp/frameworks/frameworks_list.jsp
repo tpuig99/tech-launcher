@@ -110,7 +110,7 @@
         <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
             <label class="form-check-label" for="searchOnlyByName">
-                Search only by Tech name
+                <spring:message code="explore.search_only_by_name"/>
             </label>
         </div>
     </div>
@@ -166,12 +166,12 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)"><spring:message code="explore.rating_high_to_low"/></button>
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(1)"><spring:message code="explore.rating_low_to_high"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-2)">Comments: More to Least</button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(2)">Comments: Least to More</button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-3)">Tech Release Date: Oldest to Newest</button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(3)">Tech Release Date: Newest to Oldest</button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-4)">Tech: Most Recent Commented</button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(4)">Tech: Last Commented</button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-2)"><spring:message code="explore.comments_more_to_least"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(2)"><spring:message code="explore.comments_least_to_more"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-3)"><spring:message code="explore.release_oldest_to_newest"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(3)"><spring:message code="explore.release_newest_to_oldest"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-4)"><spring:message code="explore.tech_most_recent_commented"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(4)"><spring:message code="explore.tech_last_commented"/></button>
                 </div>
             </div>
         </div>
