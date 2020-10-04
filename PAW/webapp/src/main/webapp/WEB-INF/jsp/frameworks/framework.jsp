@@ -37,7 +37,6 @@
                             <div class="max-logo"><img src="${framework.logo}" alt="${framework.name} logo"></div>
                         </div>
                         <div class="col-10">
-
                             <div class="row">
                                 <div class="col">
                                 <span class="framework-title"><h2>${framework.name}</h2></span>
@@ -65,17 +64,25 @@
                     <div class="d-flex justify-content-end">
                         <c:choose>
                             <c:when test="${user.name != 'anonymousUser'}">
-                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal">
-                                    <spring:message code="tech.content.button"/>
-                                </button>
+                                <c:choose>
+                                    <c:when test="${!isEnable}">
+                                        <button class="btn primary-button" type="button" data-toggle="modal" data-target="#confirmMailModal">
+                                            <spring:message code="tech.content.button"/>
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button class="btn primary-button" type="button" data-toggle="modal" data-target="#addContentModal">
+                                            <spring:message code="tech.content.button"/>
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:when>
                             <c:otherwise>
-                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#loginModal">
-                                    <spring:message code="tech.content.button"/>
-                                </button>
+                                    <button class="btn primary-button" type="button" data-toggle="modal" data-target="#loginModal">
+                                        <spring:message code="tech.content.button"/>
+                                    </button>
                             </c:otherwise>
                         </c:choose>
-
                    </div>
                 </div>
                 <c:if test="${empty books && empty courses && empty tutorials}">
@@ -169,17 +176,31 @@
                             <div>
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button class=" btn upVote btn-link" onclick="voteUpComment(${comment.commentId})">
-                                            <c:choose>
-                                                <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote > 0}">
-                                                    <i class="fa fa-arrow-up arrow votedUp"> ${comment.votesUp}</i>
-                                                </c:when>
-                                                <c:otherwise>
+                                        <c:choose>
+                                            <c:when test="${!isEnable}">
+                                                <button class=" btn upVote btn-link" data-toggle="modal" data-target="#confirmMailModal">
                                                     <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
-                                                </c:otherwise>
-                                            </c:choose>
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form:form modelAttribute="upVoteForm" id="upVoteForm${comment.commentId}" action="/upvote" method="post">
+                                                    <form:label path="frameworkId"><form:input id="upVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                                    <form:label path="commentId"><form:input id="upVoteFormCommentId${comment.commentId}" class="input-wrap" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
 
-                                        </button>
+                                                    <button class="btn upVote btn-link" type="submit">
+                                                        <c:choose>
+                                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote > 0}">
+                                                                <i class="fa fa-arrow-up arrow votedUp"> ${comment.votesUp}</i>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <i class="fa fa-arrow-up arrow"> ${comment.votesUp}</i>
+                                                            </c:otherwise>
+                                                        </c:choose>
+
+                                                    </button>
+                                                </form:form>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:when>
                                     <c:otherwise>
                                         <button class=" btn upVote btn-link" data-toggle="modal" data-target="#loginModal">
@@ -191,16 +212,30 @@
                             <div>
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button class=" btn upVote btn-link" onclick="voteDownComment(${comment.commentId})">
                                         <c:choose>
-                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote < 0}">
-                                                <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
+                                            <c:when test="${!isEnable}">
+                                                <button class=" btn downVote btn-link" data-toggle="modal" data-target="#confirmMailModal">
+                                                    <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                                </button>
                                             </c:when>
                                             <c:otherwise>
-                                                <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                                <form:form modelAttribute="downVoteForm" id="downVoteForm${comment.commentId}" action="/downvote" method="post">
+                                                    <form:label path="downVoteFrameworkId"><form:input id="downVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="downVoteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                                    <form:label path="downVoteCommentId"><form:input id="downVoteFormCommentId${comment.commentId}" class="input-wrap" path="downVoteCommentId" type="hidden" value="${comment.commentId}"/></form:label>
+
+                                                    <button class=" btn upVote btn-link" type="submit">
+                                                        <c:choose>
+                                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote < 0}">
+                                                                <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <i class="fa fa-arrow-down arrow"> ${comment.votesDown}</i>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </button>
+                                                </form:form>
                                             </c:otherwise>
                                         </c:choose>
-                                        </button>
                                     </c:when>
                                     <c:otherwise>
                                         <button class=" btn downVote btn-link" data-toggle="modal" data-target="#loginModal">
@@ -238,9 +273,18 @@
                                 <span>
                                     <c:choose>
                                         <c:when test="${user.name != 'anonymousUser'}">
-                                            <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
-                                               <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.reply.button"/></span>
-                                            </button>
+                                            <c:choose>
+                                                <c:when test="${!isEnable}">
+                                                    <button type="button" class="btn btn-light" data-toggle="modal" data-target="#confirmMailModal">
+                                                        <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.reply.button"/></span>
+                                                    </button>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
+                                                       <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.reply.button"/></span>
+                                                    </button>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </c:when>
                                         <c:otherwise>
                                             <button type="button" class="btn btn-light" data-toggle="modal" data-target="#loginModal">
@@ -248,10 +292,6 @@
                                             </button>
                                         </c:otherwise>
                                     </c:choose>
-
-
-
-
                                 </span>
                                 <span class="padding-left">
                                     <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}See" aria-expanded="false" aria-controls="multiCollapseExample1">
@@ -292,13 +332,19 @@
 
                             </div>
                             <div class="row collapse multi-collapse" id="${comment.commentId}">
+                                <form:form modelAttribute="replyForm" id="replyForm${comment.commentId}" action="/reply" method="post">
+                                    <form:label path="replyFrameworkId"><form:input  class="input-wrap" path="replyFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                    <form:label path="replyCommentId"><form:input  class="input-wrap" path="replyCommentId" type="hidden" value="${comment.commentId}"/></form:label>
 
-                                <div>
-                                    <textarea id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"></textarea>
+                                    <div>
+
+                                    <form:label path="replyContent"/>
+                                    <form:textarea path="replyContent" id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"/>
                                 </div>
                                 <div>
-                                    <button class="btn primary-button btn-sm padding-top" onclick="publishComment(${comment.commentId})"><spring:message code="button.submit"/></button>
+                                    <button class="btn primary-button btn-sm padding-top" type="submit"><spring:message code="button.submit"/></button>
                                 </div>
+                                </form:form>
 
                             </div>
                         </div>
@@ -322,46 +368,43 @@
                         <div class="col-8">
                             <h5><spring:message code="tech.interactions.leave_comment"/></h5>
                             <div>
-                                <textarea id="commentInput" class="form-control" aria-label="With textarea"></textarea>
+                                <form:form modelAttribute="commentForm" action="/comment" method="post">
+                                    <form:label path="commentFrameworkId"><form:input  class="input-wrap" path="commentFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+
+                                    <form:label path="content"/>
+                                    <form:textarea path="content" id="commentInput" class="form-control" aria-label="With textarea"/>
 
                                 <c:choose>
                                     <c:when test="${user.name != 'anonymousUser'}">
-                                        <button type="button" id="commentButton" disabled onclick="publishComment()" class="btn primary-button margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                        <c:choose>
+                                            <c:when test="${!isEnable}">
+                                                <button type="button" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button type="submit" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:when>
                                     <c:otherwise>
                                         <button type="button" id="commentButton" disabled class="btn primary-button margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
                                     </c:otherwise>
                                 </c:choose>
+                                </form:form>
                             </div>
                         </div>
                         <div class="col">
                             <h5><spring:message code="tech.rating"/></h5>
 
                             <div class="stars">
-                                <form id="rating-form">
-                                    <input class="star star-5" id="star-5" type="radio" name="star"/>
-                                    <label class="star star-5" for="star-5"></label>
-                                    <input class="star star-4" id="star-4" type="radio" name="star"/>
-                                    <label class="star star-4" for="star-4"></label>
-                                    <input class="star star-3" id="star-3" type="radio" name="star"/>
-                                    <label class="star star-3" for="star-3"></label>
-                                    <input class="star star-2" id="star-2" type="radio" name="star"/>
-                                    <label class="star star-2" for="star-2"></label>
-                                    <input class="star star-1" id="star-1" type="radio" name="star"/>
-                                    <label class="star star-1" for="star-1"></label>
-                                    <c:choose>
-                                        <c:when test="${user.name != 'anonymousUser'}">
-                                            <button class="btn primary-button" type="submit"><spring:message code="tech.rating.button"/></button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <button class="btn primary-button"  data-toggle="modal" data-target="#loginModal"><spring:message code="tech.rating.button"/></button>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </form>
+                               <jsp:include page="ratingForm.jsp">
+                                   <jsp:param name="frameworkId" value="${framework.id}" />
+                                   <jsp:param name="isEnable" value="${isEnable}" />
+                                   <jsp:param name="username" value="${user.name}" />
+                               </jsp:include>
                             </div>
                         </div>
                     </div>
-                    <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser'}">
+                    <c:if test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser' && isEnable}">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center">
                             <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>
@@ -420,10 +463,32 @@
                                     <button type="button" class="btn primary-button" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
                                 </div>
                                 <div class="row  justify-content-center align-items-center margin-top">
-                                    <div>Don't have an account yet? <a href="<c:url value="/register"/>">Sign Up</a>
+                                    <div><spring:message code="login.sign_up_question"/> <a href="<c:url value="/register"/>"><spring:message code="button.sign_up"/></a>
                                     </div>
                                 </div>
 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirm mail Modal -->
+                <div class="modal fade" id="confirmMailModal" tabindex="-1" role="dialog" aria-labelledby="confirmMailModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmMailModalLabel"><spring:message code="register.error.email_status"/></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row d-flex justify-content-center align-items-center">
+                                    <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
+                                </div>
+                                <div class="row justify-content-center align-items-center margin-top">
+                                    <div><spring:message code="register.error.confirm_email"/></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -499,66 +564,12 @@
                         });
                     </c:if>
 
-                    function publishComment(commentId) {
-
-                        let id= ${framework.id};
-                        let path;
-                        let content;
-
-                        if(commentId !== undefined){
-                            content = document.getElementById(commentId+"ReplyInput").value;
-                            if(content === "")
-                                return;
-                            console.log(content);    path = '<c:url value="/create" />?id='+id+'&content='+content+'&commentId='+commentId;
-                        }else{
-                            content = document.getElementById("commentInput").value;
-                            if(content === "")
-                                return;
-                            path = '<c:url value="/create" />?id='+id+'&content='+content;
-                        }
-
-                        window.location.href = path;
-                        console.log(location.href);
-                    }
 
                     $(document).ready(function(){
                         $('[data-toggle="tooltip"]').tooltip();
                     });
 
 
-                    function voteUpComment(commentId) {
-                        let frameworkId = ${framework.id};
-                        window.location.href = '<c:url value="/voteup" />?id=' + frameworkId + '&comment_id=' + commentId;
-                    }
-
-                    function voteDownComment(commentId) {
-                        let frameworkId = ${framework.id};
-                        window.location.href = '<c:url value="/votedown" />?id=' + frameworkId + '&comment_id=' + commentId;
-                    }
-
-                    function publishRating(){
-                        let rate_value = 0;
-                        if (document.getElementById('star-1').checked) {
-                            rate_value = 1;
-                        }else if(document.getElementById('star-2').checked){
-                            rate_value = 2;
-                        }else if(document.getElementById('star-3').checked){
-                            rate_value = 3;
-                        }
-                        else if(document.getElementById('star-4').checked){
-                            rate_value = 4;
-                        }
-                        else if(document.getElementById('star-5').checked){
-                            rate_value =  5;
-                        }
-                        console.log(rate_value);
-                        let id= ${framework.id};
-
-                        let path = '<c:url value="/rate" />?id='+id+'&rating='+rate_value;
-                        console.log(path);
-                        window.location.href = path;
-                        console.log(location.href);
-                    }
 
                     $(document).ready(function () {
                         $('#commentInput').on('keyup', function () {
@@ -577,15 +588,6 @@
                             } else {
                                 $("#commentButton").prop("disabled",false);
                             }
-                        });
-                    });
-
-                    $(document).ready(function() {
-                        $('#rating-form').on('submit', function(e){
-                            if(${user.name != 'anonymousUser'}) {
-                                publishRating();
-                            }
-                            e.preventDefault();
                         });
                     });
 

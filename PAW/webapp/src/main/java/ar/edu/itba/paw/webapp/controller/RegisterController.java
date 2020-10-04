@@ -5,6 +5,8 @@ import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.*;
+import ar.edu.itba.paw.webapp.form.session.OnRegistrationCompleteEvent;
+import ar.edu.itba.paw.webapp.form.session.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
@@ -75,6 +77,7 @@ public class RegisterController {
             String appUrl = request.getRequestURL().toString();
             appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl, false));
+            internalLogin(form.getUsername(), form.getPassword(),request);
         } catch (UserAlreadyExistException uaeEx) {
             ModelAndView mav = new ModelAndView("session/registerForm");
             mav.addObject("errorMessage", uaeEx.getLocalizedMessage());

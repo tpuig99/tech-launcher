@@ -103,6 +103,11 @@ public class ContentDaoImpl implements ContentDao {
     }
 
     @Override
+    public List<Content> getContentByFrameworkAndTypeAndTitle(long frameworkId, ContentTypes type, String title) {
+        return jdbcTemplate.query(SELECTION+FROM+" WHERE c.framework_id = ? AND c.type = ? AND c.title = ?"+GROUP_BY, new Object[] { frameworkId, type.name(),title }, ROW_MAPPER);
+    }
+
+    @Override
     public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();

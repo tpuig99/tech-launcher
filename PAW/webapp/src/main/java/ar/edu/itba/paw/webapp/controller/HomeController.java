@@ -1,11 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.LoginForm;
-import ar.edu.itba.paw.webapp.form.UserForm;
+import ar.edu.itba.paw.webapp.form.session.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,15 +33,16 @@ public class HomeController {
 
     @RequestMapping("/")
     public ModelAndView home() {
-        final ModelAndView mav = new ModelAndView("index");
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if( us.findByUsername(username).isPresent()){
-            User user = us.findByUsername(username).get();
-            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-        }
-
-        return mav;
+        return new ModelAndView("redirect:/" + "frameworks");
+//        final ModelAndView mav = new ModelAndView("index");
+//        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        if( us.findByUsername(username).isPresent()){
+//            User user = us.findByUsername(username).get();
+//            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+//        }
+//
+//        return mav;
     }
 
     @RequestMapping("/frameworks")

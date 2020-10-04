@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <html>
@@ -11,7 +12,7 @@
     </title>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/user_profile.css"/>"/>
@@ -36,13 +37,21 @@
                     <div>
                         <div class="row justify-content-end">
                             <c:if test="${profile.username == user.name}">
-                                <button class="btn primary-button" type="button" data-toggle="modal" data-target="#editProfileModal">
+                                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editProfileModal">
                                     <i class="far fa-edit fa-sm"></i>
                                 </button>
                             </c:if>
                         </div>
 
-                        <img src="https://picsum.photos/536/354" alt="" class="rounded-circle img-slot">
+                        <c:choose>
+                            <c:when test="${not empty profile.base64image}">
+                                <img src="data:${profile.contentType};base64,${profile.base64image}" alt="<spring:message code="image.profile"/>" class="rounded-circle img-slot" />
+                            </c:when>
+                            <c:otherwise>
+                                <img src="https://picsum.photos/536/354" alt="<spring:message code="image.profile.random"/>" class="rounded-circle img-slot">
+                            </c:otherwise>
+                        </c:choose>
+
                         <div class="row justify-content-center">
                         <h2><c:out value="${profile.username}"/></h2>
                             <c:choose>
@@ -84,6 +93,7 @@
                         <p><small><spring:message code="profile.votes_given"/></small></p>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -197,6 +207,19 @@
                     <span aria-hidden="true">&times;</span>
                 </div>
                 <div class="modal-body container">
+                    <form id="updatePictureForm" class="border-bottom" action="/users/${username}/upload"  method="post" enctype="multipart/form-data">
+                        <div class="mb-2"><spring:message code="profile.change_picture"/></div>
+                        <div class="d-flex justify-content-center mb-4">
+                            <input id="uploadPictureInput" name="picture" type="file" accept="image/*" />
+                        </div>
+                        <div class="d-flex justify-content-center mb-4">
+                            <input class="btn btn-primary" disabled id="updatePictureButton" type="submit" value="<spring:message code="button.change_picture"/>"/>
+                            <div class="btn btn-primary disabled" id="updatePictureLoading" hidden>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <spring:message code="button.loading"/>
+                            </div>
+                        </div>
+                    </form>
                     <jsp:include page="profileForm.jsp">
                         <jsp:param name="username" value="${profile.username}" />
                         <jsp:param name="description" value="${previousDescription}" />
@@ -236,10 +259,23 @@
         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
     }
 
+    $(document).ready(function () {
+        $('#uploadPictureInput').change(function () {
+            $("#updatePictureButton").prop("disabled",false)
+        });
+    });
+
+    $(document).ready(function() {
+        $('#updatePictureForm').on('submit', function(e){
+            $("#updatePictureButton").prop("hidden",true);
+            $("#updatePictureLoading").prop("hidden",false);
+        });
+    });
+
 </script>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

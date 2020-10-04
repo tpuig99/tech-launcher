@@ -45,6 +45,11 @@ public class ContentServiceImpl implements ContentService {
         return content.getContentByFrameworkAndType(frameworkId, type);
     }
 
+    @Override
+    public List<Content> getContentByFrameworkAndTypeAndTitle(long frameworkId, ContentTypes type, String title) {
+        return content.getContentByFrameworkAndTypeAndTitle(frameworkId,type,title);
+    }
+
 
     @Override
     public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {

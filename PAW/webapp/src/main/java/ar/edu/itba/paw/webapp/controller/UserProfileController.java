@@ -1,22 +1,22 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.Content;
+import ar.edu.itba.paw.models.FrameworkVote;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.form.ContentForm;
-import ar.edu.itba.paw.webapp.form.ProfileForm;
+import ar.edu.itba.paw.webapp.form.session.ProfileForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,8 +68,23 @@ public class UserProfileController {
         return ErrorController.redirectToErrorView();
     }
 
+    @RequestMapping(path = {"/users/{username}/upload"}, method = RequestMethod.POST)
+    public ModelAndView uploadPicture(@RequestParam("picture") MultipartFile picture, @PathVariable String username) throws IOException {
+        Optional<User> user = us.findByUsername(username);
+
+        if (user.isPresent() && SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
+            if (!picture.isEmpty()) {
+                us.updatePicture(user.get().getId(), picture.getBytes());
+            }
+
+            return UserProfileController.redirectToProfile(user.get().getUsername());
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
     @RequestMapping(path={"/users/{username}"}, method = RequestMethod.POST)
-    public ModelAndView editProfile(@Valid @ModelAttribute("profileForm") final ProfileForm form, final BindingResult errors, final RedirectAttributes redirectAttributes, @PathVariable String username){
+    public ModelAndView editProfile(@Valid @ModelAttribute("profileForm") final ProfileForm form, final BindingResult errors, final RedirectAttributes redirectAttributes, @PathVariable String username) {
 
         Optional<User> user = us.findByUsername(username);
 
@@ -82,6 +97,10 @@ public class UserProfileController {
             }
             redirectAttributes.addFlashAttribute("profileFormError",false);
             redirectAttributes.addFlashAttribute("profileFormMessage","Your profile has been updated successfully!");
+
+//            if (!form.getPicture().isEmpty()) {
+//                us.updatePicture(user.get().getId(), form.getPicture().getBytes());
+//            }
 
             us.updateDescription(user.get().getId(), form.getDescription());
 
