@@ -26,12 +26,11 @@
             <c:if test="${isAdmin}">
                 <div class="page-title"><spring:message code="moderate.comment.title"/></div>
                 <div class="page-description"></div>
-                <div class="row">
+                <div class="row justify-content-center">
                     <c:choose>
                         <c:when test="${not empty reportedComments}">
                             <div class="d-flex flex-column">
                                 <c:forEach items="${reportedComments}" var="reportedComment">
-                                    <c:if test="${reportedComment.userNameOwner != user.name}">
                                         <div class="card emphasis row emph-comment mb-2 verified">
                                             <div class="card-body row mt-1">
                                                 <div class="col-3 secondary-font"> <a href="/users/${reportedComment.userNameOwner}"><c:out value="${reportedComment.userNameOwner}" default=""/></a>
@@ -46,7 +45,6 @@
                                                 <button type="button" class="btn btn-danger" onclick="deleteComment(${reportedComment.commentId})"><spring:message code="button.delete"/></button>
                                             </div>
                                         </div>
-                                    </c:if>
                                 </c:forEach>
                             </div>
                         </c:when>
@@ -57,12 +55,11 @@
                 </div>
                 <div class="page-title"><spring:message code="moderate.content.title"/></div>
                 <div class="page-description"></div>
-                <div class="row">
+                <div class="row justify-content-center">
                     <c:choose>
                         <c:when test="${not empty reportedContents}">
                             <div class="d-flex flex-column">
                                 <c:forEach items="${reportedContents}" var="reportedContent">
-                                    <c:if test="${reportedContent.userNameOwner != user.name}">
                                         <div class="card emphasis row emph-comment mb-2 verified">
                                             <div class="card-body row mt-1">
                                                 <div class="col-3 secondary-font"> <a href="/users/${reportedContent.userNameOwner}"><c:out value="${reportedContent.userNameOwner}" default=""/></a>
@@ -77,7 +74,6 @@
                                                 <button type="button" class="btn btn-danger" onclick="deleteContent(${reportedContent.contentId})"><spring:message code="button.delete"/></button>
                                             </div>
                                         </div>
-                                    </c:if>
                                 </c:forEach>
                             </div>
                         </c:when>
@@ -88,7 +84,7 @@
                 </div>
                 <div class="page-title"><spring:message code="moderator.title"/></div>
                 <div class="page-description"></div>
-                <div class="d-flex flex-wrap">
+                <div class="d-flex flex-wrap justify-content-center">
                     <c:choose>
                         <c:when test="${not empty mods}">
                             <c:forEach var = "moderator" items="${mods}">
@@ -116,7 +112,7 @@
             </c:if>
             <div class="page-title"><spring:message code="moderator.pending"/></div>
             <div class="page-description"></div>
-            <div class="d-flex flex-column">
+            <div class="d-flex flex-column justify-content-center">
             <c:choose>
                 <c:when test="${not empty pendingToVerify}">
                     <c:forEach var = "pendingUser" items="${pendingToVerify}">
@@ -143,7 +139,7 @@
             </div>
             <div class="page-title"><spring:message code="moderator.pendingApplicants"/></div>
             <div class="page-description"></div>
-            <div class="d-flex flex-wrap">
+            <div class="d-flex flex-wrap justify-content-center">
                 <c:choose>
                     <c:when test="${not empty pendingApplicants}">
                         <c:forEach var = "applicant" items="${pendingApplicants}">
