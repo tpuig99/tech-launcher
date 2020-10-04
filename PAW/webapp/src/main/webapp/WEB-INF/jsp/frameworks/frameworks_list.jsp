@@ -256,7 +256,7 @@
         let order = 0;
 
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(stars))) {
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&nameflag=' + nameFlag +'&order=' + order;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&nameFlag=' + nameFlag +'&order=' + order;
         }
 
     }
@@ -292,7 +292,7 @@
         </c:if>
 
         <c:if test="${fn:length(matchingFrameworks) > 1}">
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&nameflag=' + nameFlag + '&order=' + order;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&nameFlag=' + nameFlag + '&order=' + order;
         </c:if>
     }
 

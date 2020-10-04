@@ -28,11 +28,11 @@ public class FrameworkListController {
     private UserService us;
 
     @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
-    public ModelAndView advancedSearch(@RequestParam(required = false) String toSearch,
-                                       @RequestParam(required = false) final List<String> categories,
-                                       @RequestParam(required = false) final List<String> types,
+    public ModelAndView advancedSearch(@RequestParam(required = false, defaultValue = "") String toSearch,
+                                       @RequestParam(required = false, defaultValue = "") final List<String> categories,
+                                       @RequestParam(required = false, defaultValue = "") final List<String> types,
                                        @RequestParam(required = false) final Integer stars,
-                                       @RequestParam(required = false) final Boolean nameflag,
+                                       @RequestParam(required = false) final boolean nameFlag,
                                        @RequestParam(required = false) final Integer order){
 
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
@@ -41,21 +41,19 @@ public class FrameworkListController {
         List<FrameworkType> typesList = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
 
-        if(!categories.isEmpty()){
-            for( String c : categories){
-                String aux = c.replaceAll("%20", " ");
-                categoriesQuery.add(aux);
-                categoriesList.add(FrameworkCategories.getByName(aux));
-            }
+        for( String c : categories){
+            String aux = c.replaceAll("%20", " ");
+            categoriesQuery.add(aux);
+            categoriesList.add(FrameworkCategories.getByName(aux));
         }
 
-        if(!types.isEmpty()){
-            for( String c : types){
-                String aux = c.replaceAll("%20", " ");
-                typesQuery.add(aux);
-                typesList.add(FrameworkType.getByName(aux));
-            }
+
+        for( String c : types){
+            String aux = c.replaceAll("%20", " ");
+            typesQuery.add(aux);
+            typesList.add(FrameworkType.getByName(aux));
         }
+
         List<String> allCategories = FrameworkCategories.getAllCategories();
         List<String> allTypes = FrameworkType.getAllTypes();
 
@@ -67,7 +65,7 @@ public class FrameworkListController {
             toSearch="";
         }
 
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars, nameflag);
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars, nameFlag);
         if(order!=null && order!=0){
             switch (order){
                 case -1:
