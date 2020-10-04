@@ -100,6 +100,8 @@ public class FrameworkListController {
         mav.addObject("typesQuery", typesQuery );
         mav.addObject("starsQuery", stars );
         mav.addObject("orderQuery", order );
+        mav.addObject("nameFlagQuery", nameFlag );
+
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 

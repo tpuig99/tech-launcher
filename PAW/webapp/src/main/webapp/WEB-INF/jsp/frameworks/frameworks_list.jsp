@@ -232,7 +232,7 @@
         <c:forEach items="${typesQuery}" var="type">
             document.getElementById("check${type}").checked = true;
         </c:forEach>
-
+        document.getElementById("searchOnlyByName").checked = ${nameFlagQuery};
 
 
     });
