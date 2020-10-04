@@ -1,0 +1,1 @@
+INSERT INTO frameworks VALUES(1, 'IBM', 'Big Data','Platform for distributed processing and real-time analytics', 'Is a software platform that enables the development and execution of applications','https://developer.ibm.com/streamsdev/wp-content/uploads/sites/15/2019/08/Pasted-Image.png', 'Platform', 1,'2020-08-03 16:56:37');
