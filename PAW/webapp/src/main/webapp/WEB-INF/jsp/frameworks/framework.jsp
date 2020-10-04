@@ -299,11 +299,11 @@
                                     </button>
                                 </span>
 
-<%--                                <c:if test="${isAdmin || verifyForFramework}">--%>
+                               <c:if test="${isAdmin || verifyForFramework}">
                                     <span class="col d-flex justify-content-end align-items-end">
                                         <button class="btn btn-link" onclick="openDeleteCommentModal(${comment.commentId})"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                                     </span>
-<%--                                </c:if>--%>
+                               </c:if>
                             </div>
 
                             <div  class="collapse multi-collapse" id="${comment.commentId}See">
