@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerifyUser;
 import ar.edu.itba.paw.service.CommentService;
@@ -111,7 +112,7 @@ public class UserController {
                 mav.addObject("pendingToVerify", verify);
                 mav.addObject("pendingApplicants", applicants);
                 mav.addObject("reportedComments", commentService.getAllReport());
-                //TODO: FIX mav.addObject("reportedContents", contentService.getAllReports());
+                mav.addObject("reportedContents", contentService.getAllReports());
                 return mav;
             }
             else if( user.isVerify() ){
@@ -203,6 +204,40 @@ public class UserController {
                 commentService.denyReport(commentId);
 
                 return modPage();
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping("/mod/content/delete")
+    public ModelAndView deleteContent(@RequestParam("contentId") final long contentId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                Optional<Content> contentOptional = contentService.getById(contentId);
+                if( contentOptional.isPresent() ){
+                    contentService.acceptReport(contentId);
+                    return modPage();
+                }
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping("/mod/content/ignore")
+    public ModelAndView ignoreContent(@RequestParam("contentId") final long contentId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                Optional<Content> contentOptional = contentService.getById(contentId);
+                if( contentOptional.isPresent() ){
+                    contentService.denyReport(contentId);
+                    return modPage();
+                }
             }
         }
 
