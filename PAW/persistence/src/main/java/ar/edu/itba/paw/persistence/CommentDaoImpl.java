@@ -148,7 +148,7 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public int deleteComment(long commentId) {
-        return jdbcTemplate.update("DELETE FROM content WHERE comment_id = ?", commentId);
+        return jdbcTemplate.update("DELETE FROM comments WHERE comment_id = ?", commentId);
     }
 
     @Override
