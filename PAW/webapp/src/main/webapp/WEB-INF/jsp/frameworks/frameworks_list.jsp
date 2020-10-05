@@ -123,7 +123,7 @@
             <h2><spring:message code="explore.title"/></h2>
             </c:when>
             <c:otherwise>
-                <h2><spring:message code="explore.search_results"/></h2>
+                <h2><spring:message code="explore.search_results"/> (${fn:length(matchingFrameworks)})</h2>
             </c:otherwise>
         </c:choose>
 
