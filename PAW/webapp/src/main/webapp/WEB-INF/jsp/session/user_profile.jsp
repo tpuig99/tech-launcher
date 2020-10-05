@@ -193,6 +193,29 @@
                 <spring:message code="profile.empty.votes"/>
             </c:otherwise>
         </c:choose>
+
+    <!-- Frameworks -->
+    <c:if test="${not empty frameworks}">
+        <div class="page-title mb-4 ml-2 text-left">
+            <h2><spring:message code="profile.frameworks"/></h2>
+         </div>
+            <div class="container row equal justify-content-center">
+                <c:forEach var="framework" items="${frameworks}">
+                    <div class="card mx-4 mb-4">
+                        <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
+                            <div class="card-body">
+                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
+                            </div>
+                            <div class="card-footer text-dark">
+                                <span>${framework.name} | </span>
+                                <span class="fa fa-star fa-sm"></span>
+                                <span>${framework.starsFormated}</span>
+                            </div>
+                        </a>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
     </div>
 
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">

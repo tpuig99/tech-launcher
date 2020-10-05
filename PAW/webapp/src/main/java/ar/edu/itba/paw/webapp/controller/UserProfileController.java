@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.FrameworkVote;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.session.ProfileForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,11 +52,13 @@ public class UserProfileController {
             final List<Comment> commentList = commentService.getCommentsByUser(userId);
             final List<Content> contentList = contentService.getContentByUser(userId);
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
+            final List<Framework> frameworks = frameworkService.getByUser(userId);
 
             mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
             mav.addObject("contents", contentList);
             mav.addObject("comments", commentList);
             mav.addObject("votes", votesList);
+            mav.addObject("frameworks",frameworks);
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
 
             return mav;
