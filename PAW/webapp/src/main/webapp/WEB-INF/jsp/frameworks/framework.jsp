@@ -100,11 +100,11 @@
                                 <div class="col-10">
                                     <a target="_blank" href="${book.link}">${book.title}</a>
                                 </div>
-                                <c:if test="${isAdmin || verifyForFramework}">
+<%--                                <c:if test="${isAdmin || verifyForFramework}">--%>
                                     <div class="col d-flex justify-content-end align-items-end">
                                         <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                     </div>
-                                </c:if>
+<%--                                </c:if>--%>
                             </div>
                         </li>
                         </c:forEach>
@@ -530,7 +530,6 @@
                 <div class="modal fade" id="deleteContentModal" tabindex="-1" role="dialog" aria-labelledby="deleteContentModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div id="contentId" hidden></div>
                             <div class="modal-header">
                                 <h5 class="modal-title" id="deleteContentModalLabel"><spring:message code="tech.content.delete"/></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -543,7 +542,13 @@
                                 </div>
                                 <div class="row justify-content-center align-items-center margin-top">
                                     <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button></span>
-                                    <span class="margin-left"> <button type="button" class="btn btn-danger" onclick="deleteContent()"><spring:message code="button.delete"/></button></span>
+
+                                    <form:form modelAttribute="deleteContentForm" action="/content/delete" method="post">
+                                        <form:label path="deleteContentFrameworkId"><form:input  class="input-wrap" path="deleteContentFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                        <form:label path="deleteContentId"><form:input  class="input-wrap" path="deleteContentId" type="hidden" id="contentIdDeleteInput"/></form:label>
+                                        <span class="margin-left"> <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button></span>
+                                    </form:form>
+
                                 </div>
                             </div>
                         </div>
@@ -648,20 +653,11 @@
                     }
 
                     function openDeleteContentModal(contentId){
-                        console.log("contenId en open");
-                        console.log(contentId);
-                        $('#contentId').val(contentId);
+
+                        $('#contentIdDeleteInput').val(contentId);
                         $('#deleteContentModal').modal('show');
                     }
 
-                    function deleteContent(){
-
-                        let id= ${framework.id};
-                        let contentId= document.getElementById('contentId').value;
-                        console.log("contenId en delete");
-                        console.log(contentId);
-                        window.location.href = '<c:url value="/content/delete" />?id='+id+'&content_id='+contentId;
-                    }
 
                     function showSnackbar() {
                         console.log("En snackbar");
