@@ -69,21 +69,25 @@ public class FrameworkListController {
         if(order!=null && order!=0){
             switch (order){
                 case -1:
-                    fs.orderByStars(frameworks,order);
-                case 1:
-                    fs.orderByStars(frameworks,order);
+                case 1: {
+                    fs.orderByStars(frameworks, order);
+                    break;
+                }
                 case 2:
-                    fs.orderByCommentsAmount(frameworks,order);
-                case -2:
-                    fs.orderByCommentsAmount(frameworks,order);
+                case -2: {
+                    fs.orderByCommentsAmount(frameworks, order);
+                    break;
+                }
                 case 3:
-                    fs.orderByReleaseDate(frameworks,order);
-                case -3:
-                    fs.orderByReleaseDate(frameworks,order);
+                case -3: {
+                    fs.orderByReleaseDate(frameworks, order);
+                    break;
+                }
                 case 4:
-                    fs.orderByInteraction(frameworks,order);
-                case -4:
-                    fs.orderByInteraction(frameworks,order);
+                case -4: {
+                    fs.orderByInteraction(frameworks, order);
+                    break;
+                }
             }
         }
 
