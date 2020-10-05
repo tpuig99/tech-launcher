@@ -105,6 +105,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public MessageSource messageSource() {
         final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setFallbackToSystemLocale(false);
         messageSource.setBasename("classpath:i18n/messages");
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
         messageSource.setCacheSeconds(5);
@@ -115,6 +116,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public CommonsMultipartResolver multipartResolver(){
         return new CommonsMultipartResolver();
     }
+
+//    @Bean
+//    public MessageSourceAccessor getMessageSourceAccessor(final MessageSource messageSource) {
+//        return new MessageSourceAccessor(messageSource, Locale.US);
+//    }
 
 }
 
