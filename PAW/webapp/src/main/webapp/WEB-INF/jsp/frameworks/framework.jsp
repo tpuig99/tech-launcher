@@ -39,7 +39,7 @@
                         <div class="col-10">
                             <div class="row">
                                 <div class="col">
-                                <span class="framework-title"><h2>${framework.name}</h2></span>
+                                <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
                                     <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Category"> ${framework.category}</span>
                                     <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Type"> ${framework.type}</span>
                                 </div>
@@ -50,10 +50,10 @@
                                 </div>
                             </div>
                             <div class="description">
-                                ${framework.description}
+                                <c:out value="${framework.description}"/>
                             </div>
                         </div>
-                        <div class="margin-top margin-left justify">${framework.introduction}</div>
+                        <div class="margin-top margin-left justify"><c:out value="${framework.introduction}"/></div>
                     </div>
                 </div>
 
