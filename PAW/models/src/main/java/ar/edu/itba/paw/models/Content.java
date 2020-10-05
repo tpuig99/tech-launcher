@@ -2,6 +2,8 @@ package ar.edu.itba.paw.models;
 
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Content {
     private long contentId;
@@ -15,11 +17,13 @@ public class Content {
     private int votesDown;
     private String frameworkName;
     private FrameworkCategories category;
+    private String userName;
     private Integer userAuthVote;
     private boolean isVerify;
     private boolean isAdmin;
+    private List<String> reportersNames = new ArrayList<>();
 
-    public Content(long contentId, long frameworkId, long userId, String title, int votesUp, int votesDown, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin, Integer userAuthVote) {
+    public Content(long contentId, long frameworkId, long userId, String title, int votesUp, int votesDown, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin, String username,Integer userAuthVote) {
         this.contentId = contentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
@@ -34,8 +38,9 @@ public class Content {
         this.userAuthVote = userAuthVote;
         this.isVerify = isVerify;
         this.isAdmin = isAdmin;
+        this.userName = username;
     }
-    public Content(long contentId, long frameworkId, long userId, String title, int votesUp, int votesDown, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin) {
+    public Content(long contentId, long frameworkId, long userId, String title, int votesUp, int votesDown, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin,String userName) {
         this.contentId = contentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
@@ -49,6 +54,7 @@ public class Content {
         this.category = category;
         this.isVerify = isVerify;
         this.isAdmin = isAdmin;
+        this.userName = userName;
     }
 
 
@@ -111,5 +117,23 @@ public class Content {
         if(userAuthVote == null)
             return false;
         return userAuthVote == 0 ? false : true;
+    }
+    public void addReporter(String name) {
+        reportersNames.add(name);
+    }
+    public boolean isReporter(String name){
+        for (String rn:reportersNames) {
+            if(rn.equals(name))
+                return true;
+        }
+        return false;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public List<String> getReportersNames() {
+        return reportersNames;
     }
 }

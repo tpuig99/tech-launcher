@@ -92,6 +92,14 @@ public class UserServiceImpl implements UserService {
         userDao.updatePassword(userId,psw);
     }
 
+    @Override
+    public void updateModAllow(long userId, boolean allow) {
+        userDao.updateModAllow(userId, allow);
+        if(!allow){
+            deleteVerificationByUser(userId);
+        }
+    }
+
 
     private Optional<User> update(long userId, String username, String mail, String password) {
         return userDao.update(userId,username,mail,password);
@@ -171,6 +179,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteVerification(long verificationId) {
         verifyUserDao.delete(verificationId);
+    }
+
+    @Override
+    public void deleteVerificationByUser(long userId) {
+        verifyUserDao.deleteVerificationByUser(userId);
     }
 
     @Override

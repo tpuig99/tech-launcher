@@ -24,9 +24,39 @@
 
         <div class="content-no-sidebar">
             <c:if test="${isAdmin}">
+                <div class="page-title"><spring:message code="moderate.comment.title"/></div>
+                <div class="page-description"></div>
+                <div class="row justify-content-center">
+                    <c:choose>
+                        <c:when test="${not empty reportedComments}">
+                            <div class="d-flex flex-column">
+                                <c:forEach items="${reportedComments}" var="reportedComment">
+                                        <div class="card emphasis row emph-comment mb-2 verified">
+                                            <div class="card-body row mt-1">
+                                                <div class="col-3 secondary-font"> <a href="/users/${reportedComment.userNameOwner}"><c:out value="${reportedComment.userNameOwner}" default=""/></a>
+                                                    <c:out value="/" default=""/>
+                                                    <a href="<c:out value="/${reportedComment.categoryAsString}/${reportedComment.frameworkId}"/>"><c:out value="${reportedComment.frameworkName}" default=""/></a>
+                                                </div>
+                                                <div class="col-6 text-left"> <c:out value="${reportedComment.commentDescription}" default=""/> </div>
+                                                <div class="col third-font text-right"> <c:out value="${reportedComment.timestamp}" default=""/> </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <button type="button" class="btn btn-secondary" onclick="ignoreComment(${reportedComment.commentId})"><spring:message code="button.ignore"/></button>
+                                                <button type="button" class="btn btn-danger" onclick="deleteComment(${reportedComment.commentId})"><spring:message code="button.delete"/></button>
+                                            </div>
+                                        </div>
+                                </c:forEach>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div><spring:message code="moderate.comment.empty"/></div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+
                 <div class="page-title"><spring:message code="moderator.title"/></div>
                 <div class="page-description"></div>
-                <div class="row">
+                <div class="d-flex flex-wrap justify-content-center">
                     <c:choose>
                         <c:when test="${not empty mods}">
                             <c:forEach var = "moderator" items="${mods}">
@@ -52,8 +82,39 @@
                     </c:choose>
                 </div>
             </c:if>
+            <div class="page-title"><spring:message code="moderate.content.title"/></div>
+            <div class="page-description"></div>
+            <div class="row justify-content-center">
+                <c:choose>
+                    <c:when test="${not empty reportedContents}">
+                        <div class="d-flex flex-column">
+                            <c:forEach items="${reportedContents}" var="reportedContent">
+                                <div class="card emphasis row emph-comment mb-2 verified">
+                                    <div class="card-body row mt-1">
+                                        <div class="col-3 secondary-font"> <a href="/users/${reportedContent.userNameOwner}"><c:out value="${reportedContent.userNameOwner}" default=""/></a>
+                                            <c:out value="/" default=""/>
+                                            <a href="<c:out value="/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a>
+                                        </div>
+                                        <div class="col-6 text-left"> <c:out value="${reportedContent.title}" default=""/> </div>
+                                        <div class="col third-font text-right"> <c:out value="${reportedContent.reportDescription}" default=""/> </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="button" class="btn btn-secondary" onclick="ignoreContent(${reportedContent.contentId})"><spring:message code="button.ignore"/></button>
+                                        <button type="button" class="btn btn-danger" onclick="deleteContent(${reportedContent.contentId})"><spring:message code="button.delete"/></button>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div><spring:message code="moderate.content.empty"/></div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+
             <div class="page-title"><spring:message code="moderator.pending"/></div>
             <div class="page-description"></div>
+            <div class="d-flex flex-column justify-content-center">
             <c:choose>
                 <c:when test="${not empty pendingToVerify}">
                     <c:forEach var = "pendingUser" items="${pendingToVerify}">
@@ -77,9 +138,10 @@
                     <div><spring:message code="moderator.emptyPending"/></div>
                 </c:otherwise>
             </c:choose>
+            </div>
             <div class="page-title"><spring:message code="moderator.pendingApplicants"/></div>
             <div class="page-description"></div>
-            <div class="row">
+            <div class="d-flex flex-wrap justify-content-center">
                 <c:choose>
                     <c:when test="${not empty pendingApplicants}">
                         <c:forEach var = "applicant" items="${pendingApplicants}">
@@ -104,7 +166,25 @@
             </div>
         </div>
 
+
+
         <script>
+            function ignoreComment(commentId){
+                window.location.href = '<c:url value="/mod/comment/ignore" />?commentId=' + commentId;
+            }
+
+            function deleteComment(commentId){
+                window.location.href = '<c:url value="/mod/comment/delete" />?commentId=' + commentId;
+            }
+
+            function ignoreContent(contentId){
+                window.location.href = '<c:url value="/mod/content/ignore" />?contentId=' + contentId;
+            }
+
+            function deleteContent(contentId){
+                window.location.href = '<c:url value="/mod/content/delete" />?contentId=' + contentId;
+            }
+
             function promoteUser(verificationId){
                 window.location.href = '<c:url value="/accept" />?id=' + verificationId;
             }

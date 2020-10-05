@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.form.session;
+package ar.edu.itba.paw.webapp.form.register;
 
 import org.springframework.web.multipart.MultipartFile;
 

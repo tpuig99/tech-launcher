@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.ContentDao;
 import ar.edu.itba.paw.persistence.ContentVoteDao;
+import ar.edu.itba.paw.persistence.ReportContentDao;
 import ar.edu.itba.paw.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class ContentServiceImpl implements ContentService {
 
     @Autowired
     ContentVoteDao cv;
+
+    @Autowired
+    ReportContentDao rc;
 
     @Override
     public Optional<Content> getById(long contentId) {
@@ -93,5 +97,46 @@ public class ContentServiceImpl implements ContentService {
         }
         Optional<Content> ct = content.getById(contentId);
     }
+
+    @Override
+    public Optional<ReportContent> getReporstById(long reportId) {
+        return rc.getById(reportId);
+    }
+
+    @Override
+    public List<ReportContent> getAllReports() {
+        return rc.getAll();
+    }
+
+    @Override
+    public List<ReportContent> getReportsByFramework(long frameworkId) {
+        return rc.getByFramework(frameworkId);
+    }
+
+    @Override
+    public Optional<ReportContent> getReportsByContent(long contentId) {
+        return rc.getByContent(contentId);
+    }
+
+    @Override
+    public void addReport(long contentId, long userId, String description) {
+        rc.add(contentId,userId,description);
+    }
+
+    @Override
+    public void acceptReport(long contentId) {
+        content.deleteContent(contentId);
+    }
+
+    @Override
+    public void denyReport(long contentId) {
+        rc.deleteByContent(contentId);
+    }
+
+    @Override
+    public void deleteReport(long reportId) {
+        rc.delete(reportId);
+    }
+
 
 }
