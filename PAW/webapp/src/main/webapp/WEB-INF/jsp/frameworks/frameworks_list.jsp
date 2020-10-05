@@ -14,6 +14,8 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/search.css"/>"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.css" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -26,6 +28,7 @@
 <div class="content-search">
     <div class="sidebar-search">
 
+        <!-- Filter By Categories -->
         <div class="subtitle"><h4><spring:message code="explore.categories"/></h4></div>
             <c:forEach items="${categories}" var="category" begin="0" end="5">
                 <div class="form-check">
@@ -52,7 +55,7 @@
                 </div>
             </div>
 
-
+        <!-- Filter By Types -->
         <div class="subtitle"> <h4><spring:message code="explore.types"/></h4></div>
         <c:forEach items="${types}" var="type" begin="0" end="5">
             <div class="form-check">
@@ -79,30 +82,40 @@
             </div>
         </div>
 
+        <!--Filter By Rating-->
+
         <div class="subtitle"><h4><spring:message code="explore.rating"/></h4></div>
 
         <span><spring:message code="explore.from"/></span>
         <span>
             <select id="stars-dropdown">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="0" <c:if test="${starsQuery == 0}"> selected </c:if>>0</option>
+                <option value="1"<c:if test="${starsQuery == 1}"> selected </c:if>>1</option>
+                <option value="2"<c:if test="${starsQuery == 2}"> selected </c:if>>2</option>
+                <option value="3"<c:if test="${starsQuery == 3}"> selected </c:if>>3</option>
+                <option value="4"<c:if test="${starsQuery == 4}"> selected </c:if>>4</option>
+                <option value="5"<c:if test="${starsQuery == 5}"> selected </c:if>>5</option>
             </select>
          </span>
         <span><spring:message code="explore.to_5_stars"/></span>
 
     </div>
 
+    <!-- Search Bar -->
     <div class="search-bar">
-        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks(0)" id="search">
-            <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
-            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks(0)"><spring:message code="search.title"/></button>
-
+        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
+            <input id="searchInput" class="form-control mr-sm-2" type="text" value="${techNameQuery}" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
+            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="search.title"/></button>
         </form>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
+            <label class="form-check-label" for="searchOnlyByName">
+                <spring:message code="explore.search_only_by_name"/>
+            </label>
+        </div>
     </div>
+
+    <!--Search Results For / Explore -->
     <div class="page-description"></div>
     <div class="page-title">
         <c:choose>
@@ -110,11 +123,13 @@
             <h2><spring:message code="explore.title"/></h2>
             </c:when>
             <c:otherwise>
-                <h2><spring:message code="explore.search_results"/></h2>
+                <h2><spring:message code="explore.search_results"/> (${fn:length(matchingFrameworks)})</h2>
             </c:otherwise>
         </c:choose>
 
     </div>
+
+    <!--Search Results Badges -->
     <div class="row">
         <div class="col-10">
             <div class="margin-top">
@@ -141,21 +156,29 @@
 
             </div>
         </div>
+
+        <!-- Sort Dropdown -->
         <div class="col">
             <div class="btn-group d-flex justify-content-end margin-top">
                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <spring:message code="explore.sort_by"/>
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)"><spring:message code="explore.rating_high_to_low"/></button>
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(1)"><spring:message code="explore.rating_low_to_high"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(2)"><spring:message code="explore.comments_more_to_least"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-2)"><spring:message code="explore.comments_least_to_more"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-3)"><spring:message code="explore.release_oldest_to_newest"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(3)"><spring:message code="explore.release_newest_to_oldest"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(4)"><spring:message code="explore.tech_most_recent_commented"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-4)"><spring:message code="explore.tech_last_commented"/></button>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="page-description"></div>
-
+    <!-- Display Matching Techs -->
     <c:choose>
         <c:when test="${matchingFrameworks.size() == 0 }">
             <div>
@@ -184,6 +207,36 @@
 </div>
 
 <script>
+
+    $(document).ready(function() {
+
+        let tags = [];
+        <c:forEach items="${categories}" var="category">
+            tags.push('${category}');
+        </c:forEach>
+        <c:forEach items="${types}" var="type">
+            tags.push('${type}');
+        </c:forEach>
+        <c:forEach items="${frameworkNames}" var="names">
+            tags.push('${names}');
+        </c:forEach>
+
+        $('#searchInput').autocomplete({
+            source : tags,
+
+        })
+
+        <c:forEach items="${categoriesQuery}" var="category">
+            document.getElementById("check${category}").checked = true;
+        </c:forEach>
+        <c:forEach items="${typesQuery}" var="type">
+            document.getElementById("check${type}").checked = true;
+        </c:forEach>
+        document.getElementById("searchOnlyByName").checked = ${nameFlagQuery};
+
+
+    });
+
     function isEmpty( input ){
         for (let i = 0; i < input.length; i++) {
             if(input.charAt(i) !== " " ){
@@ -194,16 +247,16 @@
         return true;
     }
 
-    function searchFrameworks(order) {
+    function searchFrameworks() {
         let name = document.getElementById("searchInput").value;
-        console.log(name);
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
         let stars = getRating();
-        console.log("<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order);
+        let nameFlag = getNameFlag();
+        let order = 0;
 
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(stars))) {
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&nameFlag=' + nameFlag +'&order=' + order;
         }
 
     }
@@ -213,6 +266,7 @@
         let categories="";
         let types="";
         let stars="";
+        let nameFlag= getNameFlag();
 
         <c:if test="${not empty techNameQuery}">
             name = "${techNameQuery}";
@@ -238,7 +292,7 @@
         </c:if>
 
         <c:if test="${fn:length(matchingFrameworks) > 1}">
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&order=' + order;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&nameFlag=' + nameFlag + '&order=' + order;
         </c:if>
     }
 
@@ -320,6 +374,10 @@
         return left;
     }
 
+    function getNameFlag(){
+        return document.getElementById("searchOnlyByName").checked;
+    }
+
     function parseListToString(list){
         let string = ""
         <c:forEach items="list" var="element">
@@ -334,9 +392,16 @@
     }
 
 
+
+
+
 </script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" crossorigin="anonymous"></script>
+<%--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>--%>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous">
+</script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>

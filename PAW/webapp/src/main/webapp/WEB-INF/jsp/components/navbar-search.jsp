@@ -21,7 +21,7 @@
                 <a class="nav-link" href="<c:url value="/frameworks"/>"><spring:message code="home.techs.title"/></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="<c:url value="/search?toSearch=&categories=&types=&stars=&order="/>"><spring:message code="explore.title"/></a>
+                <a class="nav-link" href="<c:url value="/search"/>"><spring:message code="explore.title"/></a>
             </li>
         </ul>
         <div class="nav-item dropdown" id="profile-settings">
