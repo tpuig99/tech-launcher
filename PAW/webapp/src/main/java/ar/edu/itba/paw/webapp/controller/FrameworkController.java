@@ -47,6 +47,7 @@ public class FrameworkController {
         mav.addObject("commentForm", new CommentForm());
         mav.addObject("replyForm", new ReplyForm());
         mav.addObject("deleteCommentForm", new DeleteCommentForm());
+        mav.addObject("deleteContentForm", new DeleteContentForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -180,6 +181,7 @@ public class FrameworkController {
                 framework1.addObject("commentForm", new CommentForm());
                 framework1.addObject("replyForm", new ReplyForm());
                 framework1.addObject("deleteCommentForm", new DeleteCommentForm());
+                framework1.addObject("deleteContentForm", new DeleteContentForm());
                 return framework1;
             }
 
@@ -203,18 +205,18 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
-    //TODO Should it be a .POST? -> It should be a .DELETE, Deletes with get are BAD STYLE
-    @RequestMapping(path={"/content/delete"}, method = RequestMethod.GET)
-    public ModelAndView deleteContent(@RequestParam("id") final long frameworkId, @RequestParam("content_id") final long contentId){
-        Optional<Framework> framework = fs.findById(frameworkId);
+
+    @RequestMapping(path={"/content/delete"}, method = RequestMethod.POST)
+    public ModelAndView deleteComment(@Valid @ModelAttribute("deleteContentForm") final DeleteContentForm form, final BindingResult errors){
+        Optional<Framework> framework = fs.findById(form.getDeleteContentFrameworkId());
 
         if (framework.isPresent()) {
-            int deleted = contentService.deleteContent(contentId);
+            int deleted = contentService.deleteContent(form.getDeleteContentId());
             if (deleted != 1) {
                 return ErrorController.redirectToErrorView();
             }
 
-            return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
+            return FrameworkController.redirectToFramework(form.getDeleteContentFrameworkId(), framework.get().getCategory());
         }
         return ErrorController.redirectToErrorView();
 
