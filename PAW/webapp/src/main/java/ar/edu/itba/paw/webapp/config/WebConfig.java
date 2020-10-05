@@ -5,6 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -116,11 +117,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public CommonsMultipartResolver multipartResolver(){
         return new CommonsMultipartResolver();
     }
-
-//    @Bean
-//    public MessageSourceAccessor getMessageSourceAccessor(final MessageSource messageSource) {
-//        return new MessageSourceAccessor(messageSource, Locale.US);
-//    }
 
 }
 

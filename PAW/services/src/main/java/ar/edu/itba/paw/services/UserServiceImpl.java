@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import ar.edu.itba.paw.models.User;
@@ -60,9 +61,9 @@ public class UserServiceImpl implements UserService {
             if(user.get().getMail().equals(mail) && user.get().getPassword()==null)
                 return user.get().getId();
             if(user.get().getMail().equals(mail)){
-                throw new UserAlreadyExistException(messageSource.getMessage("uae.email",new Object[]{user.get().getMail()},Locale.getDefault()));
+                throw new UserAlreadyExistException(messageSource.getMessage("uae.email",new Object[]{user.get().getMail()}, LocaleContextHolder.getLocale()));
             }
-            throw new UserAlreadyExistException(messageSource.getMessage("uae.username",new Object[]{user.get().getUsername()},Locale.getDefault()));
+            throw new UserAlreadyExistException(messageSource.getMessage("uae.username",new Object[]{user.get().getUsername()},LocaleContextHolder.getLocale()));
         }
         return USER_NOT_EXISTS;
     }
@@ -204,8 +205,8 @@ public class UserServiceImpl implements UserService {
             String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
             String confirmationUrl = "/recoveringToken?token=" + token;
 
-            String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, Locale.getDefault());
-            String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, Locale.getDefault());
+            String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
+            String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());
             String message = inter_message+ "\r\n" + appUrl + confirmationUrl;
 
             sendEmail(recipientAddress,subject,message);
@@ -213,8 +214,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void modMailing(User user, String frameworkName) {
-        String subject = messageSource.getMessage("email.moderator.subject",new Object[]{frameworkName}, Locale.getDefault());
-        String message = messageSource.getMessage("email.moderator.body",new Object[]{frameworkName}, Locale.getDefault());
+        String subject = messageSource.getMessage("email.moderator.subject",new Object[]{frameworkName}, LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("email.moderator.body",new Object[]{frameworkName}, LocaleContextHolder.getLocale());
         sendEmail(user.getMail(),subject,message);
     }
 
