@@ -100,11 +100,11 @@
                                 <div class="col-10">
                                     <a target="_blank" href="${book.link}">${book.title}</a>
                                 </div>
-<%--                                <c:if test="${isAdmin || verifyForFramework}">--%>
+                               <c:if test="${isAdmin || verifyForFramework}">
                                     <div class="col d-flex justify-content-end align-items-end">
                                         <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                     </div>
-<%--                                </c:if>--%>
+                               </c:if>
                             </div>
                         </li>
                         </c:forEach>
