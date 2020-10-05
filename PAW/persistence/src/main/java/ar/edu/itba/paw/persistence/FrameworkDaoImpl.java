@@ -12,10 +12,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Array;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,12 +22,10 @@ public class FrameworkDaoImpl implements FrameworkDao {
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final static RowMapper<Framework> ROW_MAPPER = FrameworkDaoImpl::mapRow;
-    private final String SELECTION="select frameworks.framework_id,type,framework_name,category,description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant from frameworks left join framework_votes on frameworks.framework_id = framework_votes.framework_id ";
-    private final String GROUP_BY=" group by framework_name, frameworks.framework_id, category, type, description, introduction, logo";
+    private final static RowMapper<String> ROW_MAPPER_FRAMEWORK_NAME = FrameworkDaoImpl::mapRowNames;
 
-    private final String SELECTION2 = " SELECT f.framework_id, f.type, framework_name, category, description, introduction, logo, COALESCE(avg(stars),0) as stars, count(stars) as votes_cant " +
-            "FROM frameworks AS f LEFT JOIN framework_votes AS v ON f.framework_id = v.framework_id ";
-    private final String GROUP_BY2 = " GROUP BY framework_name, f.framework_id, category, f.type, description, introduction, logo ";
+    private final String SELECTION="select f.framework_id, count(distinct comment_id) as comment_amount,f.type,framework_name,category,f.description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant,user_name as author,f.date, max(c.tstamp) as last_comment from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author left join comments c on f.framework_id=c.framework_id  ";
+    private final String GROUP_BY=" group by framework_name, f.framework_id, category, f.type, f.description, introduction, logo,u.user_name";
 
 
     @Autowired
@@ -42,7 +37,9 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 .usingGeneratedKeyColumns("framework_id");
 
     }
-
+    private static String mapRowNames(ResultSet rs, int i) throws SQLException {
+        return rs.getString("framework_name");
+    }
     private static Framework mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Framework(rs.getInt("framework_id"),
                 rs.getString("framework_name"),
@@ -52,14 +49,23 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 rs.getString("logo"),
                 rs.getDouble("stars"),
                 rs.getInt("votes_cant"),
-                FrameworkType.getByName(rs.getString("type")));
+                FrameworkType.getByName(rs.getString("type")),
+                rs.getString("author"),
+                rs.getTimestamp("date"),
+                rs.getTimestamp("last_comment"),
+                rs.getInt("comment_amount"));
     }
 
     @Override
     public Optional<Framework> findById(long id) {
-        String value=SELECTION+"WHERE frameworks.framework_id = ?"+GROUP_BY;
+        String value=SELECTION+"WHERE f.framework_id = ?"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[]{ id }, ROW_MAPPER).stream().findFirst();
         }
+
+    @Override
+    public List<String> getFrameworkNames() {
+        return jdbcTemplate.query("select framework_name from frameworks",ROW_MAPPER_FRAMEWORK_NAME);
+    }
 
     @Override
     public List<Framework> getByCategory(FrameworkCategories category) {
@@ -109,7 +115,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> getUserInterests(long userId) {
-        String query = SELECTION2 + " inner join content as c on f.framework_id = c.framework_id where c.user_id = ? " + GROUP_BY2;
+        String query = SELECTION + " inner join content as cont on f.framework_id = cont.framework_id where cont.user_id = ? " + GROUP_BY;
         return jdbcTemplate.query(query, new Object[] { userId }, ROW_MAPPER);
     }
 
@@ -145,13 +151,15 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars) {
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars,boolean nameFlag) {
         if(toSearch==null && categories==null && types == null && (stars == null || stars == 0))
             return jdbcTemplate.query(SELECTION+GROUP_BY,ROW_MAPPER);
         String aux="where ";
         Map<String,List<String>> params = new HashMap<>();
         if(toSearch!=null && !toSearch.isEmpty()){
-            aux = aux.concat("frameworks.framework_name ILIKE '%"+toSearch+"%' ");
+            aux = aux.concat("f.framework_name ILIKE '%"+toSearch+"%' ");
+            if(toSearch.length()>3 && !nameFlag)
+                aux = aux.concat("or f.description ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%' ");
         }
         if(categories!=null){
             if(!aux.equals("where "))
@@ -178,15 +186,18 @@ public class FrameworkDaoImpl implements FrameworkDao {
         return jdbcTemplate.query(SELECTION+GROUP_BY, ROW_MAPPER);
     }
 
-    private Framework create(String framework_name,FrameworkCategories category,String description,String introduction,String logo,FrameworkType type) {
+    @Override
+    public void create(String framework_name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId) {
         final Map<String, Object> args = new HashMap<>();
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
         args.put("framework_name", framework_name); // la key es el nombre de la columna
         args.put("category", category.name()); // la key es el nombre de la columna
         args.put("description", description); // la key es el nombre de la columna
         args.put("introduction",introduction);
-        args.put("logo",logo);
+        args.put("logo",null);
+        args.put("author",userId);
         args.put("type",type.getType());
-        final Number frameworkId = jdbcInsert.executeAndReturnKey(args);
-        return new Framework(frameworkId.longValue(), framework_name,category,description,introduction,logo,0,0,type);
+        args.put("date",ts);
+        jdbcInsert.executeAndReturnKey(args);
     }
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface FrameworkDao {
     Optional<Framework> findById(long id);
+    List<String> getFrameworkNames();
     List<Framework> getByCategory(FrameworkCategories category);
     List<Framework> getByType(FrameworkType type);
     List<Framework> getByCategoryAndType(FrameworkType type, FrameworkCategories category);
@@ -21,5 +22,5 @@ public interface FrameworkDao {
     List<Framework> getByMultipleCategories(List<FrameworkCategories> categories);
     List<Framework> getByMinStars(int stars);
     List<Framework> getByMultipleTypes(List<FrameworkType> types);
-    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars);
-}
+    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars,boolean nameFlag);
+    void create(String name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId);    }
