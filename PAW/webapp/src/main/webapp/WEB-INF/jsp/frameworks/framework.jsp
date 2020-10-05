@@ -299,7 +299,7 @@
                                     </button>
                                 </span>
 
-                               <c:if test="${isAdmin || verifyForFramework}">
+                               <c:if test="${isAdmin || verifyForFramework || comment.userName == user.name}">
                                     <span class="col d-flex justify-content-end align-items-end">
                                         <button class="btn btn-link" onclick="openDeleteCommentModal(${comment.commentId})"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                                     </span>
@@ -572,11 +572,11 @@
                                 </div>
                                 <div class="row justify-content-center align-items-center margin-top">
                                     <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button></span>
-
-                                    <form:form modelAttribute="deleteCommentForm" action="/comment/delete" method="post">
-                                        <form:label path="commentDeleteFrameworkId"><form:input  class="input-wrap" path="commentDeleteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
-                                        <form:label path="commentDeleteId"><form:input  class="input-wrap" path="commentDeleteId" type="hidden" id="commentIdDeleteInput"/></form:label>
-                                        <span class="margin-left"> <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button></span>
+                                    <span class="margin-left">
+                                        <form:form modelAttribute="deleteCommentForm" action="/comment/delete" method="post">
+                                            <form:label path="commentDeleteFrameworkId"><form:input  class="input-wrap" path="commentDeleteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                            <form:label path="commentDeleteId"><form:input  class="input-wrap" path="commentDeleteId" type="hidden" id="commentIdDeleteInput"/></form:label>
+                                            <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button></span>
                                     </form:form>
                                 </div>
                             </div>
