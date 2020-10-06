@@ -12,6 +12,10 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +28,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
     private final static RowMapper<Framework> ROW_MAPPER = FrameworkDaoImpl::mapRow;
     private final static RowMapper<String> ROW_MAPPER_FRAMEWORK_NAME = FrameworkDaoImpl::mapRowNames;
 
-    private final String SELECTION="select f.framework_id, count(distinct comment_id) as comment_amount,f.type,framework_name,category,f.description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant,user_name as author,f.date, max(c.tstamp) as last_comment from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author left join comments c on f.framework_id=c.framework_id  ";
+    private final String SELECTION="select f.framework_id, count(distinct comment_id) as comment_amount,f.type,framework_name,category,f.description,introduction,logo,COALESCE(avg(stars),0) as stars,count(stars) as votes_cant,user_name as author,f.date, max(c.tstamp) as last_comment, f.picture from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author left join comments c on f.framework_id=c.framework_id  ";
     private final String GROUP_BY=" group by framework_name, f.framework_id, category, f.type, f.description, introduction, logo,u.user_name";
 
 
@@ -41,6 +45,21 @@ public class FrameworkDaoImpl implements FrameworkDao {
         return rs.getString("framework_name");
     }
     private static Framework mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+        byte[] image = rs.getBytes("picture");
+        String encodeBase64 = "";
+        String contentType = "";
+
+        if (image != null) {
+            byte[] encodedByteArray = Base64.getEncoder().encode(rs.getBytes("picture"));
+            encodeBase64 = new String(encodedByteArray, StandardCharsets.UTF_8);
+            try {
+                contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(rs.getBytes("picture")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return new Framework(rs.getInt("framework_id"),
                 rs.getString("framework_name"),
                 FrameworkCategories.getByName(rs.getString("category")),
@@ -53,7 +72,9 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 rs.getString("author"),
                 rs.getTimestamp("date"),
                 rs.getTimestamp("last_comment"),
-                rs.getInt("comment_amount"));
+                rs.getInt("comment_amount"),
+                contentType,
+                encodeBase64);
     }
 
     @Override
@@ -192,17 +213,18 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public Optional<Framework> create(String framework_name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId) {
+    public Optional<Framework> create(String framework_name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId, byte[] picture) {
         final Map<String, Object> args = new HashMap<>();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         args.put("framework_name", framework_name); // la key es el nombre de la columna
-        args.put("category", category.name()); // la key es el nombre de la columna
+        args.put("category", category.getNameCat()); // la key es el nombre de la columna
         args.put("description", description); // la key es el nombre de la columna
         args.put("introduction",introduction);
         args.put("logo",null);
         args.put("author",userId);
         args.put("type",type.getType());
         args.put("date",ts);
+        args.put("picture", picture);
 
         final Number commentId = jdbcInsert.executeAndReturnKey(args);
         return findById(commentId.longValue());

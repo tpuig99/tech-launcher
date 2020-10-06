@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.awt.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -373,7 +374,7 @@ public class FrameworkController {
     }
 
     @RequestMapping(value = "/add_tech", method = { RequestMethod.POST })
-    public ModelAndView createTech(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) {
+    public ModelAndView createTech(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) throws IOException {
         if (errors.hasErrors()) {
             return addTech(form);
         }
@@ -383,10 +384,11 @@ public class FrameworkController {
             User user = us.findByUsername(username).get();
             FrameworkType type = FrameworkType.getByName(form.getType());
             FrameworkCategories category = FrameworkCategories.getByName(form.getCategory());
-            Optional<Framework> framework = fs.create(form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,user.getId());
+            byte[] picture = form.getPicture().getBytes();
+            Optional<Framework> framework = fs.create(form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,user.getId(), picture);
 
             if (framework.isPresent()) {
-                return FrameworkController.redirectToFramework(framework.get().getId(), "framework");
+                return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
             }
         }
 

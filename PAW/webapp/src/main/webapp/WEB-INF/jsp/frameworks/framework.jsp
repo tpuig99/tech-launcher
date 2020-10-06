@@ -34,9 +34,14 @@
                 <div class="container d-flex">
                     <div class="row">
                         <div class="col-2">
-                            <c:if test="${framework.logo != null}">
-                            <div class="max-logo"><img src="${framework.logo}" alt="${framework.name} logo"></div>
-                            </c:if>
+                            <c:choose>
+                                <c:when test="${not empty framework.base64image}">
+                                    <div class="max-logo"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="max-logo"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                         <div class="col-10">
                             <div class="row">
@@ -492,9 +497,14 @@
                     <div class="card mini-card mx-3 mb-4">
                         <a href="<c:url value="/${competitor.frameCategory}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
-                                <c:if test="${competitor.logo != null}">
-                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitor.logo}" alt="${framework.name} logo"></div>
-                                </c:if>
+                                <c:choose>
+                                    <c:when test="${not empty competitor.base64image}">
+                                        <div class="mini-logo d-flex align-items-center justify-content-center"><img src="data:${competitor.contentType};base64,${competitor.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitor.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <div class="card-footer text-dark">${competitor.name}</div>
                         </a>
