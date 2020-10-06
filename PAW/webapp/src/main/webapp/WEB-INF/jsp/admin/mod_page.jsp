@@ -23,7 +23,7 @@
 
 
         <div class="content-no-sidebar row">
-            <div class="left col-6">
+            <div class="left col-6 border-right">
                 <c:if test="${isAdmin}">
                     <div class="page-title"><spring:message code="moderator.title"/></div>
                     <div class="page-description"></div>
@@ -118,13 +118,12 @@
                                 <div class="d-flex flex-column">
                                     <c:forEach items="${reportedComments}" var="reportedComment">
                                         <div class="card emphasis row emph-comment mb-2 verified">
-                                            <div class="card-body row mt-1">
-                                                <div class="col-3 secondary-font"> <a href="/users/${reportedComment.userNameOwner}"><c:out value="${reportedComment.userNameOwner}" default=""/></a>
-                                                    <c:out value="/" default=""/>
-                                                    <a href="<c:out value="/${reportedComment.categoryAsString}/${reportedComment.frameworkId}"/>"><c:out value="${reportedComment.frameworkName}" default=""/></a>
-                                                </div>
-                                                <div class="col-6 text-left"> <c:out value="${reportedComment.commentDescription}" default=""/> </div>
-                                                <div class="col third-font text-right"> <c:out value="${reportedComment.timestamp}" default=""/> </div>
+                                            <div class="card-body mt-1">
+                                                <p><spring:message code="moderate.report.owner"/>:&nbsp;<a href="/users/${reportedComment.userNameOwner}"><c:out value="${reportedComment.userNameOwner}" default=""/></a></p>
+                                                <p><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:out value="/${reportedComment.categoryAsString}/${reportedComment.frameworkId}"/>"><c:out value="${reportedComment.frameworkName}" default=""/></a></p>
+                                                <p><spring:message code="moderate.comment.description"/>:&nbsp;<c:out value="${reportedComment.commentDescription}" default=""/></p>
+                                                <p class="border-top"><spring:message code="moderate.report.description"/>:&nbsp;<c:out value=" ${reportedComment.reportDescription}" default=""/></p>
+                                                <p><spring:message code="moderate.report.quantity"/>:&nbsp;${reportedComment.reportsUserName.size()}</p>
                                             </div>
                                             <div class="card-footer">
                                                 <button type="button" class="btn btn-secondary" onclick="ignoreComment(${reportedComment.commentId})"><spring:message code="button.ignore"/></button>
@@ -149,13 +148,12 @@
                             <div class="d-flex flex-column">
                                 <c:forEach items="${reportedContents}" var="reportedContent">
                                     <div class="card emphasis row emph-comment mb-2 verified">
-                                        <div class="card-body row mt-1">
-                                            <div class="col-3 secondary-font"> <a href="/users/${reportedContent.userNameOwner}"><c:out value="${reportedContent.userNameOwner}" default=""/></a>
-                                                <c:out value="/" default=""/>
-                                                <a href="<c:out value="/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a>
-                                            </div>
-                                            <div class="col-6 text-left"> <a href="<c:out value="${reportedContent.link}"/>"><c:out value="${reportedContent.title}" default=""/></a> </div>
-                                            <div class="col third-font text-right"> <c:out value="${reportedContent.reportDescription}" default=""/> </div>
+                                        <div class="card-body mt-1">
+                                            <p><spring:message code="moderate.report.owner"/>:&nbsp;<a href="/users/${reportedContent.userNameOwner}"><c:out value="${reportedContent.userNameOwner}" default=""/></a></p>
+                                            <p><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:out value="/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a></p>
+                                            <p><spring:message code="moderate.content.description"/>:&nbsp;<a href="<c:out value="${reportedContent.link}"/>"><c:out value="${reportedContent.title}" default=""/></a></p>
+                                            <p class="border-top"><spring:message code="moderate.report.description"/>:&nbsp;<c:out value=" ${reportedContent.reportDescription}" default=""/></p>
+                                            <p><spring:message code="moderate.report.quantity"/>:&nbsp;${reportedContent.reportsUserName.size()}</p>
                                         </div>
                                         <div class="card-footer">
                                             <button type="button" class="btn btn-secondary" onclick="ignoreContent(${reportedContent.contentId})"><spring:message code="button.ignore"/></button>
