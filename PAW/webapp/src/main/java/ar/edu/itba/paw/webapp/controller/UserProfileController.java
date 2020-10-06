@@ -1,12 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.FrameworkVote;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.form.session.ProfileForm;
+import ar.edu.itba.paw.webapp.form.register.ProfileForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -55,13 +53,16 @@ public class UserProfileController {
             final List<Comment> commentList = commentService.getCommentsByUser(userId);
             final List<Content> contentList = contentService.getContentByUser(userId);
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
+            final List<Framework> frameworks = frameworkService.getByUser(userId);
 
             mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
             mav.addObject("contents", contentList);
             mav.addObject("comments", commentList);
             mav.addObject("votes", votesList);
+            mav.addObject("frameworks",frameworks);
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-
+            mav.addObject("isAdmin", user.isAdmin());
+            mav.addObject("isAllowMod", user.isAllowMod());
             return mav;
         }
 
@@ -108,6 +109,22 @@ public class UserProfileController {
         }
 
         return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/user/{username}/enableMod/{value}"})
+    public ModelAndView enableMod( @PathVariable("username") String username, @PathVariable("value") Boolean value){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(us.findByUsername(authentication.getName()).isPresent()){
+            User user = us.findByUsername(authentication.getName()).get();
+            if( username.equals(user.getUsername())){
+                us.updateModAllow(user.getId(), value);
+                return UserProfileController.redirectToProfile(username);
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+
     }
 
 }

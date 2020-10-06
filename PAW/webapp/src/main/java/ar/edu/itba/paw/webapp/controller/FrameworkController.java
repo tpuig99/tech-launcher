@@ -2,6 +2,10 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
+import ar.edu.itba.paw.webapp.form.framework.ContentForm;
+import ar.edu.itba.paw.webapp.form.framework.ReportCommentForm;
+import ar.edu.itba.paw.webapp.form.framework.ReportForm;
+import ar.edu.itba.paw.webapp.form.FrameworkForm;
 import ar.edu.itba.paw.webapp.form.frameworks.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,8 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 @Controller
 public class FrameworkController {
@@ -38,7 +45,7 @@ public class FrameworkController {
     }
 
     @RequestMapping("/{category}/{id}")
-    public ModelAndView framework(@PathVariable long id, @PathVariable String category,@ModelAttribute("contentForm") final ContentForm form) {
+    public ModelAndView framework(@PathVariable long id, @PathVariable String category, @ModelAttribute("contentForm") final ContentForm form, @ModelAttribute("reportForm") final ReportForm reportForm, @ModelAttribute("reportCommentForm") final ReportCommentForm reportCommentForm) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Optional<Framework> framework = fs.findById(id);
         mav.addObject("ratingForm", new RatingForm());
@@ -46,6 +53,8 @@ public class FrameworkController {
         mav.addObject("downVoteForm", new DownVoteForm());
         mav.addObject("commentForm", new CommentForm());
         mav.addObject("replyForm", new ReplyForm());
+        mav.addObject("deleteCommentForm", new DeleteCommentForm());
+        mav.addObject("deleteContentForm", new DeleteContentForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -62,12 +71,13 @@ public class FrameworkController {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             if( us.findByUsername(username).isPresent()){
                 User user = us.findByUsername(username).get();
-                List<Comment> comments = commentService.getCommentsByFramework(id, user.getId());
+                List<Comment> comments = commentService.getCommentsWithoutReferenceByFramework(id);
                 mav.addObject("comments",comments);
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
                 mav.addObject("isAdmin",user.isAdmin());
                 mav.addObject("isEnable",user.isEnable());
+                mav.addObject("allowMod",user.isAllowMod());
                 Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
                 if(fv.isPresent()){
                     mav.addObject("stars",fv.get().getStars());
@@ -162,6 +172,24 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
+    @RequestMapping("/mod/quit")
+    public ModelAndView QuitMod(@RequestParam("fId") final long fId,@RequestParam("category") final String cat) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(us.findByUsername(authentication.getName()).isPresent()){
+            User user = us.findByUsername(authentication.getName()).get();
+            for( VerifyUser verifyUser : user.getVerifications() ){
+                if (verifyUser.getFrameworkId() == fId) {
+                    us.deleteVerification(verifyUser.getVerificationId());
+                    return FrameworkController.redirectToFramework(fId, cat);
+                }
+            }
+            return ErrorController.redirectToErrorView();
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+
     @RequestMapping(path={"/content"}, method = RequestMethod.POST)
     public ModelAndView addContent(@Valid @ModelAttribute("contentForm") final ContentForm form, final BindingResult errors, final RedirectAttributes redirectAttributes){
 
@@ -171,13 +199,15 @@ public class FrameworkController {
         if (framework.isPresent()) {
 
             if(errors.hasErrors()){
-                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form);
+                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form, new ReportForm(), new ReportCommentForm());
                 framework1.addObject("contentFormError", true);
                 framework1.addObject("ratingForm", new RatingForm());
                 framework1.addObject("upVoteForm", new VoteForm());
                 framework1.addObject("downVoteForm", new DownVoteForm());
                 framework1.addObject("commentForm", new CommentForm());
                 framework1.addObject("replyForm", new ReplyForm());
+                framework1.addObject("deleteCommentForm", new DeleteCommentForm());
+                framework1.addObject("deleteContentForm", new DeleteContentForm());
                 return framework1;
             }
 
@@ -201,21 +231,157 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
-    //TODO Should it be a .POST? -> It should be a .DELETE, Deletes with get are BAD STYLE
-    @RequestMapping(path={"/content/delete"}, method = RequestMethod.GET)
-    public ModelAndView deleteContent(@RequestParam("id") final long frameworkId, @RequestParam("content_id") final long contentId){
-        Optional<Framework> framework = fs.findById(frameworkId);
+
+    @RequestMapping(path={"/content/delete"}, method = RequestMethod.POST)
+    public ModelAndView deleteComment(@Valid @ModelAttribute("deleteContentForm") final DeleteContentForm form, final BindingResult errors){
+        Optional<Framework> framework = fs.findById(form.getDeleteContentFrameworkId());
 
         if (framework.isPresent()) {
-            int deleted = contentService.deleteContent(contentId);
-            if (deleted != 1) {
-                return ErrorController.redirectToErrorView();
-            }
+            contentService.deleteContent(form.getDeleteContentId());
 
-            return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
+            return FrameworkController.redirectToFramework(form.getDeleteContentFrameworkId(), framework.get().getCategory());
         }
         return ErrorController.redirectToErrorView();
 
     }
+    @RequestMapping(path={"/content/report"}, method = RequestMethod.POST)
+    public ModelAndView reportContent(@Valid @ModelAttribute("reportForm")ReportForm form, final BindingResult errors, HttpServletRequest request){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            Optional<Framework> framework = fs.findById(form.getReportFrameworkId());
+            if( framework.isPresent() ) {
+                contentService.addReport(form.getId(), user.getId(), form.getDescription());
+                framework.get().getCategory();
+                return FrameworkController.redirectToFramework(form.getReportFrameworkId(), framework.get().getCategory());
+            }
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/content/report/cancel"}, method = RequestMethod.PUT)
+    public ModelAndView cancelReportContent(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            contentService.deleteReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/report/content/accept"}, method = RequestMethod.PUT)
+    public ModelAndView acceptReportContent(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            contentService.acceptReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/report/content/deny"}, method = RequestMethod.PUT)
+    public ModelAndView denyReportContent(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            contentService.denyReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/comment/report"}, method = RequestMethod.POST)
+    public ModelAndView reportComment(@Valid @ModelAttribute("reportCommentForm")ReportCommentForm form, final BindingResult errors, HttpServletRequest request){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+
+            Optional<Framework> framework = fs.findById(form.getReportCommentFrameworkId());
+            if( framework.isPresent() ) {
+                commentService.addReport(form.getReportCommentId(), user.getId(),form.getReportCommentDescription());
+                framework.get().getCategory();
+                return FrameworkController.redirectToFramework(form.getReportCommentFrameworkId(), framework.get().getCategory());
+            }
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/report/comment/accept"}, method = RequestMethod.PUT)
+    public ModelAndView acceptReportComment(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            commentService.acceptReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/report/comment/deny"}, method = RequestMethod.PUT)
+    public ModelAndView denyReportComment(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            commentService.denyReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/comment/report/cancel"}, method = RequestMethod.PUT)
+    public ModelAndView cancelReportComment(@RequestParam("id")long reportId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            commentService.deleteReport(reportId);
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/reports"}, method = RequestMethod.GET)
+    public ModelAndView getReports(){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+                //acordate que admin solo puede ver comments y
+                //para los de content tener el user.isverifyfor(frameworkid)
+                List<ReportComment> reportComments = commentService.getAllReport();
+                List<ReportContent> reportContents = contentService.getAllReports();
+
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+
+    @RequestMapping(path={"/comment/delete"}, method = RequestMethod.POST)
+    public ModelAndView deleteComment(@Valid @ModelAttribute("deleteCommentForm") final DeleteCommentForm form, final BindingResult errors){
+        Optional<Framework> framework = fs.findById(form.getCommentDeleteFrameworkId());
+
+        if (framework.isPresent()) {
+            int deleted = commentService.deleteComment(form.getCommentDeleteId());
+            if (deleted != 1) {
+                return ErrorController.redirectToErrorView();
+            }
+
+            return FrameworkController.redirectToFramework(form.getCommentDeleteFrameworkId(), framework.get().getCategory());
+        }
+        return ErrorController.redirectToErrorView();
+
+    }
+    @RequestMapping("/addFramewokr")
+    public ModelAndView addFramework(@ModelAttribute("frameworkForm") final FrameworkForm form) {
+        ModelAndView mav = new ModelAndView("session/...");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if( us.findByUsername(username).isPresent()){
+            User user = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+        }
+        return mav;
+    }
+
+    @RequestMapping(value = "/createFramework", method = { RequestMethod.POST })
+    public ModelAndView create(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) {
+        if (errors.hasErrors()) {
+            return addFramework(form);
+        }
+        FrameworkType type = FrameworkType.getByName(form.getType());
+        FrameworkCategories category = FrameworkCategories.getByName(form.getCategory());
+        fs.create(form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,form.getUserId());
+        return new ModelAndView("redirect:/...");
+    }
+
 }
 

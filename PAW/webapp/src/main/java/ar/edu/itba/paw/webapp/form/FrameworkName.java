@@ -1,4 +1,5 @@
-package ar.edu.itba.paw.webapp.form.session;
+package ar.edu.itba.paw.webapp.form;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
@@ -8,12 +9,12 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({TYPE,ANNOTATION_TYPE})
+@Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = PasswordMatchesValidator.class)
+@Constraint(validatedBy = FrameworkValidator.class)
 @Documented
-public @interface PasswordMatches {
-    String message() default "Passwords don't match";
+public @interface FrameworkName {
+    String message() default "That framework already exists.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

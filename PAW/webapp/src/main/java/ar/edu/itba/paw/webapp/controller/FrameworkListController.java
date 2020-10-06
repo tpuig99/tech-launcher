@@ -28,10 +28,11 @@ public class FrameworkListController {
     private UserService us;
 
     @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
-    public ModelAndView advancedSearch(@RequestParam(required = false) final String toSearch,
-                                       @RequestParam(required = false) final List<String> categories,
-                                       @RequestParam(required = false) final List<String> types,
+    public ModelAndView advancedSearch(@RequestParam(required = false, defaultValue = "") String toSearch,
+                                       @RequestParam(required = false, defaultValue = "") final List<String> categories,
+                                       @RequestParam(required = false, defaultValue = "") final List<String> types,
                                        @RequestParam(required = false) final Integer stars,
+                                       @RequestParam(required = false) final boolean nameFlag,
                                        @RequestParam(required = false) final Integer order){
 
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
@@ -40,26 +41,62 @@ public class FrameworkListController {
         List<FrameworkType> typesList = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
 
-        if(!categories.isEmpty()){
-            for( String c : categories){
-                String aux = c.replaceAll("%20", " ");
-                categoriesQuery.add(aux);
-                categoriesList.add(FrameworkCategories.getByName(aux));
+        for( String c : categories){
+            String aux = c.replaceAll("%20", " ");
+            categoriesQuery.add(aux);
+            categoriesList.add(FrameworkCategories.getByName(aux));
+        }
+
+
+        for( String c : types){
+            String aux = c.replaceAll("%20", " ");
+            typesQuery.add(aux);
+            typesList.add(FrameworkType.getByName(aux));
+        }
+
+        List<String> allCategories = FrameworkCategories.getAllCategories();
+        List<String> allTypes = FrameworkType.getAllTypes();
+
+        if(allCategories.contains(toSearch)){
+            categoriesList.add(FrameworkCategories.getByName(toSearch));
+            toSearch="";
+        } else if(allTypes.contains(toSearch)){
+            typesList.contains(toSearch);
+            toSearch="";
+        }
+
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars, nameFlag);
+        if(order!=null && order!=0){
+            switch (order){
+                case -1:
+                case 1: {
+                    fs.orderByStars(frameworks, order);
+                    break;
+                }
+                case 2:
+                case -2: {
+                    fs.orderByCommentsAmount(frameworks, order);
+                    break;
+                }
+                case 3:
+                case -3: {
+                    fs.orderByReleaseDate(frameworks, order);
+                    break;
+                }
+                case 4:
+                case -4: {
+                    fs.orderByInteraction(frameworks, order);
+                    break;
+                }
             }
         }
 
-        if(!types.isEmpty()){
-            for( String c : types){
-                String aux = c.replaceAll("%20", " ");
-                typesQuery.add(aux);
-                typesList.add(FrameworkType.getByName(aux));
-            }
-        }
-
-        mav.addObject("matchingFrameworks", fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars, order));
+        
+        mav.addObject("matchingFrameworks", frameworks);
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("categories", FrameworkCategories.getAllCategories());
-        mav.addObject("types", FrameworkType.getAllTypes());
+        mav.addObject("categories", allCategories );
+        mav.addObject("frameworkNames",fs.getFrameworkNames());
+        mav.addObject("types", allTypes);
 
         //Search Results For:
         mav.addObject("techNameQuery", toSearch );
@@ -67,6 +104,8 @@ public class FrameworkListController {
         mav.addObject("typesQuery", typesQuery );
         mav.addObject("starsQuery", stars );
         mav.addObject("orderQuery", order );
+        mav.addObject("nameFlagQuery", nameFlag );
+
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 

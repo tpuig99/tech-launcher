@@ -1,6 +1,5 @@
-package ar.edu.itba.paw.webapp.form;
+package ar.edu.itba.paw.webapp.form.register;
 
-import ar.edu.itba.paw.webapp.form.session.ValidEmail;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;

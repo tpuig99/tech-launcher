@@ -27,9 +27,17 @@ CREATE TABLE IF NOT EXISTS frameworks (
                                           description varchar(500) NOT NULL,
                                           introduction varchar(5000) NOT NULL,
                                           logo varchar(150),
-                                          type varchar(100)
+                                          type varchar(100),
+                                          date timestamp NOT NULL,
+                                          author int NOT NULL default 1,
+                                          FOREIGN KEY(author) REFERENCES users ON DELETE set default,
+                                          UNIQUE (framework_name)
+
 );
 --ALTER TABLE frameworks ADD COLUMN  type varchar(100) default '' not null ;
+--ALTER TABLE frameworks ADD COLUMN author int NOT NULL default 1 REFERENCES users ON DELETE set default
+--ALTER TABLE frameworks ADD COLUMN date timestamp NOT NULL default '2020-08-03 16:56:37.125000'
+CREATE UNIQUE INDEX IF NOT EXISTS idx_framework on frameworks(framework_name);
 ALTER TABLE IF EXISTS  votes RENAME TO framework_votes;
 CREATE TABLE IF NOT EXISTS framework_votes (
                                                vote_id SERIAL PRIMARY KEY,
@@ -100,4 +108,22 @@ CREATE TABLE IF NOT EXISTS admins (
                                       admin_id SERIAL PRIMARY KEY,
                                       user_id int NOT NULL UNIQUE,
                                       FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS comment_report (
+                              report_id SERIAL PRIMARY KEY,
+                              user_id integer NOT NULL,
+                              comment_id integer NOT NULL,
+                              description varchar(500) NOT NULL,
+                              FOREIGN KEY(comment_id) REFERENCES comments ON DELETE CASCADE,
+                              FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
+                              UNIQUE(user_id,comment_id)
+);
+CREATE TABLE IF NOT EXISTS content_report (
+                              report_id SERIAL PRIMARY KEY,
+                              user_id integer NOT NULL,
+                              content_id integer NOT NULL,
+                              description varchar(500) NOT NULL,
+                              FOREIGN KEY(content_id) REFERENCES content ON DELETE CASCADE,
+                              FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
+                              UNIQUE(user_id,content_id)
 );

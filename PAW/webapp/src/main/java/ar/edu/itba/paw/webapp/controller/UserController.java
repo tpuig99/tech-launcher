@@ -1,7 +1,8 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.VerifyUser;
+import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.service.CommentService;
+import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,6 +29,12 @@ public class UserController {
     UserService us;
     @Autowired
     FrameworkService fs;
+
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    ContentService contentService;
     @Autowired
     MessageSource messageSource;
 
@@ -82,8 +90,9 @@ public class UserController {
 
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if( us.findByUsername(username).isPresent()){
-            User user = us.findByUsername(username).get();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             mav.addObject("isAdmin",user.isAdmin());
             if( user.isAdmin()) {
@@ -99,12 +108,14 @@ public class UserController {
                 mav.addObject("mods",mods);
                 mav.addObject("pendingToVerify", verify);
                 mav.addObject("pendingApplicants", applicants);
+                mav.addObject("reportedComments", commentService.getAllReport());
+                mav.addObject("reportedContents", contentService.getAllReports());
                 return mav;
             }
             else if( user.isVerify() ){
                 List<VerifyUser> verify = new LinkedList<>();
                 user.getVerifications().forEach(verifyUser -> {
-                    verify.addAll(us.getVerifyByUser(verifyUser.getFrameworkId(),true));
+                    verify.addAll(us.getVerifyByFramework(verifyUser.getFrameworkId(),true));
                 });
                 List<VerifyUser> applicants = new LinkedList<>();
                 verify.forEach(verifyUser -> {
@@ -115,9 +126,124 @@ public class UserController {
                 verify.removeAll(applicants);
                 mav.addObject("pendingToVerify",verify);
                 mav.addObject("pendingApplicants", applicants);
+                List<ReportContent> reportContents = new LinkedList<>();
+                user.getVerifications().forEach( verifyUser -> {
+                    reportContents.addAll(contentService.getReportsByFramework(verifyUser.getFrameworkId()));
+                });
+                mav.addObject("reportedContents", reportContents);
                 return mav;
             }
         }
         return ErrorController.redirectToErrorView();
     }
+    @RequestMapping("/dismiss")
+    public ModelAndView DismissMod(@RequestParam("id") final long verificationId) {
+        //check the mav you want
+        final ModelAndView mav = new ModelAndView("admin/mod_page");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            if(user.isAdmin()) {
+                Optional<VerifyUser> vu = us.getVerifyById(verificationId);
+                if (vu.isPresent()) {
+                    us.deleteVerification(verificationId);
+                }
+                return mav;
+            }
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping("/quit")
+    public ModelAndView QuitMod(@RequestParam("id") final long verificationId) {
+        //check the mav you want
+        final ModelAndView mav = new ModelAndView("admin/mod_page");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            Optional<VerifyUser> vu = us.getVerifyById(verificationId);
+            if (vu.isPresent()) {
+                VerifyUser verifyUser = vu.get();
+                if(verifyUser.getUserId()!=user.getId()){
+                    //raise error --> only owner
+                    return ErrorController.redirectToErrorView();
+                }
+                us.deleteVerification(verificationId);
+            }
+            return mav;
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping("/mod/comment/delete")
+    public ModelAndView deleteComment(@RequestParam("commentId") final long commentId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                Optional<Comment> commentOptional = commentService.getById(commentId);
+                if( commentOptional.isPresent() ){
+                    commentService.acceptReport(commentId);
+                    return modPage();
+                }
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping("/mod/comment/ignore")
+    public ModelAndView ignoreComment(@RequestParam("commentId") final long commentId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                commentService.denyReport(commentId);
+
+                return modPage();
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping("/mod/content/delete")
+    public ModelAndView deleteContent(@RequestParam("contentId") final long contentId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                Optional<Content> contentOptional = contentService.getById(contentId);
+                if( contentOptional.isPresent() ){
+                    contentService.acceptReport(contentId);
+                    return modPage();
+                }
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping("/mod/content/ignore")
+    public ModelAndView ignoreContent(@RequestParam("contentId") final long contentId){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                Optional<Content> contentOptional = contentService.getById(contentId);
+                if( contentOptional.isPresent() ){
+                    contentService.denyReport(contentId);
+                    return modPage();
+                }
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
 }

@@ -67,6 +67,15 @@
                         <c:if test="${not empty profile.description}">
                             <p><strong><spring:message code="profile.description"/></strong> <c:out value="${profile.description}"/></p>
                         </c:if>
+                        <c:if test="${user.name == profile.username && (user_isMod || !isAllowMod) && !isAdmin}">
+                            <div class="row allow-mod">
+                                <strong>Allow moderator: </strong>
+                                <label class="switch align-items-end">
+                                    <input type="checkbox" id="enableMod" onclick="setModEnable()">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </c:if>
                         <c:if test="${profile.verify}">
                             <p><strong><spring:message code="profile.moderator"/></strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
@@ -193,6 +202,29 @@
                 <spring:message code="profile.empty.votes"/>
             </c:otherwise>
         </c:choose>
+
+    <!-- Frameworks -->
+    <c:if test="${not empty frameworks}">
+        <div class="page-title mb-4 ml-2 text-left">
+            <h2><spring:message code="profile.frameworks"/></h2>
+         </div>
+            <div class="container row equal justify-content-center">
+                <c:forEach var="framework" items="${frameworks}">
+                    <div class="card mx-4 mb-4">
+                        <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
+                            <div class="card-body">
+                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
+                            </div>
+                            <div class="card-footer text-dark">
+                                <span>${framework.name} | </span>
+                                <span class="fa fa-star fa-sm"></span>
+                                <span>${framework.starsFormated}</span>
+                            </div>
+                        </a>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:if>
     </div>
 
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
@@ -230,6 +262,7 @@
     </div>
 
     <div id="snackbar"><spring:message code="profile.updated"/></div>
+
 </div>
 
 
@@ -245,8 +278,13 @@
     });
     </c:if>
 
+    function setModEnable(){
+        window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/' +  $('#enableMod').is(":checked")
+    }
+
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
+        $("#enableMod").prop("checked", ${isAllowMod});
     });
 
     function editProfile(){

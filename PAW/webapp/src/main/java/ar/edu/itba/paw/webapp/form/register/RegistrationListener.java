@@ -1,10 +1,11 @@
-package ar.edu.itba.paw.webapp.form.session;
+package ar.edu.itba.paw.webapp.form.register;
 
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
@@ -55,11 +56,11 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         });
         mailSender.setSession(session);
         String recipientAddress = user.getMail();
-        String subject = messageSource.getMessage("email.subject",new Object[]{}, Locale.getDefault());
+        String subject = messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale());
 
         String confirmationUrl
                 = event.getAppUrl() + "/registrationConfirm.html?token=" + token;
-        String message = messageSource.getMessage("email.body",new Object[]{}, Locale.getDefault());
+        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale());
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom("confirmemailonly@gmail.com");

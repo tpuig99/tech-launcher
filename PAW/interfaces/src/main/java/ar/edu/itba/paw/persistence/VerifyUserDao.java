@@ -16,6 +16,7 @@ public interface VerifyUserDao {
     Optional<VerifyUser> getById(long verificationId);
     List<VerifyUser> getByPending(boolean pending);
     void delete(long verificationId);
+    void deleteVerificationByUser(long userId);
     void verify(long verificationId);
 
 }

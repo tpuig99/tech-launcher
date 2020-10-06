@@ -24,4 +24,5 @@ public interface UserDao {
     void updatePicture(long id, byte[] picture);
 
     void updatePassword(long userId, String password);
+    void updateModAllow(long userId,boolean allow);
 }

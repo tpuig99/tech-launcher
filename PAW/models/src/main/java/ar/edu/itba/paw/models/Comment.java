@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.models;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Comment {
     private long commentId;
@@ -17,6 +19,7 @@ public class Comment {
     private boolean isVerify;
     private boolean isAdmin;
     private Integer userAuthVote;
+    private List<String> reportersNames = new ArrayList<>();
 
     public Comment(long commentId, long frameworkId, long userId, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin) {
         this.commentId = commentId;
@@ -91,9 +94,10 @@ public class Comment {
         return userName;
     }
 
-    public String getCategory(){
+    public String getCategory() {
         return category.getNameCat();
     }
+
     public FrameworkCategories getEnumCategory() {
         return category;
     }
@@ -113,5 +117,16 @@ public class Comment {
         if(userAuthVote == null)
             return false;
         return userAuthVote == 0 ? false : true;
+    }
+
+    public void addReporter(String name) {
+        reportersNames.add(name);
+    }
+    public boolean isReporter(String name){
+        for (String rn:reportersNames) {
+            if(rn.equals(name))
+                return true;
+        }
+        return false;
     }
 }
