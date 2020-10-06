@@ -360,9 +360,9 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
 
     }
-    @RequestMapping("/addFramewokr")
-    public ModelAndView addFramework(@ModelAttribute("frameworkForm") final FrameworkForm form) {
-        ModelAndView mav = new ModelAndView("session/...");
+    @RequestMapping(value = "/add_tech",  method = { RequestMethod.GET})
+    public ModelAndView addTech(@ModelAttribute("frameworkForm") final FrameworkForm form) {
+        ModelAndView mav = new ModelAndView("frameworks/add_tech");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if( us.findByUsername(username).isPresent()){
@@ -372,15 +372,25 @@ public class FrameworkController {
         return mav;
     }
 
-    @RequestMapping(value = "/createFramework", method = { RequestMethod.POST })
-    public ModelAndView create(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) {
+    @RequestMapping(value = "/add_tech", method = { RequestMethod.POST })
+    public ModelAndView createTech(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) {
         if (errors.hasErrors()) {
-            return addFramework(form);
+            return addTech(form);
         }
-        FrameworkType type = FrameworkType.getByName(form.getType());
-        FrameworkCategories category = FrameworkCategories.getByName(form.getCategory());
-        fs.create(form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,form.getUserId());
-        return new ModelAndView("redirect:/...");
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if( us.findByUsername(username).isPresent()){
+            User user = us.findByUsername(username).get();
+            FrameworkType type = FrameworkType.getByName(form.getType());
+            FrameworkCategories category = FrameworkCategories.getByName(form.getCategory());
+            Optional<Framework> framework = fs.create(form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,user.getId());
+
+            if (framework.isPresent()) {
+                return FrameworkController.redirectToFramework(framework.get().getId(), "framework");
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
     }
 
 }

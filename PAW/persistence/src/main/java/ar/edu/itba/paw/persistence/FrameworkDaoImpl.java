@@ -192,7 +192,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public void create(String framework_name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId) {
+    public Optional<Framework> create(String framework_name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId) {
         final Map<String, Object> args = new HashMap<>();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         args.put("framework_name", framework_name); // la key es el nombre de la columna
@@ -203,6 +203,8 @@ public class FrameworkDaoImpl implements FrameworkDao {
         args.put("author",userId);
         args.put("type",type.getType());
         args.put("date",ts);
-        jdbcInsert.executeAndReturnKey(args);
+
+        final Number commentId = jdbcInsert.executeAndReturnKey(args);
+        return findById(commentId.longValue());
     }
 }

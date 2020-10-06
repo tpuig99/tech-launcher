@@ -16,22 +16,18 @@ public class FrameworkForm {
     @NotNull
     @NotEmpty
     @Size(max = 50)
-    @Pattern(regexp = "[a-zA-Z0-9]+")
-    private String Category;
+    private String category;
     @NotNull
     @NotEmpty
     @Size(max = 100)
-    @Pattern(regexp = "[a-zA-Z0-9]+")
-    private String Type;
+    private String type;
     @NotNull
     @NotEmpty
     @Size(max = 500)
-    @Pattern(regexp = "[a-zA-Z0-9]+")
-    private String Description;
+    private String description;
     @NotNull
     @NotEmpty
     @Size(max = 5000)
-    @Pattern(regexp = "[a-zA-Z0-9]+")
     private String introduction;
     private long userId;
     public String getFrameworkName() {
@@ -43,27 +39,27 @@ public class FrameworkForm {
     }
 
     public String getCategory() {
-        return Category;
+        return category;
     }
 
     public void setCategory(String category) {
-        Category = category;
+        this.category = category;
     }
 
     public String getType() {
-        return Type;
+        return type;
     }
 
     public void setType(String type) {
-        Type = type;
+        this.type = type;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     public String getIntroduction() {
