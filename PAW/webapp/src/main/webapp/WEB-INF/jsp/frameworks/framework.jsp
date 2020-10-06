@@ -204,7 +204,8 @@
                                                     </button>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <form:form modelAttribute="upVoteForm" id="upVoteForm${comment.commentId}" action="/upvote" method="post">
+                                                    <c:url value="/upvote" var="postPathUpVote"/>
+                                                    <form:form modelAttribute="upVoteForm" id="upVoteForm${comment.commentId}" action="${postPathUpVote}" method="post">
                                                         <form:label path="frameworkId"><form:input id="upVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
                                                         <form:label path="commentId"><form:input id="upVoteFormCommentId${comment.commentId}" class="input-wrap" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
 
@@ -240,7 +241,8 @@
                                                     </button>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <form:form modelAttribute="downVoteForm" id="downVoteForm${comment.commentId}" action="/downvote" method="post">
+                                                    <c:url value="/downvote" var="postPathDownVote"/>
+                                                    <form:form modelAttribute="downVoteForm" id="downVoteForm${comment.commentId}" action="${postPathDownVote}" method="post">
                                                         <form:label path="downVoteFrameworkId"><form:input id="downVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="downVoteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
                                                         <form:label path="downVoteCommentId"><form:input id="downVoteFormCommentId${comment.commentId}" class="input-wrap" path="downVoteCommentId" type="hidden" value="${comment.commentId}"/></form:label>
 
@@ -376,7 +378,8 @@
 
                             </div>
                             <div class="row collapse multi-collapse" id="${comment.commentId}">
-                                <form:form modelAttribute="replyForm" id="replyForm${comment.commentId}" action="/reply" method="post">
+                                <c:url value="/reply" var="postPathReply" />
+                                <form:form modelAttribute="replyForm" id="replyForm${comment.commentId}" action="${postPathReply}" method="post">
                                     <form:label path="replyFrameworkId"><form:input  class="input-wrap" path="replyFrameworkId" type="hidden" value="${framework.id}"/></form:label>
                                     <form:label path="replyCommentId"><form:input  class="input-wrap" path="replyCommentId" type="hidden" value="${comment.commentId}"/></form:label>
 
@@ -412,27 +415,28 @@
                         <div class="col-8">
                             <h5><spring:message code="tech.interactions.leave_comment"/></h5>
                             <div>
-                                <form:form modelAttribute="commentForm" action="/comment" method="post">
+                                <c:url value="/comment" var="postPathComment"/>
+                                <form:form modelAttribute="commentForm" action="${postPathComment}" method="post">
                                     <form:label path="commentFrameworkId"><form:input  class="input-wrap" path="commentFrameworkId" type="hidden" value="${framework.id}"/></form:label>
 
                                     <form:label path="content"/>
                                     <form:textarea path="content" id="commentInput" class="form-control" aria-label="With textarea"/>
 
-                                <c:choose>
-                                    <c:when test="${user.name != 'anonymousUser'}">
-                                        <c:choose>
-                                            <c:when test="${!isEnable}">
-                                                <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <button type="submit" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
-                                    </c:otherwise>
-                                </c:choose>
+                                    <c:choose>
+                                        <c:when test="${user.name != 'anonymousUser'}">
+                                            <c:choose>
+                                                <c:when test="${!isEnable}">
+                                                    <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <button type="submit" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </form:form>
                             </div>
                         </div>
@@ -596,7 +600,8 @@
                                 <div class="row justify-content-center align-items-center margin-top">
                                     <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button></span>
 
-                                    <form:form modelAttribute="deleteContentForm" action="/content/delete" method="post">
+                                    <c:url value="/content/delete" var="postPathDeleteContent"/>
+                                    <form:form modelAttribute="deleteContentForm" action="${postPathDeleteContent}" method="post">
                                         <form:label path="deleteContentFrameworkId"><form:input  class="input-wrap" path="deleteContentFrameworkId" type="hidden" value="${framework.id}"/></form:label>
                                         <form:label path="deleteContentId"><form:input  class="input-wrap" path="deleteContentId" type="hidden" id="contentIdDeleteInput"/></form:label>
                                         <span class="margin-left"> <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button></span>
@@ -697,7 +702,8 @@
                                 <div class="row justify-content-center align-items-center margin-top">
                                     <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button></span>
                                     <span class="margin-left">
-                                        <form:form modelAttribute="deleteCommentForm" action="/comment/delete" method="post">
+                                        <c:url value="/comment/delete" var="postPathDeleteCommment"/>
+                                        <form:form modelAttribute="deleteCommentForm" action="${postPathDeleteCommment}" method="post">
                                             <form:label path="commentDeleteFrameworkId"><form:input  class="input-wrap" path="commentDeleteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
                                             <form:label path="commentDeleteId"><form:input  class="input-wrap" path="commentDeleteId" type="hidden" id="commentIdDeleteInput"/></form:label>
                                             <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button>
