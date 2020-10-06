@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.ContentTypes;
 import ar.edu.itba.paw.persistence.ContentDao;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
