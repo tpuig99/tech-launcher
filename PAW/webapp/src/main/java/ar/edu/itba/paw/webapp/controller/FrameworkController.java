@@ -69,9 +69,10 @@ public class FrameworkController {
 
             mav.addObject("replies", replies);
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            if( us.findByUsername(username).isPresent()){
-                User user = us.findByUsername(username).get();
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFramework(id);
+            Optional<User> optionalUser = us.findByUsername(username);
+            if( optionalUser.isPresent()){
+                User user = optionalUser.get();
+                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,user.getId());
                 mav.addObject("comments",comments);
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
@@ -86,7 +87,7 @@ public class FrameworkController {
                 }
             }
             else{
-                List<Comment> comments = commentService.getCommentsByFramework(id, null);
+                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,null);
                 mav.addObject("comments",comments);
             }
 

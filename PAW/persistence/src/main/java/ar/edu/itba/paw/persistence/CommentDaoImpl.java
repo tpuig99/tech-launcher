@@ -169,8 +169,14 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
-    public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
-        String value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
+    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId) {
+        String value;
+        if(userId!=null)
+        {
+            value = SELECTION+USER_VOTE+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
+            return jdbcTemplate.query(value, new Object[] {userId,frameworkId},  SET_EXTRACTOR_USER_VOTE );
+        }
+        value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[] {frameworkId},  SET_EXTRACTOR );
     }
 
@@ -193,7 +199,7 @@ public class CommentDaoImpl implements CommentDao {
         List<Comment> replies = new ArrayList<>();
         long commentId;
 
-        List<Comment> commentsWithoutRef = getCommentsWithoutReferenceByFramework(frameworkId);
+        List<Comment> commentsWithoutRef = getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,null);
 
         if(!commentsWithoutRef.isEmpty()) {
             String value = SELECTION+FROM+"where c.framework_id = ? AND c.reference = ?"+GROUP_BY;

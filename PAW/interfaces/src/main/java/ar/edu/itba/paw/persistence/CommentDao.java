@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface CommentDao {
     Optional<Comment> getById(long contentId);
     List<Comment> getCommentsByFramework(long frameworkId,Long userId);
-    List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId);
+    List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId);
     List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId);
     List<Comment> getCommentsByUser(long userId);
     Map<Long, List<Comment>> getRepliesByFramework(long frameworkId);
