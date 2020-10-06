@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS verification_token(
                                                  token_id SERIAL PRIMARY KEY,
                                                  user_id integer NOT NULL unique,
-                                                 token varchar NOT NULL,
+                                                 token varchar(200) NOT NULL,
                                                  exp_date timestamp NOT NULL,
                                                  FOREIGN KEY(user_id) REFERENCES users
 );
@@ -26,11 +26,11 @@ CREATE TABLE IF NOT EXISTS frameworks (
                                           category varchar(50) NOT NULL,
                                           description varchar(500) NOT NULL,
                                           introduction varchar(5000) NOT NULL,
-                                          logo varchar(150),
+                                          logo varchar(150) default NULL,
                                           type varchar(100),
-                                          date timestamp NOT NULL,
+                                          date timestamp NOT NULL default '2020-08-03 16:56:37.125000',
                                           author int NOT NULL default 1,
-                                          FOREIGN KEY(author) REFERENCES users ON DELETE set default,
+                                          FOREIGN KEY(author) REFERENCES users ON DELETE CASCADE,
                                           UNIQUE (framework_name)
 
 );
@@ -38,16 +38,17 @@ CREATE TABLE IF NOT EXISTS frameworks (
 --ALTER TABLE frameworks ADD COLUMN author int NOT NULL default 1 REFERENCES users ON DELETE set default
 --ALTER TABLE frameworks ADD COLUMN date timestamp NOT NULL default '2020-08-03 16:56:37.125000'
 CREATE UNIQUE INDEX IF NOT EXISTS idx_framework on frameworks(framework_name);
-ALTER TABLE IF EXISTS  votes RENAME TO framework_votes;
+--ALTER TABLE IF EXISTS  votes RENAME TO framework_votes;
 CREATE TABLE IF NOT EXISTS framework_votes (
                                                vote_id SERIAL PRIMARY KEY,
                                                user_id integer NOT NULL,
                                                framework_id integer NOT NULL,
                                                stars integer NOT NULL,
                                                FOREIGN KEY(framework_id) REFERENCES frameworks ON DELETE CASCADE,
-                                               FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE
+                                               FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
+                                               UNIQUE(user_id,framework_id)
 );
-CREATE UNIQUE INDEX IF NOT EXISTS idx_framework_vote on framework_votes(user_id,framework_id);
+--CREATE UNIQUE INDEX IF NOT EXISTS idx_framework_vote on framework_votes(user_id,framework_id);
 CREATE TABLE IF NOT EXISTS comments (
                                         comment_id SERIAL PRIMARY KEY,
                                         framework_id int NOT NULL,
@@ -59,16 +60,17 @@ CREATE TABLE IF NOT EXISTS comments (
                                         FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
                                         FOREIGN KEY(reference) REFERENCES comments ON DELETE CASCADE
 );
-ALTER TABLE comments DROP COLUMN IF EXISTS votes_up,DROP COLUMN IF EXISTS votes_down;
+--ALTER TABLE comments DROP COLUMN IF EXISTS votes_up,DROP COLUMN IF EXISTS votes_down;
 CREATE TABLE IF NOT EXISTS comment_votes (
                                              vote_id SERIAL PRIMARY KEY,
                                              user_id integer NOT NULL,
                                              comment_id integer NOT NULL,
                                              vote int,
                                              FOREIGN KEY(comment_id) REFERENCES comments ON DELETE CASCADE,
-                                             FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE
+                                             FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
+                                             unique(user_id,comment_id)
 );
-CREATE UNIQUE INDEX IF NOT EXISTS idx_comment_vote on comment_votes(user_id,comment_id);
+--CREATE UNIQUE INDEX IF NOT EXISTS idx_comment_vote on comment_votes(user_id,comment_id);
 CREATE TABLE IF NOT EXISTS content (
                                        content_id SERIAL PRIMARY KEY,
                                        framework_id int NOT NULL,
@@ -81,8 +83,8 @@ CREATE TABLE IF NOT EXISTS content (
                                        FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
                                        UNIQUE(title,framework_id,type)
 );
-ALTER TABLE content DROP COLUMN IF EXISTS votes_up,DROP COLUMN IF EXISTS votes_down,DROP COLUMN IF EXISTS pending;
-CREATE UNIQUE INDEX IF NOT EXISTS idx_content on content(title,type,framework_id);
+--ALTER TABLE content DROP COLUMN IF EXISTS votes_up,DROP COLUMN IF EXISTS votes_down,DROP COLUMN IF EXISTS pending;
+--CREATE UNIQUE INDEX IF NOT EXISTS idx_content on content(title,type,framework_id);
 CREATE TABLE IF NOT EXISTS content_votes (
                                              vote_id SERIAL PRIMARY KEY,
                                              user_id integer NOT NULL,

@@ -167,7 +167,7 @@ public class ContentDaoImpl implements ContentDao {
 
     @Override
     public Optional<Content> changeContent(long contentId, String title, String link, ContentTypes type) {
-        jdbcTemplate.update("UPDATE content SET title = ?, link = ?, type = ? WHERE content_id = ?", title, link, type.name());
+        jdbcTemplate.update("UPDATE content SET title = ?, link = ?, type = ? WHERE content_id = ?", title, link, type.name(),contentId);
         return getById(contentId);
     }
 
