@@ -14,9 +14,6 @@ import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContentServiceTest {
-    private static final String PASSWORD = "passwordpassword";
-    private static final String USERNAME = "username";
-    private static final String MAIL = "username@mail.com";
     @InjectMocks
     private ContentServiceImpl contentService = new ContentServiceImpl();
     @Mock
