@@ -59,7 +59,7 @@ public class ContentVoteDaoTest {
 
         for (int i = 1; i < 6; i++) {
             jdbcTemplate.execute("insert into users values("+i+",'user"+i+"','mail"+i+"',null,default,default,default,default)");
-            jdbcTemplate.execute("insert into frameworks values("+i+",'framework"+i+"','Media','description','introduction',default,'Framework',default,default)");
+            jdbcTemplate.execute("insert into frameworks values("+i+",'framework"+i+"','Media','description','introduction',default,'Framework',default,default,default )");
             jdbcTemplate.execute("insert into content values("+i+","+i+","+i+",'"+TITLE+i+" ','"+ts+"','"+LINK+"','"+TYPE.name()+"')");
         }
     }

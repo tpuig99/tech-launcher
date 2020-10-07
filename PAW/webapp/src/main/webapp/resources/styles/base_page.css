@@ -57,6 +57,7 @@ nav a:hover {
     margin-right: 1em;
     padding-left: 10px;
     padding-top: 10px;
+    width: calc(95% - 14em);
 }
 
 .content-no-sidebar {
