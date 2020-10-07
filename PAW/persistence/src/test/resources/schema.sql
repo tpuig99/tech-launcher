@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS frameworks (
                                           type varchar(100),
                                           date timestamp NOT NULL default '2020-08-03 16:56:37.125000',
                                           author int NOT NULL default 1,
+                                          picture bytea default null,
                                           FOREIGN KEY(author) REFERENCES users ON DELETE CASCADE,
                                           UNIQUE (framework_name)
 
