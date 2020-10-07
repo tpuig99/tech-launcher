@@ -2,12 +2,9 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.FrameworkCategories;
-import ar.edu.itba.paw.models.ReportComment;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -214,7 +211,7 @@ public class CommentDaoImpl implements CommentDao {
 
 
     @Override
-    public Optional<Comment> insertComment(long frameworkId, long userId, String description, Long reference) {
+    public Comment insertComment(long frameworkId, long userId, String description, Long reference) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);
@@ -224,7 +221,7 @@ public class CommentDaoImpl implements CommentDao {
         args.put("reference", reference);
 
         final Number commentId = jdbcInsert.executeAndReturnKey(args);
-        return getById(commentId.longValue());
+        return getById(commentId.longValue()).get();
     }
 
     @Override
