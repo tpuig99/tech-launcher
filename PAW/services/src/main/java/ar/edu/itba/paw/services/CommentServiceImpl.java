@@ -46,8 +46,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
-        List<Comment> comments = cmts.getCommentsWithoutReferenceByFramework(frameworkId);
+    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId) {
+        List<Comment> comments = cmts.getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,userId);
         return comments;
     }
 
