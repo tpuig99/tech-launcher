@@ -321,7 +321,7 @@
                                                         </button>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
+                                                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#Reply${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
                                                            <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.reply.button"/></span>
                                                         </button>
                                                     </c:otherwise>
@@ -335,14 +335,14 @@
                                         </c:choose>
                                     </span>
                                     <span class="padding-left">
-                                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}See" aria-expanded="false" aria-controls="multiCollapseExample1">
+                                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#See${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample1">
                                             <i class="arrow fas fa-eye fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.see_replies"/></span>
                                         </button>
                                     </span>
 
                                 </div>
 
-                                <div  class="collapse multi-collapse" id="${comment.commentId}See">
+                                <div  class="collapse multi-collapse" id="See${comment.commentId}">
                                     <c:if test="${empty replies.get(comment.commentId)}">
                                         <div><spring:message code="tech.comment.no_replies_yet"/></div>
                                     </c:if>
@@ -384,7 +384,7 @@
                                 </c:if>
 
                             </div>
-                            <div class="row collapse multi-collapse" id="${comment.commentId}">
+                            <div class="row collapse multi-collapse" id="Reply${comment.commentId}">
                                 <c:url value="/reply" var="postPathReply" />
                                 <form:form modelAttribute="replyForm" id="replyForm${comment.commentId}" action="${postPathReply}" method="post">
                                     <form:label path="replyFrameworkId"><form:input  class="input-wrap" path="replyFrameworkId" type="hidden" value="${framework.id}"/></form:label>
