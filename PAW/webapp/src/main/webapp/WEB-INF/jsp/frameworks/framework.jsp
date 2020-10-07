@@ -36,10 +36,10 @@
                         <div class="col-2">
                             <c:choose>
                                 <c:when test="${not empty framework.base64image}">
-                                    <div class="max-logo"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    <div class="d-flex flex-wrap"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="max-logo"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                    <div class="d-flex flex-wrap"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
                                 </c:otherwise>
                             </c:choose>
                         </div>
