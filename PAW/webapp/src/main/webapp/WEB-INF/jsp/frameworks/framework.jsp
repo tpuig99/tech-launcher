@@ -98,7 +98,7 @@
 
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
-                <div>
+                <div class="container">
                    <span><h4 class="subtitle margin-left"><spring:message code="tech.content.bibliography"/></h4></span>
                     <ul class="margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
@@ -129,7 +129,7 @@
 
                 <!-- Courses -->
                 <c:if test="${not empty courses}">
-                <div>
+                <div class="container">
                     <h4 class="subtitle margin-left "><spring:message code="tech.content.courses"/></h4>
 
                     <ul class=" margin-bottom list-group margin-left list-group-flush description">
@@ -161,7 +161,7 @@
 
                 <!-- Tutorials -->
                 <c:if test="${not empty tutorials}">
-                <div>
+                <div class="container">
                    <h4 class="subtitle margin-left"><spring:message code="tech.content.tutorials"/></h4>
                     <ul class="  margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">
@@ -193,7 +193,7 @@
 
                 <!-- Comments -->
                 <c:if test="${not empty comments}">
-                <div>
+                <div class="container">
                     <h4 class="title"><spring:message code="tech.comments"/></h4>
                 </div>
 
@@ -412,7 +412,7 @@
                 </c:if>
 
                 <!-- User Interaction -->
-                <div>
+                <div class="container">
                     <h4 class="title"><spring:message code="tech.interactions.title"/></h4>
                 </div>
 
@@ -491,7 +491,7 @@
 
                 <!-- Competition Cards -->
                 <c:if test="${not empty competitors}">
-                <div>
+                <div class="container">
                     <h4 class="title"><spring:message code="tech.competition"/></h4>
                 </div>
 
