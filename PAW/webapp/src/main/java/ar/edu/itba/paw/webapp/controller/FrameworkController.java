@@ -46,7 +46,7 @@ public class FrameworkController {
     }
 
     @RequestMapping("/{category}/{id}")
-    public ModelAndView framework(@PathVariable long id, @PathVariable String category, @ModelAttribute("contentForm") final ContentForm form, @ModelAttribute("reportForm") final ReportForm reportForm, @ModelAttribute("reportCommentForm") final ReportCommentForm reportCommentForm) {
+    public ModelAndView framework(@PathVariable long id, @PathVariable String category) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Optional<Framework> framework = fs.findById(id);
         mav.addObject("ratingForm", new RatingForm());
@@ -56,6 +56,9 @@ public class FrameworkController {
         mav.addObject("replyForm", new ReplyForm());
         mav.addObject("deleteCommentForm", new DeleteCommentForm());
         mav.addObject("deleteContentForm", new DeleteContentForm());
+        mav.addObject("contentForm", new ContentForm());
+        mav.addObject("reportForm", new ReportForm());
+        mav.addObject("reportCommentForm", new ReportCommentForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -201,7 +204,7 @@ public class FrameworkController {
         if (framework.isPresent()) {
 
             if(errors.hasErrors()){
-                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory(), form, new ReportForm(), new ReportCommentForm());
+                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory());
                 framework1.addObject("contentFormError", true);
                 framework1.addObject("ratingForm", new RatingForm());
                 framework1.addObject("upVoteForm", new VoteForm());
