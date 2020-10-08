@@ -2,7 +2,6 @@ package ar.edu.itba.paw;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.persistence.CommentDao;
-import ar.edu.itba.paw.persistence.ContentDao;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
