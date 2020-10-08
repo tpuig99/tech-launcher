@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
@@ -39,21 +40,23 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<User> findById(long id) {
         return userDao.findById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<User> findByUsername(String username) {
         return userDao.findByUsername(username);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<User> findByMail(String mail) {
         return userDao.findByMail(mail);
     }
-
 
     private long checkIfUserExists(String username, String mail) throws UserAlreadyExistException {
         Optional<User> user = findByUsernameOrMail(username,mail);
@@ -71,6 +74,7 @@ public class UserServiceImpl implements UserService {
     private Optional<User> findByUsernameOrMail(String username, String mail) { return userDao.findByUsernameOrMail(username,mail);
     }
 
+    @Transactional
     @Override
     public User create(String username, String mail, String password) throws UserAlreadyExistException{
         long aux= checkIfUserExists(username,mail);
@@ -81,18 +85,20 @@ public class UserServiceImpl implements UserService {
         return update(aux, username, mail, psw).get();
     }
 
-
+    @Transactional
     @Override
     public int delete(long userId) {
         return userDao.delete(userId);
     }
 
+    @Transactional
     @Override
     public void  updatePassword(long userId, String password) {
         String psw = passwordEncoder.encode(password);
         userDao.updatePassword(userId,psw);
     }
 
+    @Transactional
     @Override
     public void updateModAllow(long userId, boolean allow) {
         userDao.updateModAllow(userId, allow);
@@ -101,102 +107,119 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     private Optional<User> update(long userId, String username, String mail, String password) {
         return userDao.update(userId,username,mail,password);
     }
 
+    @Transactional
     @Override
     public void createVerificationToken(User user, String token) {
         Optional<VerificationToken> verificationToken = tokenDao.getByUser(user.getId());
         verificationToken.ifPresent(value -> tokenDao.change(value.getTokenId(), token));
         tokenDao.insert(user.getId(),token);
     }
-
+    @Transactional(readOnly = true)
     @Override
     public Optional<VerificationToken> getVerificationToken(String token) {
         return tokenDao.getByToken(token);
     }
 
+    @Transactional
     @Override
     public void saveRegisteredUser(User user) {
         userDao.setEnable(user.getId());
     }
 
+    @Transactional
     @Override
     public void generateNewVerificationToken(User user, String token) {
         Optional<VerificationToken> verificationToken = tokenDao.getByUser(user.getId());
         verificationToken.ifPresent(value -> tokenDao.change(value.getTokenId(), token));
     }
 
+    @Transactional
     @Override
     public void updateDescription(long userId, String description) {
         userDao.updateDescription(userId,description);
     }
 
+    @Transactional
     @Override
     public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
 
+    @Transactional
     @Override
     public VerifyUser createVerify(long userId, long frameworkId, long commentId) {
         return verifyUserDao.create(userId,frameworkId,commentId);
     }
 
+    @Transactional
     @Override
     public VerifyUser createVerify(long userId, long frameworkId) {
         return verifyUserDao.create(userId,frameworkId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByUser(long userId, boolean pending) {
         return verifyUserDao.getByUser(userId,pending);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByFramework(long frameworkId, boolean pending) {
         return verifyUserDao.getByFramework(frameworkId,pending);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getAllVerifyByUser(long userId) {
         return verifyUserDao.getAllByUser(userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getAllVerifyByFramework(long frameworkId) {
         return verifyUserDao.getAllByFramework(frameworkId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<VerifyUser> getVerifyById(long verificationId) {
         return verifyUserDao.getById(verificationId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByPending(boolean pending) {
         return verifyUserDao.getByPending(pending);
     }
 
+    @Transactional
     @Override
     public void deleteVerification(long verificationId) {
         verifyUserDao.delete(verificationId);
     }
 
+    @Transactional
     @Override
     public void deleteVerificationByUser(long userId) {
         verifyUserDao.deleteVerificationByUser(userId);
     }
 
+    @Transactional
     @Override
     public void verify(long verificationId) {
         verifyUserDao.verify(verificationId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId) {
         return verifyUserDao.getByFrameworkAndUser(frameworkId,userId);
     }
 
+    @Transactional
     @Override
     public void passwordMailing(User user, String appUrl) {
 
@@ -210,8 +233,9 @@ public class UserServiceImpl implements UserService {
             String message = inter_message+ "\r\n" + appUrl + confirmationUrl;
 
             sendEmail(recipientAddress,subject,message);
-        }
+    }
 
+    @Transactional
     @Override
     public void modMailing(User user, String frameworkName) {
         String subject = messageSource.getMessage("email.moderator.subject",new Object[]{frameworkName}, LocaleContextHolder.getLocale());
