@@ -8,6 +8,7 @@ import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.FrameworkVoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -21,31 +22,37 @@ public class FrameworkServiceImpl implements FrameworkService {
    @Autowired
     private FrameworkDao frameworkDao;
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Framework> findById(long id) {
         return frameworkDao.findById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<String> getFrameworkNames() {
         return frameworkDao.getFrameworkNames();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getByCategory(FrameworkCategories category) {
         return frameworkDao.getByCategory(category);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getByType(FrameworkType type) {
         return frameworkDao.getByType(type);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getByWord(String toSearch) {
         return frameworkDao.getByWord(toSearch);
     }
 
+    @Transactional
     @Override
     public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars,boolean nameFlag) {
         return frameworkDao.search(toSearch,categories,types,stars,nameFlag);
@@ -139,50 +146,60 @@ public class FrameworkServiceImpl implements FrameworkService {
         });
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getByMultipleCategories(List<FrameworkCategories> categories) {
         return frameworkDao.getByMultipleCategories(categories);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getByMultipleTypes(List<FrameworkType> types) {
         return frameworkDao.getByMultipleTypes(types);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getByMinStars(int stars) {
         return frameworkDao.getByMinStars(stars);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getByUser(long userId) {
         return frameworkDao.getByUser(userId);
     }
 
+    @Transactional
     @Override
     public Optional<Framework> create(String name, FrameworkCategories category, String description, String introduction, FrameworkType type,long userId, byte[] picture) {
         return frameworkDao.create(name,category,description,introduction,type,userId, picture);
     }
 
+    @Transactional
     @Override
     public Optional<Framework> update(long id, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, byte[] picture) {
         return frameworkDao.update(id,name,category,description,introduction,type,picture);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getBestRatedFrameworks() {
         List<Framework> toReturn = frameworkDao.getByMinStars(4);
         return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getUserInterests(long userId) { return frameworkDao.getUserInterests(userId); }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getAll() {
         return frameworkDao.getAll();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Framework> getCompetitors(Framework framework) {
         List<Framework> toReturn = getByCategory(framework.getFrameCategory());
