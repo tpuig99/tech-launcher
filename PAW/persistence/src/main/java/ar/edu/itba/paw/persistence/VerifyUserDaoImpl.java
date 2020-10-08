@@ -125,9 +125,9 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
     }
 
     @Override
-    public List<VerifyUser> getByPending(boolean pending) {
-        String value = SELECTION_VERIFY+"WHERE v.pending = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[] {pending}, ROW_MAPPER);
+    public List<VerifyUser> getByPending(boolean pending, long page, long pageSize) {
+        String value = SELECTION_VERIFY+"WHERE v.pending = ?"+GROUP_BY + " LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(value, new Object[] {pending, pageSize, (page-1)*pageSize}, ROW_MAPPER);
     }
 
     @Override

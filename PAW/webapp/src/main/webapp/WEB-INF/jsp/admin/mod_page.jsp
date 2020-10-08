@@ -30,7 +30,7 @@
                     <div class="page-description"></div>
                     <div class="d-flex flex-wrap justify-content-center">
                         <c:choose>
-                            <c:when test="${not empty mods}">
+                            <c:when test="${not empty mods || modsPage != 1}">
                                 <c:forEach var = "moderator" items="${mods}">
                                     <c:if test="${!moderator.admin}">
                                         <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
@@ -59,6 +59,36 @@
                             </c:otherwise>
                         </c:choose>
                     </div>
+                    <c:if test="${not empty mods || modsPage != 1}">
+                        <ul class="pagination justify-content-center">
+                            <c:choose>
+                            <c:when test="${modsPage == 1}">
+                            <li class="page-item disabled">
+                                </c:when>
+                                <c:otherwise>
+                            <li class="page-item ">
+                                </c:otherwise>
+                                </c:choose>
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage-1}"/>" aria-label="Previous">
+                                    <span aria-hidden="true">&lsaquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                            <c:choose>
+                            <c:when test="${mods.size() < pageSize}">
+                            <li class="page-item disabled">
+                                </c:when>
+                                <c:otherwise>
+                            <li class="page-item">
+                                </c:otherwise>
+                                </c:choose>
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage+1}"/>" aria-label="Next">
+                                    <span aria-hidden="true">&rsaquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </c:if>
                 </c:if>
 
 

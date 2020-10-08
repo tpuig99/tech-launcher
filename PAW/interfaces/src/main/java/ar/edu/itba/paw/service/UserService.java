@@ -37,7 +37,7 @@ public interface UserService {
     List<VerifyUser> getAllVerifyByUser(long userId);
     List<VerifyUser> getAllVerifyByFramework(long frameworkId);
     Optional<VerifyUser> getVerifyById(long verificationId);
-    List<VerifyUser> getVerifyByPending(boolean pending);
+    List<VerifyUser> getVerifyByPending(boolean pending, long page);
     void deleteVerification(long verificationId);
     void deleteVerificationByUser(long userId);
     void verify(long verificationId);

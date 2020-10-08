@@ -14,7 +14,7 @@ public interface VerifyUserDao {
     List<VerifyUser> getAllByFramework(long frameworkId);
     Optional<VerifyUser> getByFrameworkAndUser(long frameworkId, long userId);
     Optional<VerifyUser> getById(long verificationId);
-    List<VerifyUser> getByPending(boolean pending);
+    List<VerifyUser> getByPending(boolean pending, long page, long pageSize);
     void delete(long verificationId);
     void deleteVerificationByUser(long userId);
     void verify(long verificationId);

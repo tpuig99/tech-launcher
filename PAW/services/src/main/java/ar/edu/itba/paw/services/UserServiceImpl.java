@@ -24,6 +24,7 @@ import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private final long PAGESIZE=6;
     private static final long USER_NOT_EXISTS = -1;
     @Qualifier("userDaoImpl")
     @Autowired
@@ -173,8 +174,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<VerifyUser> getVerifyByPending(boolean pending) {
-        return verifyUserDao.getByPending(pending);
+    public List<VerifyUser> getVerifyByPending(boolean pending, long page) {
+        return verifyUserDao.getByPending(pending, page, PAGESIZE);
     }
 
     @Override

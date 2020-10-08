@@ -40,6 +40,9 @@ public class UserController {
     @Autowired
     MessageSource messageSource;
 
+    private long pageStart=1;
+    private long PAGESIZE=6;
+
     @RequestMapping("/apply")
     public String AddCandidate(HttpServletRequest request, @RequestParam("id") final long frameworkId) {
         String username = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
@@ -61,7 +64,7 @@ public class UserController {
             us.deleteVerification(form.getRejectUserVerificationId());
         }
 
-        return modPage();
+        return modPage(null);
     }
 
     @RequestMapping(path = {"/rejectPending"}, method = RequestMethod.POST )
@@ -71,7 +74,7 @@ public class UserController {
             us.deleteVerification(form.getRejectPendingUserVerificationId());
         }
 
-        return modPage();
+        return modPage(null);
     }
 
     @RequestMapping(path = {"/accept"}, method = RequestMethod.POST)
@@ -82,7 +85,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
             }
-        return modPage();
+        return modPage(null);
     }
 
     @RequestMapping(path = {"/acceptPending"}, method = RequestMethod.POST)
@@ -93,7 +96,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
         }
-        return modPage();
+        return modPage(null);
     }
 
     @RequestMapping(path = {"/demote"}, method = RequestMethod.POST)
@@ -103,11 +106,11 @@ public class UserController {
             us.deleteVerification(form.getRevokePromotionVerificationId());
         }
 
-        return modPage();
+        return modPage(null);
     }
 
     @RequestMapping("/mod")
-    public ModelAndView modPage(){
+    public ModelAndView modPage(@RequestParam(value = "modsPage", required = false) final Long modsPage){
         ModelAndView mav = new ModelAndView("admin/mod_page");
 
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
@@ -129,14 +132,16 @@ public class UserController {
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             mav.addObject("isAdmin",user.isAdmin());
             if( user.isAdmin()) {
-                List<VerifyUser> mods = us.getVerifyByPending(false);
-                List<VerifyUser> verify = us.getVerifyByPending(true);
+                List<VerifyUser> mods = us.getVerifyByPending(false, modsPage == null ? 1:modsPage);
+                List<VerifyUser> verify = us.getVerifyByPending(true, modsPage == null ? 1:modsPage);
                 List<VerifyUser> applicants = new LinkedList<>();
                 verify.forEach(verifyUser -> {
                     if(verifyUser.getComment() == null ){
                         applicants.add(verifyUser);
                     }
                 });
+                mav.addObject("modsPage", modsPage == null ? 1:modsPage);
+                mav.addObject("pageSize", PAGESIZE);
                 verify.removeAll(applicants);
                 mav.addObject("mods",mods);
                 mav.addObject("pendingToVerify", verify);
@@ -222,7 +227,7 @@ public class UserController {
                 Optional<Comment> commentOptional = commentService.getById(form.getDeleteCommentId());
                 if( commentOptional.isPresent() ){
                     commentService.acceptReport(form.getDeleteCommentId());
-                    return modPage();
+                    return modPage(null);
                 }
             }
         }
@@ -238,7 +243,7 @@ public class UserController {
             if( user.isAdmin() ){
                 commentService.denyReport(form.getIgnoreCommentId());
 
-                return modPage();
+                return modPage(null);
             }
         }
 
@@ -254,7 +259,7 @@ public class UserController {
                 Optional<Content> contentOptional = contentService.getById(form.getDeleteContentId());
                 if( contentOptional.isPresent() ){
                     contentService.acceptReport(form.getDeleteContentId());
-                    return modPage();
+                    return modPage(null);
                 }
             }
         }
@@ -271,7 +276,7 @@ public class UserController {
                 Optional<Content> contentOptional = contentService.getById(form.getIgnoreContentId());
                 if( contentOptional.isPresent() ){
                     contentService.denyReport(form.getIgnoreContentId());
-                    return modPage();
+                    return modPage(null);
                 }
             }
         }
