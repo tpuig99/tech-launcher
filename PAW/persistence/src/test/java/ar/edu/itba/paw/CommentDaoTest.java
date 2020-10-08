@@ -196,7 +196,7 @@ public class CommentDaoTest {
     }
 
     @Test
-    public void getCommentsByFrameworkAndUser() {
+    public void testGetCommentsByFrameworkAndUser() {
         // Arrange
         for (int i = 0; i < SIZE; i++) {
             final Map<String, Object> args = getArgumentsMap(FRAMEWORK_ID+i, USER_ID+i, Math.random() > 0.5 ? DESCRIPTION : DESCRIPTION_NEW, new Timestamp(System.currentTimeMillis()), null);

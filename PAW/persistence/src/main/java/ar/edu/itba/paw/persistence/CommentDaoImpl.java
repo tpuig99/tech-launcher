@@ -173,7 +173,7 @@ public class CommentDaoImpl implements CommentDao {
             value = SELECTION+USER_VOTE+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY + " LIMIT ? OFFSET ?";
             return jdbcTemplate.query(value, new Object[] {userId,frameworkId, pageSize, (page-1)*pageSize},  SET_EXTRACTOR_USER_VOTE );
         }
-        value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
+        value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY + " LIMIT ? OFFSET ?";
         return jdbcTemplate.query(value, new Object[] {frameworkId, pageSize, (page-1)*pageSize},  SET_EXTRACTOR);
     }
 
