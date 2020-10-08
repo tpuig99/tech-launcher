@@ -586,7 +586,7 @@
                                 </div>
                             </div>
                         </c:when>
-                        <c:when test="${verifyForFramework}">
+                        <c:when test="${verifyForFramework && !isAdmin}">
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="card text-center">
                                     <div class="card-header subtitle"><h5><spring:message code="tech.mod.stop.title"/></h5></div>
