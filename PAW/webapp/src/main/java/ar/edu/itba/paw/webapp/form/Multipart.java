@@ -6,15 +6,14 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({TYPE,ANNOTATION_TYPE})
+@Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = FrameworkNameValidator.class)
+@Constraint(validatedBy = MultipartValidator.class)
 @Documented
-public @interface FrameworkName {
+public @interface Multipart {
     String message() default "That framework already exists.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
