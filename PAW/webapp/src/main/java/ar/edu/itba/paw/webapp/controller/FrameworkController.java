@@ -77,13 +77,14 @@ public class FrameworkController {
             mav.addObject("category", category);
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+            mav.addObject("comments_page", startPage);
 
             mav.addObject("replies", replies);
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<User> optionalUser = us.findByUsername(username);
             if( optionalUser.isPresent()){
                 User user = optionalUser.get();
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,user.getId());
+                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,user.getId(), startPage);
                 mav.addObject("comments",comments);
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
@@ -98,7 +99,7 @@ public class FrameworkController {
                 }
             }
             else{
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,null);
+                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,null, startPage);
                 mav.addObject("comments",comments);
             }
 
@@ -108,7 +109,7 @@ public class FrameworkController {
     }
 
     @RequestMapping("/{category}/{id}/pages")
-    public ModelAndView framework(@PathVariable long id, @PathVariable String category, @RequestParam(value = "books_page", required = false) final long booksPage, @RequestParam(value = "courses_page", required = false) final long coursesPage, @RequestParam(value = "tutorials_page", required = false) final long tutorialsPage ) {
+    public ModelAndView framework(@PathVariable long id, @PathVariable String category, @RequestParam(value = "books_page", required = false) final long booksPage, @RequestParam(value = "courses_page", required = false) final long coursesPage, @RequestParam(value = "tutorials_page", required = false) final long tutorialsPage, @RequestParam(value = "comments_page", required = false) final long commentsPage) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Optional<Framework> framework = fs.findById(id);
         mav.addObject("ratingForm", new RatingForm());
@@ -136,13 +137,14 @@ public class FrameworkController {
             mav.addObject("category", category);
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+            mav.addObject("comments_page", commentsPage);
 
             mav.addObject("replies", replies);
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<User> optionalUser = us.findByUsername(username);
             if( optionalUser.isPresent()){
                 User user = optionalUser.get();
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,user.getId());
+                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,user.getId(), commentsPage);
                 mav.addObject("comments",comments);
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
@@ -157,10 +159,9 @@ public class FrameworkController {
                 }
             }
             else{
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,null);
+                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,null, commentsPage);
                 mav.addObject("comments",comments);
             }
-
             return mav;
         }
         return ErrorController.redirectToErrorView();

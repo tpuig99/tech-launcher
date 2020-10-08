@@ -49,8 +49,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId) {
-        return cmts.getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,userId);
+    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId, long page) {
+        return cmts.getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,userId, page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)

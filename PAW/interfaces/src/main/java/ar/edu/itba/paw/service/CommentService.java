@@ -12,7 +12,7 @@ public interface CommentService {
     /*** Getters ***/
     Optional<Comment> getById(long contentId);
     List<Comment> getCommentsByFramework(long frameworkId,Long userId);
-    List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId);
+    List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId, long page);
     List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId);
     List<Comment> getCommentsByUser(long userId, long page);
     Map<Long, List<Comment>> getRepliesByFramework(long frameworkId);
