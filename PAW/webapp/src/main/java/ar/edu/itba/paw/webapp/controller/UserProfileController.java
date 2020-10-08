@@ -35,6 +35,9 @@ public class UserProfileController {
     @Autowired
     UserService us;
 
+    private long pageSize = 5;
+    private long startPage = 1;
+
     public static ModelAndView redirectToProfile(String username) {
         return new ModelAndView("redirect:/users/" + username);
     }
@@ -50,7 +53,7 @@ public class UserProfileController {
             mav.addObject("profile", user);
             mav.addObject("previousDescription", user.getDescription());
 
-            final List<Comment> commentList = commentService.getCommentsByUser(userId);
+            final List<Comment> commentList = commentService.getCommentsByUser(userId, startPage);
             final List<Content> contentList = contentService.getContentByUser(userId);
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
             final List<Framework> frameworks = frameworkService.getByUser(userId);
@@ -58,6 +61,8 @@ public class UserProfileController {
             mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
             mav.addObject("contents", contentList);
             mav.addObject("comments", commentList);
+            mav.addObject("comments_page", startPage);
+            mav.addObject("page_size", pageSize);
             mav.addObject("votes", votesList);
             mav.addObject("frameworks",frameworks);
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());

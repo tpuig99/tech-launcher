@@ -184,9 +184,9 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
-    public List<Comment> getCommentsByUser(long userId) {
-        String value = SELECTION+FROM+"WHERE c.user_id = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[] {userId}, SET_EXTRACTOR);
+    public List<Comment> getCommentsByUser(long userId, long page, long pageSize ) {
+        String value = SELECTION +FROM+"WHERE c.user_id = ?"+GROUP_BY + " LIMIT ? OFFSET ?" ;
+        return jdbcTemplate.query(value, new Object[] {userId, pageSize, (page-1)*pageSize}, SET_EXTRACTOR);
     }
 
     //TODO optimize queries

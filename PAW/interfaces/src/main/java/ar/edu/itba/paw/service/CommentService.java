@@ -14,7 +14,7 @@ public interface CommentService {
     List<Comment> getCommentsByFramework(long frameworkId,Long userId);
     List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId);
     List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId);
-    List<Comment> getCommentsByUser(long userId);
+    List<Comment> getCommentsByUser(long userId, long page);
     Map<Long, List<Comment>> getRepliesByFramework(long frameworkId);
 
     /*** Comment Methods ***/

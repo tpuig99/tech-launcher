@@ -127,6 +127,41 @@
                             </div>
                         </div>
                     </c:forEach>
+                    <nav>
+                        <ul class="pagination">
+                            <c:choose>
+                                <c:when test="${comments_page == 1}">
+                                    <li class="page-item disabled">
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item ">
+                                </c:otherwise>
+                            </c:choose>
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                            <c:choose>
+                                <c:when test="${comments.size() < page_size}">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </li>
+                                </c:otherwise>
+                            </c:choose>
+                        </ul>
+                    </nav>
                 </div>
             </c:when>
             <c:otherwise>
