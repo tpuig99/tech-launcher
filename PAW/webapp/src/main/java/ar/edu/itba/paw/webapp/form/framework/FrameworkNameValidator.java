@@ -20,7 +20,7 @@ class FrameworkNameValidator implements ConstraintValidator<FrameworkName, Objec
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context){
             FrameworkForm form = (FrameworkForm) obj;
-            List<Framework> framework = fs.search(form.getFrameworkName(),null,null,0,5,true);
+            List<Framework> framework = fs.search(form.getFrameworkName(),null,null,0,5,true, 1);
             if(form.getFrameworkId()==null)
                 return framework.isEmpty();
             if(framework.isEmpty())

@@ -23,7 +23,7 @@ public interface FrameworkDao {
     List<Framework> getByMinStars(int stars);
     List<Framework> getByMultipleTypes(List<FrameworkType> types);
     List<Framework> getByUser(long userId, long page, long pageSize);
-    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight, boolean nameFlag);
+    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight, boolean nameFlag, long page, long pageSize);
     Optional<Framework> create(String name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId, byte[] picture);
     Optional<Framework> update(long id,String name,FrameworkCategories category,String description,String introduction,FrameworkType type, byte[] picture);
     void delete(long id);

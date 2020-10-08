@@ -21,7 +21,7 @@ public interface FrameworkService {
     List<Framework> getByMultipleTypes(List<FrameworkType> types);
     List<Framework> getByMinStars(int stars);
     List<Framework> getByUser(long userId, long page);
-    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight, boolean nameFlag);
+    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight, boolean nameFlag, long page);
 
     void  orderByStars(List<Framework> frameworks, Integer order);
     void  orderByInteraction(List<Framework> frameworks, Integer order);

@@ -49,10 +49,10 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag) {
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag, long page) {
         if(starsLeft<starsRight)
-            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag);
-        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag);
+            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag, page, PAGESIZE);
+        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag, page, PAGESIZE);
     }
 
     @Override
