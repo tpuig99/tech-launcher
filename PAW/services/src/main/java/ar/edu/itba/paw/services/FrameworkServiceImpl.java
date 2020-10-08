@@ -170,6 +170,11 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
+    public void delete(long id) {
+        frameworkDao.delete(id);
+    }
+
+    @Override
     public List<Framework> getBestRatedFrameworks() {
         List<Framework> toReturn = frameworkDao.getByMinStars(4);
         return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;

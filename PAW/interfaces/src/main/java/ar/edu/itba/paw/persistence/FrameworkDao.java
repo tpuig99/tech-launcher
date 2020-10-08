@@ -26,4 +26,5 @@ public interface FrameworkDao {
     List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars,boolean nameFlag);
     Optional<Framework> create(String name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId, byte[] picture);
     Optional<Framework> update(long id,String name,FrameworkCategories category,String description,String introduction,FrameworkType type, byte[] picture);
+    void delete(long id);
 }

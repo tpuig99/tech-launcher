@@ -183,9 +183,10 @@ public class FrameworkDaoImpl implements FrameworkDao {
         String aux="where ";
         Map<String,List<String>> params = new HashMap<>();
         if(toSearch!=null && !toSearch.isEmpty()){
-            aux = aux.concat("f.framework_name ILIKE '%"+toSearch+"%' ");
-            if(toSearch.length()>3 && !nameFlag)
-                aux = aux.concat("or f.description ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%' ");
+            if(nameFlag || toSearch.length()<3)
+                aux = aux.concat("f.framework_name ILIKE '%"+toSearch+"%' ");
+            else
+                aux = aux.concat("(f.framework_name ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%') ");
         }
         if(categories!=null){
             if(!aux.equals("where "))
@@ -237,5 +238,10 @@ public class FrameworkDaoImpl implements FrameworkDao {
         else
             jdbcTemplate.update("UPDATE frameworks SET framework_name = ?, category = ?, description = ?, introduction = ?, type=?  WHERE framework_id = ?",new Object[]{name, category.getNameCat(), description,introduction,type.getType(),id});
         return findById(id);
+    }
+
+    @Override
+    public void delete(long id) {
+        jdbcTemplate.update("DELETE FROM frameworks WHERE framework_id = ?",new Object[]{id});
     }
 }
