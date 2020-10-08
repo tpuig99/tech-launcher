@@ -112,7 +112,7 @@
             <h2><spring:message code="profile.comments"/></h2>
         </div>
         <c:choose>
-            <c:when test="${not empty comments}">
+            <c:when test="${not empty comments || comments_page != 1}">
                 <div class="container d-flex justify-content-center">
                     <c:forEach var="comment" items="${comments}">
                         <div class="card emphasis emph-comment row mb-2">
@@ -127,41 +127,34 @@
                             </div>
                         </div>
                     </c:forEach>
-                    <nav>
-                        <ul class="pagination">
-                            <c:choose>
-                                <c:when test="${comments_page == 1}">
-                                    <li class="page-item disabled">
-                                </c:when>
-                                <c:otherwise>
-                                    <li class="page-item ">
-                                </c:otherwise>
-                            </c:choose>
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                    <span class="sr-only">Previous</span>
+                    <ul class="pagination">
+                        <c:choose>
+                            <c:when test="${comments_page == 1}">
+                                <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item ">
+                            </c:otherwise>
+                        </c:choose>
+                            <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page-1}&contents_page=${contents_page}"/>" aria-label="Previous">
+                                <span aria-hidden="true">&lsaquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <c:choose>
+                            <c:when test="${comments.size() < page_size}">
+                                <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item">
+                            </c:otherwise>
+                        </c:choose>
+                                <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page+1}&contents_page=${contents_page}"/>" aria-label="Next">
+                                    <span aria-hidden="true">&rsaquo;</span>
+                                    <span class="sr-only">Next</span>
                                 </a>
                             </li>
-                            <c:choose>
-                                <c:when test="${comments.size() < page_size}">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                            <span class="sr-only">Next</span>
-                                        </a>
-                                    </li>
-                                </c:when>
-                                <c:otherwise>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                            <span class="sr-only">Next</span>
-                                        </a>
-                                    </li>
-                                </c:otherwise>
-                            </c:choose>
-                        </ul>
-                    </nav>
+                    </ul>
                 </div>
             </c:when>
             <c:otherwise>
@@ -176,7 +169,7 @@
             <h2><spring:message code="profile.contents"/></h2>
         </div>
         <c:choose>
-            <c:when test="${not empty contents}">
+            <c:when test="${not empty contents || contents_page != 1}">
                 <div class="container d-flex justify-content-center">
                     <c:forEach var="content" items="${contents}">
                         <div class="card emphasis emph-content row mb-2">
@@ -200,6 +193,34 @@
                             </div>
                         </div>
                     </c:forEach>
+                    <ul class="pagination">
+                        <c:choose>
+                        <c:when test="${contents_page == 1}">
+                        <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                        <li class="page-item ">
+                            </c:otherwise>
+                            </c:choose>
+                            <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page-1}"/>" aria-label="Previous">
+                                <span aria-hidden="true">&lsaquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <c:choose>
+                        <c:when test="${contents.size() < page_size}">
+                        <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                        <li class="page-item">
+                            </c:otherwise>
+                            </c:choose>
+                            <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page + 1}"/>" aria-label="Next">
+                                <span aria-hidden="true">&rsaquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </c:when>
             <c:otherwise>

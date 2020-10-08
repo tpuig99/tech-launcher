@@ -136,8 +136,8 @@ public class ContentDaoImpl implements ContentDao {
 
 
     @Override
-    public List<Content> getContentByUser(long userId) {
-        return jdbcTemplate.query(SELECTION+FROM+" where c.user_id=?"+GROUP_BY, new Object[] { userId }, SET_EXTRACTOR);
+    public List<Content> getContentByUser(long userId, long page, long pageSize) {
+        return jdbcTemplate.query(SELECTION+FROM+" where c.user_id=?"+GROUP_BY + " LIMIT ? OFFSET ?", new Object[] { userId, pageSize, pageSize*(page-1) }, SET_EXTRACTOR);
     }
 
     @Override

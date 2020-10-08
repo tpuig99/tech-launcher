@@ -54,14 +54,48 @@ public class UserProfileController {
             mav.addObject("previousDescription", user.getDescription());
 
             final List<Comment> commentList = commentService.getCommentsByUser(userId, startPage);
-            final List<Content> contentList = contentService.getContentByUser(userId);
+            final List<Content> contentList = contentService.getContentByUser(userId, startPage);
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
             final List<Framework> frameworks = frameworkService.getByUser(userId);
 
             mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
             mav.addObject("contents", contentList);
+            mav.addObject("contents_page", startPage);
             mav.addObject("comments", commentList);
             mav.addObject("comments_page", startPage);
+            mav.addObject("page_size", pageSize);
+            mav.addObject("votes", votesList);
+            mav.addObject("frameworks",frameworks);
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("isAdmin", user.isAdmin());
+            mav.addObject("isAllowMod", user.isAllowMod());
+            return mav;
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/users/{username}/pages"}, method = RequestMethod.GET)
+    public ModelAndView userProfilePagination(@PathVariable String username, @ModelAttribute("profileForm") final ProfileForm form, @RequestParam(value = "comments_page", required = false) final long commentsPage, @RequestParam(value = "contents_page", required = false) final long contentsPage) {
+        ModelAndView mav = new ModelAndView("session/user_profile");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        if (us.findByUsername(username).isPresent()) {
+            User user = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            long userId = user.getId();
+            mav.addObject("profile", user);
+            mav.addObject("previousDescription", user.getDescription());
+
+            final List<Comment> commentList = commentService.getCommentsByUser(userId, commentsPage);
+            final List<Content> contentList = contentService.getContentByUser(userId, contentsPage);
+            final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
+            final List<Framework> frameworks = frameworkService.getByUser(userId);
+
+            mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
+            mav.addObject("contents", contentList);
+            mav.addObject("contents_page", contentsPage);
+            mav.addObject("comments", commentList);
+            mav.addObject("comments_page", commentsPage);
             mav.addObject("page_size", pageSize);
             mav.addObject("votes", votesList);
             mav.addObject("frameworks",frameworks);
