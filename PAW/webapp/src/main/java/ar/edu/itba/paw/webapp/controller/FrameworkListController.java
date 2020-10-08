@@ -31,7 +31,8 @@ public class FrameworkListController {
     public ModelAndView advancedSearch(@RequestParam(required = false, defaultValue = "") String toSearch,
                                        @RequestParam(required = false, defaultValue = "") final List<String> categories,
                                        @RequestParam(required = false, defaultValue = "") final List<String> types,
-                                       @RequestParam(required = false) final Integer stars,
+                                       @RequestParam(required = false) final Integer starsLeft,
+                                       @RequestParam(required = false) final Integer starsRight,
                                        @RequestParam(required = false) final boolean nameFlag,
                                        @RequestParam(required = false) final Integer order){
 
@@ -65,7 +66,7 @@ public class FrameworkListController {
             toSearch="";
         }
 
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, stars, nameFlag);
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag);
         if(order!=null && order!=0){
             switch (order){
                 case -1:
@@ -102,7 +103,8 @@ public class FrameworkListController {
         mav.addObject("techNameQuery", toSearch );
         mav.addObject("categoriesQuery", categoriesQuery );
         mav.addObject("typesQuery", typesQuery );
-        mav.addObject("starsQuery", stars );
+        mav.addObject("starsQuery1", starsLeft );
+        mav.addObject("starsQuery2", starsRight );
         mav.addObject("orderQuery", order );
         mav.addObject("nameFlagQuery", nameFlag );
 
