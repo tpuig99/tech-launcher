@@ -229,4 +229,13 @@ public class FrameworkDaoImpl implements FrameworkDao {
         final Number commentId = jdbcInsert.executeAndReturnKey(args);
         return findById(commentId.longValue());
     }
+
+    @Override
+    public Optional<Framework> update(long id, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, byte[] picture) {
+        if(picture.length>0)
+            jdbcTemplate.update("UPDATE frameworks SET framework_name = ?, category = ?, description = ?, introduction = ?, type=?, picture=?  WHERE framework_id = ?",new Object[]{name, category.getNameCat(), description,introduction,type.getType(),picture,id});
+        else
+            jdbcTemplate.update("UPDATE frameworks SET framework_name = ?, category = ?, description = ?, introduction = ?, type=?  WHERE framework_id = ?",new Object[]{name, category.getNameCat(), description,introduction,type.getType(),id});
+        return findById(id);
+    }
 }

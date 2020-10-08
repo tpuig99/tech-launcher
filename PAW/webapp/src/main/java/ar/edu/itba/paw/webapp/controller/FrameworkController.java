@@ -399,5 +399,54 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
+    @RequestMapping(value = "/update_tech",  method = { RequestMethod.GET})
+    public ModelAndView updateTech(@ModelAttribute("frameworkForm") final FrameworkForm form, @RequestParam("id") final long frameworkId) {
+        Optional<Framework> frameworkOptional = fs.findById(frameworkId);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( us.findByUsername(username).isPresent() && frameworkOptional.isPresent() && (frameworkOptional.get().getAuthor().equals(username) || userOptional.get().isAdmin())) {
+            User user = userOptional.get();
+            Framework framework = frameworkOptional.get();
+            form.setCategory(framework.getFrameCategory().getNameCat());
+            form.setDescription(framework.getDescription());
+            if(form.getFrameworkName()==null)
+                form.setFrameworkName(framework.getName());
+            form.setIntroduction(framework.getIntroduction());
+            form.setFrameworkId(frameworkId);
+            //form.setPicture(framework.getBase64image());
+            form.setType(framework.getType());
+            ModelAndView mav = new ModelAndView("frameworks/update_tech");
+            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+            if( us.findByUsername(username).isPresent()){
+                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            }
+            return mav;
+        }
+        return ErrorController.redirectToErrorView();
+
+    }
+
+    @RequestMapping(value = "/update_tech", method = { RequestMethod.POST })
+    public ModelAndView updateTech(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) throws IOException {
+        if (errors.hasErrors()) {
+            return updateTech(form,form.getFrameworkId());
+        }
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            FrameworkType type = FrameworkType.getByName(form.getType());
+            FrameworkCategories category = FrameworkCategories.getByName(form.getCategory());
+            byte[] picture = form.getPicture().getBytes();
+            Optional<Framework> framework = fs.update(form.getFrameworkId(),form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,picture);
+
+            if (framework.isPresent()) {
+                return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
+            }
+
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
 }
 

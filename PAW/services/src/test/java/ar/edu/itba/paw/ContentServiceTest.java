@@ -24,9 +24,9 @@ public class ContentServiceTest {
     // 1. Setup!
         Mockito.when(mockDao.getByContentAndUser(1,1)).thenReturn(Optional.empty());
         Mockito.when(mockDao.insert(1,1,1)).thenThrow(new RuntimeException());
-
     // 2. "ejercito"
         contentService.voteUp(1,1);
+
     }
 
     @Test(expected = RuntimeException.class)
