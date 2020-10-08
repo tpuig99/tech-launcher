@@ -34,8 +34,8 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> getByCategory(FrameworkCategories category) {
-        return frameworkDao.getByCategory(category);
+    public List<Framework> getByCategory(FrameworkCategories category, long page) {
+        return frameworkDao.getByCategory(category, page, PAGESIZE);
     }
 
     @Override
@@ -194,7 +194,7 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public List<Framework> getCompetitors(Framework framework) {
-        List<Framework> toReturn = getByCategory(framework.getFrameCategory());
+        List<Framework> toReturn = getByCategory(framework.getFrameCategory(), 1);
         toReturn.remove(framework);
         return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
     }

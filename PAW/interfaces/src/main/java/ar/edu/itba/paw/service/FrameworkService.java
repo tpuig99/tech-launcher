@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface FrameworkService {
     Optional<Framework> findById(long frameworkId);
     List<String> getFrameworkNames();
-    List<Framework> getByCategory(FrameworkCategories category);
+    List<Framework> getByCategory(FrameworkCategories category, long page);
     List<Framework> getByType(FrameworkType type);
     List<Framework> getAll();
     List<Framework> getCompetitors(Framework framework);

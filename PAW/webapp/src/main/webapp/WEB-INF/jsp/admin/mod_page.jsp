@@ -23,6 +23,7 @@
 
 
         <div class="content-no-sidebar row">
+            <!-- Mods managing -->
             <div class="left col-6 border-right">
                 <c:if test="${isAdmin}">
                     <div class="page-title"><spring:message code="moderator.title"/></div>
@@ -138,6 +139,7 @@
                     </c:choose>
                 </div>
             </div>
+            <!-- Comments/Content managing -->
             <div class="right col">
                 <c:if test="${isAdmin}">
                     <div class="page-title"><spring:message code="moderate.comment.title"/></div>

@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface FrameworkDao {
     Optional<Framework> findById(long id);
     List<String> getFrameworkNames();
-    List<Framework> getByCategory(FrameworkCategories category);
+    List<Framework> getByCategory(FrameworkCategories category, long page, long pageSize);
     List<Framework> getByType(FrameworkType type);
     List<Framework> getByCategoryAndType(FrameworkType type, FrameworkCategories category);
     List<Framework> getByCategoryAndWord(FrameworkCategories category,String word);

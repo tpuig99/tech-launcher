@@ -89,9 +89,9 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> getByCategory(FrameworkCategories category) {
-        String value=SELECTION+"WHERE category = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[]{ category.getNameCat() }, ROW_MAPPER);
+    public List<Framework> getByCategory(FrameworkCategories category, long page, long pageSize) {
+        String value=SELECTION+"WHERE category = ?"+GROUP_BY + " LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(value, new Object[]{ category.getNameCat(), pageSize, (page-1)*pageSize }, ROW_MAPPER);
     }
 
     @Override
