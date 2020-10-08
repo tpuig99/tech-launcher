@@ -346,13 +346,13 @@ public class ContentDaoTest {
         args.put("type", TYPE.name());
         jdbcInsert.executeAndReturnKey(args);
 
-//        List<Content> contents = contentDao.getContentByUser(USER_ID);
-//
-//        assertEquals(false,contents.isEmpty());
-//        assertEquals(3,contents.size());
-//        for (Content c:contents) {
-//            assertEquals(USER_ID,c.getUserId());
-//        }
+        List<Content> contents = contentDao.getContentByUser(USER_ID, 1, 5);
+
+        assertEquals(false,contents.isEmpty());
+        assertEquals(3,contents.size());
+        for (Content c:contents) {
+            assertEquals(USER_ID,c.getUserId());
+        }
     }
 
     //</editor-fold>
