@@ -130,8 +130,8 @@ public class ContentDaoImpl implements ContentDao {
     }
 
     @Override
-    public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type) {
-        return jdbcTemplate.query(SELECTION+FROM+" WHERE c.framework_id = ? AND c.type = ?"+GROUP_BY, new Object[] { frameworkId, type.name() }, SET_EXTRACTOR);
+    public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page, long pageSize) {
+        return jdbcTemplate.query(SELECTION+FROM+" WHERE c.framework_id = ? AND c.type = ?"+GROUP_BY + " LIMIT ? OFFSET ?", new Object[] { frameworkId, type.name(), pageSize, (page-1)*pageSize }, SET_EXTRACTOR);
     }
 
 

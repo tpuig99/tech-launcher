@@ -41,6 +41,9 @@ public class FrameworkController {
     @Autowired
     private UserService us;
 
+    private final long startPage = 1;
+    private final long pageSize = 5;
+
     public static ModelAndView redirectToFramework(Long id, String category) {
         return new ModelAndView("redirect:/" + category + "/" + id);
     }
@@ -64,9 +67,72 @@ public class FrameworkController {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
             mav.addObject("framework", framework.get());
 
-            mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book));
-            mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course));
-            mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial));
+            mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book, startPage));
+            mav.addObject("books_page", startPage);
+            mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course, startPage));
+            mav.addObject("courses_page", startPage);
+            mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial, startPage));
+            mav.addObject("tutorials_page", startPage);
+            mav.addObject("page_size", pageSize);
+            mav.addObject("category", category);
+            mav.addObject("competitors", fs.getCompetitors(framework.get()));
+            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+
+            mav.addObject("replies", replies);
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            Optional<User> optionalUser = us.findByUsername(username);
+            if( optionalUser.isPresent()){
+                User user = optionalUser.get();
+                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,user.getId());
+                mav.addObject("comments",comments);
+                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+                mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
+                mav.addObject("isAdmin",user.isAdmin());
+                mav.addObject("isEnable",user.isEnable());
+                mav.addObject("allowMod",user.isAllowMod());
+                Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
+                if(fv.isPresent()){
+                    mav.addObject("stars",fv.get().getStars());
+                }else{
+                    mav.addObject("stars",0);
+                }
+            }
+            else{
+                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,null);
+                mav.addObject("comments",comments);
+            }
+
+            return mav;
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping("/{category}/{id}/pages")
+    public ModelAndView framework(@PathVariable long id, @PathVariable String category, @RequestParam(value = "books_page", required = false) final long booksPage, @RequestParam(value = "courses_page", required = false) final long coursesPage, @RequestParam(value = "tutorials_page", required = false) final long tutorialsPage ) {
+        final ModelAndView mav = new ModelAndView("frameworks/framework");
+        Optional<Framework> framework = fs.findById(id);
+        mav.addObject("ratingForm", new RatingForm());
+        mav.addObject("upVoteForm", new VoteForm());
+        mav.addObject("downVoteForm", new DownVoteForm());
+        mav.addObject("commentForm", new CommentForm());
+        mav.addObject("replyForm", new ReplyForm());
+        mav.addObject("deleteCommentForm", new DeleteCommentForm());
+        mav.addObject("deleteContentForm", new DeleteContentForm());
+        mav.addObject("contentForm", new ContentForm());
+        mav.addObject("reportForm", new ReportForm());
+        mav.addObject("reportCommentForm", new ReportCommentForm());
+
+        if (framework.isPresent()) {
+            Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
+            mav.addObject("framework", framework.get());
+
+            mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book, booksPage));
+            mav.addObject("books_page", booksPage);
+            mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course, coursesPage));
+            mav.addObject("courses_page", coursesPage);
+            mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial, tutorialsPage));
+            mav.addObject("tutorials_page", tutorialsPage);
+            mav.addObject("page_size", pageSize);
             mav.addObject("category", category);
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
