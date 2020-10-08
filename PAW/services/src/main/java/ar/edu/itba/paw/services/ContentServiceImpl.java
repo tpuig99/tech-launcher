@@ -105,7 +105,6 @@ public class ContentServiceImpl implements ContentService {
         }else {
             cv.insert(contentId, userId, -1);
         }
-        Optional<Content> ct = content.getById(contentId);
     }
 
     @Transactional(readOnly = true)

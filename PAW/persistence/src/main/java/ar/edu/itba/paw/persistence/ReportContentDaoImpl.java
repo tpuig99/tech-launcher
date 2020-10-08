@@ -19,7 +19,7 @@ public class ReportContentDaoImpl implements ReportContentDao{
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final String SELECTION ="select cr.content_id, c.framework_id, title,  c.tstamp,c.link,c.type,f.framework_name,f.category, uc.user_name as user_name_owner,ucr.user_name as user_name_reporter, cr.report_id,c.user_id as user_id_owner,cr.description as report_description " +
-            "from content_report cr left join content c on c.content_id = cr.content_id left join frameworks f on c.framework_id = f.framework_id left join users uc on uc.user_id = c.user_id left join users ucr on ucr.user_id=cr.user_id";
+            "from content_report cr left join content c on c.content_id = cr.content_id left join frameworks f on c.framework_id = f.framework_id left join users uc on uc.user_id = c.user_id left join users ucr on ucr.user_id=cr.user_id ";
     private final String ORDER_BY=" order by cr.content_id";
     private final ResultSetExtractor<List<ReportContent>> EXTRACTOR = ReportContentDaoImpl::extractor;
 

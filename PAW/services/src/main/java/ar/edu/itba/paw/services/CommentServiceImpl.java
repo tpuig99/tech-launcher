@@ -11,15 +11,15 @@ import ar.edu.itba.paw.persistence.VerifyUserDao;
 import ar.edu.itba.paw.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService {
-    private static int VOTES_FOR_VERIFY =10;
+    private static final int VOTES_FOR_VERIFY =10;
 
     @Autowired
     CommentDao cmts;
@@ -33,60 +33,61 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     ReportCommentDao rc;
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Comment> getById(long contentId) {
-        Optional<Comment> comment = cmts.getById(contentId);
-        return comment;
+        return cmts.getById(contentId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Comment> getCommentsByFramework(long frameworkId,Long userId) {
-        List<Comment> comments = cmts.getCommentsByFramework(frameworkId,userId);
-        return comments;
+        return cmts.getCommentsByFramework(frameworkId,userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
-        List<Comment> comments = cmts.getCommentsWithoutReferenceByFramework(frameworkId);
-        return comments;
+    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId) {
+        return cmts.getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
-        List<Comment> comments = cmts.getCommentsByFrameworkAndUser(frameworkId, userId);
-        return comments;
+        return cmts.getCommentsByFrameworkAndUser(frameworkId, userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Comment> getCommentsByUser(long userId) {
-        List<Comment> comments = cmts.getCommentsByUser(userId);
-        return comments;
+        return cmts.getCommentsByUser(userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Map<Long, List<Comment>> getRepliesByFramework(long frameworkId) {
         return cmts.getRepliesByFramework(frameworkId);
     }
 
+    @Transactional
     @Override
     public Comment insertComment(long frameworkId, long userId, String description, Long reference) {
-       Optional<Comment> comment = cmts.insertComment(frameworkId, userId, description, reference);
-       if(comment.isPresent())
-           return comment.get();
-       return null;
+       return cmts.insertComment(frameworkId, userId, description, reference);
     }
 
+    @Transactional
     @Override
     public int deleteComment(long commentId) {
         return cmts.deleteComment(commentId);
     }
 
+    @Transactional
     @Override
     public Optional<Comment> changeComment(long commentId, String description) {
-        Optional<Comment> comment = cmts.changeComment(commentId, description);
-        return comment;
+        return cmts.changeComment(commentId, description);
     }
 
+    @Transactional
     @Override
     public Optional<Comment> voteUp(long commentId,long userId) {
         Optional<CommentVote> vote = cmtVotes.getByCommentAndUser(commentId,userId);
@@ -113,6 +114,7 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
+    @Transactional
     @Override
     public Optional<Comment> voteDown(long commentId,long userId) {
         Optional<CommentVote> vote = cmtVotes.getByCommentAndUser(commentId,userId);
@@ -126,45 +128,52 @@ public class CommentServiceImpl implements CommentService {
             cmtVotes.insert(commentId, userId, -1);
         }
 
-        Optional<Comment> comment = cmts.getById(commentId);
-        return comment;
+        return cmts.getById(commentId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<ReportComment> getReportById(long reportId) {
         return Optional.empty();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ReportComment> getAllReport() {
         return rc.getAll();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ReportComment> getReportByFramework(long frameworkId) {
         return rc.getByFramework(frameworkId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<ReportComment> getReportByComment(long commentId) {
         return rc.getByComment(commentId);
     }
 
+    @Transactional
     @Override
     public void addReport(long commentId, long userId, String description) {
         rc.add(commentId,userId,description);
     }
 
+    @Transactional
     @Override
     public void acceptReport(long commentId) {
         cmts.deleteComment(commentId);
     }
 
+    @Transactional
     @Override
     public void denyReport(long commentId) {
         rc.deleteReportByComment(commentId);
     }
 
+    @Transactional
     @Override
     public void deleteReport(long reportId) {
         rc.delete(reportId);

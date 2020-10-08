@@ -2,12 +2,9 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.FrameworkCategories;
-import ar.edu.itba.paw.models.ReportComment;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -169,8 +166,14 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
-    public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId) {
-        String value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
+    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId) {
+        String value;
+        if(userId!=null)
+        {
+            value = SELECTION+USER_VOTE+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
+            return jdbcTemplate.query(value, new Object[] {userId,frameworkId},  SET_EXTRACTOR_USER_VOTE );
+        }
+        value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
         return jdbcTemplate.query(value, new Object[] {frameworkId},  SET_EXTRACTOR );
     }
 
@@ -193,7 +196,7 @@ public class CommentDaoImpl implements CommentDao {
         List<Comment> replies = new ArrayList<>();
         long commentId;
 
-        List<Comment> commentsWithoutRef = getCommentsWithoutReferenceByFramework(frameworkId);
+        List<Comment> commentsWithoutRef = getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,null);
 
         if(!commentsWithoutRef.isEmpty()) {
             String value = SELECTION+FROM+"where c.framework_id = ? AND c.reference = ?"+GROUP_BY;
@@ -208,7 +211,7 @@ public class CommentDaoImpl implements CommentDao {
 
 
     @Override
-    public Optional<Comment> insertComment(long frameworkId, long userId, String description, Long reference) {
+    public Comment insertComment(long frameworkId, long userId, String description, Long reference) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", frameworkId);
@@ -218,7 +221,7 @@ public class CommentDaoImpl implements CommentDao {
         args.put("reference", reference);
 
         final Number commentId = jdbcInsert.executeAndReturnKey(args);
-        return getById(commentId.longValue());
+        return getById(commentId.longValue()).get();
     }
 
     @Override

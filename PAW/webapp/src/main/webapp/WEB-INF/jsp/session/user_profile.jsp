@@ -213,7 +213,14 @@
                     <div class="card mx-4 mb-4">
                         <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
                             <div class="card-body">
-                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
+                                <c:choose>
+                                    <c:when test="${not empty framework.base64image}">
+                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <div class="card-footer text-dark">
                                 <span>${framework.name} | </span>

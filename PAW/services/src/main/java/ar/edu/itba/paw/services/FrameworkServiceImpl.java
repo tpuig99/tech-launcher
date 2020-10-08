@@ -160,8 +160,13 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public void create(String name, FrameworkCategories category, String description, String introduction, FrameworkType type,long userId) {
-        frameworkDao.create(name,category,description,introduction,type,userId);
+    public Optional<Framework> create(String name, FrameworkCategories category, String description, String introduction, FrameworkType type,long userId, byte[] picture) {
+        return frameworkDao.create(name,category,description,introduction,type,userId, picture);
+    }
+
+    @Override
+    public Optional<Framework> update(long id, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, byte[] picture) {
+        return frameworkDao.update(id,name,category,description,introduction,type,picture);
     }
 
     @Override

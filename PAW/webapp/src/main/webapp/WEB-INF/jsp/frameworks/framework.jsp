@@ -34,12 +34,21 @@
                 <div class="container d-flex">
                     <div class="row">
                         <div class="col-2">
-                            <div class="max-logo"><img src="${framework.logo}" alt="${framework.name} logo"></div>
+                            <c:choose>
+                                <c:when test="${not empty framework.base64image}">
+                                    <div class="d-flex flex-wrap"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="d-flex flex-wrap"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                         <div class="col-10">
                             <div class="row">
                                 <div class="col">
-                                <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
+                                    <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
+                                    <div><spring:message code="tech.author"/>:&nbsp;<a href="/users/${framework.author}">${framework.author}</a></div>
+                                    <div><spring:message code="tech.date"/>:&nbsp;${framework.publish_date}</div>
                                     <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Category"> ${framework.category}</span>
                                     <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Type"> ${framework.type}</span>
                                 </div>
@@ -91,7 +100,7 @@
 
                 <!-- Bibliography -->
                 <c:if test="${not empty books}">
-                <div>
+                <div class="container">
                    <span><h4 class="subtitle margin-left"><spring:message code="tech.content.bibliography"/></h4></span>
                     <ul class="margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
@@ -122,7 +131,7 @@
 
                 <!-- Courses -->
                 <c:if test="${not empty courses}">
-                <div>
+                <div class="container">
                     <h4 class="subtitle margin-left "><spring:message code="tech.content.courses"/></h4>
 
                     <ul class=" margin-bottom list-group margin-left list-group-flush description">
@@ -154,7 +163,7 @@
 
                 <!-- Tutorials -->
                 <c:if test="${not empty tutorials}">
-                <div>
+                <div class="container">
                    <h4 class="subtitle margin-left"><spring:message code="tech.content.tutorials"/></h4>
                     <ul class="  margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">
@@ -186,7 +195,7 @@
 
                 <!-- Comments -->
                 <c:if test="${not empty comments}">
-                <div>
+                <div class="container">
                     <h4 class="title"><spring:message code="tech.comments"/></h4>
                 </div>
 
@@ -314,7 +323,7 @@
                                                         </button>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
+                                                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#Reply${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
                                                            <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.reply.button"/></span>
                                                         </button>
                                                     </c:otherwise>
@@ -328,14 +337,14 @@
                                         </c:choose>
                                     </span>
                                     <span class="padding-left">
-                                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#${comment.commentId}See" aria-expanded="false" aria-controls="multiCollapseExample1">
+                                        <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#See${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample1">
                                             <i class="arrow fas fa-eye fa-xs"></i><span class="reply padding-left"><spring:message code="tech.comment.see_replies"/></span>
                                         </button>
                                     </span>
 
                                 </div>
 
-                                <div  class="collapse multi-collapse" id="${comment.commentId}See">
+                                <div  class="collapse multi-collapse" id="See${comment.commentId}">
                                     <c:if test="${empty replies.get(comment.commentId)}">
                                         <div><spring:message code="tech.comment.no_replies_yet"/></div>
                                     </c:if>
@@ -377,7 +386,7 @@
                                 </c:if>
 
                             </div>
-                            <div class="row collapse multi-collapse" id="${comment.commentId}">
+                            <div class="row collapse multi-collapse" id="Reply${comment.commentId}">
                                 <c:url value="/reply" var="postPathReply" />
                                 <form:form modelAttribute="replyForm" id="replyForm${comment.commentId}" action="${postPathReply}" method="post">
                                     <form:label path="replyFrameworkId"><form:input  class="input-wrap" path="replyFrameworkId" type="hidden" value="${framework.id}"/></form:label>
@@ -405,7 +414,7 @@
                 </c:if>
 
                 <!-- User Interaction -->
-                <div>
+                <div class="container">
                     <h4 class="title"><spring:message code="tech.interactions.title"/></h4>
                 </div>
 
@@ -484,7 +493,7 @@
 
                 <!-- Competition Cards -->
                 <c:if test="${not empty competitors}">
-                <div>
+                <div class="container">
                     <h4 class="title"><spring:message code="tech.competition"/></h4>
                 </div>
 
@@ -494,7 +503,14 @@
                     <div class="card mini-card mx-3 mb-4">
                         <a href="<c:url value="/${competitor.frameCategory}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
-                                <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitor.logo}" alt="${framework.name} logo"></div>
+                                <c:choose>
+                                    <c:when test="${not empty competitor.base64image}">
+                                        <div class="mini-logo d-flex align-items-center justify-content-center"><img src="data:${competitor.contentType};base64,${competitor.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitor.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <div class="card-footer text-dark">${competitor.name}</div>
                         </a>

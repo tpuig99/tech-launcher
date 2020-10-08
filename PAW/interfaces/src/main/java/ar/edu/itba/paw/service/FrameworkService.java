@@ -28,5 +28,6 @@ public interface FrameworkService {
     void  orderByReleaseDate(List<Framework> frameworks, Integer order);
     void  orderByCommentsAmount(List<Framework> frameworks, Integer order);
 
-    void create(String name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId);
+    Optional<Framework> create(String name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId, byte[] picture);
+    Optional<Framework> update(long id,String name,FrameworkCategories category,String description,String introduction,FrameworkType type,byte[] picture);
 }
