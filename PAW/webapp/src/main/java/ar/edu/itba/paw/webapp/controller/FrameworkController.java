@@ -56,6 +56,7 @@ public class FrameworkController {
         mav.addObject("contentForm", new ContentForm());
         mav.addObject("reportForm", new ReportForm());
         mav.addObject("reportCommentForm", new ReportCommentForm());
+        mav.addObject("deleteFrameworkForm", new DeleteFrameworkForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -445,13 +446,13 @@ public class FrameworkController {
 
         return ErrorController.redirectToErrorView();
     }
-    @RequestMapping(path={"/framework_delete"}, method = RequestMethod.POST)
-    public ModelAndView deleteFramework(@Valid @ModelAttribute("deleteContentForm") final DeleteFrameworkForm form, final BindingResult errors){
-        Optional<Framework> frameworkOptional = fs.findById(form.getFrameworkId());
+    @RequestMapping(path={"/delete_tech"}, method = RequestMethod.POST)
+    public ModelAndView deleteFramework(@Valid @ModelAttribute("deleteFrameworkForm") final DeleteFrameworkForm form, final BindingResult errors){
+        Optional<Framework> frameworkOptional = fs.findById(form.getFrameworkIdx());
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> userOptional = us.findByUsername(username);
         if( us.findByUsername(username).isPresent() && frameworkOptional.isPresent() && (frameworkOptional.get().getAuthor().equals(username) || userOptional.get().isAdmin())) {
-            fs.delete(form.getFrameworkId());
+            fs.delete(form.getFrameworkIdx());
             return new ModelAndView("redirect:/" + "frameworks");
         }
         return ErrorController.redirectToErrorView();

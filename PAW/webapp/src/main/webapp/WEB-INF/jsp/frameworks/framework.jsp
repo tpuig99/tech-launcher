@@ -52,6 +52,24 @@
                                     <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Category"> ${framework.category}</span>
                                     <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Type"> ${framework.type}</span>
                                 </div>
+                                <div class="d-flex flex-column my-auto">
+                                    <c:if test="${user_isMod}">
+                                        <div class="mb-4">
+                                            <a href="<c:url value="/update_tech?id=${framework.id}"/>" >
+                                                <button class="btn btn-primary btn-block text-nowrap" type="button">
+                                                    <i class="fa fa-edit fa-sm mr-1"></i>
+                                                    <spring:message code="button.edit_tech"/>
+                                                </button>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-danger btn-block text-nowrap" type="button" onclick="openDeleteTechModal()">
+                                                <i class="fas fa-trash-alt fa-sm mr-1"></i>
+                                                <spring:message code="button.delete_tech"/>
+                                            </button>
+                                        </div>
+                                    </c:if>
+                                </div>
                                 <div class="col d-flex align-items-center justify-content-center">
                                 <span class="fa fa-star color-star"></span>
                                 <span> ${framework.starsFormated} | ${framework.votesCant}</span>
@@ -731,6 +749,42 @@
                     </div>
                 </div>
 
+                <div class="modal fade" id="deleteTechModal" tabindex="-1" role="dialog" aria-labelledby="deleteTechModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteTechModalLabel"><spring:message code="tech.delete"/></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row  justify-content-center align-items-center margin-top">
+                                    <div><spring:message code="tech.delete.message"/></div>
+                                </div>
+                                <div class="row justify-content-center align-items-center margin-top">
+                                    <c:url value="/delete_tech" var="postPathDeleteCommment"/>
+                                    <form:form modelAttribute="deleteFrameworkForm" action="${postPathDeleteCommment}" method="post">
+                                        <form:input  class="input-wrap" path="frameworkIdx" type="hidden" value="${framework.id}"/>
+                                        <button type="button" class="btn btn-primary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                                        <button type="submit" class="btn btn-danger ml-4" ><spring:message code="button.delete"/></button>
+                                    </form:form>
+
+<%--                                    --%>
+<%--                                    <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button></span>--%>
+<%--                                    <span class="margin-left">--%>
+<%--                                        <c:url value="/delete_tech" var="postPathDeleteCommment"/>--%>
+<%--                                        <form:form modelAttribute="deleteFrameworkForm" action="${postPathDeleteCommment}" method="post">--%>
+<%--                                            <form:input  class="input-wrap" path="frameworkIdx" type="hidden" value="${framework.id}"/>--%>
+<%--                                            <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button>--%>
+<%--                                        </form:form>--%>
+<%--                                    </span>--%>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Scripts -->
                 <script>
                     function getContentId(contentId){
@@ -826,6 +880,10 @@
 
                         $('#contentIdDeleteInput').val(contentId);
                         $('#deleteContentModal').modal('show');
+                    }
+
+                    function openDeleteTechModal(){
+                        $('#deleteTechModal').modal('show');
                     }
 
 
