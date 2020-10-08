@@ -177,15 +177,18 @@ public class FrameworkDaoImpl implements FrameworkDao {
         return jdbcTemplate.query(value, new Object[]{ userId, pageSize, pageSize*(page-1) }, ROW_MAPPER);    }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars,boolean nameFlag) {
-        if(toSearch==null && categories==null && types == null && (stars == null || stars == 0))
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag) {
+        if(toSearch==null && categories==null && types == null && starsLeft == 0 && starsRight == 5)
             return jdbcTemplate.query(SELECTION+GROUP_BY,ROW_MAPPER);
-        String aux="where ";
+        String aux = "";
+        if(toSearch!=null || categories!=null || types != null)
+             aux="where ";
         Map<String,List<String>> params = new HashMap<>();
         if(toSearch!=null && !toSearch.isEmpty()){
-            aux = aux.concat("f.framework_name ILIKE '%"+toSearch+"%' ");
-            if(toSearch.length()>3 && !nameFlag)
-                aux = aux.concat("or f.description ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%' ");
+            if(nameFlag || toSearch.length()<3)
+                aux = aux.concat("f.framework_name ILIKE '%"+toSearch+"%' ");
+            else
+                aux = aux.concat("(f.framework_name ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%') ");
         }
         if(categories!=null){
             if(!aux.equals("where "))
@@ -199,12 +202,8 @@ public class FrameworkDaoImpl implements FrameworkDao {
             aux = aux.concat("type in (:type) ");
             params.put("type",types.stream().map(FrameworkType::getType).collect(Collectors.toList()));
         }
-        if(stars!=null && stars!=0){
-            if(!aux.equals("where "))
-                aux =aux.concat("and ");
-            aux = aux.concat("stars>="+stars+" ");
-        }
-        return namedJdbcTemplate.query(SELECTION+aux+GROUP_BY,params,ROW_MAPPER);
+        String have =" having COALESCE(avg(stars),0)>="+starsLeft+" and COALESCE(avg(stars),0)<="+starsRight;
+        return namedJdbcTemplate.query(SELECTION+aux+GROUP_BY+have,params,ROW_MAPPER);
     }
 
     @Override
@@ -228,5 +227,19 @@ public class FrameworkDaoImpl implements FrameworkDao {
 
         final Number commentId = jdbcInsert.executeAndReturnKey(args);
         return findById(commentId.longValue());
+    }
+
+    @Override
+    public Optional<Framework> update(long id, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, byte[] picture) {
+        if(picture.length>0)
+            jdbcTemplate.update("UPDATE frameworks SET framework_name = ?, category = ?, description = ?, introduction = ?, type=?, picture=?  WHERE framework_id = ?",new Object[]{name, category.getNameCat(), description,introduction,type.getType(),picture,id});
+        else
+            jdbcTemplate.update("UPDATE frameworks SET framework_name = ?, category = ?, description = ?, introduction = ?, type=?  WHERE framework_id = ?",new Object[]{name, category.getNameCat(), description,introduction,type.getType(),id});
+        return findById(id);
+    }
+
+    @Override
+    public void delete(long id) {
+        jdbcTemplate.update("DELETE FROM frameworks WHERE framework_id = ?",new Object[]{id});
     }
 }

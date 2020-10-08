@@ -2,10 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
+import ar.edu.itba.paw.webapp.form.framework.*;
 import ar.edu.itba.paw.webapp.form.framework.ContentForm;
-import ar.edu.itba.paw.webapp.form.framework.ReportCommentForm;
-import ar.edu.itba.paw.webapp.form.framework.ReportForm;
-import ar.edu.itba.paw.webapp.form.FrameworkForm;
 import ar.edu.itba.paw.webapp.form.frameworks.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,7 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -62,6 +59,7 @@ public class FrameworkController {
         mav.addObject("contentForm", new ContentForm());
         mav.addObject("reportForm", new ReportForm());
         mav.addObject("reportCommentForm", new ReportCommentForm());
+        mav.addObject("deleteFrameworkForm", new DeleteFrameworkForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -122,6 +120,7 @@ public class FrameworkController {
         mav.addObject("contentForm", new ContentForm());
         mav.addObject("reportForm", new ReportForm());
         mav.addObject("reportCommentForm", new ReportCommentForm());
+        mav.addObject("deleteFrameworkForm", new DeleteFrameworkForm());
 
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
@@ -466,5 +465,67 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
+    @RequestMapping(value = "/update_tech",  method = { RequestMethod.GET})
+    public ModelAndView updateTech(@ModelAttribute("frameworkForm") final FrameworkForm form, @RequestParam("id") final long frameworkId) {
+        Optional<Framework> frameworkOptional = fs.findById(frameworkId);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( us.findByUsername(username).isPresent() && frameworkOptional.isPresent() && (frameworkOptional.get().getAuthor().equals(username) || userOptional.get().isAdmin())) {
+            User user = userOptional.get();
+            Framework framework = frameworkOptional.get();
+            form.setCategory(framework.getFrameCategory().getNameCat());
+            form.setDescription(framework.getDescription());
+            if(form.getFrameworkName()==null)
+                form.setFrameworkName(framework.getName());
+            form.setIntroduction(framework.getIntroduction());
+            form.setFrameworkId(frameworkId);
+            //form.setPicture(framework.getBase64image());
+            form.setType(framework.getType());
+            ModelAndView mav = new ModelAndView("frameworks/update_tech");
+            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+            mav.addObject("category",framework.getCategory());
+            if( us.findByUsername(username).isPresent()){
+                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            }
+            return mav;
+        }
+        return ErrorController.redirectToErrorView();
+
+    }
+
+    @RequestMapping(value = "/update_tech", method = { RequestMethod.POST })
+    public ModelAndView updateTech(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) throws IOException {
+        if (errors.hasErrors()) {
+            return updateTech(form,form.getFrameworkId());
+        }
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            FrameworkType type = FrameworkType.getByName(form.getType());
+            FrameworkCategories category = FrameworkCategories.getByName(form.getCategory());
+            byte[] picture = form.getPicture().getBytes();
+            Optional<Framework> framework = fs.update(form.getFrameworkId(),form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,picture);
+
+            if (framework.isPresent()) {
+                return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
+            }
+
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/delete_tech"}, method = RequestMethod.POST)
+    public ModelAndView deleteFramework(@Valid @ModelAttribute("deleteFrameworkForm") final DeleteFrameworkForm form, final BindingResult errors){
+        Optional<Framework> frameworkOptional = fs.findById(form.getFrameworkIdx());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( us.findByUsername(username).isPresent() && frameworkOptional.isPresent() && (frameworkOptional.get().getAuthor().equals(username) || userOptional.get().isAdmin())) {
+            fs.delete(form.getFrameworkIdx());
+            return new ModelAndView("redirect:/" + "frameworks");
+        }
+        return ErrorController.redirectToErrorView();
+
+    }
 }
 

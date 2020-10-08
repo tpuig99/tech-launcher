@@ -18,63 +18,77 @@ public class ContentServiceTest {
     private ContentServiceImpl contentService = new ContentServiceImpl();
     @Mock
     private ContentVoteDao mockDao;
+    private static int POS = 1;
+    private static int NEG = -1;
+    private static long USER_ID = 1;
+    private static long CONTENT_ID = 1;
+    private static long VOTE_ID = 1;
 
-    @Test(expected = RuntimeException.class)
+
+    @Test()
     public void testVoteUpNew() {
-    // 1. Setup!
-        Mockito.when(mockDao.getByContentAndUser(1,1)).thenReturn(Optional.empty());
-        Mockito.when(mockDao.insert(1,1,1)).thenThrow(new RuntimeException());
+        Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.empty());
 
-    // 2. "ejercito"
-        contentService.voteUp(1,1);
+        contentService.voteUp(CONTENT_ID,USER_ID);
+
+        Mockito.verify(mockDao,Mockito.times(1)).insert(CONTENT_ID,USER_ID,POS);
+        Mockito.verify(mockDao,Mockito.never()).delete(VOTE_ID);
+        Mockito.verify(mockDao,Mockito.never()).update(VOTE_ID,POS);
+
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test()
     public void testDownNew() {
-    // 1. Setup!
-        Mockito.when(mockDao.getByContentAndUser(1,1)).thenReturn(Optional.empty());
-        Mockito.when(mockDao.insert(1,1,-1)).thenThrow(new RuntimeException());
-    // 2. "ejercito"
+        Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.empty());
+
         contentService.voteDown(1,1);
+
+        Mockito.verify(mockDao,Mockito.times(1)).insert(CONTENT_ID,USER_ID,NEG);
+        Mockito.verify(mockDao,Mockito.never()).delete(VOTE_ID);
+        Mockito.verify(mockDao,Mockito.never()).update(VOTE_ID,NEG);
+
     }
-    @Test(expected = RuntimeException.class)
+    @Test()
     public void testVoteUpOnPreviousDown() {
-    // 1. Setup!
-        Mockito.when(mockDao.getByContentAndUser(1,1)).thenReturn(Optional.of(new ContentVote(1, 1, 1, -1)));
-        Mockito.doThrow(new RuntimeException()).when(mockDao).update(1,1);
+        Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.of(new ContentVote(VOTE_ID,CONTENT_ID,USER_ID,NEG )));
 
-    // 2. "ejercito"
-        contentService.voteUp(1,1);
-    // 3. Asserts!
+        contentService.voteUp(CONTENT_ID,USER_ID);
+
+        Mockito.verify(mockDao,Mockito.never()).insert(CONTENT_ID,USER_ID,POS);
+        Mockito.verify(mockDao,Mockito.never()).delete(VOTE_ID);
+        Mockito.verify(mockDao,Mockito.times(1)).update(VOTE_ID,POS);
+
     }
-    @Test(expected = RuntimeException.class)
+    @Test()
     public void testVoteDownOnPreviousUp() {
-        // 1. Setup!
-        Mockito.when(mockDao.getByContentAndUser(1,1)).thenReturn(Optional.of(new ContentVote(1, 1, 1, 1)));
-        Mockito.doThrow(new RuntimeException()).when(mockDao).update(1,-1);
+        Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.of(new ContentVote(VOTE_ID,CONTENT_ID,USER_ID,POS)));
 
-        // 2. "ejercito"
-        contentService.voteDown(1,1);
-        // 3. Asserts!
+        contentService.voteDown(CONTENT_ID,USER_ID);
+
+        Mockito.verify(mockDao,Mockito.never()).insert(CONTENT_ID,USER_ID,NEG);
+        Mockito.verify(mockDao,Mockito.never()).delete(VOTE_ID);
+        Mockito.verify(mockDao,Mockito.times(1)).update(VOTE_ID,NEG);
+
     }
-    @Test(expected = RuntimeException.class)
+    @Test()
     public void testVoteUpOnPreviousUp() {
-        // 1. Setup!
-        Mockito.when(mockDao.getByContentAndUser(1,1)).thenReturn(Optional.of(new ContentVote(1, 1, 1, 1)));
-        Mockito.doThrow(new RuntimeException()).when(mockDao).delete(1);
+        Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.of(new ContentVote(VOTE_ID,CONTENT_ID,USER_ID,POS )));
 
-        // 2. "ejercito"
-        contentService.voteUp(1,1);
-        // 3. Asserts!
+        contentService.voteUp(CONTENT_ID,USER_ID);
+
+        Mockito.verify(mockDao,Mockito.never()).insert(CONTENT_ID,USER_ID,POS);
+        Mockito.verify(mockDao,Mockito.times(1)).delete(VOTE_ID);
+        Mockito.verify(mockDao,Mockito.never()).update(VOTE_ID,POS);
     }
-    @Test(expected = RuntimeException.class)
+    @Test()
     public void testVoteDownOnPreviousDown() {
-        // 1. Setup!
-        Mockito.when(mockDao.getByContentAndUser(1,1)).thenReturn(Optional.of(new ContentVote(1, 1, 1, -1)));
-        Mockito.doThrow(new RuntimeException()).when(mockDao).delete(1);
+        Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.of(new ContentVote(VOTE_ID,CONTENT_ID,USER_ID,NEG )));
 
-        // 2. "ejercito"
-        contentService.voteDown(1,1);
-        // 3. Asserts!
+        contentService.voteDown(CONTENT_ID,USER_ID);
+
+        Mockito.verify(mockDao,Mockito.never()).insert(CONTENT_ID,USER_ID,NEG);
+        Mockito.verify(mockDao,Mockito.times(1)).delete(VOTE_ID);
+        Mockito.verify(mockDao,Mockito.never()).update(VOTE_ID,NEG);
+
     }
 }

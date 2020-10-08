@@ -88,17 +88,26 @@
 
         <span><spring:message code="explore.from"/></span>
         <span>
-            <select id="stars-dropdown">
-                <option value="0" <c:if test="${starsQuery == 0}"> selected </c:if>>0</option>
-                <option value="1"<c:if test="${starsQuery == 1}"> selected </c:if>>1</option>
-                <option value="2"<c:if test="${starsQuery == 2}"> selected </c:if>>2</option>
-                <option value="3"<c:if test="${starsQuery == 3}"> selected </c:if>>3</option>
-                <option value="4"<c:if test="${starsQuery == 4}"> selected </c:if>>4</option>
-                <option value="5"<c:if test="${starsQuery == 5}"> selected </c:if>>5</option>
+            <select id="stars-dropdown-1">
+                <option value="0" <c:if test="${starsQuery1 == 0}"> selected </c:if>>0</option>
+                <option value="1"<c:if test="${starsQuery1 == 1}"> selected </c:if>>1</option>
+                <option value="2"<c:if test="${starsQuery1 == 2}"> selected </c:if>>2</option>
+                <option value="3"<c:if test="${starsQuery1 == 3}"> selected </c:if>>3</option>
+                <option value="4"<c:if test="${starsQuery1 == 4}"> selected </c:if>>4</option>
+                <option value="5"<c:if test="${starsQuery1 == 5}"> selected </c:if>>5</option>
             </select>
          </span>
         <span><spring:message code="explore.to_5_stars"/></span>
-
+        <span>
+            <select id="stars-dropdown-2">
+                <option value="0" <c:if test="${starsQuery2 == 0}"> selected </c:if>>0</option>
+                <option value="1"<c:if test="${starsQuery2 == 1}"> selected </c:if>>1</option>
+                <option value="2"<c:if test="${starsQuery2 == 2}"> selected </c:if>>2</option>
+                <option value="3"<c:if test="${starsQuery2 == 3}"> selected </c:if>>3</option>
+                <option value="4"<c:if test="${starsQuery2 == 4}"> selected </c:if>>4</option>
+                <option value="5"<c:if test="${starsQuery2 == 5 || starsQuery2==null}"> selected </c:if>>5</option>
+            </select>
+         </span>
     </div>
 
     <!-- Search Bar -->
@@ -119,7 +128,7 @@
     <div class="page-description"></div>
     <div class="page-title">
         <c:choose>
-            <c:when test="${empty techNameQuery and empty starsQuery and empty categoriesQuery and empty typesQuery and empty orderQuery}">
+            <c:when test="${empty techNameQuery and empty starsQuery1 and empty starsQuery2 and empty categoriesQuery and empty typesQuery and empty orderQuery}">
             <h2><spring:message code="explore.title"/></h2>
             </c:when>
             <c:otherwise>
@@ -146,10 +155,10 @@
                         <span id="name${typeQuery}" class="my-badge-inline badge-pill secondary-badge "><c:out value="${typeQuery}"/></span>
                     </c:forEach>
                 </c:if>
-                <c:if test="${not empty starsQuery}">
+                <c:if test="${not empty starsQuery1}">
                     <span id="stars" class="my-badge-inline badge-pill secondary-badge ">
                         <spring:message code="explore.stars_query"
-                                        arguments="${starsQuery}"
+                                        arguments="${starsQuery1},${starsQuery2}"
                                         htmlEscape="true"/>
                     </span>
                 </c:if>
@@ -258,12 +267,13 @@
         let name = document.getElementById("searchInput").value;
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
-        let stars = getRating();
+        let star1 = getRatingLeft();
+        let star2 = getRatingRight();
         let nameFlag = getNameFlag();
         let order = 0;
 
-        if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(stars))) {
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&nameFlag=' + nameFlag +'&order=' + order;
+        if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(star1) && isEmpty(star2))) {
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag +'&order=' + order;
         }
 
     }
@@ -272,7 +282,8 @@
         let name ="";
         let categories="";
         let types="";
-        let stars="";
+        let star1="";
+        let star2="";
         let nameFlag= getNameFlag();
 
         <c:if test="${not empty techNameQuery}">
@@ -294,12 +305,15 @@
             types = types.substring(0,types.length-1);
         </c:if>
 
-        <c:if test="${not empty starsQuery}">
-            stars =  ${starsQuery};
+        <c:if test="${not empty starsQuery1}">
+            star1 =  ${starsQuery1};
         </c:if>
 
+        <c:if test="${not empty starsQuery2}">
+            star2 =  ${starsQuery2};
+        </c:if>
         <c:if test="${fn:length(matchingFrameworks) > 1}">
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&stars=' + stars + '&nameFlag=' + nameFlag + '&order=' + order;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&order=' + order;
         </c:if>
     }
 
@@ -358,9 +372,9 @@
         return queryCategories;
     }
 
-    function getRating(){
+    function getRatingLeft(){
 
-        let left = document.getElementById("stars-dropdown").value;
+        let left = document.getElementById("stars-dropdown-1").value;
         console.log(left)
  /*
         if(left ==="" && right !==""){
@@ -380,6 +394,12 @@
 */
         return left;
     }
+    function getRatingRight(){
+
+        let right = document.getElementById("stars-dropdown-2").value;
+        console.log(right)
+        return right;
+    }
 
     function getNameFlag(){
         return document.getElementById("searchOnlyByName").checked;
@@ -394,10 +414,12 @@
         return string;
     }
 
-    function setDropDownValue(value){
-        $(document).getElementById("stars-dropdown").value(value);
+    function setDropDownValueLeft(value){
+        $(document).getElementById("stars-dropdown-1").value(value);
     }
-
+    function setDropDownValueRight(value){
+        $(document).getElementById("stars-dropdown-2").value(value);
+    }
 
 
 

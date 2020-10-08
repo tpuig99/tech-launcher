@@ -6,7 +6,7 @@
 <html>
 <head>
     <title>
-        <spring:message code="add_tech.wref"/>
+        <spring:message code="update_tech.wref"/>
     </title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -24,18 +24,21 @@
 
 <div class="content-no-sidebar">
     <div class="page-title">
-        <spring:message code="add_tech.title"/>
+        <spring:message code="update_tech.title"/>
     </div>
     <div class="page-description"></div>
 
-    <c:url value="/add_tech" var="postPath"/>
+    <c:url value="/update_tech" var="postPath"/>
     <form:form modelAttribute="frameworkForm" action="${postPath}" method="post" id="addTechForm" enctype="multipart/form-data">
-        <form:errors cssClass="formError" element="p"/>
+        <form:input type="hidden"  path="frameworkId"/>
+
         <div class="form-group">
             <spring:message code="add_tech.name.placeholder" var="techname_placeholder" />
             <form:label path="frameworkName"><spring:message code="add_tech.name"/></form:label>
             <form:input class="form-control" type="text" path="frameworkName" placeholder="${techname_placeholder}"/>
             <form:errors path="frameworkName" cssClass="formError" element="p"/>
+            <form:errors cssClass="formError" element="p"/>
+
         </div>
 
         <div class="form-group">
@@ -106,14 +109,15 @@
         </div>
 
         <div class="d-flex justify-content-center mt-4">
-            <a href="/" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
-            <input class="btn btn-primary" id="addTechButton" type="submit" value="<spring:message code="button.submit"/>"/>
+            <a href="/${category}/${frameworkForm.frameworkId}" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
+            <input class="btn btn-primary ml-4" id="addTechButton" type="submit" value="<spring:message code="button.submit"/>"/>
             <div class="btn btn-primary disabled" id="addTechLoading" hidden>
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <spring:message code="button.loading"/>
             </div>
         </div>
     </form:form>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -128,6 +132,7 @@
             $('#addTechLoading').prop("hidden",false);
         });
     });
+
 </script>
 
 </body>

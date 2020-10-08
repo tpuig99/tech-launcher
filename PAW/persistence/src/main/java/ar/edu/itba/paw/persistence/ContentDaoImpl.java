@@ -162,7 +162,7 @@ public class ContentDaoImpl implements ContentDao {
 
     @Override
     public int deleteContent(long contentId) {
-        return jdbcTemplate.update("DELETE FROM content WHERE content_id = ?", contentId);
+        return jdbcTemplate.update("DELETE FROM content WHERE content_id = ?",new Object[]{contentId});
     }
 
     @Override

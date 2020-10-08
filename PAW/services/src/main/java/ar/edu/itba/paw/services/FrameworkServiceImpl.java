@@ -49,8 +49,10 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars,boolean nameFlag) {
-        return frameworkDao.search(toSearch,categories,types,stars,nameFlag);
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag) {
+        if(starsLeft<starsRight)
+            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag);
+        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag);
     }
 
     @Override
@@ -164,6 +166,16 @@ public class FrameworkServiceImpl implements FrameworkService {
     @Override
     public Optional<Framework> create(String name, FrameworkCategories category, String description, String introduction, FrameworkType type,long userId, byte[] picture) {
         return frameworkDao.create(name,category,description,introduction,type,userId, picture);
+    }
+
+    @Override
+    public Optional<Framework> update(long id, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, byte[] picture) {
+        return frameworkDao.update(id,name,category,description,introduction,type,picture);
+    }
+
+    @Override
+    public void delete(long id) {
+        frameworkDao.delete(id);
     }
 
     @Override

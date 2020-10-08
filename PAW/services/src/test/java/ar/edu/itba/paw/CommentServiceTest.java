@@ -1,6 +1,7 @@
 package ar.edu.itba.paw;
 
 import ar.edu.itba.paw.models.CommentVote;
+import ar.edu.itba.paw.persistence.CommentDao;
 import ar.edu.itba.paw.persistence.CommentVoteDao;
 import ar.edu.itba.paw.services.CommentServiceImpl;
 import org.junit.Test;
@@ -22,55 +23,96 @@ public class CommentServiceTest {
 
     @InjectMocks
     private final CommentServiceImpl commentServiceImplMock = new CommentServiceImpl();
+
     @Mock
     private CommentVoteDao commentVoteDao;
 
-    @Test(expected = RuntimeException.class)
+    // Used by commentVoteDao
+    @Mock
+    private CommentDao commentDao;
+
+    @Test
     public void testVoteUp() {
+        // Arrange
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.empty());
-        Mockito.doThrow(new RuntimeException()).when(commentVoteDao).insert(COMMENT_ID, USER_ID, VOTE_UP);
 
+        // Act
         commentServiceImplMock.voteUp(COMMENT_ID, USER_ID);
+
+        // Assert
+        Mockito.verify(commentVoteDao,Mockito.times(1)).insert(COMMENT_ID,USER_ID,VOTE_UP);
+        Mockito.verify(commentVoteDao,Mockito.never()).delete(Mockito.anyInt());
+        Mockito.verify(commentVoteDao,Mockito.never()).update(Mockito.anyInt(),Mockito.anyInt());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testVoteDown() {
+        // Arrange
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.empty());
-        Mockito.doThrow(new RuntimeException()).when(commentVoteDao).insert(COMMENT_ID, USER_ID, VOTE_DOWN);
 
+        // Act
         commentServiceImplMock.voteDown(COMMENT_ID, USER_ID);
+
+        // Assert
+        Mockito.verify(commentVoteDao,Mockito.times(1)).insert(COMMENT_ID,USER_ID,VOTE_DOWN);
+        Mockito.verify(commentVoteDao,Mockito.never()).delete(Mockito.anyInt());
+        Mockito.verify(commentVoteDao,Mockito.never()).update(Mockito.anyInt(),Mockito.anyInt());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testVoteUpTwice() {
+        // Arrange
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_UP)));
-        Mockito.doThrow(new RuntimeException()).when(commentVoteDao).delete(COMMENT_VOTE_MOCK_ID);
 
+        // Act
         commentServiceImplMock.voteUp(COMMENT_ID, USER_ID);
+
+        // Assert
+        Mockito.verify(commentVoteDao,Mockito.times(1)).delete(COMMENT_ID);
+        Mockito.verify(commentVoteDao,Mockito.never()).insert(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt());
+        Mockito.verify(commentVoteDao,Mockito.never()).update(Mockito.anyInt(),Mockito.anyInt());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testVoteDownTwice() {
+        // Arrange
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_DOWN)));
-        Mockito.doThrow(new RuntimeException()).when(commentVoteDao).delete(COMMENT_VOTE_MOCK_ID);
 
+        // Act
         commentServiceImplMock.voteDown(COMMENT_ID, USER_ID);
+
+        // Assert
+        Mockito.verify(commentVoteDao,Mockito.times(1)).delete(COMMENT_ID);
+        Mockito.verify(commentVoteDao,Mockito.never()).insert(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt());
+        Mockito.verify(commentVoteDao,Mockito.never()).update(Mockito.anyInt(),Mockito.anyInt());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testVoteUpOnVotedDown() {
+        // Arrange
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_DOWN)));
-        Mockito.doThrow(new RuntimeException()).when(commentVoteDao).update(COMMENT_VOTE_MOCK_ID, VOTE_UP);
 
+        // Act
         commentServiceImplMock.voteUp(COMMENT_ID, USER_ID);
+
+        // Assert
+        Mockito.verify(commentVoteDao,Mockito.times(1)).update(COMMENT_ID, VOTE_UP);
+        Mockito.verify(commentVoteDao,Mockito.never()).insert(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt());
+        Mockito.verify(commentVoteDao,Mockito.never()).delete(Mockito.anyInt());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testVoteDownOnVotedUp() {
+        // Arrange
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_UP)));
-        Mockito.doThrow(new RuntimeException()).when(commentVoteDao).update(COMMENT_VOTE_MOCK_ID, VOTE_DOWN);
 
+        // Act
         commentServiceImplMock.voteDown(COMMENT_ID, USER_ID);
+
+        // Assert
+        Mockito.verify(commentVoteDao,Mockito.times(1)).update(COMMENT_ID, VOTE_DOWN);
+        Mockito.verify(commentVoteDao,Mockito.never()).insert(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt());
+        Mockito.verify(commentVoteDao,Mockito.never()).delete(Mockito.anyInt());
     }
 
 }

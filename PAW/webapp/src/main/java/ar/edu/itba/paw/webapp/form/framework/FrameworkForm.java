@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.form;
+package ar.edu.itba.paw.webapp.form.framework;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
@@ -7,11 +7,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@FrameworkName
+@Multipart
 public class FrameworkForm {
     @NotNull
     @NotEmpty
     @Size(min = 3, max = 50)
-    @FrameworkName
     @Pattern(regexp = "[a-zA-Z0-9 -]+")
     private String frameworkName;
 
@@ -34,8 +35,8 @@ public class FrameworkForm {
     @NotEmpty
     @Size(max = 5000)
     private String introduction;
-
     private MultipartFile picture;
+    private Long frameworkId;
 
     public String getFrameworkName() {
         return frameworkName;
@@ -83,5 +84,13 @@ public class FrameworkForm {
 
     public void setPicture(MultipartFile picture) {
         this.picture = picture;
+    }
+
+    public Long getFrameworkId() {
+        return frameworkId;
+    }
+
+    public void setFrameworkId(long frameworkId) {
+        this.frameworkId = frameworkId;
     }
 }
