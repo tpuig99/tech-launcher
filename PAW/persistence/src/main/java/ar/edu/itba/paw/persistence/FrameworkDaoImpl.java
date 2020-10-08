@@ -177,11 +177,11 @@ public class FrameworkDaoImpl implements FrameworkDao {
         return jdbcTemplate.query(value, new Object[]{ userId }, ROW_MAPPER);    }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag) {
-        if(toSearch==null && categories==null && types == null && starsLeft == 0 && starsRight == 5)
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag,Integer commentAmount,Timestamp lastComment,Timestamp lastUpdated) {
+        if(toSearch==null && categories==null && types == null && starsLeft == 0 && starsRight == 5 && commentAmount==0 && lastComment==null && lastUpdated==null)
             return jdbcTemplate.query(SELECTION+GROUP_BY,ROW_MAPPER);
         String aux = "";
-        if(toSearch!=null || categories!=null || types != null)
+        if(toSearch!=null || categories!=null || types != null || lastUpdated!=null)
              aux="where ";
         Map<String,List<String>> params = new HashMap<>();
         if(toSearch!=null && !toSearch.isEmpty()){
@@ -202,7 +202,14 @@ public class FrameworkDaoImpl implements FrameworkDao {
             aux = aux.concat("type in (:type) ");
             params.put("type",types.stream().map(FrameworkType::getType).collect(Collectors.toList()));
         }
-        String have =" having COALESCE(avg(stars),0)>="+starsLeft+" and COALESCE(avg(stars),0)<="+starsRight;
+        if(lastUpdated!=null){
+            if(!aux.equals("where "))
+                aux =aux.concat("and ");
+            aux =aux.concat("f.date>='"+lastUpdated+"' ");
+        }
+        String have =" having COALESCE(avg(stars),0)>="+starsLeft+" and COALESCE(avg(stars),0)<="+starsRight+" and count(distinct comment_id)>="+commentAmount;
+        if(lastComment!=null)
+            have=have.concat(" and max(c.tstamp)>='"+lastComment+"'");
         return namedJdbcTemplate.query(SELECTION+aux+GROUP_BY+have,params,ROW_MAPPER);
     }
 

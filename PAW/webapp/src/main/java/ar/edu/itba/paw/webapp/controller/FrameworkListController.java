@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -34,7 +37,10 @@ public class FrameworkListController {
                                        @RequestParam(required = false) final Integer starsLeft,
                                        @RequestParam(required = false) final Integer starsRight,
                                        @RequestParam(required = false) final boolean nameFlag,
-                                       @RequestParam(required = false) final Integer order){
+                                       @RequestParam(required = false) final Integer order,
+                                       @RequestParam(required = false) final Integer commentAmount,
+                                       @RequestParam(required = false) final Integer lastComment,
+                                       @RequestParam(required = false) final Integer lastUpdate){
 
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
         List<FrameworkCategories> categoriesList = new ArrayList<>();
@@ -65,8 +71,65 @@ public class FrameworkListController {
             typesList.contains(toSearch);
             toSearch="";
         }
-
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag);
+        Timestamp tscomment = null;
+        Timestamp tsUpdated = null;
+        LocalDate dateComment = null;
+        LocalDate dateUpdate = null;
+        if(lastComment!=null) {
+            switch (lastComment) {
+                case 1: {
+                    dateComment = LocalDate.now().minusDays(3);
+                    break;
+                }
+                case 2: {
+                    dateComment = LocalDate.now().minusWeeks(1);
+                    break;
+                }
+                case 3: {
+                    dateComment = LocalDate.now().minusMonths(1);
+                    break;
+                }
+                case 4: {
+                    dateComment = LocalDate.now().minusMonths(3);
+                    break;
+                }
+                case 5: {
+                    dateComment = LocalDate.now().minusYears(1);
+                    break;
+                }
+            }
+        }
+        if(lastUpdate!=null) {
+            switch (lastUpdate) {
+                case 1: {
+                    dateUpdate = LocalDate.now().minusDays(3);
+                    break;
+                }
+                case 2: {
+                    dateUpdate = LocalDate.now().minusWeeks(1);
+                    break;
+                }
+                case 3: {
+                    dateUpdate = LocalDate.now().minusMonths(1);
+                    break;
+                }
+                case 4: {
+                    dateUpdate = LocalDate.now().minusMonths(3);
+                    break;
+                }
+                case 5: {
+                    dateUpdate = LocalDate.now().minusYears(1);
+                    break;
+                }
+            }
+        }
+        if(dateComment!=null){
+            tscomment=Timestamp.valueOf(dateComment.atStartOfDay());
+        }
+        if(dateUpdate!=null){
+            tsUpdated=Timestamp.valueOf(dateUpdate.atStartOfDay());
+        }
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
         if(order!=null && order!=0){
             switch (order){
                 case -1:
@@ -105,9 +168,11 @@ public class FrameworkListController {
         mav.addObject("typesQuery", typesQuery );
         mav.addObject("starsQuery1", starsLeft );
         mav.addObject("starsQuery2", starsRight );
+        mav.addObject("commentAmount", commentAmount);
         mav.addObject("orderQuery", order );
-        mav.addObject("nameFlagQuery", nameFlag );
-
+        mav.addObject("nameFlagQuery", nameFlag);
+        mav.addObject("dateComment",lastComment);
+        mav.addObject("dateUpdate",lastUpdate);
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 

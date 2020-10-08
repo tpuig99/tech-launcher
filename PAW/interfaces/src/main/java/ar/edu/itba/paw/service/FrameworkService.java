@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.*;
 
 import java.awt.*;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public interface FrameworkService {
     List<Framework> getByMultipleTypes(List<FrameworkType> types);
     List<Framework> getByMinStars(int stars);
     List<Framework> getByUser(long userId);
-    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight, boolean nameFlag);
+    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated);
 
     void  orderByStars(List<Framework> frameworks, Integer order);
     void  orderByInteraction(List<Framework> frameworks, Integer order);
