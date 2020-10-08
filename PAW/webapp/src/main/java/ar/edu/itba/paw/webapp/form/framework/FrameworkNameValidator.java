@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.form;
+package ar.edu.itba.paw.webapp.form.framework;
 
 import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.service.FrameworkService;

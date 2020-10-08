@@ -238,4 +238,9 @@ public class FrameworkDaoImpl implements FrameworkDao {
             jdbcTemplate.update("UPDATE frameworks SET framework_name = ?, category = ?, description = ?, introduction = ?, type=?  WHERE framework_id = ?",new Object[]{name, category.getNameCat(), description,introduction,type.getType(),id});
         return findById(id);
     }
+
+    @Override
+    public void delete(long id) {
+        jdbcTemplate.update("DELETE FROM frameworks WHERE framework_id = ?",new Object[]{id});
+    }
 }

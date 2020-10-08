@@ -2,10 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
+import ar.edu.itba.paw.webapp.form.framework.*;
 import ar.edu.itba.paw.webapp.form.framework.ContentForm;
-import ar.edu.itba.paw.webapp.form.framework.ReportCommentForm;
-import ar.edu.itba.paw.webapp.form.framework.ReportForm;
-import ar.edu.itba.paw.webapp.form.FrameworkForm;
 import ar.edu.itba.paw.webapp.form.frameworks.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,7 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -447,6 +444,18 @@ public class FrameworkController {
         }
 
         return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping(path={"/framework_delete"}, method = RequestMethod.POST)
+    public ModelAndView deleteFramework(@Valid @ModelAttribute("deleteContentForm") final DeleteFrameworkForm form, final BindingResult errors){
+        Optional<Framework> frameworkOptional = fs.findById(form.getFrameworkId());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( us.findByUsername(username).isPresent() && frameworkOptional.isPresent() && (frameworkOptional.get().getAuthor().equals(username) || userOptional.get().isAdmin())) {
+            fs.delete(form.getFrameworkId());
+            return new ModelAndView("redirect:/" + "frameworks");
+        }
+        return ErrorController.redirectToErrorView();
+
     }
 }
 
