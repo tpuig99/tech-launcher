@@ -165,6 +165,11 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
+    public Optional<Framework> update(long id, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, byte[] picture) {
+        return frameworkDao.update(id,name,category,description,introduction,type,picture);
+    }
+
+    @Override
     public List<Framework> getBestRatedFrameworks() {
         List<Framework> toReturn = frameworkDao.getByMinStars(4);
         return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
