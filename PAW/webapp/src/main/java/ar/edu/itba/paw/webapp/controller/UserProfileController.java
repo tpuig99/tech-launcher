@@ -35,6 +35,10 @@ public class UserProfileController {
     @Autowired
     UserService us;
 
+    final private long pageSize = 5;
+    final private long frameworkPageSize = 7;
+    final private long STARTPAGE = 1;
+
     public static ModelAndView redirectToProfile(String username) {
         return new ModelAndView("redirect:/users/" + username);
     }
@@ -50,16 +54,58 @@ public class UserProfileController {
             mav.addObject("profile", user);
             mav.addObject("previousDescription", user.getDescription());
 
-            final List<Comment> commentList = commentService.getCommentsByUser(userId);
-            final List<Content> contentList = contentService.getContentByUser(userId);
-            final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
-            final List<Framework> frameworks = frameworkService.getByUser(userId);
+            final List<Comment> commentList = commentService.getCommentsByUser(userId, STARTPAGE);
+            final List<Content> contentList = contentService.getContentByUser(userId, STARTPAGE);
+            final List<FrameworkVote> votesList = voteService.getAllByUser(userId, STARTPAGE);
+            final List<Framework> frameworks = frameworkService.getByUser(userId, STARTPAGE);
 
             mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
             mav.addObject("contents", contentList);
+            mav.addObject("contents_page", STARTPAGE);
             mav.addObject("comments", commentList);
+            mav.addObject("comments_page", STARTPAGE);
             mav.addObject("votes", votesList);
+            mav.addObject("votes_page", STARTPAGE);
             mav.addObject("frameworks",frameworks);
+            mav.addObject("frameworks_page", STARTPAGE);
+            mav.addObject("frameworks_page_size", frameworkPageSize);
+            mav.addObject("page_size", pageSize);
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("isAdmin", user.isAdmin());
+            mav.addObject("isAllowMod", user.isAllowMod());
+            return mav;
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/users/{username}/pages"}, method = RequestMethod.GET)
+    public ModelAndView userProfilePagination(@PathVariable String username, @ModelAttribute("profileForm") final ProfileForm form, @RequestParam(value = "comments_page", required = false) final long commentsPage, @RequestParam(value = "contents_page", required = false) final long contentsPage, @RequestParam(value = "votes_page", required = false) final long votesPage, @RequestParam(value = "frameworks_page", required = false) final long frameworksPage) {
+        ModelAndView mav = new ModelAndView("session/user_profile");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        if (us.findByUsername(username).isPresent()) {
+            User user = us.findByUsername(username).get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            long userId = user.getId();
+            mav.addObject("profile", user);
+            mav.addObject("previousDescription", user.getDescription());
+
+            final List<Comment> commentList = commentService.getCommentsByUser(userId, commentsPage);
+            final List<Content> contentList = contentService.getContentByUser(userId, contentsPage);
+            final List<FrameworkVote> votesList = voteService.getAllByUser(userId, votesPage);
+            final List<Framework> frameworks = frameworkService.getByUser(userId, frameworksPage);
+
+            mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
+            mav.addObject("contents", contentList);
+            mav.addObject("contents_page", contentsPage);
+            mav.addObject("comments", commentList);
+            mav.addObject("comments_page", commentsPage);
+            mav.addObject("votes", votesList);
+            mav.addObject("votes_page", votesPage);
+            mav.addObject("frameworks",frameworks);
+            mav.addObject("frameworks_page", frameworksPage);
+            mav.addObject("frameworks_page_size", frameworkPageSize);
+            mav.addObject("page_size", pageSize);
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             mav.addObject("isAdmin", user.isAdmin());
             mav.addObject("isAllowMod", user.isAllowMod());

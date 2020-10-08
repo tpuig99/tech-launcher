@@ -14,6 +14,8 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
     @Autowired
     FrameworkVoteDao vs;
 
+    private long PAGESIZE = 10;
+
     @Override
     public List<FrameworkVote> getByFramework(long frameworkId) {
         return vs.getByFramework(frameworkId);
@@ -30,8 +32,8 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
     }
 
     @Override
-    public List<FrameworkVote> getAllByUser(long userId) {
-        return vs.getAllByUser(userId);
+    public List<FrameworkVote> getAllByUser(long userId, long page) {
+        return vs.getAllByUser(userId, page, PAGESIZE);
     }
 
 

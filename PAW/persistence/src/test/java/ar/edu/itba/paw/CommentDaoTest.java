@@ -188,7 +188,7 @@ public class CommentDaoTest {
         }
 
         // Act
-        final List<Comment> commentList = commentDao.getCommentsByUser(USER_ID);
+        final List<Comment> commentList = commentDao.getCommentsByUser(USER_ID, 1, 5);
 
         // Assert
         Assert.assertFalse(commentList.isEmpty());
@@ -241,7 +241,7 @@ public class CommentDaoTest {
         }
 
         // Act
-        final List<Comment> returnValue = commentDao.getCommentsWithoutReferenceByFrameworkWithUser(FRAMEWORK_ID, null);
+        final List<Comment> returnValue = commentDao.getCommentsWithoutReferenceByFrameworkWithUser(FRAMEWORK_ID, null, 1, 5);
 
         // Assert
         Assert.assertFalse(returnValue.isEmpty());

@@ -9,10 +9,7 @@ import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -27,6 +24,9 @@ public class FrameworkListController {
     @Autowired
     private UserService us;
 
+    final long startPage = 1;
+    final long PAGESIZE = 7;
+
     @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
     public ModelAndView advancedSearch(@RequestParam(required = false, defaultValue = "") String toSearch,
                                        @RequestParam(required = false, defaultValue = "") final List<String> categories,
@@ -34,7 +34,8 @@ public class FrameworkListController {
                                        @RequestParam(required = false) final Integer starsLeft,
                                        @RequestParam(required = false) final Integer starsRight,
                                        @RequestParam(required = false) final boolean nameFlag,
-                                       @RequestParam(required = false) final Integer order){
+                                       @RequestParam(required = false) final Integer order,
+                                       @RequestParam(value = "page", required = false) final Long page){
 
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
         List<FrameworkCategories> categoriesList = new ArrayList<>();
@@ -66,7 +67,7 @@ public class FrameworkListController {
             toSearch="";
         }
 
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag);
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag, page == null ? startPage:page);
         if(order!=null && order!=0){
             switch (order){
                 case -1:
@@ -94,6 +95,8 @@ public class FrameworkListController {
 
         
         mav.addObject("matchingFrameworks", frameworks);
+        mav.addObject("page", page == null ? startPage:page);
+        mav.addObject("page_size", PAGESIZE);
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("categories", allCategories );
         mav.addObject("frameworkNames",fs.getFrameworkNames());
@@ -108,7 +111,22 @@ public class FrameworkListController {
         mav.addObject("orderQuery", order );
         mav.addObject("nameFlagQuery", nameFlag );
 
-
+        String categoriesString = "";
+        if(!categories.isEmpty()) {
+            for (String category : categories) {
+                categoriesString = categoriesString + category + ",";
+            }
+            categoriesString = categoriesString.substring(0, categoriesString.length() - 1);
+            mav.addObject("categoriesString", categoriesString);
+        }
+        String typesString = "";
+        if( !types.isEmpty()) {
+            for (String type : types) {
+                typesString = typesString + type + ",";
+            }
+            typesString = typesString.substring(0, typesString.length() - 1);
+            mav.addObject("typesString", typesString);
+        }
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if( us.findByUsername(username).isPresent()){

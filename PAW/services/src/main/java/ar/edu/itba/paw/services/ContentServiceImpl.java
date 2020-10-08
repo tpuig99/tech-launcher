@@ -25,6 +25,8 @@ public class ContentServiceImpl implements ContentService {
     @Autowired
     ReportContentDao rc;
 
+    private long PAGESIZE = 5;
+
     @Transactional(readOnly = true)
     @Override
     public Optional<Content> getById(long contentId) {
@@ -45,14 +47,14 @@ public class ContentServiceImpl implements ContentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Content> getContentByUser(long userId) {
-        return content.getContentByUser(userId);
+    public List<Content> getContentByUser(long userId, long page) {
+        return content.getContentByUser(userId, page, PAGESIZE );
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type) {
-        return content.getContentByFrameworkAndType(frameworkId, type);
+    public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page) {
+        return content.getContentByFrameworkAndType(frameworkId, type, page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)

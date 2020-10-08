@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface FrameworkService {
     Optional<Framework> findById(long frameworkId);
     List<String> getFrameworkNames();
-    List<Framework> getByCategory(FrameworkCategories category);
+    List<Framework> getByCategory(FrameworkCategories category, long page);
     List<Framework> getByType(FrameworkType type);
     List<Framework> getAll();
     List<Framework> getCompetitors(Framework framework);
@@ -20,8 +20,8 @@ public interface FrameworkService {
     List<Framework> getByMultipleCategories(List<FrameworkCategories> categories);
     List<Framework> getByMultipleTypes(List<FrameworkType> types);
     List<Framework> getByMinStars(int stars);
-    List<Framework> getByUser(long userId);
-    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight, boolean nameFlag);
+    List<Framework> getByUser(long userId, long page);
+    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight, boolean nameFlag, long page);
 
     void  orderByStars(List<Framework> frameworks, Integer order);
     void  orderByInteraction(List<Framework> frameworks, Integer order);

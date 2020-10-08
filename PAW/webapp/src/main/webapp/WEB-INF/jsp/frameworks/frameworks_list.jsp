@@ -218,6 +218,34 @@
                     </div>
                 </c:forEach>
             </div>
+            <ul class="pagination justify-content-center">
+                <c:choose>
+                <c:when test="${page == 1}">
+                <li class="page-item disabled">
+                    </c:when>
+                    <c:otherwise>
+                <li class="page-item ">
+                    </c:otherwise>
+                    </c:choose>
+                    <a class="page-link" href="<c:url value="/search?toSearch=${techNameQuery}&categories=${categoriesString}&types=${typesString}&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderQuery}&page=${page-1}"/>" aria-label="Previous">
+                        <span aria-hidden="true">&lsaquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                <c:choose>
+                <c:when test="${matchingFrameworks.size() < page_size}">
+                <li class="page-item disabled">
+                    </c:when>
+                    <c:otherwise>
+                <li class="page-item">
+                    </c:otherwise>
+                    </c:choose>
+                    <a class="page-link" href="<c:url value="/search?toSearch=${techNameQuery}&categories=${categoriesString}&types=${typesString}&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderQuery}&page=${page+1}"/>" aria-label="Next">
+                        <span aria-hidden="true">&rsaquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
         </c:otherwise>
     </c:choose>
 </div>
@@ -313,7 +341,7 @@
             star2 =  ${starsQuery2};
         </c:if>
         <c:if test="${fn:length(matchingFrameworks) > 1}">
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&order=' + order;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&order=' + order + '&page=' + ${page};
         </c:if>
     }
 

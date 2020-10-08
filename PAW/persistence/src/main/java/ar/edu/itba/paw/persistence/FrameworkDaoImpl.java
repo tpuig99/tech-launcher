@@ -89,9 +89,9 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> getByCategory(FrameworkCategories category) {
-        String value=SELECTION+"WHERE category = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[]{ category.getNameCat() }, ROW_MAPPER);
+    public List<Framework> getByCategory(FrameworkCategories category, long page, long pageSize) {
+        String value=SELECTION+"WHERE category = ?"+GROUP_BY + " LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(value, new Object[]{ category.getNameCat(), pageSize, (page-1)*pageSize }, ROW_MAPPER);
     }
 
     @Override
@@ -172,14 +172,14 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> getByUser(long userId) {
-        String value=SELECTION+"WHERE author = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[]{ userId }, ROW_MAPPER);    }
+    public List<Framework> getByUser(long userId, long page, long pageSize) {
+        String value=SELECTION+"WHERE author = ?"+GROUP_BY + " LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(value, new Object[]{ userId, pageSize, pageSize*(page-1) }, ROW_MAPPER);    }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag) {
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag, long page, long pageSize) {
         if(toSearch==null && categories==null && types == null && starsLeft == 0 && starsRight == 5)
-            return jdbcTemplate.query(SELECTION+GROUP_BY,ROW_MAPPER);
+            return jdbcTemplate.query(SELECTION+GROUP_BY + " LIMIT " + pageSize +" OFFSET " + pageSize*(page-1),ROW_MAPPER);
         String aux = "";
         if(toSearch!=null || categories!=null || types != null)
              aux="where ";
@@ -203,7 +203,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
             params.put("type",types.stream().map(FrameworkType::getType).collect(Collectors.toList()));
         }
         String have =" having COALESCE(avg(stars),0)>="+starsLeft+" and COALESCE(avg(stars),0)<="+starsRight;
-        return namedJdbcTemplate.query(SELECTION+aux+GROUP_BY+have,params,ROW_MAPPER);
+        return namedJdbcTemplate.query(SELECTION+aux+GROUP_BY+have+" LIMIT " + pageSize +" OFFSET " + pageSize*(page-1),params,ROW_MAPPER);
     }
 
     @Override

@@ -13,8 +13,8 @@ public interface ContentDao {
     Optional<Content> getById(long contentId);
     List<Content> getContentByFramework(long frameworkId);
     List<Content> getContentByFrameworkAndUser(long frameworkId, long userId);
-    List<Content> getContentByFrameworkAndType(long userId, ContentTypes type);
-    List<Content> getContentByUser(long userId);
+    List<Content> getContentByFrameworkAndType(long userId, ContentTypes type, long page, long pageSize);
+    List<Content> getContentByUser(long userId, long page, long pagesize);
     List<Content> getContentByFrameworkAndTypeAndTitle(long frameworkId, ContentTypes type,String title);
 
     /***Content Methods***/

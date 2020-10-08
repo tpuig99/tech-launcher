@@ -21,6 +21,8 @@ public class FrameworkServiceImpl implements FrameworkService {
    @Autowired
     private FrameworkDao frameworkDao;
 
+   private long PAGESIZE = 7;
+
     @Override
     public Optional<Framework> findById(long id) {
         return frameworkDao.findById(id);
@@ -32,8 +34,8 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> getByCategory(FrameworkCategories category) {
-        return frameworkDao.getByCategory(category);
+    public List<Framework> getByCategory(FrameworkCategories category, long page) {
+        return frameworkDao.getByCategory(category, page, PAGESIZE);
     }
 
     @Override
@@ -47,10 +49,10 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag) {
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag, long page) {
         if(starsLeft<starsRight)
-            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag);
-        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag);
+            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag, page, PAGESIZE);
+        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag, page, PAGESIZE);
     }
 
     @Override
@@ -157,8 +159,8 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> getByUser(long userId) {
-        return frameworkDao.getByUser(userId);
+    public List<Framework> getByUser(long userId, long page) {
+        return frameworkDao.getByUser(userId, page, PAGESIZE);
     }
 
     @Override
@@ -192,7 +194,7 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public List<Framework> getCompetitors(Framework framework) {
-        List<Framework> toReturn = getByCategory(framework.getFrameCategory());
+        List<Framework> toReturn = getByCategory(framework.getFrameCategory(), 1);
         toReturn.remove(framework);
         return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
     }

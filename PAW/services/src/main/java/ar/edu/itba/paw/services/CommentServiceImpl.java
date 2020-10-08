@@ -22,16 +22,18 @@ public class CommentServiceImpl implements CommentService {
     private static final int VOTES_FOR_VERIFY =10;
 
     @Autowired
-    CommentDao cmts;
+    private CommentDao cmts;
 
     @Autowired
-    VerifyUserDao verifyUserDao;
+    private VerifyUserDao verifyUserDao;
 
     @Autowired
-    CommentVoteDao cmtVotes;
+    private CommentVoteDao cmtVotes;
 
     @Autowired
-    ReportCommentDao rc;
+    private ReportCommentDao rc;
+
+    private long PAGESIZE = 5;
 
     @Transactional(readOnly = true)
     @Override
@@ -47,8 +49,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId) {
-        return cmts.getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,userId);
+    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId, long page) {
+        return cmts.getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,userId, page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)
@@ -59,8 +61,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Comment> getCommentsByUser(long userId) {
-        return cmts.getCommentsByUser(userId);
+    public List<Comment> getCommentsByUser(long userId, long page) {
+        return cmts.getCommentsByUser(userId, page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)
