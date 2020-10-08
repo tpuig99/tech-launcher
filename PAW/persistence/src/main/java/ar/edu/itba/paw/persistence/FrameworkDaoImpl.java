@@ -183,9 +183,10 @@ public class FrameworkDaoImpl implements FrameworkDao {
         String aux="where ";
         Map<String,List<String>> params = new HashMap<>();
         if(toSearch!=null && !toSearch.isEmpty()){
-            aux = aux.concat("f.framework_name ILIKE '%"+toSearch+"%' ");
-            if(toSearch.length()>3 && !nameFlag)
-                aux = aux.concat("or f.description ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%' ");
+            if(nameFlag || toSearch.length()<3)
+                aux = aux.concat("f.framework_name ILIKE '%"+toSearch+"%' ");
+            else
+                aux = aux.concat("(f.framework_name ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%') ");
         }
         if(categories!=null){
             if(!aux.equals("where "))
