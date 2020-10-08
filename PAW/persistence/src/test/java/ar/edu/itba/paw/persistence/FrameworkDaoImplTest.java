@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -38,6 +39,7 @@ public class FrameworkDaoImplTest {
     private static final FrameworkType TYPE = Enum.valueOf(FrameworkType.class, "Framework");
     private static final long AUTHOR = 1;
     private static final String AUTHOR_NAME = "user1";
+    private static final byte[] PICTURE = null;
 
     @Autowired
     private DataSource ds;
@@ -97,9 +99,10 @@ public class FrameworkDaoImplTest {
         Assert.assertEquals(LOGO, framework.get().getLogo());
         Assert.assertEquals(TYPE.getType(), framework.get().getType());
         Assert.assertEquals(AUTHOR_NAME, framework.get().getAuthor());
+        //Assert.assertNull(framework.get().getBase64image());
     }
 
-    @Test()
+    @Test
     public void tesFindByIdNotExists() {
         //Preconditions
         JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
@@ -111,5 +114,48 @@ public class FrameworkDaoImplTest {
         assertEquals(false,framework.isPresent());
     }
 
+    @Test
+    public void testCreate() {
+        //Preconditions
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
 
+        //Class under test
+        Optional<Framework> framework = frameworkDao.create(FRAMEWORK_NAME,CATEGORY,DESCRIPTION, INTRODUCTION, TYPE,USER_ID,PICTURE);
+
+        //Asserts
+        assertNotNull(framework);
+        Assert.assertEquals(FRAMEWORK_ID, framework.get().getId());
+        Assert.assertEquals(FRAMEWORK_NAME, framework.get().getName());
+        Assert.assertEquals(CATEGORY.getNameCat(), framework.get().getCategory());
+        Assert.assertEquals(DESCRIPTION, framework.get().getDescription());
+        Assert.assertEquals(INTRODUCTION, framework.get().getIntroduction());
+        Assert.assertEquals(TYPE.getType(), framework.get().getType());
+        Assert.assertEquals(AUTHOR_NAME, framework.get().getAuthor());
+        Assert.assertNull(framework.get().getLogo());
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "frameworks","framework_id ="+framework.get().getId()));
+    }
+
+    @Test(expected = Exception.class)
+    public void testCreateAlreadyExists() {
+        //Preconditions
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        final Map<String, Object> args = new HashMap<>();
+
+        args.put("framework_id", FRAMEWORK_ID);
+        args.put("framework_name", FRAMEWORK_NAME);
+        args.put("category", CATEGORY.getNameCat());
+        args.put("description", DESCRIPTION);
+        args.put("introduction", INTRODUCTION);
+        args.put("logo", LOGO);
+        args.put("type", TYPE.getType());
+        args.put("date", ts);
+        args.put("author", AUTHOR);
+
+        jdbcInsert.execute(args);
+
+        //Class under test
+        Optional<Framework> framework = frameworkDao.create(FRAMEWORK_NAME,CATEGORY,DESCRIPTION, INTRODUCTION, TYPE,USER_ID,PICTURE);
+    }
 }
