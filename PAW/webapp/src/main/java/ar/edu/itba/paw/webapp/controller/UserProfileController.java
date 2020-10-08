@@ -55,7 +55,7 @@ public class UserProfileController {
 
             final List<Comment> commentList = commentService.getCommentsByUser(userId, startPage);
             final List<Content> contentList = contentService.getContentByUser(userId, startPage);
-            final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
+            final List<FrameworkVote> votesList = voteService.getAllByUser(userId, startPage);
             final List<Framework> frameworks = frameworkService.getByUser(userId);
 
             mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
@@ -63,8 +63,9 @@ public class UserProfileController {
             mav.addObject("contents_page", startPage);
             mav.addObject("comments", commentList);
             mav.addObject("comments_page", startPage);
-            mav.addObject("page_size", pageSize);
             mav.addObject("votes", votesList);
+            mav.addObject("votes_page", startPage);
+            mav.addObject("page_size", pageSize);
             mav.addObject("frameworks",frameworks);
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             mav.addObject("isAdmin", user.isAdmin());
@@ -76,7 +77,7 @@ public class UserProfileController {
     }
 
     @RequestMapping(path={"/users/{username}/pages"}, method = RequestMethod.GET)
-    public ModelAndView userProfilePagination(@PathVariable String username, @ModelAttribute("profileForm") final ProfileForm form, @RequestParam(value = "comments_page", required = false) final long commentsPage, @RequestParam(value = "contents_page", required = false) final long contentsPage) {
+    public ModelAndView userProfilePagination(@PathVariable String username, @ModelAttribute("profileForm") final ProfileForm form, @RequestParam(value = "comments_page", required = false) final long commentsPage, @RequestParam(value = "contents_page", required = false) final long contentsPage, @RequestParam(value = "votes_page", required = false) final long votesPage) {
         ModelAndView mav = new ModelAndView("session/user_profile");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         if (us.findByUsername(username).isPresent()) {
@@ -88,7 +89,7 @@ public class UserProfileController {
 
             final List<Comment> commentList = commentService.getCommentsByUser(userId, commentsPage);
             final List<Content> contentList = contentService.getContentByUser(userId, contentsPage);
-            final List<FrameworkVote> votesList = voteService.getAllByUser(userId);
+            final List<FrameworkVote> votesList = voteService.getAllByUser(userId, votesPage);
             final List<Framework> frameworks = frameworkService.getByUser(userId);
 
             mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
@@ -96,8 +97,9 @@ public class UserProfileController {
             mav.addObject("contents_page", contentsPage);
             mav.addObject("comments", commentList);
             mav.addObject("comments_page", commentsPage);
-            mav.addObject("page_size", pageSize);
             mav.addObject("votes", votesList);
+            mav.addObject("votes_page", votesPage);
+            mav.addObject("page_size", pageSize);
             mav.addObject("frameworks",frameworks);
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             mav.addObject("isAdmin", user.isAdmin());

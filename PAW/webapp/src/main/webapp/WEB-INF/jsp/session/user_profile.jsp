@@ -136,7 +136,7 @@
                                 <li class="page-item ">
                             </c:otherwise>
                         </c:choose>
-                            <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page-1}&contents_page=${contents_page}"/>" aria-label="Previous">
+                            <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page-1}&contents_page=${contents_page}&votes_page=${votes_page}"/>" aria-label="Previous">
                                 <span aria-hidden="true">&lsaquo;</span>
                                 <span class="sr-only">Previous</span>
                             </a>
@@ -149,7 +149,7 @@
                                 <li class="page-item">
                             </c:otherwise>
                         </c:choose>
-                                <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page+1}&contents_page=${contents_page}"/>" aria-label="Next">
+                                <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page+1}&contents_page=${contents_page}&votes_page=${votes_page}"/>" aria-label="Next">
                                     <span aria-hidden="true">&rsaquo;</span>
                                     <span class="sr-only">Next</span>
                                 </a>
@@ -202,7 +202,7 @@
                         <li class="page-item ">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page-1}"/>" aria-label="Previous">
+                            <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page-1}&votes_page=${votes_page}"/>" aria-label="Previous">
                                 <span aria-hidden="true">&lsaquo;</span>
                                 <span class="sr-only">Previous</span>
                             </a>
@@ -215,7 +215,7 @@
                         <li class="page-item">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page + 1}"/>" aria-label="Next">
+                            <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page + 1}&votes_page=${votes_page}"/>" aria-label="Next">
                                 <span aria-hidden="true">&rsaquo;</span>
                                 <span class="sr-only">Next</span>
                             </a>
@@ -233,7 +233,7 @@
             <h2><spring:message code="profile.votes"/></h2>
         </div>
         <c:choose>
-            <c:when test="${not empty votes}">
+            <c:when test="${not empty votes || votes_page != 1}">
                 <div class="container row equal justify-content-center">
                     <c:forEach var="vote" items="${votes}">
                         <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
@@ -253,6 +253,34 @@
                         </div>
                     </c:forEach>
                 </div>
+                <ul class="pagination justify-content-center">
+                    <c:choose>
+                    <c:when test="${votes_page == 1}">
+                    <li class="page-item disabled">
+                        </c:when>
+                        <c:otherwise>
+                    <li class="page-item ">
+                        </c:otherwise>
+                        </c:choose>
+                        <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page-1}&contents_page=${contents_page}&votes_page=${votes_page-1}"/>" aria-label="Previous">
+                            <span aria-hidden="true">&lsaquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <c:choose>
+                    <c:when test="${votes.size() < page_size*2}">
+                    <li class="page-item disabled">
+                        </c:when>
+                        <c:otherwise>
+                    <li class="page-item">
+                        </c:otherwise>
+                        </c:choose>
+                        <a class="page-link" href="<c:out value="/users/${username}/pages?comments_page=${comments_page+1}&contents_page=${contents_page}&votes_page=${votes_page+1}"/>" aria-label="Next">
+                            <span aria-hidden="true">&rsaquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
             </c:when>
             <c:otherwise>
                 <spring:message code="profile.empty.votes"/>

@@ -60,9 +60,9 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
     }
 
     @Override
-    public List<FrameworkVote> getAllByUser(long userId) {
-        String value=SELECTION+"WHERE user_id=?";
-        return jdbcTemplate.query(value, new Object[] { userId }, ROW_MAPPER);
+    public List<FrameworkVote> getAllByUser(long userId, long page, long pageSize) {
+        String value=SELECTION+"WHERE user_id=? LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(value, new Object[] { userId, pageSize, pageSize * (page-1) }, ROW_MAPPER);
     }
 
     @Override
