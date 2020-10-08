@@ -20,7 +20,7 @@ public interface FrameworkService {
     List<Framework> getByMultipleCategories(List<FrameworkCategories> categories);
     List<Framework> getByMultipleTypes(List<FrameworkType> types);
     List<Framework> getByMinStars(int stars);
-    List<Framework> getByUser(long userId);
+    List<Framework> getByUser(long userId, long page);
     List<Framework> search(String toSearch,List<FrameworkCategories> categories,List<FrameworkType> types,Integer stars,boolean nameFlag);
 
     void  orderByStars(List<Framework> frameworks, Integer order);

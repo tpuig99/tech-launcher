@@ -172,9 +172,9 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> getByUser(long userId) {
-        String value=SELECTION+"WHERE author = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[]{ userId }, ROW_MAPPER);    }
+    public List<Framework> getByUser(long userId, long page, long pageSize) {
+        String value=SELECTION+"WHERE author = ?"+GROUP_BY + " LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(value, new Object[]{ userId, pageSize, pageSize*(page-1) }, ROW_MAPPER);    }
 
     @Override
     public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer stars,boolean nameFlag) {

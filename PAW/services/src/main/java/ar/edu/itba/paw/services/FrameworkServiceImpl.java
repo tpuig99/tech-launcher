@@ -21,6 +21,8 @@ public class FrameworkServiceImpl implements FrameworkService {
    @Autowired
     private FrameworkDao frameworkDao;
 
+   private long PAGESIZE = 7;
+
     @Override
     public Optional<Framework> findById(long id) {
         return frameworkDao.findById(id);
@@ -155,8 +157,8 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> getByUser(long userId) {
-        return frameworkDao.getByUser(userId);
+    public List<Framework> getByUser(long userId, long page) {
+        return frameworkDao.getByUser(userId, page, PAGESIZE);
     }
 
     @Override
