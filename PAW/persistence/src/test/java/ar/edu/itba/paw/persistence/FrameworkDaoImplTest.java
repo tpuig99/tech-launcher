@@ -18,9 +18,7 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -158,4 +156,99 @@ public class FrameworkDaoImplTest {
         //Class under test
         Optional<Framework> framework = frameworkDao.create(FRAMEWORK_NAME,CATEGORY,DESCRIPTION, INTRODUCTION, TYPE,USER_ID,PICTURE);
     }
+
+
+    @Test
+    public void testGetFrameworkNames(){
+        //Preconditions
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        List<String> names = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            final Map<String, Object> args = new HashMap<>();
+            args.put("framework_id", i);
+            args.put("framework_name", FRAMEWORK_NAME+String.valueOf(i));
+            args.put("category", CATEGORY.getNameCat());
+            args.put("description", DESCRIPTION);
+            args.put("introduction", INTRODUCTION);
+            args.put("logo", LOGO);
+            args.put("type", TYPE.getType());
+            args.put("date", ts);
+            args.put("author", AUTHOR);
+
+            jdbcInsert.execute(args);
+
+            names.add(FRAMEWORK_NAME+String.valueOf(i));
+        }
+
+        //Class under test
+        List<String> frameworkNames = frameworkDao.getFrameworkNames();
+
+        //Asserts
+        Assert.assertFalse(frameworkNames.isEmpty());
+        Assert.assertEquals(names, frameworkNames);
+
+    }
+
+
+    @Test
+    public void testSearchOnlyByName(){
+        //Preconditions
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+
+        List<Framework> results = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            final Map<String, Object> args = new HashMap<>();
+            args.put("framework_id", i);
+
+            args.put("introduction", INTRODUCTION);
+            args.put("logo", LOGO);
+            args.put("type", TYPE.getType());
+            args.put("date", ts);
+            args.put("author", AUTHOR);
+
+            switch(i) {
+                case 0:
+                    args.put("framework_name", "html");
+                    args.put("description", "html is great");
+                    break;
+                case 1:
+                    args.put("framework_name", "canvas");
+                    args.put("description", "canvas works with html");
+                    //framework = new Framework(i, "canvas", CATEGORY, "canvas works with html", INTRODUCTION, LOGO,0,0,TYPE,AUTHOR_NAME,ts,null,0,"book",null);
+                    break;
+                case 2:
+                    args.put("framework_name", "css");
+                    args.put("description", "cascade style sheet");
+                    //framework = new Framework(i, "css", CATEGORY, "cascade style sheet", INTRODUCTION, LOGO,0,0,TYPE,AUTHOR_NAME,ts,null,0,"book",null);
+                    break;
+                case 3:
+                    args.put("framework_name", "vue");
+                    args.put("description", "use vue with css and html");
+                    //framework = new Framework(i, "vue", CATEGORY, "use vue with css and html", INTRODUCTION, LOGO,0,0,TYPE,AUTHOR_NAME,ts,null,0,"book",null);
+                    break; 
+            }
+
+            args.put("category", CATEGORY.getNameCat());
+
+            jdbcInsert.execute(args);
+        }
+        Framework framework = new Framework(0L,"html",CATEGORY,"html is great", INTRODUCTION, LOGO,0,0,TYPE, AUTHOR_NAME,ts,ts,0,"book",null);
+
+        results.add(framework);
+        //Class under test
+        List<Framework> matchingFrameworks = frameworkDao.search("html",null, null, null,true);
+
+        //Asserts
+        Assert.assertFalse(matchingFrameworks.isEmpty());
+        Assert.assertEquals(results, matchingFrameworks);
+    }
+
+
+
 }
