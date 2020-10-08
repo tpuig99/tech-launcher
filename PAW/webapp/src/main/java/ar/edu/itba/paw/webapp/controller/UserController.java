@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.VerifyUser;
+import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.service.CommentService;
+import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.webapp.form.mod_page.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,7 +13,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,6 +31,12 @@ public class UserController {
     UserService us;
     @Autowired
     FrameworkService fs;
+
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    ContentService contentService;
     @Autowired
     MessageSource messageSource;
 
@@ -44,33 +54,53 @@ public class UserController {
         return "redirect:" + referer;
     }
 
-    @RequestMapping("/reject")
-    public ModelAndView RejectCandidate(@RequestParam("id") final long verificationId) {
-        Optional<VerifyUser> vu= us.getVerifyById(verificationId);
+    @RequestMapping(path = {"/reject"}, method = RequestMethod.POST )
+    public ModelAndView RejectCandidate(@ModelAttribute("rejectUserForm") final RejectUserForm form) {
+        Optional<VerifyUser> vu= us.getVerifyById(form.getRejectUserVerificationId());
         if(vu.isPresent() && vu.get().isPending()) {
-            us.deleteVerification(verificationId);
+            us.deleteVerification(form.getRejectUserVerificationId());
         }
 
         return modPage();
     }
 
-    @RequestMapping("/accept")
-    public ModelAndView AcceptCandidate(@RequestParam("id") final long verificationId) {
-        Optional<VerifyUser> vu= us.getVerifyById(verificationId);
+    @RequestMapping(path = {"/rejectPending"}, method = RequestMethod.POST )
+    public ModelAndView RejectPendingCandidate(@ModelAttribute("rejectPendingUserForm") final RejectPendingUserForm form) {
+        Optional<VerifyUser> vu= us.getVerifyById(form.getRejectPendingUserVerificationId());
         if(vu.isPresent() && vu.get().isPending()) {
-            us.verify(verificationId);
+            us.deleteVerification(form.getRejectPendingUserVerificationId());
+        }
+
+        return modPage();
+    }
+
+    @RequestMapping(path = {"/accept"}, method = RequestMethod.POST)
+    public ModelAndView AcceptCandidate(@ModelAttribute("promoteUserForm") final PromoteUserForm form) {
+        Optional<VerifyUser> vu= us.getVerifyById(form.getPromoteUserVerificationId());
+        if(vu.isPresent() && vu.get().isPending()) {
+            us.verify(form.getPromoteUserVerificationId());
             Optional<User> user = us.findById(vu.get().getUserId());
-            if(user.isPresent())
-                us.modMailing(user.get(),vu.get().getFrameworkName());
+            user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
+            }
+        return modPage();
+    }
+
+    @RequestMapping(path = {"/acceptPending"}, method = RequestMethod.POST)
+    public ModelAndView AcceptPendingCandidate(@ModelAttribute("promoteUserForm") final PromotePendingUserForm form) {
+        Optional<VerifyUser> vu= us.getVerifyById(form.getPromotePendingUserVerificationId());
+        if(vu.isPresent() && vu.get().isPending()) {
+            us.verify(form.getPromotePendingUserVerificationId());
+            Optional<User> user = us.findById(vu.get().getUserId());
+            user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
         }
         return modPage();
     }
 
-    @RequestMapping("/demote")
-    public ModelAndView demote(@RequestParam("id") final long verificationId){
-        Optional<VerifyUser> vu = us.getVerifyById(verificationId);
+    @RequestMapping(path = {"/demote"}, method = RequestMethod.POST)
+    public ModelAndView demote(@ModelAttribute("revokePromotionForm") final RevokePromotionForm form){
+        Optional<VerifyUser> vu = us.getVerifyById(form.getRevokePromotionVerificationId());
         if( vu.isPresent() && !vu.get().isPending() ){
-            us.deleteVerification(verificationId);
+            us.deleteVerification(form.getRevokePromotionVerificationId());
         }
 
         return modPage();
@@ -81,9 +111,21 @@ public class UserController {
         ModelAndView mav = new ModelAndView("admin/mod_page");
 
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        mav.addObject("ignoreContentForm", new IgnoreContentForm());
+        mav.addObject("deleteContentForm", new DeleteContentForm());
+        mav.addObject("ignoreCommentForm", new IgnoreCommentForm());
+        mav.addObject("deleteCommentForm", new DeleteCommentForm());
+        mav.addObject("rejectUserForm", new RejectUserForm());
+        mav.addObject("promoteUserForm", new PromoteUserForm());
+        mav.addObject("rejectPendingUserForm", new RejectPendingUserForm());
+        mav.addObject("promotePendingUserForm", new PromotePendingUserForm());
+        mav.addObject("revokePromotionForm", new RevokePromotionForm());
+
+
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if( us.findByUsername(username).isPresent()){
-            User user = us.findByUsername(username).get();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             mav.addObject("isAdmin",user.isAdmin());
             if( user.isAdmin()) {
@@ -99,12 +141,14 @@ public class UserController {
                 mav.addObject("mods",mods);
                 mav.addObject("pendingToVerify", verify);
                 mav.addObject("pendingApplicants", applicants);
+                mav.addObject("reportedComments", commentService.getAllReport());
+                mav.addObject("reportedContents", contentService.getAllReports());
                 return mav;
             }
             else if( user.isVerify() ){
                 List<VerifyUser> verify = new LinkedList<>();
                 user.getVerifications().forEach(verifyUser -> {
-                    verify.addAll(us.getVerifyByUser(verifyUser.getFrameworkId(),true));
+                    verify.addAll(us.getVerifyByFramework(verifyUser.getFrameworkId(),true));
                 });
                 List<VerifyUser> applicants = new LinkedList<>();
                 verify.forEach(verifyUser -> {
@@ -115,9 +159,124 @@ public class UserController {
                 verify.removeAll(applicants);
                 mav.addObject("pendingToVerify",verify);
                 mav.addObject("pendingApplicants", applicants);
+                List<ReportContent> reportContents = new LinkedList<>();
+                user.getVerifications().forEach( verifyUser -> {
+                    reportContents.addAll(contentService.getReportsByFramework(verifyUser.getFrameworkId()));
+                });
+                mav.addObject("reportedContents", reportContents);
                 return mav;
             }
         }
         return ErrorController.redirectToErrorView();
     }
+    @RequestMapping("/dismiss")
+    public ModelAndView DismissMod(@RequestParam("id") final long verificationId) {
+        //check the mav you want
+        final ModelAndView mav = new ModelAndView("admin/mod_page");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            if(user.isAdmin()) {
+                Optional<VerifyUser> vu = us.getVerifyById(verificationId);
+                if (vu.isPresent()) {
+                    us.deleteVerification(verificationId);
+                }
+                return mav;
+            }
+        }
+        return ErrorController.redirectToErrorView();
+    }
+    @RequestMapping("/quit")
+    public ModelAndView QuitMod(@RequestParam("id") final long verificationId) {
+        //check the mav you want
+        final ModelAndView mav = new ModelAndView("admin/mod_page");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> userOptional = us.findByUsername(username);
+        if( userOptional.isPresent()){
+            User user = userOptional.get();
+            Optional<VerifyUser> vu = us.getVerifyById(verificationId);
+            if (vu.isPresent()) {
+                VerifyUser verifyUser = vu.get();
+                if(verifyUser.getUserId()!=user.getId()){
+                    //raise error --> only owner
+                    return ErrorController.redirectToErrorView();
+                }
+                us.deleteVerification(verificationId);
+            }
+            return mav;
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path = {"/mod/comment/delete"}, method = RequestMethod.POST)
+    public ModelAndView deleteComment(@ModelAttribute("deleteCommentForm") final DeleteCommentForm form){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                Optional<Comment> commentOptional = commentService.getById(form.getDeleteCommentId());
+                if( commentOptional.isPresent() ){
+                    commentService.acceptReport(form.getDeleteCommentId());
+                    return modPage();
+                }
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path = {"/mod/comment/ignore"}, method = RequestMethod.POST)
+    public ModelAndView ignoreComment(@ModelAttribute("ignoreCommentForm") final IgnoreCommentForm form){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                commentService.denyReport(form.getIgnoreCommentId());
+
+                return modPage();
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping( path = {"/mod/content/delete"}, method = RequestMethod.POST)
+    public ModelAndView deleteContent(@ModelAttribute("deleteContentForm") final DeleteContentForm form){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                Optional<Content> contentOptional = contentService.getById(form.getDeleteContentId());
+                if( contentOptional.isPresent() ){
+                    contentService.acceptReport(form.getDeleteContentId());
+                    return modPage();
+                }
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/mod/content/ignore"},method = RequestMethod.POST)
+    public ModelAndView ignoreContent(@ModelAttribute("ignoreContentForm") final IgnoreContentForm form){
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            if( user.isAdmin() ){
+                Optional<Content> contentOptional = contentService.getById(form.getIgnoreContentId());
+                if( contentOptional.isPresent() ){
+                    contentService.denyReport(form.getIgnoreContentId());
+                    return modPage();
+                }
+            }
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
 }

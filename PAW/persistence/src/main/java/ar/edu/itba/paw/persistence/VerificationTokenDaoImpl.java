@@ -61,16 +61,6 @@ public class VerificationTokenDaoImpl implements VerificationTokenDao {
     }
 
     @Override
-    public int deleteById(long tokenId) {
-        return jdbcTemplate.update("DELETE FROM verification_token WHERE token_id = ?", tokenId);
-    }
-
-    @Override
-    public int deleteByUser(long userId) {
-        return jdbcTemplate.update("DELETE FROM verification_token WHERE user_id = ?",userId);
-    }
-
-    @Override
     public void change(long tokenId, String token) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();

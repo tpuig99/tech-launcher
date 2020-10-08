@@ -89,12 +89,12 @@
         <span><spring:message code="explore.from"/></span>
         <span>
             <select id="stars-dropdown">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="0" <c:if test="${starsQuery == 0}"> selected </c:if>>0</option>
+                <option value="1"<c:if test="${starsQuery == 1}"> selected </c:if>>1</option>
+                <option value="2"<c:if test="${starsQuery == 2}"> selected </c:if>>2</option>
+                <option value="3"<c:if test="${starsQuery == 3}"> selected </c:if>>3</option>
+                <option value="4"<c:if test="${starsQuery == 4}"> selected </c:if>>4</option>
+                <option value="5"<c:if test="${starsQuery == 5}"> selected </c:if>>5</option>
             </select>
          </span>
         <span><spring:message code="explore.to_5_stars"/></span>
@@ -104,7 +104,7 @@
     <!-- Search Bar -->
     <div class="search-bar">
         <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
-            <input id="searchInput" class="form-control mr-sm-2" type="text" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
+            <input id="searchInput" class="form-control mr-sm-2" type="text" value="${techNameQuery}" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
             <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="search.title"/></button>
         </form>
         <div class="form-check">
@@ -163,13 +163,13 @@
                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <spring:message code="explore.sort_by"/>
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(1)"><spring:message code="explore.rating_high_to_low"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)"><spring:message code="explore.rating_low_to_high"/></button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)"><spring:message code="explore.rating_high_to_low"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(1)"><spring:message code="explore.rating_low_to_high"/></button>
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(2)"><spring:message code="explore.comments_more_to_least"/></button>
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(-2)"><spring:message code="explore.comments_least_to_more"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(3)"><spring:message code="explore.release_oldest_to_newest"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-3)"><spring:message code="explore.release_newest_to_oldest"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-3)"><spring:message code="explore.release_oldest_to_newest"/></button>
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(3)"><spring:message code="explore.release_newest_to_oldest"/></button>
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(4)"><spring:message code="explore.tech_most_recent_commented"/></button>
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(-4)"><spring:message code="explore.tech_last_commented"/></button>
                 </div>
@@ -191,7 +191,14 @@
                     <div class="card mx-4 mb-4">
                         <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
                             <div class="card-body">
-                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
+                                <c:choose>
+                                    <c:when test="${not empty framework.base64image}">
+                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <div class="card-footer text-dark">
                                 <span>${framework.name} | </span>

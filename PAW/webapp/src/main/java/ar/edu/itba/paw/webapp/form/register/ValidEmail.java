@@ -1,6 +1,4 @@
-package ar.edu.itba.paw.webapp.form.session;
-
-import ar.edu.itba.paw.webapp.form.session.EmailValidator;
+package ar.edu.itba.paw.webapp.form.register;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

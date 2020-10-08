@@ -20,6 +20,7 @@ public interface FrameworkService {
     List<Framework> getByMultipleCategories(List<FrameworkCategories> categories);
     List<Framework> getByMultipleTypes(List<FrameworkType> types);
     List<Framework> getByMinStars(int stars);
+    List<Framework> getByUser(long userId);
     List<Framework> search(String toSearch,List<FrameworkCategories> categories,List<FrameworkType> types,Integer stars,boolean nameFlag);
 
     void  orderByStars(List<Framework> frameworks, Integer order);
@@ -27,5 +28,7 @@ public interface FrameworkService {
     void  orderByReleaseDate(List<Framework> frameworks, Integer order);
     void  orderByCommentsAmount(List<Framework> frameworks, Integer order);
 
-    void create(String name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId);
+    Optional<Framework> create(String name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId, byte[] picture);
+    Optional<Framework> update(long id,String name,FrameworkCategories category,String description,String introduction,FrameworkType type,byte[] picture);
+    void delete(long id);
 }

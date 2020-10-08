@@ -22,101 +22,211 @@
         </jsp:include>
 
 
-        <div class="content-no-sidebar">
-            <c:if test="${isAdmin}">
-                <div class="page-title"><spring:message code="moderator.title"/></div>
-                <div class="page-description"></div>
-                <div class="row">
-                    <c:choose>
-                        <c:when test="${not empty mods}">
-                            <c:forEach var = "moderator" items="${mods}">
-                                <c:if test="${!moderator.admin}">
-                                    <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
-                                        <div class="card-body mt-1">
-                                            <div class="secondary-font">
-                                                <a href="/users/${moderator.userName}"><c:out value="${moderator.userName}" default=""/></a>
-                                                <c:out value="/" default=""/>
-                                                <a href="<c:out value="${moderator.frameworkName}/${moderator.frameworkId}"/>"><c:out value="${moderator.frameworkName}" default=""/></a>
+        <div class="content-no-sidebar row">
+            <div class="left col-6 border-right">
+                <c:if test="${isAdmin}">
+                    <div class="page-title"><spring:message code="moderator.title"/></div>
+                    <div class="page-description"></div>
+                    <div class="d-flex flex-wrap justify-content-center">
+                        <c:choose>
+                            <c:when test="${not empty mods}">
+                                <c:forEach var = "moderator" items="${mods}">
+                                    <c:if test="${!moderator.admin}">
+                                        <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
+                                            <div class="card-body mt-1">
+                                                <div class="secondary-font">
+                                                    <a href="<c:url value="/users/${moderator.userName}"/>"><c:out value="${moderator.userName}" default=""/></a>
+                                                    <c:out value="/" default=""/>
+                                                    <a href="<c:url value="/${moderator.frameworkName}/${moderator.frameworkId}"/>"><c:out value="${moderator.frameworkName}" default=""/></a>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer row justify-content-center">
+                                                <c:url value="/demote" var="postPathDemote"/>
+                                                <form:form modelAttribute="revokePromotionForm" action="${postPathDemote}" method="post">
+                                                    <form:label path="revokePromotionVerificationId">
+                                                        <form:input path="revokePromotionVerificationId" id="revokePromotionUserVerificationIdId${moderator.verificationId}" class="input-wrap" type="hidden" value="${moderator.verificationId}"/>
+                                                    </form:label>
+                                                    <button type="submit" class="btn btn-danger" ><spring:message code="button.demote"/></button>
+                                                </form:form>
                                             </div>
                                         </div>
-                                        <div class="card-footer">
-                                            <button type="button" class="btn btn-danger" onclick="revokePromotion(${moderator.verificationId})"><spring:message code="button.demote"/></button>
-                                        </div>
-                                    </div>
-                                </c:if>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <div><spring:message code="moderator.no_mods"/></div>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
-            </c:if>
-            <div class="page-title"><spring:message code="moderator.pending"/></div>
-            <div class="page-description"></div>
-            <c:choose>
-                <c:when test="${not empty pendingToVerify}">
-                    <c:forEach var = "pendingUser" items="${pendingToVerify}">
-                        <div class="card emphasis emph-comment row mb-2 verified">
-                            <div class="card-body row mt-1">
-                                <div class="col-3 secondary-font"> <a href="/users/${pendingUser.userName}"><c:out value="${pendingUser.userName}" default=""/></a>
-                                    <c:out value="/" default=""/>
-                                    <a href="<c:out value="${pendingUser.frameworkName}/${pendingUser.frameworkId}"/>"><c:out value="${pendingUser.frameworkName}" default=""/></a>
-                                </div>
-                                <div class="col-6 text-left"> <c:out value="${pendingUser.comment.description}" default=""/> </div>
-                                <div class="col third-font text-right"> <c:out value="${pendingUser.comment.timestamp.toLocaleString()}" default=""/> </div>
-                            </div>
-                            <div class="card-footer">
-                                <button type="button" class="btn btn-secondary" onclick="rejectUser(${pendingUser.verificationId})"><spring:message code="button.deny"/></button>
-                                <button type="button" class="btn primary-button" onclick="promoteUser(${pendingUser.verificationId})"><spring:message code="button.promote"/></button>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </c:when>
-                <c:otherwise>
-                    <div><spring:message code="moderator.emptyPending"/></div>
-                </c:otherwise>
-            </c:choose>
-            <div class="page-title"><spring:message code="moderator.pendingApplicants"/></div>
-            <div class="page-description"></div>
-            <div class="row">
+                                    </c:if>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <div><spring:message code="moderator.no_mods"/></div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </c:if>
+
+
+                <div class="page-title"><spring:message code="moderator.pending"/></div>
+                <div class="page-description"></div>
+                <div class="d-flex flex-column justify-content-center">
                 <c:choose>
-                    <c:when test="${not empty pendingApplicants}">
-                        <c:forEach var = "applicant" items="${pendingApplicants}">
-                            <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
-                                <div class="card-body mt-1">
-                                    <div class="secondary-font"> <a href="<c:url value="/users/${applicant.userName}"/>"><c:out value="${applicant.userName}" default=""/></a>
+                    <c:when test="${not empty pendingToVerify}">
+                        <c:forEach var = "pendingUser" items="${pendingToVerify}">
+                            <div class="card emphasis emph-comment row mb-2 verified">
+                                <div class="card-body row mt-1">
+                                    <div class="col-3 secondary-font"> <a href="<c:url value="/users/${pendingUser.userName}"/>"><c:out value="${pendingUser.userName}" default=""/></a>
                                         <c:out value="/" default=""/>
-                                        <a href="${applicant.frameworkName}/${applicant.frameworkId}"><c:out value="${applicant.frameworkName}" default=""/></a>
+                                        <a href="<c:url value="/${pendingUser.frameworkName}/${pendingUser.frameworkId}"/>"><c:out value="${pendingUser.frameworkName}" default=""/></a>
                                     </div>
+                                    <div class="col-6 text-left"> <c:out value="${pendingUser.comment.description}" default=""/> </div>
+                                    <div class="col third-font text-right"> <c:out value="${pendingUser.comment.timestamp.toLocaleString()}" default=""/> </div>
                                 </div>
-                                <div class="card-footer">
-                                    <button type="button" class="btn primary-button" onclick="promoteUser(${applicant.verificationId})"><spring:message code="button.promote"/></button>
-                                    <button type="button" class="btn btn-secondary" onclick="rejectUser(${applicant.verificationId})"><spring:message code="button.deny"/></button>
+                                <div class="card-footer row">
+                                    <c:url value="/accept" var="postPathAcceptPending"/>
+                                    <form:form modelAttribute="promotePendingUserForm" action="${postPathAcceptPending}" method="post">
+                                        <form:label path="promotePendingUserVerificationId">
+                                            <form:input path="promotePendingUserVerificationId" id="promotePendingUserVerificationIdId${pendingUser.verificationId}" class="input-wrap" type="hidden" value="${pendingUser.verificationId}"/>
+                                        </form:label>
+                                        <button type="submit" class="btn primary-button"><spring:message code="button.promote"/></button>
+                                    </form:form>
+                                    <c:url value="/rejectPending" var="postPathRejectPending"/>
+                                    <form:form modelAttribute="rejectPendingUserForm" action="${postPathRejectPending}" method="post">
+                                        <form:label path="rejectPendingUserVerificationId">
+                                            <form:input path="rejectPendingUserVerificationId" id="rejectPendingUserVerificationIdId${pendingUser.verificationId}" class="input-wrap" type="hidden" value="${pendingUser.verificationId}"/>
+                                        </form:label>
+                                        <button type="submit" class="btn btn-secondary"><spring:message code="button.deny"/></button>
+                                    </form:form>
                                 </div>
                             </div>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <div><spring:message code="moderator.emptyApplicants"/></div>
+                        <div><spring:message code="moderator.emptyPending"/></div>
                     </c:otherwise>
                 </c:choose>
+                </div>
+                <div class="page-title"><spring:message code="moderator.pendingApplicants"/></div>
+                <div class="page-description"></div>
+                <div class="d-flex flex-wrap justify-content-center">
+                    <c:choose>
+                        <c:when test="${not empty pendingApplicants}">
+                            <c:forEach var = "applicant" items="${pendingApplicants}">
+                                <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
+                                    <div class="card-body mt-1">
+                                        <div class="secondary-font"> <a href="<c:url value="/users/${applicant.userName}"/>"><c:out value="${applicant.userName}" default=""/></a>
+                                            <c:out value="/" default=""/>
+                                            <a href="<c:url value="/${applicant.frameworkName}/${applicant.frameworkId}"/>"><c:out value="${applicant.frameworkName}" default=""/></a>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer row">
+                                        <c:url value="/accept" var="postPathAccept"/>
+                                        <form:form modelAttribute="promoteUserForm" action="${postPathAccept}" method="post">
+                                            <form:label path="promoteUserVerificationId">
+                                                <form:input path="promoteUserVerificationId" id="promoteUserVerificationIdId${applicant.verificationId}" class="input-wrap" type="hidden" value="${applicant.verificationId}"/>
+                                            </form:label>
+                                            <button type="submit" class="btn primary-button"><spring:message code="button.promote"/></button>
+                                        </form:form>
+                                        <c:url value="/reject" var="postPathReject"/>
+                                        <form:form modelAttribute="rejectUserForm" action="${postPathReject}" method="post">
+                                            <form:label path="rejectUserVerificationId">
+                                                <form:input path="rejectUserVerificationId" id="rejecUserVerificationIdId${applicant.verificationId}" class="input-wrap" type="hidden" value="${applicant.verificationId}"/>
+                                            </form:label>
+                                            <button type="submit" class="btn btn-secondary"><spring:message code="button.deny"/></button>
+                                        </form:form>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div><spring:message code="moderator.emptyApplicants"/></div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+            <div class="right col">
+                <c:if test="${isAdmin}">
+                    <div class="page-title"><spring:message code="moderate.comment.title"/></div>
+                    <div class="page-description"></div>
+                    <div class="row justify-content-center">
+                        <c:choose>
+                            <c:when test="${not empty reportedComments}">
+                                <div class="d-flex flex-column">
+                                    <c:forEach items="${reportedComments}" var="reportedComment">
+                                        <div class="card emphasis emph-comment mb-2 verified">
+                                            <div class="card-body mt-1">
+                                                <p><spring:message code="moderate.report.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedComment.userNameOwner}"/>"><c:out value="${reportedComment.userNameOwner}" default=""/></a></p>
+                                                <p><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/${reportedComment.categoryAsString}/${reportedComment.frameworkId}"/>"><c:out value="${reportedComment.frameworkName}" default=""/></a></p>
+                                                <p><spring:message code="moderate.comment.description"/>:&nbsp;<c:out value="${reportedComment.commentDescription}" default=""/></p>
+                                                <p class="border-top"><spring:message code="moderate.report.description"/>:&nbsp;<c:out value=" ${reportedComment.reportDescription}" default=""/></p>
+                                                <p><spring:message code="moderate.report.quantity"/>:&nbsp;${reportedComment.reportsUserName.size()}</p>
+                                            </div>
+                                            <div class="card-footer row justify-content-center">
+                                                <c:url value="/mod/comment/delete" var="postPathDeleteComment"/>
+                                                <form:form modelAttribute="deleteCommentForm" action="${postPathDeleteComment}" method="post">
+                                                    <form:label path="deleteCommentId">
+                                                        <form:input path="deleteCommentId" id="deleteCommentFormId${reportedComment.commentId}" class="input-wrap" type="hidden" value="${reportedComment.commentId}"/>
+                                                    </form:label>
+                                                    <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button>
+                                                </form:form>
+                                                <c:url value="/mod/comment/ignore" var="postPathIgnoreComment"/>
+                                                <form:form modelAttribute="ignoreCommentForm" action="${postPathIgnoreComment}" method="post">
+                                                    <form:label path="ignoreCommentId">
+                                                        <form:input path="ignoreCommentId" id="ignoreCommentFormId${reportedComment.commentId}" class="input-wrap" type="hidden" value="${reportedComment.commentId}"/>
+                                                    </form:label>
+                                                    <button type="submit" class="btn btn-secondary"><spring:message code="button.ignore"/></button>
+                                                </form:form>
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div><spring:message code="moderate.comment.empty"/></div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </c:if>
+
+                <div class="page-title"><spring:message code="moderate.content.title"/></div>
+                <div class="page-description"></div>
+                <div class="row justify-content-center">
+                    <c:choose>
+                        <c:when test="${not empty reportedContents}">
+                            <div class="d-flex flex-column">
+                                <c:forEach items="${reportedContents}" var="reportedContent">
+                                    <div class="card d-flex flex-wrap emphasis emph-comment mb-2 verified">
+                                        <div class="card-body mt-1">
+                                            <p><spring:message code="moderate.report.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedContent.userNameOwner}"/>"><c:out value="${reportedContent.userNameOwner}" default=""/></a></p>
+                                            <p><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a></p>
+                                            <p><spring:message code="moderate.content.description"/>:&nbsp;<a href="<c:url value="${reportedContent.link}"/>"><c:out value="${reportedContent.title}" default=""/></a></p>
+                                            <p class="border-top"><spring:message code="moderate.report.description"/>:&nbsp;<c:out value=" ${reportedContent.reportDescription}" default=""/></p>
+                                            <p><spring:message code="moderate.report.quantity"/>:&nbsp;${reportedContent.reportsUserName.size()}</p>
+                                        </div>
+                                        <div class="card-footer row justify-content-center">
+                                            <c:url value="/mod/content/delete" var="postPathDeleteContent"/>
+                                            <form:form modelAttribute="deleteContentForm" action="${postPathDeleteContent}" method="post">
+                                                <form:label path="deleteContentId">
+                                                    <form:input path="deleteContentId" id="deleteContentFormId${reportedContent.contentId}" class="input-wrap" type="hidden" value="${reportedContent.contentId}"/>
+                                                </form:label>
+                                                <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button>
+                                            </form:form>
+                                            <c:url value="/mod/content/ignore" var="postPathIgnoreContent"/>
+                                            <form:form modelAttribute="ignoreContentForm" action="${postPathIgnoreContent}" method="post">
+                                                <form:label path="ignoreContentId">
+                                                    <form:input id="ignoreContentFormId${reportedContent.contentId}" class="input-wrap" path="ignoreContentId" type="hidden" value="${reportedContent.contentId}"/>
+                                                </form:label>
+                                                <button type="submit" class="btn btn-secondary"><spring:message code="button.ignore"/></button>
+                                            </form:form>
+
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div><spring:message code="moderate.content.empty"/></div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
             </div>
         </div>
 
-        <script>
-            function promoteUser(verificationId){
-                window.location.href = '<c:url value="/accept" />?id=' + verificationId;
-            }
-
-            function rejectUser(verificationId){
-                window.location.href = '<c:url value="/reject" />?id=' + verificationId;
-            }
-
-            function revokePromotion(verificationId){
-                window.location.href = '<c:url value="/demote" />?id=' + verificationId;
-            }
-        </script>
+        
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
