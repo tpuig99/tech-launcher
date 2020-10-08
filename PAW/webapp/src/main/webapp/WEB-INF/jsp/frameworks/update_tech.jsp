@@ -109,13 +109,15 @@
         </div>
 
         <div class="d-flex justify-content-center mt-4">
-            <input class="btn btn-primary" id="addTechButton" type="submit" value="<spring:message code="button.submit"/>"/>
+            <a href="/${category}/${frameworkForm.frameworkId}" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
+            <input class="btn btn-primary ml-4" id="addTechButton" type="submit" value="<spring:message code="button.submit"/>"/>
             <div class="btn btn-primary disabled" id="addTechLoading" hidden>
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <spring:message code="button.loading"/>
             </div>
         </div>
     </form:form>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -130,6 +132,7 @@
             $('#addTechLoading').prop("hidden",false);
         });
     });
+
 </script>
 
 </body>

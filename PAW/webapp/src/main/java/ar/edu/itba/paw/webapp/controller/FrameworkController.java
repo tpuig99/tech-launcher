@@ -415,6 +415,7 @@ public class FrameworkController {
             form.setType(framework.getType());
             ModelAndView mav = new ModelAndView("frameworks/update_tech");
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+            mav.addObject("category",framework.getCategory());
             if( us.findByUsername(username).isPresent()){
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             }
