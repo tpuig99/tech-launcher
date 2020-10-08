@@ -52,6 +52,11 @@
                                     <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Category"> ${framework.category}</span>
                                     <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Type"> ${framework.type}</span>
                                 </div>
+                                <div class="col d-flex align-items-center justify-content-center">
+                                    <span class="fa fa-star color-star"></span>
+                                    <span> ${framework.starsFormated} | ${framework.votesCant}</span>
+                                    <span class="fa fa-user"></span>
+                                </div>
                                 <div class="d-flex flex-column my-auto">
                                     <c:if test="${user_isMod}">
                                         <div class="mb-4">
@@ -69,11 +74,6 @@
                                             </button>
                                         </div>
                                     </c:if>
-                                </div>
-                                <div class="col d-flex align-items-center justify-content-center">
-                                <span class="fa fa-star color-star"></span>
-                                <span> ${framework.starsFormated} | ${framework.votesCant}</span>
-                                    <span class="fa fa-user"></span>
                                 </div>
                             </div>
                             <div class="description">
