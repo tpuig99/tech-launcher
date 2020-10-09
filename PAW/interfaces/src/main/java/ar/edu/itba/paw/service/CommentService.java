@@ -28,7 +28,7 @@ public interface CommentService {
 
     /***Reports***/
     Optional<ReportComment> getReportById(long reportId);
-    List<ReportComment> getAllReport();
+    List<ReportComment> getAllReport(long page);
     List<ReportComment> getReportByFramework(long frameworkId);
     Optional<ReportComment> getReportByComment(long commentId);
     void addReport(long commentId,long userId,String description);

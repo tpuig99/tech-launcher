@@ -69,7 +69,7 @@
                             <li class="page-item ">
                                 </c:otherwise>
                                 </c:choose>
-                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage-1}"/>" aria-label="Previous">
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage-1}&rComPage=${rComPage}"/>" aria-label="Previous">
                                     <span aria-hidden="true">&lsaquo;</span>
                                     <span class="sr-only">Previous</span>
                                 </a>
@@ -82,7 +82,7 @@
                             <li class="page-item">
                                 </c:otherwise>
                                 </c:choose>
-                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage+1}"/>" aria-label="Next">
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage+1}&rComPage=${rComPage}"/>" aria-label="Next">
                                     <span aria-hidden="true">&rsaquo;</span>
                                     <span class="sr-only">Next</span>
                                 </a>
@@ -91,7 +91,7 @@
                     </c:if>
                 </c:if>
 
-
+                <!-- pending to verify by comments -->
                 <div class="page-title"><spring:message code="moderator.pending"/></div>
                 <div class="page-description"></div>
                 <div class="d-flex flex-column justify-content-center">
@@ -131,6 +131,7 @@
                     </c:otherwise>
                 </c:choose>
                 </div>
+                <!-- pending applicants to verify -->
                 <div class="page-title"><spring:message code="moderator.pendingApplicants"/></div>
                 <div class="page-description"></div>
                 <div class="d-flex flex-wrap justify-content-center">
@@ -169,14 +170,14 @@
                     </c:choose>
                 </div>
             </div>
-            <!-- Comments/Content managing -->
+            <!-- Reported Comments/Content managing -->
             <div class="right col">
                 <c:if test="${isAdmin}">
                     <div class="page-title"><spring:message code="moderate.comment.title"/></div>
                     <div class="page-description"></div>
                     <div class="row justify-content-center">
                         <c:choose>
-                            <c:when test="${not empty reportedComments}">
+                            <c:when test="${not empty reportedComments || rComPage != 1}">
                                 <div class="d-flex flex-column">
                                     <c:forEach items="${reportedComments}" var="reportedComment">
                                         <div class="card emphasis emph-comment mb-2 verified">
@@ -212,6 +213,36 @@
                             </c:otherwise>
                         </c:choose>
                     </div>
+                    <c:if test="${not empty reportedComments || rComPage != 1}">
+                        <ul class="pagination justify-content-center">
+                            <c:choose>
+                            <c:when test="${rComPage != 1}">
+                            <li class="page-item disabled">
+                                </c:when>
+                                <c:otherwise>
+                            <li class="page-item ">
+                                </c:otherwise>
+                                </c:choose>
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage-1}"/>" aria-label="Previous">
+                                    <span aria-hidden="true">&lsaquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                            <c:choose>
+                            <c:when test="${reportedComments.size() < pageSize}">
+                            <li class="page-item disabled">
+                                </c:when>
+                                <c:otherwise>
+                            <li class="page-item">
+                                </c:otherwise>
+                                </c:choose>
+                                <a class="page-link" href="<c:out value="/mod?modsPage=${modsPage}&rComPage=${rComPage+1}"/>" aria-label="Next">
+                                    <span aria-hidden="true">&rsaquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </c:if>
                 </c:if>
 
                 <div class="page-title"><spring:message code="moderate.content.title"/></div>

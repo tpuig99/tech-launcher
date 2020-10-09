@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ReportCommentDao {
     Optional<ReportComment> getById(long reportId);
-    List<ReportComment> getAll();
+    List<ReportComment> getAll(long page, long pageSize);
     List<ReportComment> getByFramework(long frameworkId);
     Optional<ReportComment> getByComment(long commentId);
     void add(long commentId,long userId,String description);
