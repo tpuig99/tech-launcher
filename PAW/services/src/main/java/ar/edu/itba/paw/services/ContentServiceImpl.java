@@ -117,8 +117,8 @@ public class ContentServiceImpl implements ContentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ReportContent> getAllReports() {
-        return rc.getAll();
+    public List<ReportContent> getAllReports(long page) {
+        return rc.getAll(page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)
@@ -157,4 +157,9 @@ public class ContentServiceImpl implements ContentService {
         rc.delete(reportId);
     }
 
+    @Transactional
+    @Override
+    public List<ReportContent> getReportsByFrameworks(List<Long> frameworksIds, long page) {
+        return rc.getByFrameworks(frameworksIds, page, PAGESIZE);
+    }
 }

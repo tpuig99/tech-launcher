@@ -25,6 +25,7 @@ import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private final long PAGESIZE=6;
     private static final long USER_NOT_EXISTS = -1;
     @Qualifier("userDaoImpl")
     @Autowired
@@ -173,6 +174,11 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
+    public List<VerifyUser> getVerifyByFrameworks(List<Long> frameworksIds, boolean pending, long page) {
+        return verifyUserDao.getByFrameworks(frameworksIds, pending, page, PAGESIZE);
+    }
+
+    @Override
     public List<VerifyUser> getAllVerifyByUser(long userId) {
         return verifyUserDao.getAllByUser(userId);
     }
@@ -191,8 +197,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<VerifyUser> getVerifyByPending(boolean pending) {
-        return verifyUserDao.getByPending(pending);
+    public List<VerifyUser> getVerifyByPending(boolean pending, long page) {
+        return verifyUserDao.getByPending(pending, page, PAGESIZE);
     }
 
     @Transactional
@@ -266,5 +272,15 @@ public class UserServiceImpl implements UserService {
 
         email.setText(message);
         mailSender.send(email);
+    }
+
+    @Override
+    public List<VerifyUser> getApplicantsByPending(boolean pending, long page) {
+        return verifyUserDao.getApplicantsByPending(true, page, PAGESIZE);
+    }
+
+    @Override
+    public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page) {
+        return verifyUserDao.getApplicantsByFrameworks(frameworksIds, page, PAGESIZE);
     }
 }

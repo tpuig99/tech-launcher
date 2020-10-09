@@ -406,20 +406,6 @@ public class FrameworkController {
         }
         return ErrorController.redirectToErrorView();
     }
-    @RequestMapping(path={"/reports"}, method = RequestMethod.GET)
-    public ModelAndView getReports(){
-        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( userOptional.isPresent()){
-            User user = userOptional.get();
-                //acordate que admin solo puede ver comments y
-                //para los de content tener el user.isverifyfor(frameworkid)
-                List<ReportComment> reportComments = commentService.getAllReport();
-                List<ReportContent> reportContents = contentService.getAllReports();
-
-        }
-        return ErrorController.redirectToErrorView();
-    }
-
 
     @RequestMapping(path={"/comment/delete"}, method = RequestMethod.POST)
     public ModelAndView deleteComment(@Valid @ModelAttribute("deleteCommentForm") final DeleteCommentForm form, final BindingResult errors){

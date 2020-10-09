@@ -34,14 +34,17 @@ public interface UserService {
     VerifyUser createVerify(long userId, long frameworkId);
     List<VerifyUser> getVerifyByUser(long userId,boolean pending);
     List<VerifyUser> getVerifyByFramework(long frameworkId,boolean pending);
+    List<VerifyUser> getVerifyByFrameworks( List<Long> frameworksIds, boolean pending, long page );
     List<VerifyUser> getAllVerifyByUser(long userId);
     List<VerifyUser> getAllVerifyByFramework(long frameworkId);
     Optional<VerifyUser> getVerifyById(long verificationId);
-    List<VerifyUser> getVerifyByPending(boolean pending);
+    List<VerifyUser> getVerifyByPending(boolean pending, long page);
     void deleteVerification(long verificationId);
     void deleteVerificationByUser(long userId);
     void verify(long verificationId);
     Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId);
     void passwordMailing(User user, String appUrl);
     void modMailing(User user,String frameworkName);
+    List<VerifyUser> getApplicantsByPending( boolean pending, long page);
+    List<VerifyUser> getApplicantsByFrameworks( List<Long> frameworksIds, long page);
 }

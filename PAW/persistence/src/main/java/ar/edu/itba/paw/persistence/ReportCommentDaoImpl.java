@@ -75,8 +75,8 @@ public class ReportCommentDaoImpl implements ReportCommentDao{
     }
 
     @Override
-    public List<ReportComment> getAll() {
-        return jdbcTemplate.query(SELECTION+ORDER_BY,EXTRACTOR);
+    public List<ReportComment> getAll(long page, long pageSize) {
+        return jdbcTemplate.query(SELECTION+ORDER_BY + " LIMIT "+ pageSize + " OFFSET " + (page-1)*pageSize,EXTRACTOR);
     }
 
     @Override

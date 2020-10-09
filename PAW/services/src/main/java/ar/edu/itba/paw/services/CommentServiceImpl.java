@@ -141,8 +141,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ReportComment> getAllReport() {
-        return rc.getAll();
+    public List<ReportComment> getAllReport(long page) {
+        return rc.getAll(page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)
