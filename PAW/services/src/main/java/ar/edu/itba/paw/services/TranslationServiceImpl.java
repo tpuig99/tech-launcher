@@ -38,6 +38,14 @@ public class TranslationServiceImpl implements TranslationService {
         toReturn.put("Functional Programming",messageSource.getMessage("category.functional",new Object[]{}, LocaleContextHolder.getLocale()));
         toReturn.put("Imperative Programming",messageSource.getMessage("category.imperative",new Object[]{}, LocaleContextHolder.getLocale()));
         toReturn.put("Object Oriented Programming",messageSource.getMessage("category.object_oriented",new Object[]{}, LocaleContextHolder.getLocale()));
+        toReturn.put("Related",messageSource.getMessage("category.related",new Object[]{}, LocaleContextHolder.getLocale()));
+        toReturn.put("Entertainment",messageSource.getMessage("category.entertainment",new Object[]{}, LocaleContextHolder.getLocale()));
+        toReturn.put("Decentralized Systems",messageSource.getMessage("category.decentralized_systems",new Object[]{}, LocaleContextHolder.getLocale()));
+        toReturn.put("Higher Education",messageSource.getMessage("category.higher_education",new Object[]{}, LocaleContextHolder.getLocale()));
+        toReturn.put("Events",messageSource.getMessage("category.events",new Object[]{}, LocaleContextHolder.getLocale()));
+        toReturn.put("Testing",messageSource.getMessage("category.testing",new Object[]{}, LocaleContextHolder.getLocale()));
+        toReturn.put("Miscellaneous",messageSource.getMessage("category.miscellaneous",new Object[]{}, LocaleContextHolder.getLocale()));
+        toReturn.put("Computer Science",messageSource.getMessage("category.computer_science",new Object[]{}, LocaleContextHolder.getLocale()));
         return toReturn;
     }
 

@@ -5,7 +5,9 @@
 <html>
 <head>
     <title>
-        ${category_translation}
+        <spring:message code="tech.wref"
+                        arguments="${category_translation}"
+                        htmlEscape="true"/>
     </title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
@@ -23,7 +25,9 @@
 
 <div class="content">
     <div class="page-title">
-        <h2>${category_translation}</h2>
+        <h2>
+            ${category_translation}
+        </h2>
     </div>
     <div class="page-description">
 
