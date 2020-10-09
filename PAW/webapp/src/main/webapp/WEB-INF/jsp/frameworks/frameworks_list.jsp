@@ -34,7 +34,12 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="check${category}">
                     <label class="form-check-label" for="check${category}">
-                            ${category}
+                        <c:choose>
+                            <c:when test="${categories_translated.get(category) != null}">
+                                <c:out value="${categories_translated.get(category)}"/>
+                            </c:when>
+                            <c:otherwise>${category}</c:otherwise>
+                        </c:choose>
                     </label>
                 </div>
             </c:forEach>
@@ -46,7 +51,12 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="check${category}">
                         <label class="form-check-label" for="check${category}">
-                                ${category}
+                            <c:choose>
+                                <c:when test="${categories_translated.get(category) != null}">
+                                    <c:out value="${categories_translated.get(category)}"/>
+                                </c:when>
+                                <c:otherwise>${category}</c:otherwise>
+                            </c:choose>
                         </label>
                     </div>
                 </c:forEach>
@@ -61,7 +71,12 @@
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="check${type}">
                 <label class="form-check-label" for="check${type}">
-                        ${type}
+                    <c:choose>
+                        <c:when test="${types_translated.get(type) != null}">
+                            <c:out value="${types_translated.get(type)}"/>
+                        </c:when>
+                        <c:otherwise>${type}</c:otherwise>
+                    </c:choose>
                 </label>
             </div>
         </c:forEach>
@@ -73,7 +88,12 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="check${type}">
                     <label class="form-check-label" for="check${type}">
-                            ${type}
+                        <c:choose>
+                            <c:when test="${types_translated.get(type) != null}">
+                                <c:out value="${types_translated.get(type)}"/>
+                            </c:when>
+                            <c:otherwise>${type}</c:otherwise>
+                        </c:choose>
                     </label>
                 </div>
             </c:forEach>

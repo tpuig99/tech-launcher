@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.FrameworkCategories;
 import ar.edu.itba.paw.models.FrameworkType;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.FrameworkService;
+import ar.edu.itba.paw.service.TranslationService;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,9 @@ public class FrameworkListController {
 
     @Autowired
     private UserService us;
+
+    @Autowired
+    private TranslationService ts;
 
     final long startPage = 1;
     final long PAGESIZE = 7;
@@ -99,8 +103,10 @@ public class FrameworkListController {
         mav.addObject("page_size", PAGESIZE);
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("categories", allCategories );
+        mav.addObject("categories_translated", ts.getAllCategories());
         mav.addObject("frameworkNames",fs.getFrameworkNames());
         mav.addObject("types", allTypes);
+        mav.addObject("types_translated", ts.getAllTypes());
 
         //Search Results For:
         mav.addObject("techNameQuery", toSearch );

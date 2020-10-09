@@ -22,6 +22,9 @@ public class FrameworkMenuController {
     @Autowired
     private UserService us;
 
+    @Autowired
+    private TranslationService ts;
+
     final private long startPage = 1;
     final private long PAGESIZE = 7;
 
@@ -31,6 +34,7 @@ public class FrameworkMenuController {
 
         if (!fs.getByCategory(FrameworkCategories.getByName(category), startPage).isEmpty()) {
             mav.addObject("category",category);
+            mav.addObject("category_translation",ts.getCategory(category));
             mav.addObject("frameworksList", fs.getByCategory(FrameworkCategories.getByName(category), startPage));
             mav.addObject("frameworks_page", startPage);
             mav.addObject("page_size", PAGESIZE);
@@ -52,6 +56,7 @@ public class FrameworkMenuController {
 
         if (!fs.getByCategory(FrameworkCategories.getByName(category),frameworksPage).isEmpty()) {
             mav.addObject("category",category);
+            mav.addObject("category_translation",ts.getCategory(category));
             mav.addObject("frameworksList", fs.getByCategory(FrameworkCategories.getByName(category),frameworksPage));
             mav.addObject("frameworks_page", frameworksPage);
             mav.addObject("page_size", PAGESIZE);
