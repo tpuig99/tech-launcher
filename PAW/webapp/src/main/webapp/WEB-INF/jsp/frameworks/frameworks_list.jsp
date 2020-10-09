@@ -34,7 +34,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="check${category}">
                     <label class="form-check-label" for="check${category}">
-                            ${category}
+                        <c:out value="${categories_translated.get(category)}"/>
                     </label>
                 </div>
             </c:forEach>
@@ -46,7 +46,7 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="check${category}">
                         <label class="form-check-label" for="check${category}">
-                                ${category}
+                            <c:out value="${categories_translated.get(category)}"/>
                         </label>
                     </div>
                 </c:forEach>
@@ -61,7 +61,7 @@
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="check${type}">
                 <label class="form-check-label" for="check${type}">
-                        ${type}
+                    <c:out value="${types_translated.get(type)}"/>
                 </label>
             </div>
         </c:forEach>
@@ -73,7 +73,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="check${type}">
                     <label class="form-check-label" for="check${type}">
-                            ${type}
+                        <c:out value="${types_translated.get(type)}"/>
                     </label>
                 </div>
             </c:forEach>
@@ -147,12 +147,12 @@
                 </c:if>
                 <c:if test="${not empty categoriesQuery}">
                     <c:forEach items="${categoriesQuery}" var="categoryQuery">
-                        <span id="name${categoryQuery}" class="my-badge-inline badge-pill secondary-badge "><c:out value="${categoryQuery}"/></span>
+                        <span id="name${categoryQuery}" class="my-badge-inline badge-pill secondary-badge "><c:out value="${categories_translated.get(categoryQuery)}"/></span>
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty typesQuery}">
                     <c:forEach items="${typesQuery}" var="typeQuery">
-                        <span id="name${typeQuery}" class="my-badge-inline badge-pill secondary-badge "><c:out value="${typeQuery}"/></span>
+                        <span id="name${typeQuery}" class="my-badge-inline badge-pill secondary-badge "><c:out value="${types_translated.get(typeQuery)}"/></span>
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty starsQuery1}">
@@ -256,10 +256,10 @@
 
         let tags = [];
         <c:forEach items="${categories}" var="category">
-            tags.push('${category}');
+            tags.push('${categories_translated.get(category)}');
         </c:forEach>
         <c:forEach items="${types}" var="type">
-            tags.push('${type}');
+            tags.push('${types_translated.get(type)}');
         </c:forEach>
         <c:forEach items="${frameworkNames}" var="names">
             tags.push('${names}');

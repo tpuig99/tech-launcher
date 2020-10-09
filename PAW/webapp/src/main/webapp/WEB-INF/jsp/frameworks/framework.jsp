@@ -48,9 +48,14 @@
                                 <div class="col">
                                     <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
                                     <div><spring:message code="tech.author"/>:&nbsp;<a href="/users/${framework.author}">${framework.author}</a></div>
-                                    <div><spring:message code="tech.date"/>:&nbsp;${framework.publish_date}</div>
-                                    <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Category"> ${framework.category}</span>
-                                    <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="Type"> ${framework.type}</span>
+                                    <div><spring:message code="tech.date"/>:&nbsp;${framework.publish_date.toLocaleString()}</div>
+                                    <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.category"/>"> ${category_translated}</span>
+                                    <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.type"/>"> ${type_translated}</span>
+                                </div>
+                                <div class="col d-flex align-items-center justify-content-center">
+                                    <span class="fa fa-star color-star"></span>
+                                    <span> ${framework.starsFormated} | ${framework.votesCant}</span>
+                                    <span class="fa fa-user"></span>
                                 </div>
                                 <div class="d-flex flex-column my-auto">
                                     <c:if test="${user_isMod}">
@@ -69,11 +74,6 @@
                                             </button>
                                         </div>
                                     </c:if>
-                                </div>
-                                <div class="col d-flex align-items-center justify-content-center">
-                                <span class="fa fa-star color-star"></span>
-                                <span> ${framework.starsFormated} | ${framework.votesCant}</span>
-                                    <span class="fa fa-user"></span>
                                 </div>
                             </div>
                             <div class="description">
@@ -153,7 +153,7 @@
                         <li class="page-item ">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:out value="/${framework.category}/${framework.id}/pages?books_page=${books_page-1}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Previous">
+                            <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page-1}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Previous">
                                 <span aria-hidden="true">&lsaquo;</span>
                                 <span class="sr-only">Previous</span>
                             </a>
@@ -166,7 +166,7 @@
                         <li class="page-item">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:out value="/${framework.category}/${framework.id}/pages?books_page=${books_page+1}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Next">
+                            <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page+1}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Next">
                                 <span aria-hidden="true">&rsaquo;</span>
                                 <span class="sr-only">Next</span>
                             </a>
@@ -213,7 +213,7 @@
                         <li class="page-item ">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:out value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page-1}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Previous">
+                            <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page-1}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Previous">
                                 <span aria-hidden="true">&lsaquo;</span>
                                 <span class="sr-only">Previous</span>
                             </a>
@@ -226,7 +226,7 @@
                         <li class="page-item">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:out value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page+1}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Next">
+                            <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page+1}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Next">
                                 <span aria-hidden="true">&rsaquo;</span>
                                 <span class="sr-only">Next</span>
                             </a>
@@ -272,7 +272,7 @@
                         <li class="page-item ">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:out value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page-1}&comments_page=${comments_page}"/>" aria-label="Previous">
+                            <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page-1}&comments_page=${comments_page}"/>" aria-label="Previous">
                                 <span aria-hidden="true">&lsaquo;</span>
                                 <span class="sr-only">Previous</span>
                             </a>
@@ -285,7 +285,7 @@
                         <li class="page-item">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:out value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page+1}&comments_page=${comments_page}"/>" aria-label="Next">
+                            <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page+1}&comments_page=${comments_page}"/>" aria-label="Next">
                                 <span aria-hidden="true">&rsaquo;</span>
                                 <span class="sr-only">Next</span>
                             </a>
@@ -520,7 +520,7 @@
                         <li class="page-item ">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:out value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page-1}"/>" aria-label="Previous">
+                            <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page-1}"/>" aria-label="Previous">
                                 <span aria-hidden="true">&lsaquo;</span>
                                 <span class="sr-only">Previous</span>
                             </a>
@@ -533,7 +533,7 @@
                         <li class="page-item">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:out value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page+1}"/>" aria-label="Next">
+                            <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page+1}"/>" aria-label="Next">
                                 <span aria-hidden="true">&rsaquo;</span>
                                 <span class="sr-only">Next</span>
                             </a>

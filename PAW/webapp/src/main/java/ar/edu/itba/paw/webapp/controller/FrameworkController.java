@@ -38,6 +38,9 @@ public class FrameworkController {
     @Autowired
     private UserService us;
 
+    @Autowired
+    private TranslationService ts;
+
     private final long startPage = 1;
     private final long pageSize = 5;
 
@@ -64,6 +67,8 @@ public class FrameworkController {
         if (framework.isPresent()) {
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
             mav.addObject("framework", framework.get());
+            mav.addObject("category_translated", ts.getCategory(framework.get().getCategory()));
+            mav.addObject("type_translated", ts.getType(framework.get().getType()));
 
             mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book, startPage));
             mav.addObject("books_page", startPage);

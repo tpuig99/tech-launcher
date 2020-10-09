@@ -41,7 +41,7 @@
                                                     <a href="<c:url value="/${moderator.frameworkName}/${moderator.frameworkId}"/>"><c:out value="${moderator.frameworkName}" default=""/></a>
                                                 </div>
                                             </div>
-                                            <div class="card-footer row justify-content-center">
+                                            <div class="card-footer row mx-2 justify-content-center">
                                                 <c:url value="/demote" var="postPathDemote"/>
                                                 <form:form modelAttribute="revokePromotionForm" action="${postPathDemote}" method="post">
                                                     <form:label path="revokePromotionVerificationId">
@@ -242,14 +242,18 @@
                                 <div class="d-flex flex-column">
                                     <c:forEach items="${reportedComments}" var="reportedComment">
                                         <div class="card emphasis emph-comment mb-2 verified">
-                                            <div class="card-body mt-1">
-                                                <p><spring:message code="moderate.report.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedComment.userNameOwner}"/>"><c:out value="${reportedComment.userNameOwner}" default=""/></a></p>
-                                                <p><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/${reportedComment.categoryAsString}/${reportedComment.frameworkId}"/>"><c:out value="${reportedComment.frameworkName}" default=""/></a></p>
-                                                <p><spring:message code="moderate.comment.description"/>:&nbsp;<c:out value="${reportedComment.commentDescription}" default=""/></p>
-                                                <p class="border-top"><spring:message code="moderate.report.description"/>:&nbsp;<c:out value=" ${reportedComment.reportDescription}" default=""/></p>
-                                                <p><spring:message code="moderate.report.quantity"/>:&nbsp;${reportedComment.reportsUserName.size()}</p>
+                                            <div class="card-body my-auto">
+                                                <div class="border-bottom">
+                                                <p class="my-1"><spring:message code="moderate.report.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedComment.userNameOwner}"/>"><c:out value="${reportedComment.userNameOwner}" default=""/></a></p>
+                                                <p class="my-1"><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/${reportedComment.categoryAsString}/${reportedComment.frameworkId}"/>"><c:out value="${reportedComment.frameworkName}" default=""/></a></p>
+                                                <p class="my-1"><spring:message code="moderate.comment.description"/>:&nbsp;<c:out value="${reportedComment.commentDescription}" default=""/></p>
+                                                </div>
+                                                <div class="mt-2">
+                                                <p class="my-1"><spring:message code="moderate.report.description"/>:&nbsp;<c:out value=" ${reportedComment.reportDescription}" default=""/></p>
+                                                <p class="my-1"><spring:message code="moderate.report.quantity"/>:&nbsp;${reportedComment.reportsUserName.size()}</p>
+                                                </div>
                                             </div>
-                                            <div class="card-footer row justify-content-center">
+                                            <div class="card-footer row mx-2 justify-content-center">
                                                 <c:url value="/mod/comment/delete" var="postPathDeleteComment"/>
                                                 <form:form modelAttribute="deleteCommentForm" action="${postPathDeleteComment}" method="post">
                                                     <form:label path="deleteCommentId">
@@ -314,14 +318,18 @@
                             <div class="d-flex flex-column">
                                 <c:forEach items="${reportedContents}" var="reportedContent">
                                     <div class="card d-flex flex-wrap emphasis emph-comment mb-2 verified">
-                                        <div class="card-body mt-1">
-                                            <p><spring:message code="moderate.report.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedContent.userNameOwner}"/>"><c:out value="${reportedContent.userNameOwner}" default=""/></a></p>
-                                            <p><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a></p>
-                                            <p><spring:message code="moderate.content.description"/>:&nbsp;<a href="<c:url value="${reportedContent.link}"/>"><c:out value="${reportedContent.title}" default=""/></a></p>
-                                            <p class="border-top"><spring:message code="moderate.report.description"/>:&nbsp;<c:out value=" ${reportedContent.reportDescription}" default=""/></p>
-                                            <p><spring:message code="moderate.report.quantity"/>:&nbsp;${reportedContent.reportsUserName.size()}</p>
+                                        <div class="card-body my-auto">
+                                            <div class="border-bottom">
+                                            <p class="my-1"><spring:message code="moderate.report.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedContent.userNameOwner}"/>"><c:out value="${reportedContent.userNameOwner}" default=""/></a></p>
+                                            <p class="my-1"><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a></p>
+                                            <p class="my-1"><spring:message code="moderate.content.description"/>:&nbsp;<a href="<c:url value="${reportedContent.link}"/>"><c:out value="${reportedContent.title}" default=""/></a></p>
+                                            </div>
+                                            <div class="mt-2">
+                                            <p class="my-1"><spring:message code="moderate.report.description"/>:&nbsp;<c:out value=" ${reportedContent.reportDescription}" default=""/></p>
+                                            <p class="my-1"><spring:message code="moderate.report.quantity"/>:&nbsp;${reportedContent.reportsUserName.size()}</p>
+                                            </div>
                                         </div>
-                                        <div class="card-footer row justify-content-center">
+                                        <div class="card-footer row mx-2 justify-content-center">
                                             <c:url value="/mod/content/delete" var="postPathDeleteContent"/>
                                             <form:form modelAttribute="deleteContentForm" action="${postPathDeleteContent}" method="post">
                                                 <form:label path="deleteContentId">

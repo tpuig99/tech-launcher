@@ -5,7 +5,9 @@
 <html>
 <head>
     <title>
-        ${category}
+        <spring:message code="tech.wref"
+                        arguments="${category_translation}"
+                        htmlEscape="true"/>
     </title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
@@ -23,7 +25,9 @@
 
 <div class="content">
     <div class="page-title">
-        <h2>${category}</h2>
+        <h2>
+            ${category_translation}
+        </h2>
     </div>
     <div class="page-description">
 
@@ -56,7 +60,7 @@
         <li class="page-item ">
             </c:otherwise>
             </c:choose>
-            <a class="page-link" href="<c:out value="/${category}/pages?frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
+            <a class="page-link" href="<c:url value="/${category}/pages?frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
                 <span aria-hidden="true">&lsaquo;</span>
                 <span class="sr-only">Previous</span>
             </a>
@@ -69,7 +73,7 @@
         <li class="page-item">
             </c:otherwise>
             </c:choose>
-            <a class="page-link" href="<c:out value="/${category}/pages?frameworks_page=${frameworks_page-1}"/>" aria-label="Next">
+            <a class="page-link" href="<c:url value="/${category}/pages?frameworks_page=${frameworks_page-1}"/>" aria-label="Next">
                 <span aria-hidden="true">&rsaquo;</span>
                 <span class="sr-only">Next</span>
             </a>
