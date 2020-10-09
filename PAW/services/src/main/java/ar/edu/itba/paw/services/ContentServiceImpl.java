@@ -157,4 +157,9 @@ public class ContentServiceImpl implements ContentService {
         rc.delete(reportId);
     }
 
+    @Transactional
+    @Override
+    public List<ReportContent> getReportsByFrameworks(List<Long> frameworksIds) {
+        return rc.getByFrameworks(frameworksIds);
+    }
 }

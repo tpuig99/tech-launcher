@@ -156,10 +156,7 @@ public class UserController {
 
                 mav.addObject("pendingToVerify",verify);
                 mav.addObject("pendingApplicants", applicants);
-                List<ReportContent> reportContents = new LinkedList<>();
-                user.getVerifications().forEach( verifyUser -> {
-                    reportContents.addAll(contentService.getReportsByFramework(verifyUser.getFrameworkId()));
-                });
+                List<ReportContent> reportContents = contentService.getReportsByFrameworks(frameworksIds);
                 mav.addObject("reportedContents", reportContents);
                 return mav;
             }

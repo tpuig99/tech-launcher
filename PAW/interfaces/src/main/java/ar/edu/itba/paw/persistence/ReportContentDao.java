@@ -9,6 +9,7 @@ public interface ReportContentDao {
     Optional<ReportContent> getById(long reportId);
     List<ReportContent> getAll();
     List<ReportContent> getByFramework(long frameworkId);
+    List<ReportContent> getByFrameworks( List<Long> frameworksIds);
     Optional<ReportContent> getByContent(long contentId);
     void add(long contentId,long userId,String description);
     void delete(long reportId);
