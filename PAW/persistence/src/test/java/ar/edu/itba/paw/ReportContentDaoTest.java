@@ -166,7 +166,7 @@ public class ReportContentDaoTest {
             jdbcInsert.execute(args);
         }
 
-        final List<ReportContent> content = reportContentDao.getAll();
+        final List<ReportContent> content = reportContentDao.getAll(1, 10);
 
         assertEquals(false,content.isEmpty());
         assertEquals(6,content.size());

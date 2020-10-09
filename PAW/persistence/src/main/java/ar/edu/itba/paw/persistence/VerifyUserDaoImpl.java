@@ -108,15 +108,15 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
     }
 
     @Override
-    public List<VerifyUser> getByFrameworks( List<Long> frameworksIds, boolean pending){
+    public List<VerifyUser> getByFrameworks( List<Long> frameworksIds, boolean pending, long page, long pageSize){
         Map<String, List<Long>> params = new HashMap<>();
         params.put("framework_id", frameworksIds);
         String query;
 
         if( !pending )
-            query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = false" + GROUP_BY;
+            query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = false" + GROUP_BY + " LIMIT " + pageSize + " OFFSET " + (page-1)*pageSize;
         else
-            query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = true and v.comment_id IS NOT NULL " + GROUP_BY;
+            query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = true and v.comment_id IS NOT NULL " + GROUP_BY + " LIMIT " + pageSize + " OFFSET " + (page-1)*pageSize;
 
         return namedJdbcTemplate.query(query, params, ROW_MAPPER);
     }
@@ -176,11 +176,11 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
     }
 
     @Override
-    public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds) {
+    public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
         Map<String, List<Long>> params = new HashMap<>();
         params.put("framework_id", new ArrayList<>(frameworksIds));
         String query;
-        query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = true and v.comment_id IS NULL " + GROUP_BY;
+        query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = true and v.comment_id IS NULL " + GROUP_BY + " LIMIT " + pageSize + " OFFSET " + pageSize*(page-1);
 
         return namedJdbcTemplate.query(query, params, ROW_MAPPER);
     }

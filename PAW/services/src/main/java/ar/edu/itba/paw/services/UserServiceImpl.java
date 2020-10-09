@@ -159,8 +159,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<VerifyUser> getVerifyByFrameworks(List<Long> frameworksIds, boolean pending) {
-        return verifyUserDao.getByFrameworks(frameworksIds, pending);
+    public List<VerifyUser> getVerifyByFrameworks(List<Long> frameworksIds, boolean pending, long page) {
+        return verifyUserDao.getByFrameworks(frameworksIds, pending, page, PAGESIZE);
     }
 
     @Override
@@ -256,7 +256,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds) {
-        return verifyUserDao.getApplicantsByFrameworks(frameworksIds);
+    public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page) {
+        return verifyUserDao.getApplicantsByFrameworks(frameworksIds, page, PAGESIZE);
     }
 }

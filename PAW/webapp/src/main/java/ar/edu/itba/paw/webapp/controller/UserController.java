@@ -64,7 +64,7 @@ public class UserController {
             us.deleteVerification(form.getRejectUserVerificationId());
         }
 
-        return modPage(null, null, null);
+        return modPage(null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/rejectPending"}, method = RequestMethod.POST )
@@ -74,7 +74,7 @@ public class UserController {
             us.deleteVerification(form.getRejectPendingUserVerificationId());
         }
 
-        return modPage(null, null, null);
+        return modPage(null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/accept"}, method = RequestMethod.POST)
@@ -85,7 +85,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
             }
-        return modPage(null, null, null);
+        return modPage(null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/acceptPending"}, method = RequestMethod.POST)
@@ -96,7 +96,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
         }
-        return modPage(null, null, null);
+        return modPage(null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/demote"}, method = RequestMethod.POST)
@@ -106,11 +106,15 @@ public class UserController {
             us.deleteVerification(form.getRevokePromotionVerificationId());
         }
 
-        return modPage(null, null, null);
+        return modPage(null, null, null, null, null);
     }
 
     @RequestMapping("/mod")
-    public ModelAndView modPage(@RequestParam(value = "modsPage", required = false) final Long modsPage, @RequestParam(value = "rComPage", required = false) final Long rComPage, @RequestParam(value = "applicantsPage", required = false) final Long applicantsPage){
+    public ModelAndView modPage(@RequestParam(value = "modsPage", required = false) final Long modsPage,
+                                @RequestParam(value = "rComPage", required = false) final Long rComPage,
+                                @RequestParam(value = "applicantsPage", required = false) final Long applicantsPage,
+                                @RequestParam(value = "verifyPage", required = false) final Long verifyPage,
+                                @RequestParam(value = "rConPage", required = false) final Long rConPage){
         ModelAndView mav = new ModelAndView("admin/mod_page");
 
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
@@ -132,17 +136,27 @@ public class UserController {
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             mav.addObject("isAdmin",user.isAdmin());
             if( user.isAdmin()) {
-                List<VerifyUser> mods = us.getVerifyByPending(false, modsPage == null ? 1:modsPage);
-                List<VerifyUser> verify = us.getVerifyByPending(true, modsPage == null ? 1:modsPage);
+                List<VerifyUser> mods = us.getVerifyByPending(false, modsPage == null ? pageStart:modsPage);
+                List<VerifyUser> verify = us.getVerifyByPending(true, verifyPage == null ? pageStart:verifyPage);
                 List<VerifyUser> applicants = us.getApplicantsByPending(true, applicantsPage == null ? pageStart:applicantsPage);
-                mav.addObject("modsPage", modsPage == null ? pageStart:modsPage);
+                List<ReportComment> reportedComments = commentService.getAllReport(rComPage == null ? pageStart:rComPage);
+                List<ReportContent> reportedContents = contentService.getAllReports(rConPage == null ? pageStart:rConPage);
                 mav.addObject("pageSize", PAGESIZE);
+
                 mav.addObject("mods",mods);
+                mav.addObject("modsPage", modsPage == null ? pageStart:modsPage);
+
                 mav.addObject("pendingToVerify", verify);
+                mav.addObject("verifyPage", verifyPage == null ? pageStart:verifyPage);
+
                 mav.addObject("pendingApplicants", applicants);
-                mav.addObject("reportedComments", commentService.getAllReport(rComPage == null ? pageStart:rComPage));
+                mav.addObject("applicantsPage", applicantsPage == null ? pageStart:applicantsPage);
+
+                mav.addObject("reportedComments", reportedComments);
                 mav.addObject("rComPage", rComPage == null ? pageStart:rComPage);
-                mav.addObject("reportedContents", contentService.getAllReports());
+
+                mav.addObject("reportedContents", reportedContents );
+                mav.addObject("rConPage", rConPage == null ? pageStart:rConPage);
 
                 return mav;
             }
@@ -151,13 +165,20 @@ public class UserController {
                 user.getVerifications().forEach( verifyUser -> {
                     frameworksIds.add(verifyUser.getFrameworkId());
                 });
-                List<VerifyUser> verify = us.getVerifyByFrameworks(frameworksIds, true);
-                List<VerifyUser> applicants = us.getApplicantsByFrameworks(frameworksIds);
+                List<VerifyUser> verify = us.getVerifyByFrameworks(frameworksIds, true, verifyPage == null ? pageStart:verifyPage);
+                List<VerifyUser> applicants = us.getApplicantsByFrameworks(frameworksIds, applicantsPage == null ? pageStart:applicantsPage);
+                List<ReportContent> reportContents = contentService.getReportsByFrameworks(frameworksIds, rConPage == null ? pageStart:rConPage);
+
+                mav.addObject("pageSize", PAGESIZE);
 
                 mav.addObject("pendingToVerify",verify);
+                mav.addObject("verifyPage", verifyPage == null ? pageStart:verifyPage);
+
                 mav.addObject("pendingApplicants", applicants);
-                List<ReportContent> reportContents = contentService.getReportsByFrameworks(frameworksIds);
+                mav.addObject("applicantsPage", applicantsPage == null ? pageStart:applicantsPage);
+
                 mav.addObject("reportedContents", reportContents);
+                mav.addObject("rConPage", rConPage == null ? pageStart:rConPage);
                 return mav;
             }
         }
@@ -216,7 +237,7 @@ public class UserController {
                 Optional<Comment> commentOptional = commentService.getById(form.getDeleteCommentId());
                 if( commentOptional.isPresent() ){
                     commentService.acceptReport(form.getDeleteCommentId());
-                    return modPage(null, null, null);
+                    return modPage(null, null, null, null, null);
                 }
             }
         }
@@ -232,7 +253,7 @@ public class UserController {
             if( user.isAdmin() ){
                 commentService.denyReport(form.getIgnoreCommentId());
 
-                return modPage(null, null, null);
+                return modPage(null, null, null, null, null);
             }
         }
 
@@ -248,7 +269,7 @@ public class UserController {
                 Optional<Content> contentOptional = contentService.getById(form.getDeleteContentId());
                 if( contentOptional.isPresent() ){
                     contentService.acceptReport(form.getDeleteContentId());
-                    return modPage(null, null, null);
+                    return modPage(null, null, null, null, null);
                 }
             }
         }
@@ -265,7 +286,7 @@ public class UserController {
                 Optional<Content> contentOptional = contentService.getById(form.getIgnoreContentId());
                 if( contentOptional.isPresent() ){
                     contentService.denyReport(form.getIgnoreContentId());
-                    return modPage(null, null, null);
+                    return modPage(null, null, null, null, null);
                 }
             }
         }

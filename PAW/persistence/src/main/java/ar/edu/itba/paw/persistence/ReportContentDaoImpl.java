@@ -74,8 +74,8 @@ public class ReportContentDaoImpl implements ReportContentDao{
     }
 
     @Override
-    public List<ReportContent> getAll() {
-        return jdbcTemplate.query(SELECTION+ORDER_BY,EXTRACTOR);
+    public List<ReportContent> getAll(long page, long pageSize) {
+        return jdbcTemplate.query(SELECTION+ORDER_BY + " WHERE LIMIT ? OFFSET ? ", new Object[]{pageSize, (page-1)*pageSize},EXTRACTOR);
     }
 
     @Override
@@ -111,11 +111,11 @@ public class ReportContentDaoImpl implements ReportContentDao{
     }
 
     @Override
-    public List<ReportContent> getByFrameworks(List<Long> frameworksIds) {
+    public List<ReportContent> getByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
         Map<String, List<Long>> params = new HashMap<>();
         params.put("framework_id", new ArrayList<>(frameworksIds));
         String query;
-        query = SELECTION + " WHERE f.framework_id IN (:framework_id) " + ORDER_BY;
+        query = SELECTION + " WHERE f.framework_id IN (:framework_id) " + ORDER_BY + " LIMIT " + pageSize + " OFFSET " + (page-1)*pageSize;
 
         return namedJdbcTemplate.query(query, params, EXTRACTOR);
     }

@@ -170,7 +170,7 @@
                     </c:choose>
                 </div>
             </div>
-            <!-- Reported Comments/Content managing -->
+            <!-- Reported Comments -->
             <div class="right col">
                 <c:if test="${isAdmin}">
                     <div class="page-title"><spring:message code="moderate.comment.title"/></div>
@@ -236,7 +236,7 @@
                             <li class="page-item">
                                 </c:otherwise>
                                 </c:choose>
-                                <a class="page-link" href="<c:out value="/mod?modsPage=${modsPage}&rComPage=${rComPage+1}"/>" aria-label="Next">
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage+1}"/>" aria-label="Next">
                                     <span aria-hidden="true">&rsaquo;</span>
                                     <span class="sr-only">Next</span>
                                 </a>
@@ -244,7 +244,7 @@
                         </ul>
                     </c:if>
                 </c:if>
-
+                <!-- reported content -->
                 <div class="page-title"><spring:message code="moderate.content.title"/></div>
                 <div class="page-description"></div>
                 <div class="row justify-content-center">
