@@ -159,6 +159,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<VerifyUser> getVerifyByFrameworks(List<Long> frameworksIds, boolean pending) {
+        return verifyUserDao.getByFrameworks(frameworksIds, pending);
+    }
+
+    @Override
     public List<VerifyUser> getAllVerifyByUser(long userId) {
         return verifyUserDao.getAllByUser(userId);
     }
@@ -243,5 +248,15 @@ public class UserServiceImpl implements UserService {
 
         email.setText(message);
         mailSender.send(email);
+    }
+
+    @Override
+    public List<VerifyUser> getApplicantsByPending(boolean pending, long page) {
+        return verifyUserDao.getApplicantsByPending(true, page, PAGESIZE);
+    }
+
+    @Override
+    public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds) {
+        return verifyUserDao.getApplicantsByFrameworks(frameworksIds);
     }
 }

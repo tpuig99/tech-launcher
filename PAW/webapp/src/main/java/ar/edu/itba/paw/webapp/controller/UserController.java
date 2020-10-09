@@ -64,7 +64,7 @@ public class UserController {
             us.deleteVerification(form.getRejectUserVerificationId());
         }
 
-        return modPage(null, null);
+        return modPage(null, null, null);
     }
 
     @RequestMapping(path = {"/rejectPending"}, method = RequestMethod.POST )
@@ -74,7 +74,7 @@ public class UserController {
             us.deleteVerification(form.getRejectPendingUserVerificationId());
         }
 
-        return modPage(null, null);
+        return modPage(null, null, null);
     }
 
     @RequestMapping(path = {"/accept"}, method = RequestMethod.POST)
@@ -85,7 +85,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
             }
-        return modPage(null, null);
+        return modPage(null, null, null);
     }
 
     @RequestMapping(path = {"/acceptPending"}, method = RequestMethod.POST)
@@ -96,7 +96,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
         }
-        return modPage(null, null);
+        return modPage(null, null, null);
     }
 
     @RequestMapping(path = {"/demote"}, method = RequestMethod.POST)
@@ -106,11 +106,11 @@ public class UserController {
             us.deleteVerification(form.getRevokePromotionVerificationId());
         }
 
-        return modPage(null, null);
+        return modPage(null, null, null);
     }
 
     @RequestMapping("/mod")
-    public ModelAndView modPage(@RequestParam(value = "modsPage", required = false) final Long modsPage, @RequestParam(value = "rComPage", required = false) final Long rComPage){
+    public ModelAndView modPage(@RequestParam(value = "modsPage", required = false) final Long modsPage, @RequestParam(value = "rComPage", required = false) final Long rComPage, @RequestParam(value = "applicantsPage", required = false) final Long applicantsPage){
         ModelAndView mav = new ModelAndView("admin/mod_page");
 
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
@@ -134,35 +134,26 @@ public class UserController {
             if( user.isAdmin()) {
                 List<VerifyUser> mods = us.getVerifyByPending(false, modsPage == null ? 1:modsPage);
                 List<VerifyUser> verify = us.getVerifyByPending(true, modsPage == null ? 1:modsPage);
-                List<VerifyUser> applicants = new LinkedList<>();
-                verify.forEach(verifyUser -> {
-                    if(verifyUser.getComment() == null ){
-                        applicants.add(verifyUser);
-                    }
-                });
+                List<VerifyUser> applicants = us.getApplicantsByPending(true, applicantsPage == null ? pageStart:applicantsPage);
                 mav.addObject("modsPage", modsPage == null ? pageStart:modsPage);
                 mav.addObject("pageSize", PAGESIZE);
-                verify.removeAll(applicants);
                 mav.addObject("mods",mods);
                 mav.addObject("pendingToVerify", verify);
                 mav.addObject("pendingApplicants", applicants);
-                mav.addObject("reportedComments", commentService.getAllReport(rComPage == null ? pageStart:modsPage));
-                mav.addObject("rComPage", rComPage);
+                mav.addObject("reportedComments", commentService.getAllReport(rComPage == null ? pageStart:rComPage));
+                mav.addObject("rComPage", rComPage == null ? pageStart:rComPage);
                 mav.addObject("reportedContents", contentService.getAllReports());
+
                 return mav;
             }
             else if( user.isVerify() ){
-                List<VerifyUser> verify = new LinkedList<>();
-                user.getVerifications().forEach(verifyUser -> {
-                    verify.addAll(us.getVerifyByFramework(verifyUser.getFrameworkId(),true));
+                List<Long> frameworksIds = new LinkedList<>();
+                user.getVerifications().forEach( verifyUser -> {
+                    frameworksIds.add(verifyUser.getFrameworkId());
                 });
-                List<VerifyUser> applicants = new LinkedList<>();
-                verify.forEach(verifyUser -> {
-                    if(verifyUser.getComment() == null ){
-                        applicants.add(verifyUser);
-                    }
-                });
-                verify.removeAll(applicants);
+                List<VerifyUser> verify = us.getVerifyByFrameworks(frameworksIds, true);
+                List<VerifyUser> applicants = us.getApplicantsByFrameworks(frameworksIds);
+
                 mav.addObject("pendingToVerify",verify);
                 mav.addObject("pendingApplicants", applicants);
                 List<ReportContent> reportContents = new LinkedList<>();
@@ -228,7 +219,7 @@ public class UserController {
                 Optional<Comment> commentOptional = commentService.getById(form.getDeleteCommentId());
                 if( commentOptional.isPresent() ){
                     commentService.acceptReport(form.getDeleteCommentId());
-                    return modPage(null, null);
+                    return modPage(null, null, null);
                 }
             }
         }
@@ -244,7 +235,7 @@ public class UserController {
             if( user.isAdmin() ){
                 commentService.denyReport(form.getIgnoreCommentId());
 
-                return modPage(null, null);
+                return modPage(null, null, null);
             }
         }
 
@@ -260,7 +251,7 @@ public class UserController {
                 Optional<Content> contentOptional = contentService.getById(form.getDeleteContentId());
                 if( contentOptional.isPresent() ){
                     contentService.acceptReport(form.getDeleteContentId());
-                    return modPage(null, null);
+                    return modPage(null, null, null);
                 }
             }
         }
@@ -277,7 +268,7 @@ public class UserController {
                 Optional<Content> contentOptional = contentService.getById(form.getIgnoreContentId());
                 if( contentOptional.isPresent() ){
                     contentService.denyReport(form.getIgnoreContentId());
-                    return modPage(null, null);
+                    return modPage(null, null, null);
                 }
             }
         }
