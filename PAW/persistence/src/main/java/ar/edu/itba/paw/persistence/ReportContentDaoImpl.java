@@ -75,7 +75,7 @@ public class ReportContentDaoImpl implements ReportContentDao{
 
     @Override
     public List<ReportContent> getAll(long page, long pageSize) {
-        return jdbcTemplate.query(SELECTION+ORDER_BY + " WHERE LIMIT ? OFFSET ? ", new Object[]{pageSize, (page-1)*pageSize},EXTRACTOR);
+        return jdbcTemplate.query(SELECTION+ORDER_BY + " LIMIT ? OFFSET ? ", new Object[]{pageSize, (page-1)*pageSize},EXTRACTOR);
     }
 
     @Override

@@ -69,7 +69,7 @@
                             <li class="page-item ">
                                 </c:otherwise>
                                 </c:choose>
-                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage-1}&rComPage=${rComPage}"/>" aria-label="Previous">
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage-1}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Previous">
                                     <span aria-hidden="true">&lsaquo;</span>
                                     <span class="sr-only">Previous</span>
                                 </a>
@@ -82,7 +82,7 @@
                             <li class="page-item">
                                 </c:otherwise>
                                 </c:choose>
-                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage+1}&rComPage=${rComPage}"/>" aria-label="Next">
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage+1}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Next">
                                     <span aria-hidden="true">&rsaquo;</span>
                                     <span class="sr-only">Next</span>
                                 </a>
@@ -96,7 +96,7 @@
                 <div class="page-description"></div>
                 <div class="d-flex flex-column justify-content-center">
                 <c:choose>
-                    <c:when test="${not empty pendingToVerify}">
+                    <c:when test="${not empty pendingToVerify || verifyPage != 1}">
                         <c:forEach var = "pendingUser" items="${pendingToVerify}">
                             <div class="card emphasis emph-comment row mb-2 verified">
                                 <div class="card-body row mt-1">
@@ -131,12 +131,43 @@
                     </c:otherwise>
                 </c:choose>
                 </div>
+                <c:if test="${not empty pendingToVerify || verifyPage != 1}">
+                    <ul class="pagination justify-content-center">
+                        <c:choose>
+                        <c:when test="${verifyPage == 1}">
+                        <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                        <li class="page-item ">
+                            </c:otherwise>
+                            </c:choose>
+                            <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage-1}&rConPage=${rConPage}"/>" aria-label="Previous">
+                                <span aria-hidden="true">&lsaquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <c:choose>
+                        <c:when test="${pendingToVerify.size() < pageSize}">
+                        <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                        <li class="page-item">
+                            </c:otherwise>
+                            </c:choose>
+                            <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage+1}&rConPage=${rConPage}"/>" aria-label="Next">
+                                <span aria-hidden="true">&rsaquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </c:if>
+
                 <!-- pending applicants to verify -->
                 <div class="page-title"><spring:message code="moderator.pendingApplicants"/></div>
                 <div class="page-description"></div>
                 <div class="d-flex flex-wrap justify-content-center">
                     <c:choose>
-                        <c:when test="${not empty pendingApplicants}">
+                        <c:when test="${not empty pendingApplicants || applicantsPage != 1}">
                             <c:forEach var = "applicant" items="${pendingApplicants}">
                                 <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
                                     <div class="card-body mt-1">
@@ -169,6 +200,36 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
+                <c:if test="${not empty pendingApplicants || applicantsPage != 1}">
+                    <ul class="pagination justify-content-center">
+                        <c:choose>
+                        <c:when test="${applicantsPage == 1}">
+                        <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                        <li class="page-item ">
+                            </c:otherwise>
+                            </c:choose>
+                            <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage-1}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Previous">
+                                <span aria-hidden="true">&lsaquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <c:choose>
+                        <c:when test="${pendingApplicants.size() < pageSize}">
+                        <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                        <li class="page-item">
+                            </c:otherwise>
+                            </c:choose>
+                            <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage+1}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Next">
+                                <span aria-hidden="true">&rsaquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </c:if>
             </div>
             <!-- Reported Comments -->
             <div class="right col">
@@ -216,14 +277,14 @@
                     <c:if test="${not empty reportedComments || rComPage != 1}">
                         <ul class="pagination justify-content-center">
                             <c:choose>
-                            <c:when test="${rComPage != 1}">
+                            <c:when test="${rComPage == 1}">
                             <li class="page-item disabled">
                                 </c:when>
                                 <c:otherwise>
                             <li class="page-item ">
                                 </c:otherwise>
                                 </c:choose>
-                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage-1}"/>" aria-label="Previous">
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage-1}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Previous">
                                     <span aria-hidden="true">&lsaquo;</span>
                                     <span class="sr-only">Previous</span>
                                 </a>
@@ -236,7 +297,7 @@
                             <li class="page-item">
                                 </c:otherwise>
                                 </c:choose>
-                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage+1}"/>" aria-label="Next">
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage+1}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Next">
                                     <span aria-hidden="true">&rsaquo;</span>
                                     <span class="sr-only">Next</span>
                                 </a>
@@ -286,6 +347,36 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
+                    <c:if test="${not empty reportedContents || rConPage != 1}">
+                        <ul class="pagination justify-content-center">
+                            <c:choose>
+                            <c:when test="${rConPage == 1}">
+                            <li class="page-item disabled">
+                                </c:when>
+                                <c:otherwise>
+                            <li class="page-item ">
+                                </c:otherwise>
+                                </c:choose>
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage-1}"/>" aria-label="Previous">
+                                    <span aria-hidden="true">&lsaquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                            <c:choose>
+                            <c:when test="${reportedContents.size() < pageSize}">
+                            <li class="page-item disabled">
+                                </c:when>
+                                <c:otherwise>
+                            <li class="page-item">
+                                </c:otherwise>
+                                </c:choose>
+                                <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage+1}"/>" aria-label="Next">
+                                    <span aria-hidden="true">&rsaquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </c:if>
             </div>
         </div>
 
