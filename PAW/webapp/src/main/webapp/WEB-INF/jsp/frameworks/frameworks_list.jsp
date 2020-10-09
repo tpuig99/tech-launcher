@@ -172,7 +172,7 @@
     <div class="page-description"></div>
     <div class="page-title">
         <c:choose>
-            <c:when test="${empty techNameQuery and empty starsQuery1 and empty starsQuery2 and empty categoriesQuery and empty typesQuery and empty orderQuery and empty commentAmount and empty dateUpdate and empty dateComment}">
+            <c:when test="${empty techNameQuery and empty starsQuery1 and empty starsQuery2 and empty categoriesQuery and empty typesQuery and empty orderQuery and empty commentAmount and empty dateUpdate and empty dateComment and empty selectOrder}">
             <h2><spring:message code="explore.title"/></h2>
             </c:when>
             <c:otherwise>
@@ -237,6 +237,7 @@
                     <spring:message code="explore.sort_by"/>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+                    <button class="dropdown-item" type="button" onclick="sortFrameworks(0)"><spring:message code="explore.sort_none"/></button>
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(1)"><spring:message code="explore.rating_high_to_low"/></button>
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)"><spring:message code="explore.rating_low_to_high"/></button>
                     <button class="dropdown-item" type="button" onclick="sortFrameworks(2)"><spring:message code="explore.comments_more_to_least"/></button>
@@ -338,6 +339,9 @@
         let commentDate = getCommentDate();
         let updateDate = getUpdateDate();
         let order = 0;
+        <c:if test="${selectOrder!=null}">
+            order = ${selectOrder};
+        </c:if>
 
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(star1) && isEmpty(star2) && isEmpty(commentAmount) && isEmpty(commentDate) && isEmpty(updateDate))) {
             window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag +'&commentAmount=' + commentAmount +'&lastComment=' + commentDate +'&lastUpdate=' + updateDate +'&order=' + order;

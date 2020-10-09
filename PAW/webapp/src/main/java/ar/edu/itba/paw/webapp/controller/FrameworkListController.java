@@ -173,6 +173,7 @@ public class FrameworkListController {
         mav.addObject("nameFlagQuery", nameFlag);
         mav.addObject("dateComment",lastComment);
         mav.addObject("dateUpdate",lastUpdate);
+        mav.addObject("selectOrder",order);
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
