@@ -917,7 +917,7 @@
 
                     <c:if test="${not empty contentFormError}">
                         $(window).on('load', function() {
-                            console.log(${contentFormError});
+
                             if(${contentFormError}) {
                                 $('#addContentModal').modal('show');
                             }else{
@@ -999,7 +999,7 @@
 
 
                     function showSnackbar() {
-                        console.log("En snackbar");
+
                         let x = document.getElementById("snackbar");
                         x.className = "show";
                         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);

@@ -25,7 +25,7 @@
             </li>
         </ul>
         <div>
-            <c:if test="${!search_page}">
+            <c:if test="${!param.search_page}">
                 <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
                     <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder="<spring:message code="search.title"/>" aria-label="Search">
                     <button class="btn my-2 my-sm-0" type="button" onclick="searchFrameworks()"><i class="fas fa-search"></i></button>
@@ -56,7 +56,6 @@
         </div>
     </div>
 </nav>
-<!--<script type=text/javascript" src="../../../resources/js/search.js"></script>-->
 
 <script>
     function isEmpty( input ){

@@ -23,6 +23,7 @@
     <jsp:param name="connected" value="${user}"/>
     <jsp:param name="username" value="${user.name}"/>
     <jsp:param name="isMod" value="${user_isMod}"/>
+    <jsp:param name="seatch_page" value="${search_page}"/>
 </jsp:include>
 
 <div class="content-search">
@@ -83,7 +84,6 @@
         </div>
 
         <!--Filter By Rating-->
-
         <div class="subtitle"><h4><spring:message code="explore.rating"/></h4></div>
 
         <span><spring:message code="explore.from"/></span>
@@ -371,10 +371,7 @@
         <c:forEach items="${types}" var="type" >
 
         if(document.getElementById('check'+'${type}').checked) {
-            <%--document.getElementById('badge'+'${type}').style.display = "inline";--%>
             queryTypes = queryTypes.concat('${type},');
-        }else{
-            <%--document.getElementById('badge'+'${type}').style.display = "none";--%>
         }
         </c:forEach>
 
@@ -403,29 +400,12 @@
     function getRatingLeft(){
 
         let left = document.getElementById("stars-dropdown-1").value;
-        console.log(left)
- /*
-        if(left ==="" && right !==""){
-            $("#badgeRating").text(right+' stars');
-            // document.getElementById('badgeRating').style.display = "inline";
-
-        }else if(left !=="" && right ===""){
-            $("#badgeRating").text(left+' stars');
-            // document.getElementById('badgeRating').style.display = "inline";
-
-        }else if(left !=="" && right !==""){
-            $("#badgeRating").text(left+' to '+right+' stars');
-            // document.getElementById('badgeRating').style.display = "inline";
-        }else {
-            // document.getElementById('badgeRating').style.display = "none";
-        }
-*/
         return left;
     }
     function getRatingRight(){
 
         let right = document.getElementById("stars-dropdown-2").value;
-        console.log(right)
+
         return right;
     }
 
