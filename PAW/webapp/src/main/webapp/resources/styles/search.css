@@ -54,7 +54,9 @@
 }
 
 .my-badge-inline{
-    padding: .25em .4em;
+
+    margin-top: 2em;
+    margin-bottom: 2em;
     font-size: 1em;
     font-weight: 700;
     line-height: 1;

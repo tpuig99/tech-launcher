@@ -9,7 +9,6 @@ import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -169,11 +167,18 @@ public class FrameworkListController {
         mav.addObject("starsQuery1", starsLeft );
         mav.addObject("starsQuery2", starsRight );
         mav.addObject("commentAmount", commentAmount);
-        mav.addObject("orderQuery", order );
         mav.addObject("nameFlagQuery", nameFlag);
         mav.addObject("dateComment",lastComment);
         mav.addObject("dateUpdate",lastUpdate);
-        mav.addObject("selectOrder",order);
+
+        if (order != null) {
+            mav.addObject("sortValue", Math.abs(order));
+            mav.addObject("orderValue", (int) Math.signum(order));
+        }  else {
+            mav.addObject("sortValue", 0);
+            mav.addObject("orderValue", 1);
+        }
+
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
