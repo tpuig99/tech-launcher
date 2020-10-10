@@ -25,21 +25,9 @@ public class HomeController {
     @Autowired
     private UserService us;
 
-    @Autowired
-    private ContentService cs;
-
     @RequestMapping("/")
     public ModelAndView home() {
         return new ModelAndView("redirect:/" + "frameworks");
-//        final ModelAndView mav = new ModelAndView("index");
-//        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        if( us.findByUsername(username).isPresent()){
-//            User user = us.findByUsername(username).get();
-//            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-//        }
-//
-//        return mav;
     }
 
     @RequestMapping("/frameworks")

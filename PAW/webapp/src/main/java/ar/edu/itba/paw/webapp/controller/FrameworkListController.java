@@ -107,6 +107,7 @@ public class FrameworkListController {
         mav.addObject("frameworkNames",fs.getFrameworkNames());
         mav.addObject("types", allTypes);
         mav.addObject("types_translated", ts.getAllTypes());
+        mav.addObject("search_page", true);
 
         //Search Results For:
         mav.addObject("techNameQuery", toSearch );
