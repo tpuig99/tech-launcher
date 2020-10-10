@@ -173,7 +173,7 @@
                 <option value="0" <c:if test="${sortValue == 0}"> selected </c:if>><spring:message code="explore.sort_by.none"/></option>
                 <option value="1"<c:if test="${sortValue == 1}"> selected </c:if>><spring:message code="explore.sort_by.rating"/></option>
                 <option value="2"<c:if test="${sortValue == 2}"> selected </c:if>><spring:message code="explore.sort_by.comments_amount"/></option>
-                <option value="3"<c:if test="${sortValue == 3}"> selected </c:if>><spring:message code="explore.sort_by.publish_date"/></option>
+                <option value="3"<c:if test="${sortValue == 3}"> selected </c:if>><spring:message code="explore.sort_by.tech_updated"/></option>
                 <option value="4"<c:if test="${sortValue == 4}"> selected </c:if>><spring:message code="explore.sort_by.recently_commented"/></option>
             </select>
         </div>
@@ -255,14 +255,14 @@
                 <c:if test="${not empty dateUpdate && dateUpdate!=0}">
                 <span id="comments" class="badge badge-pill secondary-badge">
                     <spring:message code="explore.update_date_query"
-                                    arguments="getDateArgs(${dateUpdate})"
+                                    arguments="${dateUpdateTranslation}"
                                     htmlEscape="true"/>
                 </span>
                 </c:if>
                 <c:if test="${not empty dateComment && dateComment!=0}">
                 <span id="comments" class="badge badge-pill secondary-badge">
                     <spring:message code="explore.comments_date_query"
-                                    arguments="getDateArgs(${dateComment})"
+                                    arguments="${dateCommentTranslation}"
                                     htmlEscape="true"/>
                 </span>
                 </c:if>
@@ -561,6 +561,7 @@
     function setDropDownValueRight(value){
         $(document).getElementById("stars-dropdown-2").value(value);
     }
+
     function getDateArgs(value){
         let string=""
         <c:if test="value==1">
