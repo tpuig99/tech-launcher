@@ -98,7 +98,7 @@
                 <c:choose>
                     <c:when test="${not empty pendingToVerify || verifyPage != 1}">
                         <c:forEach var = "pendingUser" items="${pendingToVerify}">
-                            <div class="card emphasis emph-comment row mb-2 verified">
+                            <div class="card emphasis emph-comment row mb-2 mx-4 verified">
                                 <div class="card-body row mt-1">
                                     <div class="col-3 secondary-font"> <a href="<c:url value="/users/${pendingUser.userName}"/>"><c:out value="${pendingUser.userName}" default=""/></a>
                                         <c:out value="/" default=""/>
@@ -107,7 +107,7 @@
                                     <div class="col-6 text-left"> <c:out value="${pendingUser.comment.description}" default=""/> </div>
                                     <div class="col third-font text-right"> <c:out value="${pendingUser.comment.timestamp.toLocaleString()}" default=""/> </div>
                                 </div>
-                                <div class="card-footer row">
+                                <div class="card-footer row mx-2">
                                     <c:url value="/accept" var="postPathAcceptPending"/>
                                     <form:form modelAttribute="promotePendingUserForm" action="${postPathAcceptPending}" method="post">
                                         <form:label path="promotePendingUserVerificationId">
