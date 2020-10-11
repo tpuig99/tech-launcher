@@ -140,6 +140,18 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+    public boolean quitModdingFromTech(User user, long frameworkId) {
+        for( VerifyUser verifyUser : user.getVerifications() ){
+            if (verifyUser.getFrameworkId() == frameworkId) {
+                deleteVerification(verifyUser.getVerificationId());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Transactional
+    @Override
     public void updateDescription(long userId, String description) {
         userDao.updateDescription(userId,description);
     }

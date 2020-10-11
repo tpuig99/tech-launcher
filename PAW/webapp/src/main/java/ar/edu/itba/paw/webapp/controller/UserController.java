@@ -8,22 +8,16 @@ import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.mod_page.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -40,8 +34,12 @@ public class UserController {
     @Autowired
     MessageSource messageSource;
 
-    private long pageStart=1;
+    private final long pageStart=1;
     private final long PAGESIZE=5;
+
+    private static final String MOD_VIEW = "/mod";
+
+    public static ModelAndView redirectToModView() { return new ModelAndView("redirect:" + MOD_VIEW); }
 
     @RequestMapping("/apply")
     public String AddCandidate(HttpServletRequest request, @RequestParam("id") final long frameworkId) {

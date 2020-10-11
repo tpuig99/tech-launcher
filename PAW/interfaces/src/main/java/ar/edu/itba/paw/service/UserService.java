@@ -1,12 +1,10 @@
 package ar.edu.itba.paw.service;
 
-import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.models.VerifyUser;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
@@ -16,7 +14,8 @@ public interface UserService {
     Optional<User> findByMail(String mail);
     User create(String username,String mail,String password) throws UserAlreadyExistException;
     int delete(long userId);
-    void updateDescription(long userId,String description);
+    boolean quitModdingFromTech(User user, long frameworkId);
+    void updateDescription(long userId, String description);
     void updatePassword(long userId,String password);
     void updateModAllow(long userId, boolean allow);
 
