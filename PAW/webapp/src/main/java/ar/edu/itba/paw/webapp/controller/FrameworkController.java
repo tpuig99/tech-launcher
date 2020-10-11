@@ -91,6 +91,7 @@ public class FrameworkController {
                 mav.addObject("comments",comments);
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
+                mav.addObject("hasAppliedToFramework",user.hasAppliedToFramework(id));
                 mav.addObject("isAdmin",user.isAdmin());
                 mav.addObject("isEnable",user.isEnable());
                 mav.addObject("allowMod",user.isAllowMod());

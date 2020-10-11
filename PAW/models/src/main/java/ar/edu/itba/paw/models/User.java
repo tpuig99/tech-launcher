@@ -88,7 +88,15 @@ public class User {
         }
         return false;
     }
+    public boolean hasAppliedToFramework(long frameworkId){
+        for (VerifyUser v: verifications) {
+            if(v.getFrameworkId()==frameworkId){
+                return true;
+            }
 
+        }
+        return false;
+    }
     public boolean isAdmin() {
         return admin;
     }

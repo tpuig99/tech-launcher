@@ -591,7 +591,7 @@
                         </div>
                     </div>
                     <c:choose>
-                        <c:when test="${!verifyForFramework && !isAdmin && user.name != 'anonymousUser' && allowMod}">
+                        <c:when test="${!hasAppliedToFramework && !isAdmin && user.name != 'anonymousUser' && allowMod}">
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="card text-center">
                                     <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>
