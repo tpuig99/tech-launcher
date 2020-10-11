@@ -49,15 +49,15 @@ public class FrameworkServiceImpl implements FrameworkService {
     }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag, long page) {
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag,Integer commentAmount,Timestamp lastComment,Timestamp lastUpdated, long page) {
         if(starsLeft<starsRight)
-            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag, page, PAGESIZE);
-        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag, page, PAGESIZE);
+            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated, page, PAGESIZE);
+        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated, page, PAGESIZE);
     }
 
     @Override
     public void orderByStars(List<Framework> frameworks, Integer order) {
-        if(order>0){
+        if(order<0){
             frameworks.sort(new Comparator<Framework>() {
                 @Override
                 public int compare(Framework o1, Framework o2) {
@@ -107,7 +107,7 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Override
     public void orderByReleaseDate(List<Framework> frameworks, Integer order) {
-        if(order<0){
+        if(order>0){
             frameworks.sort(new Comparator<Framework>() {
                 @Override
                 public int compare(Framework o1, Framework o2) {

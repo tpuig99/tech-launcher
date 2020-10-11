@@ -23,7 +23,7 @@
     <jsp:param name="connected" value="${user}"/>
     <jsp:param name="username" value="${user.name}"/>
     <jsp:param name="isMod" value="${user_isMod}"/>
-    <jsp:param name="seatch_page" value="${search_page}"/>
+    <jsp:param name="search_page" value="${search_page}"/>
 </jsp:include>
 
 <div class="content-search">
@@ -83,6 +83,50 @@
             </div>
         </div>
 
+        <!--Filter By Comments Date-->
+
+        <div class="subtitle"><h4><spring:message code="explore.update_date"/></h4></div>
+
+        <span>
+            <select id="update-date-dropdown">
+                <option value="0" <c:if test="${dateUpdate == 0}"> selected </c:if>><spring:message code="explore.any_date"/></option>
+                <option value="1" <c:if test="${dateUpdate == 1}"> selected </c:if>><spring:message code="explore.last_days"/></option>
+                <option value="2"<c:if test="${dateUpdate == 2}"> selected </c:if>><spring:message code="explore.last_week" /></option>
+                <option value="3"<c:if test="${dateUpdate == 3}"> selected </c:if>><spring:message code="explore.last_month" /></option>
+                <option value="4"<c:if test="${dateUpdate == 4}"> selected </c:if>><spring:message code="explore.last_months" /></option>
+                <option value="5"<c:if test="${dateUpdate == 5}"> selected </c:if>><spring:message code="explore.last_year" /></option>
+            </select>
+         </span>
+
+        <!--Filter By Comments Date-->
+
+        <div class="subtitle"><h4><spring:message code="explore.comment_date"/></h4></div>
+        <span>
+            <select id="comments-date-dropdown">
+                <option value="0" <c:if test="${dateComment == 0}"> selected </c:if>><spring:message code="explore.any_date"/></option>
+                <option value="1" <c:if test="${dateComment == 1}"> selected </c:if>><spring:message code="explore.last_days"/></option>
+                <option value="2"<c:if test="${dateComment == 2}"> selected </c:if>><spring:message code="explore.last_week"/></option>
+                <option value="3"<c:if test="${dateComment == 3}"> selected </c:if>><spring:message code="explore.last_month"/></option>
+                <option value="4"<c:if test="${dateComment == 4}"> selected </c:if>><spring:message code="explore.last_months"/></option>
+                <option value="5"<c:if test="${dateComment == 5}"> selected </c:if>><spring:message code="explore.last_year"/></option>
+            </select>
+         </span>
+
+        <!--Filter By Comments Amount-->
+
+        <div class="subtitle"><h4><spring:message code="explore.comments"/></h4></div>
+
+        <span>
+            <select id="comments-dropdown">
+                <option value="0" <c:if test="${commentAmount == 0}"> selected </c:if>><spring:message code="explore.comments_all"/></option>
+                <option value="1" <c:if test="${commentAmount == 1}"> selected </c:if>><spring:message code="explore.comments_from" arguments="1"/></option>
+                <option value="5"<c:if test="${commentAmount == 5}"> selected </c:if>><spring:message code="explore.comments_from" arguments="5"/></option>
+                <option value="10"<c:if test="${commentAmount == 10}"> selected </c:if>><spring:message code="explore.comments_from" arguments="10"/></option>
+                <option value="20"<c:if test="${commentAmount == 20}"> selected </c:if>><spring:message code="explore.comments_from" arguments="20"/></option>
+                <option value="50"<c:if test="${commentAmount == 50}"> selected </c:if>><spring:message code="explore.comments_from" arguments="50"/></option>
+            </select>
+         </span>
+
         <!--Filter By Rating-->
         <div class="subtitle"><h4><spring:message code="explore.rating"/></h4></div>
 
@@ -107,8 +151,8 @@
                 <option value="4"<c:if test="${starsQuery2 == 4}"> selected </c:if>>4</option>
                 <option value="5"<c:if test="${starsQuery2 == 5 || starsQuery2==null}"> selected </c:if>>5</option>
             </select>
-         </span>
-    </div>
+        </span>
+</div>
 
     <!-- Search Bar -->
     <div class="search-bar">
@@ -122,68 +166,125 @@
                 <spring:message code="explore.search_only_by_name"/>
             </label>
         </div>
+        <div class="d-flex flex-row justify-content-end">
+        <div class="mx-2">
+            <label class="subtitle" for="sortSelect"><spring:message code="explore.sort_by"/></label>
+            <select class="form-control" id="sortSelect" oninput="sortFrameworks()">
+                <option value="0" <c:if test="${sortValue == 0}"> selected </c:if>><spring:message code="explore.sort_by.none"/></option>
+                <option value="1"<c:if test="${sortValue == 1}"> selected </c:if>><spring:message code="explore.sort_by.rating"/></option>
+                <option value="2"<c:if test="${sortValue == 2}"> selected </c:if>><spring:message code="explore.sort_by.comments_amount"/></option>
+                <option value="3"<c:if test="${sortValue == 3}"> selected </c:if>><spring:message code="explore.sort_by.tech_updated"/></option>
+                <option value="4"<c:if test="${sortValue == 4}"> selected </c:if>><spring:message code="explore.sort_by.recently_commented"/></option>
+            </select>
+        </div>
+        <div class="mx-2">
+            <label class="subtitle" for="orderSelect"><spring:message code="explore.order_by"/></label>
+            <select class="form-control" id="orderSelect" oninput="sortFrameworks()">
+                <option value="1" <c:if test="${orderValue == 1}"> selected </c:if>><spring:message code="explore.order_by.descendant"/></option>
+                <option value="-1"<c:if test="${orderValue == -1}"> selected </c:if>><spring:message code="explore.order_by.ascendant"/></option>
+            </select>
+        </div>
+        </div>
     </div>
+
+<%--    <div class="d-flex flex-row justify-content-end">--%>
+<%--        <div class="mx-2">--%>
+<%--            <label class="subtitle" for="sortSelect">Sort</label>--%>
+<%--            <select class="form-control" id="sortSelect" oninput="sortFrameworks()">--%>
+<%--                <option value="0" <c:if test="${sortValue == 0}"> selected </c:if>>None</option>--%>
+<%--                <option value="1"<c:if test="${sortValue == 1}"> selected </c:if>>Rating</option>--%>
+<%--                <option value="2"<c:if test="${sortValue == 2}"> selected </c:if>>Comments</option>--%>
+<%--                <option value="3"<c:if test="${sortValue == 3}"> selected </c:if>>Release</option>--%>
+<%--                <option value="4"<c:if test="${sortValue == 4}"> selected </c:if>>Recently Commented</option>--%>
+<%--            </select>--%>
+<%--        </div>--%>
+<%--        <div class="mx-2">--%>
+<%--            <label class="subtitle" for="orderSelect">Order</label>--%>
+<%--            <select class="form-control" id="orderSelect" oninput="sortFrameworks()">--%>
+<%--                <option value="1" <c:if test="${orderValue == 1}"> selected </c:if>>Descendant</option>--%>
+<%--                <option value="-1"<c:if test="${orderValue == -1}"> selected </c:if>>Ascendant</option>--%>
+<%--            </select>--%>
+<%--        </div>--%>
+<%--    </div>--%>
 
     <!--Search Results For / Explore -->
     <div class="page-description"></div>
     <div class="page-title">
+
         <c:choose>
-            <c:when test="${empty techNameQuery and empty starsQuery1 and empty starsQuery2 and empty categoriesQuery and empty typesQuery and empty orderQuery}">
+            <c:when test="${empty techNameQuery and empty starsQuery1 and empty starsQuery2 and empty categoriesQuery and empty typesQuery and empty orderQuery and empty commentAmount and empty dateUpdate and empty dateComment and empty selectOrder}">
             <h2><spring:message code="explore.title"/></h2>
             </c:when>
             <c:otherwise>
                 <h2><spring:message code="explore.search_results"/> (${fn:length(matchingFrameworks)})</h2>
             </c:otherwise>
         </c:choose>
-
     </div>
 
     <!--Search Results Badges -->
     <div class="row">
-        <div class="col-10">
+        <div class="col-8">
             <div class="margin-top">
                 <c:if test="${not empty techNameQuery}">
-                    <span id="name" class="my-badge-inline badge-pill secondary-badge "><c:out value="${techNameQuery}"/></span>
+                    <span id="name" class="badge badge-pill secondary-badge"><c:out value="${techNameQuery}"/></span>
                 </c:if>
                 <c:if test="${not empty categoriesQuery}">
                     <c:forEach items="${categoriesQuery}" var="categoryQuery">
-                        <span id="name${categoryQuery}" class="my-badge-inline badge-pill secondary-badge "><c:out value="${categories_translated.get(categoryQuery)}"/></span>
+                        <span id="name${categoryQuery}" class="badge badge-pill secondary-badge"><c:out value="${categories_translated.get(categoryQuery)}"/></span>
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty typesQuery}">
                     <c:forEach items="${typesQuery}" var="typeQuery">
-                        <span id="name${typeQuery}" class="my-badge-inline badge-pill secondary-badge "><c:out value="${types_translated.get(typeQuery)}"/></span>
+                        <span id="name${typeQuery}" class="badge badge-pill secondary-badge"><c:out value="${types_translated.get(typeQuery)}"/></span>
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty starsQuery1}">
-                    <span id="stars" class="my-badge-inline badge-pill secondary-badge ">
+                    <span id="stars" class="badge badge-pill secondary-badge">
                         <spring:message code="explore.stars_query"
                                         arguments="${starsQuery1},${starsQuery2}"
                                         htmlEscape="true"/>
                     </span>
                 </c:if>
-
+                <c:if test="${not empty commentAmount && commentAmount!=0}">
+                <span id="comments" class="badge badge-pill secondary-badge">
+                    <spring:message code="explore.comments_query"
+                                    arguments="${commentAmount}"
+                                    htmlEscape="true"/>
+                </span>
+                </c:if>
+                <c:if test="${not empty dateUpdate && dateUpdate!=0}">
+                <span id="comments" class="badge badge-pill secondary-badge">
+                    <spring:message code="explore.update_date_query"
+                                    arguments="${dateUpdateTranslation}"
+                                    htmlEscape="true"/>
+                </span>
+                </c:if>
+                <c:if test="${not empty dateComment && dateComment!=0}">
+                <span id="comments" class="badge badge-pill secondary-badge">
+                    <spring:message code="explore.comments_date_query"
+                                    arguments="${dateCommentTranslation}"
+                                    htmlEscape="true"/>
+                </span>
+                </c:if>
             </div>
         </div>
 
         <!-- Sort Dropdown -->
-        <div class="col">
-            <div class="btn-group d-flex justify-content-end margin-top">
-                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <spring:message code="explore.sort_by"/>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-1)"><spring:message code="explore.rating_high_to_low"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(1)"><spring:message code="explore.rating_low_to_high"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(2)"><spring:message code="explore.comments_more_to_least"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-2)"><spring:message code="explore.comments_least_to_more"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-3)"><spring:message code="explore.release_oldest_to_newest"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(3)"><spring:message code="explore.release_newest_to_oldest"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(4)"><spring:message code="explore.tech_most_recent_commented"/></button>
-                    <button class="dropdown-item" type="button" onclick="sortFrameworks(-4)"><spring:message code="explore.tech_last_commented"/></button>
-                </div>
-            </div>
-        </div>
+<%--        <div class="col">--%>
+<%--            <div class="btn-group d-flex justify-content-end margin-top">--%>
+<%--                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--%>
+<%--                    <spring:message code="explore.sort_by"/>--%>
+<%--                </button>--%>
+<%--                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">--%>
+<%--                    <button class="dropdown-item" type="button" onclick="setSort(0)"><spring:message code="explore.sort_none"/></button>--%>
+<%--                    <button class="dropdown-item" type="button" onclick="setSort(1)"><spring:message code="explore.sort_rating"/></button>--%>
+<%--                    <button class="dropdown-item" type="button" onclick="setSort(2)"><spring:message code="explore.sort_comments"/></button>--%>
+<%--                    <button class="dropdown-item" type="button" onclick="setSort(3)"><spring:message code="explore.sort_release"/></button>--%>
+<%--                    <button class="dropdown-item" type="button" onclick="setSort(4)"><spring:message code="explore.sort_recently_commented"/></button>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+
     </div>
 
     <div class="page-description"></div>
@@ -298,21 +399,28 @@
         let star1 = getRatingLeft();
         let star2 = getRatingRight();
         let nameFlag = getNameFlag();
-        let order = 0;
+        let commentAmount = getCommentAmount();
+        let commentDate = getCommentDate();
+        let updateDate = getUpdateDate();
+        let order = getOrder();
 
-        if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(star1) && isEmpty(star2))) {
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag +'&order=' + order;
+        if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(star1) && isEmpty(star2) && isEmpty(commentAmount) && isEmpty(commentDate) && isEmpty(updateDate))) {
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag +'&commentAmount=' + commentAmount +'&lastComment=' + commentDate +'&lastUpdate=' + updateDate +'&order=' + order;
         }
 
     }
 
-    function sortFrameworks(order){
+    function sortFrameworks(){
         let name ="";
         let categories="";
         let types="";
         let star1="";
         let star2="";
+        let commentAmount="";
+        let dateComment="";
+        let dateUpdate="";
         let nameFlag= getNameFlag();
+        let order = getOrder();
 
         <c:if test="${not empty techNameQuery}">
             name = "${techNameQuery}";
@@ -340,15 +448,29 @@
         <c:if test="${not empty starsQuery2}">
             star2 =  ${starsQuery2};
         </c:if>
+
+        <c:if test="${not empty commentAmount}">
+            commentAmount =  ${commentAmount};
+        </c:if>
+
+        <c:if test="${not empty dateComment}">
+        dateComment =  ${dateComment};
+        </c:if>
+
+        <c:if test="${not empty dateUpdate}">
+        dateUpdate =  ${dateUpdate};
+        </c:if>
+
         <c:if test="${fn:length(matchingFrameworks) > 1}">
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&order=' + order + '&page=' + ${page};
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order + '&page=${page}';
         </c:if>
     }
-
-    form = document.getElementById("search").addEventListener('submit', e => {
-        e.preventDefault();
-        searchFrameworks(0);
-    })
+    if( document.getElementById("search") != null ) {
+        form = document.getElementById("search").addEventListener('submit', e => {
+            e.preventDefault();
+            searchFrameworks(0);
+        });
+    }
 
     function showMore(element){
         document.getElementById("hidden"+element).style.display = "block";
@@ -408,9 +530,29 @@
 
         return right;
     }
+    function getCommentAmount(){
+
+        let amount = document.getElementById("comments-dropdown").value;
+        console.log(amount)
+        return amount;
+    }
+    function getCommentDate(){
+        let date = document.getElementById("comments-date-dropdown").value;
+        console.log(date)
+        return date;
+    }
+    function getUpdateDate(){
+        let date = document.getElementById("update-date-dropdown").value;
+        console.log(date)
+        return date;
+    }
 
     function getNameFlag(){
         return document.getElementById("searchOnlyByName").checked;
+    }
+
+    function getOrder() {
+        return document.getElementById("sortSelect").value * document.getElementById("orderSelect").value;
     }
 
     function parseListToString(list){
@@ -429,6 +571,25 @@
         $(document).getElementById("stars-dropdown-2").value(value);
     }
 
+    function getDateArgs(value){
+        let string=""
+        <c:if test="value==1">
+            string=<spring:message code="explore.last_days"></spring:message>
+        </c:if>
+        <c:if test="value == 2">
+            string=<spring:message code="explore.last_week"></spring:message>
+        </c:if>
+        <c:if test="value==3">
+            string=<spring:message code="explore.last_month"></spring:message>
+        </c:if>
+        <c:if test="value == 4">
+            string=<spring:message code="explore.last_months"></spring:message>
+        </c:if>
+        <c:if test="value == 5">
+                string=<spring:message code="explore.last_year"></spring:message>
+        </c:if>
+        return string;
+    }
 
 
 

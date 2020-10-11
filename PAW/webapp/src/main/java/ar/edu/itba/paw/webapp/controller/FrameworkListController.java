@@ -8,16 +8,24 @@ import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.TranslationService;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
 public class FrameworkListController {
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     private FrameworkService fs;
@@ -31,6 +39,10 @@ public class FrameworkListController {
     final long startPage = 1;
     final long PAGESIZE = 7;
 
+    private String getMessageWithoutArguments(String code) {
+        return messageSource.getMessage(code, Collections.EMPTY_LIST.toArray(), LocaleContextHolder.getLocale());
+    }
+
     @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
     public ModelAndView advancedSearch(@RequestParam(required = false, defaultValue = "") String toSearch,
                                        @RequestParam(required = false, defaultValue = "") final List<String> categories,
@@ -39,6 +51,9 @@ public class FrameworkListController {
                                        @RequestParam(required = false) final Integer starsRight,
                                        @RequestParam(required = false) final boolean nameFlag,
                                        @RequestParam(required = false) final Integer order,
+                                       @RequestParam(required = false) final Integer commentAmount,
+                                       @RequestParam(required = false) final Integer lastComment,
+                                       @RequestParam(required = false) final Integer lastUpdate,
                                        @RequestParam(value = "page", required = false) final Long page){
 
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
@@ -70,30 +85,83 @@ public class FrameworkListController {
             typesList.contains(toSearch);
             toSearch="";
         }
+        Timestamp tscomment = null;
+        Timestamp tsUpdated = null;
+        LocalDate dateComment = null;
+        LocalDate dateUpdate = null;
 
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag, page == null ? startPage:page);
+        String dateCommentTranslation = "";
+        if(lastComment!=null) {
+            switch (lastComment) {
+                case 1:
+                    dateCommentTranslation = getMessageWithoutArguments("explore.last_days");
+                    dateComment = LocalDate.now().minusDays(3);
+                    break;
+                case 2:
+                    dateCommentTranslation = getMessageWithoutArguments("explore.last_week");
+                    dateComment = LocalDate.now().minusWeeks(1);
+                    break;
+                case 3:
+                    dateCommentTranslation = getMessageWithoutArguments("explore.last_month");
+                    dateComment = LocalDate.now().minusMonths(1);
+                    break;
+                case 4:
+                    dateCommentTranslation = getMessageWithoutArguments("explore.last_months");
+                    dateComment = LocalDate.now().minusMonths(3);
+                    break;
+                case 5:
+                    dateCommentTranslation = getMessageWithoutArguments("explore.last_year");
+                    dateComment = LocalDate.now().minusYears(1);
+                    break;
+            }
+        }
+
+        String dateUpdateTranslation = "";
+        if(lastUpdate!=null) {
+            switch (lastUpdate) {
+                case 1:
+                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_days");
+                    dateUpdate = LocalDate.now().minusDays(3);
+                    break;
+                case 2:
+                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_week");
+                    dateUpdate = LocalDate.now().minusWeeks(1);
+                    break;
+                case 3:
+                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_month");
+                    dateUpdate = LocalDate.now().minusMonths(1);
+                    break;
+                case 4:
+                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_months");
+                    dateUpdate = LocalDate.now().minusMonths(3);
+                    break;
+                case 5:
+                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_year");
+                    dateUpdate = LocalDate.now().minusYears(1);
+                    break;
+            }
+        }
+        if(dateComment!=null){
+            tscomment=Timestamp.valueOf(dateComment.atStartOfDay());
+        }
+        if(dateUpdate!=null){
+            tsUpdated=Timestamp.valueOf(dateUpdate.atStartOfDay());
+        }
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, page == null ? startPage:page);
         if(order!=null && order!=0){
-            switch (order){
-                case -1:
-                case 1: {
+            switch (Math.abs(order)){
+                case 1:
                     fs.orderByStars(frameworks, order);
                     break;
-                }
                 case 2:
-                case -2: {
                     fs.orderByCommentsAmount(frameworks, order);
                     break;
-                }
                 case 3:
-                case -3: {
                     fs.orderByReleaseDate(frameworks, order);
                     break;
-                }
                 case 4:
-                case -4: {
                     fs.orderByInteraction(frameworks, order);
                     break;
-                }
             }
         }
 
@@ -115,25 +183,22 @@ public class FrameworkListController {
         mav.addObject("typesQuery", typesQuery );
         mav.addObject("starsQuery1", starsLeft );
         mav.addObject("starsQuery2", starsRight );
-        mav.addObject("orderQuery", order );
-        mav.addObject("nameFlagQuery", nameFlag );
+        mav.addObject("commentAmount", commentAmount);
+        mav.addObject("nameFlagQuery", nameFlag);
+        mav.addObject("dateComment",lastComment);
+        mav.addObject("dateCommentTranslation", dateCommentTranslation);
+        mav.addObject("dateUpdate",lastUpdate);
+        mav.addObject("dateUpdateTranslation", dateUpdateTranslation);
 
-        String categoriesString = "";
-        if(!categories.isEmpty()) {
-            for (String category : categories) {
-                categoriesString = categoriesString + category + ",";
-            }
-            categoriesString = categoriesString.substring(0, categoriesString.length() - 1);
-            mav.addObject("categoriesString", categoriesString);
+        if (order != null) {
+            mav.addObject("sortValue", Math.abs(order));
+            mav.addObject("orderValue", (int) Math.signum(order));
+        }  else {
+            mav.addObject("sortValue", 0);
+            mav.addObject("orderValue", 1);
         }
-        String typesString = "";
-        if( !types.isEmpty()) {
-            for (String type : types) {
-                typesString = typesString + type + ",";
-            }
-            typesString = typesString.substring(0, typesString.length() - 1);
-            mav.addObject("typesString", typesString);
-        }
+
+
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if( us.findByUsername(username).isPresent()){

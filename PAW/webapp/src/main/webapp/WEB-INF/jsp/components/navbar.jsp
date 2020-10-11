@@ -77,10 +77,11 @@
         }
         window.location.reload();
     }
-
-    form = document.getElementById("search").addEventListener('submit', e => {
-        e.preventDefault();
-        searchFrameworks();
-    })
+    if( document.getElementById("search") != null ) {
+        form = document.getElementById("search").addEventListener('submit', e => {
+            e.preventDefault();
+            searchFrameworks();
+        });
+    }
 </script>
 </body>
