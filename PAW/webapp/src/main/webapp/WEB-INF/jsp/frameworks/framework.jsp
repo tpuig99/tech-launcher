@@ -47,7 +47,7 @@
                             <div class="row">
                                 <div class="col">
                                     <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
-                                    <div><spring:message code="tech.author"/>:&nbsp;<a href="/users/${framework.author}">${framework.author}</a></div>
+                                    <div><spring:message code="tech.author"/>:&nbsp;<a href="<c:url value="/users/${framework.author}"/>">${framework.author}</a></div>
                                     <div><spring:message code="tech.date"/>:&nbsp;${framework.publish_date.toLocaleString()}</div>
                                     <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.category"/>"> ${category_translated}</span>
                                     <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.type"/>"> ${type_translated}</span>

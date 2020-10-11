@@ -48,7 +48,7 @@
                 </div>
                 <div class="d-flex justify-content-center">
                     <c:if test="${user.name != 'anonymousUser'}">
-                        <a href="/users/${user.name}" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
+                        <a href="<c:url value="/users/${user.name}"/>" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
                     </c:if>
                     <input class="btn primary-button" type="submit" value="<spring:message code="button.submit"/>"/>
                 </div>
