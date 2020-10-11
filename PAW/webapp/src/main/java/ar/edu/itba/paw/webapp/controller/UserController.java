@@ -163,7 +163,8 @@ public class UserController {
             else if( user.isVerify() ){
                 List<Long> frameworksIds = new LinkedList<>();
                 user.getVerifications().forEach( verifyUser -> {
-                    frameworksIds.add(verifyUser.getFrameworkId());
+                    if( !verifyUser.isPending() )
+                        frameworksIds.add(verifyUser.getFrameworkId());
                 });
                 List<VerifyUser> verify = us.getVerifyByFrameworks(frameworksIds, true, verifyPage == null ? pageStart:verifyPage);
                 List<VerifyUser> applicants = us.getApplicantsByFrameworks(frameworksIds, applicantsPage == null ? pageStart:applicantsPage);
