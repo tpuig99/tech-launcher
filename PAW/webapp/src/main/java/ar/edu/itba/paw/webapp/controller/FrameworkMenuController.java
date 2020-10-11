@@ -51,7 +51,8 @@ public class FrameworkMenuController {
         return ErrorController.redirectToErrorView();
     }
     @RequestMapping("/{category}/pages")
-    public ModelAndView frameworkMenuPaging(@PathVariable String category, @RequestParam("frameworks_page") final long frameworksPage) {
+    public ModelAndView frameworkMenuPaging(@PathVariable String category,
+                                            @RequestParam("frameworks_page") final long frameworksPage) {
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_menu");
 
         if (!fs.getByCategory(FrameworkCategories.getByName(category),frameworksPage).isEmpty()) {
