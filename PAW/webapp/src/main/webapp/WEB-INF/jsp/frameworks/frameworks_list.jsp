@@ -152,7 +152,7 @@
                 <option value="5"<c:if test="${starsQuery2 == 5 || starsQuery2==null}"> selected </c:if>>5</option>
             </select>
         </span>
-</div>
+    </div>
 
     <!-- Search Bar -->
     <div class="search-bar">
@@ -334,7 +334,7 @@
                     </a>
                 </li>
                 <c:choose>
-                <c:when test="${matchingFrameworks.size() < page_size}">
+                <c:when test="${page_size*page >= searchResultsNumber}">
                 <li class="page-item disabled">
                     </c:when>
                     <c:otherwise>
@@ -590,7 +590,6 @@
         </c:if>
         return string;
     }
-
 
 
 </script>
