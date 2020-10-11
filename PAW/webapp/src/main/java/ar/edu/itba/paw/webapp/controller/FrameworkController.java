@@ -95,6 +95,7 @@ public class FrameworkController {
                 mav.addObject("isAdmin",user.isAdmin());
                 mav.addObject("isEnable",user.isEnable());
                 mav.addObject("allowMod",user.isAllowMod());
+                mav.addObject("isOwner", framework.get().getAuthor().equals(user.getUsername()));
                 Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
                 if(fv.isPresent()){
                     mav.addObject("stars",fv.get().getStars());
@@ -156,6 +157,7 @@ public class FrameworkController {
                 mav.addObject("isAdmin",user.isAdmin());
                 mav.addObject("isEnable",user.isEnable());
                 mav.addObject("allowMod",user.isAllowMod());
+                mav.addObject("isOwner", framework.get().getAuthor().equals(user.getUsername()));
                 Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
                 if(fv.isPresent()){
                     mav.addObject("stars",fv.get().getStars());
