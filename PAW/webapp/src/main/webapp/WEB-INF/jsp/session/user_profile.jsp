@@ -358,7 +358,8 @@
                     <span aria-hidden="true">&times;</span>
                 </div>
                 <div class="modal-body container">
-                    <form id="updatePictureForm" class="border-bottom" action="/users/${username}/upload"  method="post" enctype="multipart/form-data">
+                    <c:url value="/users/${username}/upload" var="postPathUploadPhoto"/>
+                    <form id="updatePictureForm" class="border-bottom" action="${postPathUploadPhoto}"  method="post" enctype="multipart/form-data">
                         <div class="mb-2"><spring:message code="profile.change_picture"/></div>
                         <div class="d-flex justify-content-center mb-4">
                             <input id="uploadPictureInput" name="picture" type="file" accept="image/*" />
