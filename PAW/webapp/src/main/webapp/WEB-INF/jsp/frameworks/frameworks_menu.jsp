@@ -73,7 +73,7 @@
         <li class="page-item">
             </c:otherwise>
             </c:choose>
-            <a class="page-link" href="<c:url value="/${category}/pages?frameworks_page=${frameworks_page-1}"/>" aria-label="Next">
+            <a class="page-link" href="<c:url value="/${category}/pages?frameworks_page=${frameworks_page+1}"/>" aria-label="Next">
                 <span aria-hidden="true">&rsaquo;</span>
                 <span class="sr-only">Next</span>
             </a>
