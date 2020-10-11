@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,11 +16,12 @@ public class TranslationServiceImpl implements TranslationService {
     @Autowired
     MessageSource messageSource;
 
-
+    @Transactional(readOnly = true)
     public String getCategory(String categoryName) {
         return getAllCategories().get(categoryName);
     }
 
+    @Transactional(readOnly = true)
     public Map<String, String> getAllCategories() {
         Map<String, String> toReturn = new HashMap<>();
         toReturn.put("Back-End Development",messageSource.getMessage("category.back_end",new Object[]{}, LocaleContextHolder.getLocale()));
@@ -49,10 +51,12 @@ public class TranslationServiceImpl implements TranslationService {
         return toReturn;
     }
 
+    @Transactional(readOnly = true)
     public String getType(String typeName) {
         return getAllTypes().get(typeName);
     }
 
+    @Transactional(readOnly = true)
     public Map<String, String> getAllTypes() {
         Map<String, String> toReturn = new HashMap<>();
         toReturn.put("Online Platform",messageSource.getMessage("type.online_platform",new Object[]{}, LocaleContextHolder.getLocale()));
