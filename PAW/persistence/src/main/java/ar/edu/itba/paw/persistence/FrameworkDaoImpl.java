@@ -27,8 +27,11 @@ public class FrameworkDaoImpl implements FrameworkDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final static RowMapper<Framework> ROW_MAPPER = FrameworkDaoImpl::mapRow;
     private final static RowMapper<String> ROW_MAPPER_FRAMEWORK_NAME = FrameworkDaoImpl::mapRowNames;
+    private final static RowMapper<Integer> ROW_MAPPER_COUNT = FrameworkDaoImpl::mapRowCount;
 
     private final String SELECTION="select f.framework_id, count(distinct comment_id) as comment_amount,f.type,framework_name,category,f.description,introduction,logo,COALESCE(avg(stars),0) as stars,count(distinct fv.user_id) as votes_cant,user_name as author,f.date, max(c.tstamp) as last_comment, f.picture from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author left join comments c on f.framework_id=c.framework_id  ";
+    private final String SELECTION_COUNT="select count(*) as count from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author left join comments c on f.framework_id=c.framework_id ";
+
     private final String GROUP_BY=" group by framework_name, f.framework_id, category, f.type, f.description, introduction, logo,u.user_name";
 
 
@@ -41,6 +44,11 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 .usingGeneratedKeyColumns("framework_id");
 
     }
+
+    private static Integer mapRowCount(ResultSet rs, int i) throws SQLException {
+        return rs.getInt("count");
+    }
+
     private static String mapRowNames(ResultSet rs, int i) throws SQLException {
         return rs.getString("framework_name");
     }
@@ -211,6 +219,43 @@ public class FrameworkDaoImpl implements FrameworkDao {
         if(lastComment!=null)
             have=have.concat(" and max(c.tstamp)>='"+lastComment+"'");
         return namedJdbcTemplate.query(SELECTION+aux+GROUP_BY+have+" LIMIT " + pageSize +" OFFSET " + pageSize*(page-1),params,ROW_MAPPER);
+    }
+
+    @Override
+    public Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag,Integer commentAmount,Timestamp lastComment,Timestamp lastUpdated){
+        if(toSearch==null && categories==null && types == null && starsLeft == 0 && starsRight == 5 && commentAmount==0 && lastComment==null && lastUpdated==null)
+            return jdbcTemplate.query("select count(*) from (" + SELECTION+GROUP_BY + ") as searchResult",ROW_MAPPER_COUNT).get(0);
+        String aux = "";
+        if(toSearch!=null || categories!=null || types != null || lastUpdated!=null)
+            aux="where ";
+        Map<String,List<String>> params = new HashMap<>();
+        if(toSearch!=null && !toSearch.isEmpty()){
+            if(nameFlag || toSearch.length()<3)
+                aux = aux.concat("f.framework_name ILIKE '%"+toSearch+"%' ");
+            else
+                aux = aux.concat("(f.framework_name ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%' or f.description ILIKE '%"+toSearch+"%') ");
+        }
+        if(categories!=null){
+            if(!aux.equals("where "))
+                aux =aux.concat("and ");
+            aux = aux.concat("category in (:cat) ");
+            params.put("cat",categories.stream().map(FrameworkCategories::getNameCat).collect(Collectors.toList()));
+        }
+        if(types!=null){
+            if(!aux.equals("where "))
+                aux =aux.concat("and ");
+            aux = aux.concat("type in (:type) ");
+            params.put("type",types.stream().map(FrameworkType::getType).collect(Collectors.toList()));
+        }
+        if(lastUpdated!=null){
+            if(!aux.equals("where "))
+                aux =aux.concat("and ");
+            aux =aux.concat("f.date>='"+lastUpdated+"' ");
+        }
+        String have =" having COALESCE(avg(stars),0)>="+starsLeft+" and COALESCE(avg(stars),0)<="+starsRight+" and count(distinct comment_id)>="+commentAmount;
+        if(lastComment!=null)
+            have=have.concat(" and max(c.tstamp)>='"+lastComment+"'");
+        return namedJdbcTemplate.query("select count(*) from (" + SELECTION+aux+GROUP_BY+have + ") as searchResult" ,params,ROW_MAPPER_COUNT).get(0);
     }
 
     @Override

@@ -22,6 +22,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     private FrameworkDao frameworkDao;
 
    private long PAGESIZE = 7;
+   private long PAGESIZE_SEARCH = 24;
 
     @Override
     public Optional<Framework> findById(long id) {
@@ -51,8 +52,14 @@ public class FrameworkServiceImpl implements FrameworkService {
     @Override
     public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag,Integer commentAmount,Timestamp lastComment,Timestamp lastUpdated, long page) {
         if(starsLeft<starsRight)
-            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated, page, PAGESIZE);
-        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated, page, PAGESIZE);
+            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated, page, PAGESIZE_SEARCH);
+        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated, page, PAGESIZE_SEARCH);
+    }
+
+    public Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated){
+        if(starsLeft<starsRight)
+            return frameworkDao.searchResultsNumber(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated);
+        return frameworkDao.searchResultsNumber(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated);
     }
 
     @Override

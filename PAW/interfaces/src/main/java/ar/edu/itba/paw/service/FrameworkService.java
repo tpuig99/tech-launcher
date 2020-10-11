@@ -23,6 +23,7 @@ public interface FrameworkService {
     List<Framework> getByMinStars(int stars);
     List<Framework> getByUser(long userId, long page);
     List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated, long page);
+    Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated);
 
     void  orderByStars(List<Framework> frameworks, Integer order);
     void  orderByInteraction(List<Framework> frameworks, Integer order);

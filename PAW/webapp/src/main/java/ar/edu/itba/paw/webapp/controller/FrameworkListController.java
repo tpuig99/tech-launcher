@@ -37,7 +37,7 @@ public class FrameworkListController {
     private TranslationService ts;
 
     final long startPage = 1;
-    final long PAGESIZE = 7;
+    final long PAGESIZE = 24;
 
     private String getMessageWithoutArguments(String code) {
         return messageSource.getMessage(code, Collections.EMPTY_LIST.toArray(), LocaleContextHolder.getLocale());
@@ -148,6 +148,7 @@ public class FrameworkListController {
             tsUpdated=Timestamp.valueOf(dateUpdate.atStartOfDay());
         }
         List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, page == null ? startPage:page);
+        Integer searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
         if(order!=null && order!=0){
             switch (Math.abs(order)){
                 case 1:
@@ -176,6 +177,7 @@ public class FrameworkListController {
         mav.addObject("types", allTypes);
         mav.addObject("types_translated", ts.getAllTypes());
         mav.addObject("search_page", true);
+        mav.addObject("searchResultsNumber", searchResultsNumber);
 
         //Search Results For:
         mav.addObject("techNameQuery", toSearch );
