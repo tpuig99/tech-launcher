@@ -9,6 +9,7 @@ public class ForgetPassForm {
     @NotNull
     @NotEmpty
     @ValidEmail
+    @ExistingEmail
     private String email;
     public String getEmail() {
         return email;
