@@ -548,7 +548,7 @@
                 </div>
 
 
-                <div class="margin-left">
+                <div class="container margin-left">
                     <div class="row">
                         <div class="col-8">
                             <h5><spring:message code="tech.interactions.leave_comment"/></h5>
@@ -649,7 +649,7 @@
                 </div>
 
                 </c:if>
-                
+
                 <!-- Modals -->
 
                 <!--Login Modal -->
