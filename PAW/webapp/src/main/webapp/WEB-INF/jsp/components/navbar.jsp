@@ -18,9 +18,6 @@
     <div class="navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="<c:url value="/frameworks"/>"><spring:message code="home.techs.title"/></a>
-            </li>
-            <li class="nav-item active">
                 <a class="nav-link" href="<c:url value="/search"/>"><spring:message code="explore.title"/></a>
             </li>
         </ul>
