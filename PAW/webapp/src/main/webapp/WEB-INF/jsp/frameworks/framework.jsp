@@ -58,7 +58,7 @@
                                     <span class="fa fa-user"></span>
                                 </div>
                                 <div class="d-flex flex-column my-auto">
-                                    <c:if test="${user_isMod}">
+                                    <c:if test="${isAdmin || isOwner}">
                                         <div class="mb-4">
                                             <a href="<c:url value="/update_tech?id=${framework.id}"/>" >
                                                 <button class="btn btn-primary btn-block text-nowrap" type="button">
