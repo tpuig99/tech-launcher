@@ -58,7 +58,7 @@ public class UserProfileController {
             LOGGER.info("User Profile: Requested user {} exists, retrieving data", username);
 
             long userId = user.get().getId();
-            mav.addObject("profile", user);
+            mav.addObject("profile", user.get());
             mav.addObject("previousDescription", user.get().getDescription());
 
             final List<Comment> commentList = commentService.getCommentsByUser(userId, STARTPAGE);
@@ -97,7 +97,7 @@ public class UserProfileController {
             LOGGER.info("User Profile: Requested user {} exists, retrieving data", username);
 
             long userId = user.get().getId();
-            mav.addObject("profile", user);
+            mav.addObject("profile", user.get());
             mav.addObject("previousDescription", user.get().getDescription());
 
             final List<Comment> commentList = commentService.getCommentsByUser(userId, commentsPage);
