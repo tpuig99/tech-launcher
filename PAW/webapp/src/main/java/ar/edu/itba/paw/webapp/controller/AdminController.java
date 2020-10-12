@@ -8,9 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Optional;
+
 @RequestMapping("/admin")
 @Controller
 public class AdminController {
+
     @Autowired
     private UserService us;
 
@@ -18,11 +21,10 @@ public class AdminController {
     public ModelAndView index() {
         ModelAndView mav = new ModelAndView("admin/index");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if( us.findByUsername(username).isPresent()){
-            User user = us.findByUsername(username).get();
-            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-        }
+
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        user.ifPresent(value -> mav.addObject("user_isMod", value.isVerify() || value.isAdmin()));
+
         return mav;
     }
 }

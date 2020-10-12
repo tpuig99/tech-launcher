@@ -6,6 +6,8 @@ import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.mod_page.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,9 @@ import java.util.Optional;
 
 @Controller
 public class UserController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     UserService us;
     @Autowired
@@ -102,8 +107,10 @@ public class UserController {
         Optional<VerifyUser> vu = us.getVerifyById(form.getRevokePromotionVerificationId());
         if( vu.isPresent() && !vu.get().isPending() ){
             us.deleteVerification(form.getRevokePromotionVerificationId());
+            LOGGER.info("User: Demoted user according to Verification {}",form.getRevokePromotionVerificationId());
         }
 
+        LOGGER.error("User: Attempting to demote a non promoted user");
         return modPage(null, null, null, null, null);
     }
 
@@ -126,9 +133,7 @@ public class UserController {
         mav.addObject("promotePendingUserForm", new PromotePendingUserForm());
         mav.addObject("revokePromotionForm", new RevokePromotionForm());
 
-
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> userOptional = us.findByUsername(username);
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( userOptional.isPresent()){
             User user = userOptional.get();
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
@@ -180,29 +185,39 @@ public class UserController {
                 mav.addObject("rConPage", rConPage == null ? pageStart:rConPage);
                 return mav;
             }
+
+            LOGGER.error("User: User {} does not have enough privileges to access Mod Page", user.getId());
+            return ErrorController.redirectToErrorView();
         }
+
+        LOGGER.error("User: Unauthorized user attempted to access mod page");
         return ErrorController.redirectToErrorView();
     }
+
     @RequestMapping("/dismiss")
     public ModelAndView DismissMod(@RequestParam("id") final long verificationId) {
-        //check the mav you want
         final ModelAndView mav = new ModelAndView("admin/mod_page");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> userOptional = us.findByUsername(username);
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( userOptional.isPresent()){
             User user = userOptional.get();
             if(user.isAdmin()) {
                 Optional<VerifyUser> vu = us.getVerifyById(verificationId);
                 if (vu.isPresent()) {
                     us.deleteVerification(verificationId);
+                    LOGGER.info("User: User {} was dismissed as Mod from Tech {}", vu.get().getUserId(), vu.get().getFrameworkId());
                 }
                 return mav;
             }
+            LOGGER.error("User: User {} does not have enough privileges to dismiss a mod", user.getId());
+            return ErrorController.redirectToErrorView();
         }
+
+        LOGGER.error("User: Unauthorized user attempted to dismiss a mod");
         return ErrorController.redirectToErrorView();
     }
+
     @RequestMapping("/quit")
     public ModelAndView QuitMod(@RequestParam("id") final long verificationId) {
         //check the mav you want
@@ -217,13 +232,15 @@ public class UserController {
             if (vu.isPresent()) {
                 VerifyUser verifyUser = vu.get();
                 if(verifyUser.getUserId()!=user.getId()){
-                    //raise error --> only owner
+                    LOGGER.error("User: Another User attempted to remove User {} from Mod privileges in Tech {}", vu.get().getUserId(), vu.get().getFrameworkId());
                     return ErrorController.redirectToErrorView();
                 }
                 us.deleteVerification(verificationId);
+                LOGGER.info("User: User {} quitted as Mod from Tech {}", vu.get().getUserId(), vu.get().getFrameworkId());
             }
             return mav;
         }
+        LOGGER.error("User: Unauthorized user attempted to remove a Mod");
         return ErrorController.redirectToErrorView();
     }
 
@@ -236,11 +253,17 @@ public class UserController {
                 Optional<Comment> commentOptional = commentService.getById(form.getDeleteCommentId());
                 if( commentOptional.isPresent() ){
                     commentService.acceptReport(form.getDeleteCommentId());
+                    LOGGER.info("User: Comment {} was successfully deleted", form.getDeleteCommentId());
                     return modPage(null, null, null, null, null);
                 }
+                LOGGER.error("User: Comment {} was not found", form.getDeleteCommentId());
+                return ErrorController.redirectToErrorView();
             }
+            LOGGER.error("User: User {} has not enough privileges to remove a reported comment", user.getId());
+            return ErrorController.redirectToErrorView();
         }
 
+        LOGGER.error("User: Unauthorized user attempted to remove a reported comment");
         return ErrorController.redirectToErrorView();
     }
 
@@ -251,11 +274,14 @@ public class UserController {
             User user = userOptional.get();
             if( user.isAdmin() ){
                 commentService.denyReport(form.getIgnoreCommentId());
-
+                LOGGER.info("User: Comment {} was removed from its report", form.getIgnoreCommentId());
                 return modPage(null, null, null, null, null);
             }
+            LOGGER.error("User: User {} has not enough privileges to ignore a reported comment", user.getId());
+            return ErrorController.redirectToErrorView();
         }
 
+        LOGGER.error("User: Unauthorized user attempted to ignore a reported comment");
         return ErrorController.redirectToErrorView();
     }
 
@@ -268,11 +294,17 @@ public class UserController {
                 Optional<Content> contentOptional = contentService.getById(form.getDeleteContentId());
                 if( contentOptional.isPresent() ){
                     contentService.acceptReport(form.getDeleteContentId());
+                    LOGGER.info("User: Content {} was successfully deleted", form.getDeleteContentId());
                     return modPage(null, null, null, null, null);
                 }
+                LOGGER.error("User: Content {} was not found", form.getDeleteContentId());
+                return ErrorController.redirectToErrorView();
             }
+            LOGGER.error("User: User {} has not enough privileges to delete a reported content", user.getId());
+            return ErrorController.redirectToErrorView();
         }
 
+        LOGGER.error("User: Unauthorized user attempted to delete a reported content");
         return ErrorController.redirectToErrorView();
     }
 
@@ -285,11 +317,15 @@ public class UserController {
                 Optional<Content> contentOptional = contentService.getById(form.getIgnoreContentId());
                 if( contentOptional.isPresent() ){
                     contentService.denyReport(form.getIgnoreContentId());
+                    LOGGER.info("User: Content {} was removed from its report", form.getIgnoreContentId());
                     return modPage(null, null, null, null, null);
                 }
             }
+            LOGGER.error("User: User {} has not enough privileges to ignore a reported content", user.getId());
+            return ErrorController.redirectToErrorView();
         }
 
+        LOGGER.error("User: Unauthorized user attempted to ignore a reported content");
         return ErrorController.redirectToErrorView();
     }
 
