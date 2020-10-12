@@ -7,12 +7,16 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.TranslationService;
 import ar.edu.itba.paw.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.Timestamp;
@@ -20,9 +24,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class FrameworkListController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FrameworkListController.class);
 
     @Autowired
     private MessageSource messageSource;
@@ -62,6 +69,13 @@ public class FrameworkListController {
         List<FrameworkType> typesList = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
 
+        LOGGER.info("Explore: Searching results for: {}", toSearch);
+        LOGGER.info("Explore: Searching categories among: {}", categoriesList);
+        LOGGER.info("Explore: Searching types among: {}", typesList);
+        LOGGER.info("Explore: Searching stars between: {} and {}", starsLeft, starsRight);
+        LOGGER.info("Explore: Using search only by name: {}", nameFlag);
+        LOGGER.info("Explore: Searching by comment amount = {}", commentAmount);
+
         for( String c : categories){
             String aux = c.replaceAll("%20", " ");
             categoriesQuery.add(aux);
@@ -82,9 +96,9 @@ public class FrameworkListController {
             categoriesList.add(FrameworkCategories.getByName(toSearch));
             toSearch="";
         } else if(allTypes.contains(toSearch)){
-            typesList.contains(toSearch);
             toSearch="";
         }
+
         Timestamp tscomment = null;
         Timestamp tsUpdated = null;
         LocalDate dateComment = null;
@@ -92,6 +106,7 @@ public class FrameworkListController {
 
         String dateCommentTranslation = "";
         if(lastComment!=null) {
+            LOGGER.info("Explore: Searching 'last comment' according to criteria {}", lastComment);
             switch (lastComment) {
                 case 1:
                     dateCommentTranslation = getMessageWithoutArguments("explore.last_days");
@@ -118,6 +133,7 @@ public class FrameworkListController {
 
         String dateUpdateTranslation = "";
         if(lastUpdate!=null) {
+            LOGGER.info("Explore: Searching 'last update' according to criteria {}", lastUpdate);
             switch (lastUpdate) {
                 case 1:
                     dateUpdateTranslation = getMessageWithoutArguments("explore.last_days");
@@ -150,6 +166,7 @@ public class FrameworkListController {
         List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, page == null ? startPage:page);
         Integer searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
         if(order!=null && order!=0){
+            LOGGER.info("Explore: Searching 'order' according to criteria {}", order);
             switch (Math.abs(order)){
                 case 1:
                     fs.orderByStars(frameworks, order);
@@ -166,6 +183,7 @@ public class FrameworkListController {
             }
         }
 
+        LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
         
         mav.addObject("matchingFrameworks", frameworks);
         mav.addObject("page", page == null ? startPage:page);
@@ -201,12 +219,9 @@ public class FrameworkListController {
         }
 
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        if( us.findByUsername(username).isPresent()){
-            User user = us.findByUsername(username).get();
-            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-        }
+        user.ifPresent(value -> mav.addObject("user_isMod", value.isVerify() || value.isAdmin()));
 
         return mav;
     }
