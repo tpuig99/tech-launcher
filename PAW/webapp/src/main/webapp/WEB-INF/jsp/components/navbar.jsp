@@ -9,13 +9,13 @@
 </head>
 <body>
 
-<nav class="navbar fixed-top navbar-expand-lg">
+<nav class="navbar sticky-top navbar-expand-lg">
     <a class="navbar-brand" href="<c:url value="/"/>">
         <img src="<c:url value="/resources/assets/logo.png"/>" width="30" height="30" class="d-inline-block align-top" alt="">
         <spring:message code="navbar.title"/>
     </a>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="<c:url value="/frameworks"/>"><spring:message code="home.techs.title"/></a>
