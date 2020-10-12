@@ -280,6 +280,7 @@ public class FrameworkController {
             if(errors.hasErrors()){
                 final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory());
                 framework1.addObject("contentFormError", true);
+                framework1.addObject("contentForm",form);
                 framework1.addObject("ratingForm", new RatingForm());
                 framework1.addObject("upVoteForm", new VoteForm());
                 framework1.addObject("downVoteForm", new DownVoteForm());
