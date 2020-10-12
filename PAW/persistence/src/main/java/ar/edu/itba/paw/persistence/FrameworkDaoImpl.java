@@ -32,7 +32,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
     private final String SELECTION="select f.framework_id, count(distinct comment_id) as comment_amount,f.type,framework_name,category,f.description,introduction,logo,COALESCE(avg(stars),0) as stars,count(distinct fv.user_id) as votes_cant,user_name as author,f.date, max(c.tstamp) as last_comment, f.picture from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author left join comments c on f.framework_id=c.framework_id  ";
     private final String SELECTION_COUNT="select count(*) as count from frameworks f left join framework_votes fv on f.framework_id = fv.framework_id left join users u on u.user_id=f.author left join comments c on f.framework_id=c.framework_id ";
 
-    private final String GROUP_BY=" group by framework_name, f.framework_id, category, f.type, f.description, introduction, logo,u.user_name";
+    private final String GROUP_BY=" group by framework_name, f.framework_id, category, f.type, f.description, introduction, logo,u.user_name,f.date ";
 
 
     @Autowired
@@ -185,8 +185,8 @@ public class FrameworkDaoImpl implements FrameworkDao {
         return jdbcTemplate.query(value, new Object[]{ userId, pageSize, pageSize*(page-1) }, ROW_MAPPER);    }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag,Integer commentAmount,Timestamp lastComment,Timestamp lastUpdated, long page, long pageSize) {
-        if(toSearch==null && categories==null && types == null && starsLeft == 0 && starsRight == 5 && commentAmount==0 && lastComment==null && lastUpdated==null)
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag,Integer commentAmount,Timestamp lastComment,Timestamp lastUpdated,Integer order, long page, long pageSize) {
+        if(toSearch==null && categories==null && types == null && starsLeft == 0 && starsRight == 5 && commentAmount==0 && lastComment==null && lastUpdated==null && (order==null||order==0))
             return jdbcTemplate.query(SELECTION+GROUP_BY + " LIMIT " + pageSize +" OFFSET " + pageSize*(page-1),ROW_MAPPER);
         String aux = "";
         if(toSearch!=null || categories!=null || types != null || lastUpdated!=null)
@@ -215,10 +215,34 @@ public class FrameworkDaoImpl implements FrameworkDao {
                 aux =aux.concat("and ");
             aux =aux.concat("f.date>='"+lastUpdated+"' ");
         }
+        String orderAux="";
+
+        if(order!=null && order!=0){
+              orderAux=" order by ";
+            switch (Math.abs(order)){
+                case 1:{
+                    orderAux = orderAux.concat("COALESCE(avg(stars),0) " +( order>0?"desc ":""));
+                    break;
+                }
+                case 2:{
+                    orderAux = orderAux.concat("count(distinct comment_id) " +( order>0?"desc ":""));
+                    break;
+                }
+                case 3:{
+                    orderAux = orderAux.concat("date " +( order>0?"desc ":""));
+                    break;
+                }
+                case 4:{
+                    orderAux = orderAux.concat("last_comment " +( order>0?"desc NULLS last ":""));
+                    break;
+                }
+
+            }
+        }
         String have =" having COALESCE(avg(stars),0)>="+starsLeft+" and COALESCE(avg(stars),0)<="+starsRight+" and count(distinct comment_id)>="+commentAmount;
         if(lastComment!=null)
             have=have.concat(" and max(c.tstamp)>='"+lastComment+"'");
-        return namedJdbcTemplate.query(SELECTION+aux+GROUP_BY+have+" LIMIT " + pageSize +" OFFSET " + pageSize*(page-1),params,ROW_MAPPER);
+        return namedJdbcTemplate.query(SELECTION+aux+GROUP_BY+have+orderAux+" LIMIT " + pageSize +" OFFSET " + pageSize*(page-1),params,ROW_MAPPER);
     }
 
     @Override
@@ -283,10 +307,11 @@ public class FrameworkDaoImpl implements FrameworkDao {
 
     @Override
     public Optional<Framework> update(long id, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, byte[] picture) {
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
         if(picture.length>0)
-            jdbcTemplate.update("UPDATE frameworks SET framework_name = ?, category = ?, description = ?, introduction = ?, type=?, picture=?  WHERE framework_id = ?",new Object[]{name, category.getNameCat(), description,introduction,type.getType(),picture,id});
+            jdbcTemplate.update("UPDATE frameworks SET framework_name = ?, category = ?, description = ?, introduction = ?, type=?, picture=?, date=?  WHERE framework_id = ?",new Object[]{name, category.getNameCat(), description,introduction,type.getType(),picture,ts,id});
         else
-            jdbcTemplate.update("UPDATE frameworks SET framework_name = ?, category = ?, description = ?, introduction = ?, type=?  WHERE framework_id = ?",new Object[]{name, category.getNameCat(), description,introduction,type.getType(),id});
+            jdbcTemplate.update("UPDATE frameworks SET framework_name = ?, category = ?, description = ?, introduction = ?, type=?,date =?  WHERE framework_id = ?",new Object[]{name, category.getNameCat(), description,introduction,type.getType(),ts,id});
         return findById(id);
     }
 

@@ -57,10 +57,10 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag,Integer commentAmount,Timestamp lastComment,Timestamp lastUpdated, long page) {
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag,Integer commentAmount,Timestamp lastComment,Timestamp lastUpdated, Integer order, long page) {
         if(starsLeft<starsRight)
-            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated, page, PAGESIZE_SEARCH);
-        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated, page, PAGESIZE_SEARCH);
+            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated,order, page, PAGESIZE_SEARCH);
+        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated,order, page, PAGESIZE_SEARCH);
     }
 
     @Transactional(readOnly = true)
@@ -69,94 +69,6 @@ public class FrameworkServiceImpl implements FrameworkService {
         if(starsLeft<starsRight)
             return frameworkDao.searchResultsNumber(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated);
         return frameworkDao.searchResultsNumber(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated);
-    }
-
-    @Override
-    public void orderByStars(List<Framework> frameworks, Integer order) {
-        if(order<0){
-            frameworks.sort(new Comparator<Framework>() {
-                @Override
-                public int compare(Framework o1, Framework o2) {
-                    return Double.compare(o1.getStars(),o2.getStars());
-                }
-            });
-            return;
-        }
-            frameworks.sort(new Comparator<Framework>() {
-                @Override
-                public int compare(Framework o1, Framework o2) {
-                    return Double.compare(o2.getStars(),o1.getStars());
-                }
-            });
-    }
-
-    @Override
-    public void orderByInteraction(List<Framework> frameworks, Integer order) {
-        if(order<0){
-            frameworks.sort(new Comparator<Framework>() {
-                @Override
-                public int compare(Framework o1, Framework o2) {
-                    if(o1.getLastComment()==null && o2.getLastComment()==null)
-                        return 0;
-                    else if(o1.getLastComment()==null)
-                        return -1;
-                    else if(o2.getLastComment()==null)
-                        return 1;
-                    return o1.getLastComment().after(o2.getLastComment()) ? 1 : -1;
-                }
-            });
-            return;
-        }
-        frameworks.sort(new Comparator<Framework>() {
-            @Override
-            public int compare(Framework o1, Framework o2) {
-                if(o1.getLastComment()==null && o2.getLastComment()==null)
-                    return 0;
-                else if(o1.getLastComment()==null)
-                    return 1;
-                else if(o2.getLastComment()==null)
-                    return -1;
-                return o1.getLastComment().before(o2.getLastComment()) ? 1 : -1;
-            }
-        });
-    }
-
-    @Override
-    public void orderByReleaseDate(List<Framework> frameworks, Integer order) {
-        if(order>0){
-            frameworks.sort(new Comparator<Framework>() {
-                @Override
-                public int compare(Framework o1, Framework o2) {
-                    return o1.getPublish_date().after(o2.getPublish_date()) ? 1 : -1;
-                }
-            });
-            return;
-        }
-        frameworks.sort(new Comparator<Framework>() {
-            @Override
-            public int compare(Framework o1, Framework o2) {
-                return o1.getPublish_date().before(o2.getPublish_date()) ? 1 : -1;
-            }
-        });
-    }
-
-    @Override
-    public void orderByCommentsAmount(List<Framework> frameworks, Integer order) {
-        if(order<0){
-            frameworks.sort(new Comparator<Framework>() {
-                @Override
-                public int compare(Framework o1, Framework o2) {
-                    return o1.getCommentsAmount()-o2.getCommentsAmount();
-                }
-            });
-            return;
-        }
-        frameworks.sort(new Comparator<Framework>() {
-            @Override
-            public int compare(Framework o1, Framework o2) {
-                return o2.getCommentsAmount()-o1.getCommentsAmount();
-            }
-        });
     }
 
     @Transactional(readOnly = true)

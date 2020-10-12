@@ -163,26 +163,8 @@ public class FrameworkListController {
         if(dateUpdate!=null){
             tsUpdated=Timestamp.valueOf(dateUpdate.atStartOfDay());
         }
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, page == null ? startPage:page);
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, order,page == null ? startPage:page);
         Integer searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
-        if(order!=null && order!=0){
-            LOGGER.info("Explore: Searching 'order' according to criteria {}", order);
-            switch (Math.abs(order)){
-                case 1:
-                    fs.orderByStars(frameworks, order);
-                    break;
-                case 2:
-                    fs.orderByCommentsAmount(frameworks, order);
-                    break;
-                case 3:
-                    fs.orderByReleaseDate(frameworks, order);
-                    break;
-                case 4:
-                    fs.orderByInteraction(frameworks, order);
-                    break;
-            }
-        }
-
         LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
         
         mav.addObject("matchingFrameworks", frameworks);
