@@ -22,7 +22,7 @@
         </encoder>
     </appender>
 
-    <root level="ERROR">
+    <root level="WARN">
         <appender-ref ref="error-appender" />
     </root>
 
