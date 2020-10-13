@@ -108,7 +108,7 @@
                                     <div class="col third-font text-right"> <c:out value="${pendingUser.comment.timestamp.toLocaleString()}" default=""/> </div>
                                 </div>
                                 <div class="card-footer row mx-2">
-                                    <c:url value="/accept" var="postPathAcceptPending"/>
+                                    <c:url value="/acceptPending" var="postPathAcceptPending"/>
                                     <form:form modelAttribute="promotePendingUserForm" action="${postPathAcceptPending}" method="post">
                                         <form:label path="promotePendingUserVerificationId">
                                             <form:input path="promotePendingUserVerificationId" id="promotePendingUserVerificationIdId${pendingUser.verificationId}" class="input-wrap" type="hidden" value="${pendingUser.verificationId}"/>
