@@ -8,6 +8,8 @@ import ar.edu.itba.paw.webapp.form.frameworks.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -44,6 +46,9 @@ public class FrameworkController {
 
     @Autowired
     private TranslationService ts;
+
+    @Autowired
+    private MessageSource messageSource;
 
     private final long startPage = 1;
     private final long pageSize = 5;
@@ -315,8 +320,7 @@ public class FrameworkController {
 
             redirectAttributes.addFlashAttribute("contentFormError",false);
 
-            //TODO replace with not hardcoded String
-            redirectAttributes.addFlashAttribute("contentFormMessage","Your content is now pending approval.");
+            redirectAttributes.addFlashAttribute("contentFormMessage",messageSource.getMessage("tech.content.pending", new Object[]{},LocaleContextHolder.getLocale()));
 
             ContentTypes type = ContentTypes.valueOf(form.getType());
 
