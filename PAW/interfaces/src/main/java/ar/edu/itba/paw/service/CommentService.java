@@ -23,10 +23,10 @@ public interface CommentService {
     Optional<Comment> changeComment(long commentId, String description);
 
     /***Votes methods***/
-    Optional<Comment> voteUp(long commentId,long userId);
-    Optional<Comment> voteDown(long commentId,long userId);
+    Optional<Comment> vote(long commentId,long userId,int voteSign);
 
-    /***Reports***/
+
+        /***Reports***/
     Optional<ReportComment> getReportById(long reportId);
     List<ReportComment> getAllReport(long page);
     List<ReportComment> getReportByFramework(long frameworkId);

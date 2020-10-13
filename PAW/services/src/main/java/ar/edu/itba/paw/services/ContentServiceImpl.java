@@ -83,29 +83,15 @@ public class ContentServiceImpl implements ContentService {
 
     @Transactional
     @Override
-    public void voteUp(long contentId, long userId) {
+    public void vote(long contentId, long userId,int voteSign) {
         Optional<ContentVote> vote = cv.getByContentAndUser(contentId,userId);
         if(vote.isPresent()){
-            if(vote.get().isVoteUp())
+            if(vote.get().getVote() == voteSign)
                 cv.delete(vote.get().getContentVoteId());
             else
-                cv.update(vote.get().getContentVoteId(),1);
+                cv.update(vote.get().getContentVoteId(),voteSign);
         }else {
-            cv.insert(contentId, userId, 1);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void voteDown(long contentId, long userId) {
-        Optional<ContentVote> vote = cv.getByContentAndUser(contentId,userId);
-        if(vote.isPresent()){
-            if(!vote.get().isVoteUp())
-                cv.delete(vote.get().getContentVoteId());
-            else
-                cv.update(vote.get().getContentVoteId(),-1);
-        }else {
-            cv.insert(contentId, userId, -1);
+            cv.insert(contentId, userId, voteSign);
         }
     }
 

@@ -37,7 +37,7 @@ public class CommentServiceTest {
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.empty());
 
         // Act
-        commentServiceImplMock.voteUp(COMMENT_ID, USER_ID);
+        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_UP);
 
         // Assert
         Mockito.verify(commentVoteDao,Mockito.times(1)).insert(COMMENT_ID,USER_ID,VOTE_UP);
@@ -51,7 +51,7 @@ public class CommentServiceTest {
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.empty());
 
         // Act
-        commentServiceImplMock.voteDown(COMMENT_ID, USER_ID);
+        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_DOWN);
 
         // Assert
         Mockito.verify(commentVoteDao,Mockito.times(1)).insert(COMMENT_ID,USER_ID,VOTE_DOWN);
@@ -65,7 +65,7 @@ public class CommentServiceTest {
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_UP)));
 
         // Act
-        commentServiceImplMock.voteUp(COMMENT_ID, USER_ID);
+        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_UP);
 
         // Assert
         Mockito.verify(commentVoteDao,Mockito.times(1)).delete(COMMENT_ID);
@@ -79,7 +79,7 @@ public class CommentServiceTest {
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_DOWN)));
 
         // Act
-        commentServiceImplMock.voteDown(COMMENT_ID, USER_ID);
+        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_DOWN);
 
         // Assert
         Mockito.verify(commentVoteDao,Mockito.times(1)).delete(COMMENT_ID);
@@ -93,7 +93,7 @@ public class CommentServiceTest {
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_DOWN)));
 
         // Act
-        commentServiceImplMock.voteUp(COMMENT_ID, USER_ID);
+        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_UP);
 
         // Assert
         Mockito.verify(commentVoteDao,Mockito.times(1)).update(COMMENT_ID, VOTE_UP);
@@ -107,7 +107,7 @@ public class CommentServiceTest {
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_UP)));
 
         // Act
-        commentServiceImplMock.voteDown(COMMENT_ID, USER_ID);
+        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_DOWN);
 
         // Assert
         Mockito.verify(commentVoteDao,Mockito.times(1)).update(COMMENT_ID, VOTE_DOWN);

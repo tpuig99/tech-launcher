@@ -221,7 +221,7 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Optional<Comment> comment = commentService.voteUp(form.getCommentId(), user.get().getId());
+            final Optional<Comment> comment = commentService.vote(form.getCommentId(), user.get().getId(),1);
 
             if(comment.isPresent()){
                 LOGGER.info("Tech {}: User {} upvoted comment {}", form.getFrameworkId(), user.get().getId(), form.getCommentId());
@@ -242,7 +242,7 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Optional<Comment> comment = commentService.voteDown(form.getDownVoteCommentId(), user.get().getId());
+            final Optional<Comment> comment = commentService.vote(form.getDownVoteCommentId(), user.get().getId(),-1);
 
             if(comment.isPresent()){
                 LOGGER.info("Tech {}: User {} downvoted comment {}", form.getDownVoteFrameworkId(), user.get().getId(), form.getDownVoteCommentId());

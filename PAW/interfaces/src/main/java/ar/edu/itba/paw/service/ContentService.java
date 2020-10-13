@@ -23,8 +23,7 @@ public interface ContentService {
     Optional<Content> changeContent(long contentId, String title, String link, ContentTypes types);
 
     /*** Votes methods ***/
-    void voteUp(long contentId, long userId);
-    void voteDown(long contentId,long userId);
+    void vote(long contentId, long userId,int voteSign);
 
     /*** Reports ***/
     Optional<ReportContent> getReporstById(long reportId);
