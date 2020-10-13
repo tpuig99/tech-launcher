@@ -67,7 +67,7 @@
                         <c:if test="${not empty profile.description}">
                             <p><strong><spring:message code="profile.description"/></strong> <c:out value="${profile.description}"/></p>
                         </c:if>
-                        <c:if test="${user.name == profile.username && (user_isMod || !isAllowMod) && !isAdmin}">
+                        <c:if test="${user.name == profile.username && !isAdmin}">
                             <div class="row allow-mod">
                                 <strong>Allow moderator: </strong>
                                 <label class="switch align-items-end">
