@@ -64,6 +64,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
+    public Optional<Integer> getCommentsCountByUser(long userId){
+        return cmts.getCommentsCountByUser(userId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public Map<Long, List<Comment>> getRepliesByFramework(long frameworkId) {
         return cmts.getRepliesByFramework(frameworkId);
     }
