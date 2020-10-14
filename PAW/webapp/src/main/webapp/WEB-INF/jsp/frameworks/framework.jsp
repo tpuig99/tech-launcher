@@ -743,13 +743,13 @@
                                     <div><spring:message code="tech.content.delete.message"/></div>
                                 </div>
                                 <div class="row justify-content-center align-items-center margin-top">
-                                    <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button></span>
 
                                     <c:url value="/content/delete" var="postPathDeleteContent"/>
                                     <form:form modelAttribute="deleteContentForm" action="${postPathDeleteContent}" method="post">
                                         <form:label path="deleteContentFrameworkId"><form:input  class="input-wrap" path="deleteContentFrameworkId" type="hidden" value="${framework.id}"/></form:label>
                                         <form:label path="deleteContentId"><form:input  class="input-wrap" path="deleteContentId" type="hidden" id="contentIdDeleteInput"/></form:label>
-                                        <span class="margin-left"> <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button></span>
+                                        <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                                        <button type="submit" class="btn btn-danger ml-4"><spring:message code="button.delete"/></button>
                                     </form:form>
 
                                 </div>
@@ -845,15 +845,13 @@
                                     <div><spring:message code="tech.comment.delete.message"/></div>
                                 </div>
                                 <div class="row justify-content-center align-items-center margin-top">
-                                    <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button></span>
-                                    <span class="margin-left">
-                                        <c:url value="/comment/delete" var="postPathDeleteCommment"/>
-                                        <form:form modelAttribute="deleteCommentForm" action="${postPathDeleteCommment}" method="post">
-                                            <form:label path="commentDeleteFrameworkId"><form:input  class="input-wrap" path="commentDeleteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
-                                            <form:label path="commentDeleteId"><form:input  class="input-wrap" path="commentDeleteId" type="hidden" id="commentIdDeleteInput"/></form:label>
-                                            <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button>
-                                        </form:form>
-                                    </span>
+                                    <c:url value="/comment/delete" var="postPathDeleteCommment"/>
+                                    <form:form modelAttribute="deleteCommentForm" action="${postPathDeleteCommment}" method="post">
+                                        <form:label path="commentDeleteFrameworkId"><form:input  class="input-wrap" path="commentDeleteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                        <form:label path="commentDeleteId"><form:input  class="input-wrap" path="commentDeleteId" type="hidden" id="commentIdDeleteInput"/></form:label>
+                                        <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                                        <button type="submit" class="btn btn-danger ml-4"><spring:message code="button.delete"/></button>
+                                    </form:form>
                                 </div>
                             </div>
                         </div>
@@ -877,19 +875,9 @@
                                     <c:url value="/delete_tech" var="postPathDeleteCommment"/>
                                     <form:form modelAttribute="deleteFrameworkForm" action="${postPathDeleteCommment}" method="post">
                                         <form:input  class="input-wrap" path="frameworkIdx" type="hidden" value="${framework.id}"/>
-                                        <button type="button" class="btn btn-primary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                                        <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
                                         <button type="submit" class="btn btn-danger ml-4" ><spring:message code="button.delete"/></button>
                                     </form:form>
-
-<%--                                    --%>
-<%--                                    <span><button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button></span>--%>
-<%--                                    <span class="margin-left">--%>
-<%--                                        <c:url value="/delete_tech" var="postPathDeleteCommment"/>--%>
-<%--                                        <form:form modelAttribute="deleteFrameworkForm" action="${postPathDeleteCommment}" method="post">--%>
-<%--                                            <form:input  class="input-wrap" path="frameworkIdx" type="hidden" value="${framework.id}"/>--%>
-<%--                                            <button type="submit" class="btn btn-danger"><spring:message code="button.delete"/></button>--%>
-<%--                                        </form:form>--%>
-<%--                                    </span>--%>
                                 </div>
                             </div>
                         </div>
