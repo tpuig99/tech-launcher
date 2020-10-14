@@ -182,7 +182,13 @@ public class FrameworkDaoImpl implements FrameworkDao {
     @Override
     public List<Framework> getByUser(long userId, long page, long pageSize) {
         String value=SELECTION+"WHERE author = ?"+GROUP_BY + " LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(value, new Object[]{ userId, pageSize, pageSize*(page-1) }, ROW_MAPPER);    }
+        return jdbcTemplate.query(value, new Object[]{ userId, pageSize, pageSize*(page-1) }, ROW_MAPPER);
+    }
+
+    @Override
+    public Optional<Integer> getByUserCount(long userId){
+        return jdbcTemplate.query("select count (*) from frameworks inner join users on author = user_id where user_id = ?", new Object[]{userId}, ROW_MAPPER_COUNT).stream().findFirst();
+    }
 
     @Override
     public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag,Integer commentAmount,Timestamp lastComment,Timestamp lastUpdated,Integer order, long page, long pageSize) {

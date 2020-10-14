@@ -97,6 +97,12 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Transactional
     @Override
+    public Optional<Integer> getByUserCount( long userId ){
+        return frameworkDao.getByUserCount(userId);
+    }
+
+    @Transactional
+    @Override
     public Optional<Framework> create(String name, FrameworkCategories category, String description, String introduction, FrameworkType type,long userId, byte[] picture) {
         return frameworkDao.create(name,category,description,introduction,type,userId, picture);
     }
