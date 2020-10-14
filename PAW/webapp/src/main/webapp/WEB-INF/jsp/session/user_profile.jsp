@@ -69,7 +69,7 @@
                         </c:if>
                         <c:if test="${user.name == profile.username && !isAdmin}">
                             <div class="row allow-mod">
-                                <strong>Allow moderator: </strong>
+                                <strong><spring:message code="profile.allow_mod"/></strong>
                                 <label class="switch align-items-end">
                                     <input type="checkbox" id="enableMod" onclick="setModEnable()">
                                     <span class="slider round"></span>
