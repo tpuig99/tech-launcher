@@ -1,18 +1,19 @@
-package ar.edu.itba.paw.webapp.form;
+package ar.edu.itba.paw.webapp.form.register;
 
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -22,6 +23,9 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     @Autowired
     private UserService service;
+
+    @Autowired
+    MessageSource messageSource;
 
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
@@ -52,16 +56,17 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         });
         mailSender.setSession(session);
         String recipientAddress = user.getMail();
-        String subject = "Registration Confirmation";
+        String subject = messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale());
+
         String confirmationUrl
-                = event.getAppUrl() + "/regitrationConfirm.html?token=" + token;
-        String message = "Click link to finish your registration!! ";
+                = event.getAppUrl() + "/registrationConfirm.html?token=" + token;
+        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale());
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom("confirmemailonly@gmail.com");
         email.setTo(recipientAddress);
         email.setSubject(subject);
-        email.setText(message + "\r\n" + "http://pawserver.it.itba.edu.ar" + confirmationUrl);
+        email.setText(message + "\r\n" + confirmationUrl);
         mailSender.send(email);
     }
 }

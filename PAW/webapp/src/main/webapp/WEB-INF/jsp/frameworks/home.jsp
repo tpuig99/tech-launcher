@@ -1,10 +1,11 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
 <head>
     <title>
-        Tech Launcher
+        <spring:message code="techs.wref"/>
     </title>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
@@ -23,21 +24,41 @@
 
 <div class="content">
     <div class="page-title">
-        <h2>Techs</h2>
+        <h2><spring:message code="home.techs.title"/></h2>
     </div>
     <div class="page-description">
 
     </div>
 
     <div>
-        <h4 class="title">Best Rated</h4>
+        <c:if test="${user_isMod}">
+            <div class="d-flex row justify-content-center align-middle">
+                <h4 class="mx-2 my-auto"><spring:message code="techs.add_new"/></h4>
+
+                <a href="<c:url value="/add_tech"/>" >
+                    <button class="btn btn-primary" type="button">
+                        <i class="fa fa-plus fa-sm mr-1"></i>
+                        <spring:message code="button.add_tech"/>
+                    </button>
+                </a>
+            </div>
+        </c:if>
+
+        <h4 class="title"><spring:message code="techs.best_rated"/></h4>
 
         <div class="row equal">
             <c:forEach items="${hottestList}" var="framework">
                 <div class="card mx-4 mb-4">
                     <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
                         <div class="card-body">
-                            <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.logo} logo"></div>
+                            <c:choose>
+                                <c:when test="${not empty framework.base64image}">
+                                    <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                         <div class="card-footer text-dark">${framework.name}</div>
                     </a>
@@ -49,13 +70,20 @@
     <div>
         <c:if test="${user.name != 'anonymousUser'}">
                 <c:if test="${not empty interestsList}">
-                    <h4 class="title">Based on your tastes</h4>
+                    <h4 class="title"><spring:message code="techs.tastes"/></h4>
                     <div class="row equal">
                         <c:forEach items="${interestsList}" var="framework">
                             <div class="card mx-4 mb-4">
                                 <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
                                     <div class="card-body">
-                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.logo} logo"></div>
+                                        <c:choose>
+                                            <c:when test="${not empty framework.base64image}">
+                                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                     <div class="card-footer text-dark">${framework.name}</div>
                                 </a>

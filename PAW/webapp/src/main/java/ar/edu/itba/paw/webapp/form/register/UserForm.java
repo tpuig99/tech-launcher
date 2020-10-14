@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.form;
+package ar.edu.itba.paw.webapp.form.register;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 public class UserForm {
     @NotNull
     @Size(min = 3, max = 100)
-    @Pattern(regexp = "[a-zA-Z0-9]+", message = "Username must only have alphanumerical characters")
+    @Pattern(regexp = "[a-zA-Z0-9]+")
     private String username;
     @NotNull
     @NotEmpty

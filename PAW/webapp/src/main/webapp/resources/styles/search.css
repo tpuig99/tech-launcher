@@ -9,29 +9,71 @@
     height: 100%;
     width: 20em;
     z-index: 1;
-    top: 4em;
     left: 0;
     overflow-x: hidden;
     padding-top: 20px;
     margin-left: 1em;
+    padding-bottom: 10em;
 }
 
 .content-search {
-    position: absolute;
-    top: 4.5em;
-    left: 20.5em;
-    margin-right: 1em;
+    position: relative;
+    margin-left: 22em;
     padding-left: 10px;
     padding-top: 10px;
+    width: calc(100% - 23em);
 }
 
 .sidebar-search select {
     padding: 0.5em 0.5em 0.5em 1em;
     text-decoration: none;
     font-size: 1em;
-    display: block;
-    height: 3em;
 }
 
 .sidebar-search select:hover {
+}
+
+.hide{
+    display: none;
+}
+
+.my-form-inline {
+    width: 4em;
+    display: inline;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.my-badge-inline{
+
+    margin-top: 2em;
+    margin-bottom: 2em;
+    font-size: 1em;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
+
+.subtitle {
+    color: #733bce;
+}
+
+
+.secondary-badge{
+    color: white;
+    background-color: #b4b6b7;
+}
+
+.margin-top {
+    margin-top: 1em;
 }

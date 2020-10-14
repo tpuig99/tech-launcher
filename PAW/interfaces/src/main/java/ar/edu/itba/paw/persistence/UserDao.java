@@ -20,5 +20,9 @@ public interface UserDao {
     List<String> getUserNames();
     void setEnable(long id);
     void updateDescription(long userId,String description);
+
+    void updatePicture(long id, byte[] picture);
+
     void updatePassword(long userId, String password);
+    void updateModAllow(long userId,boolean allow);
 }

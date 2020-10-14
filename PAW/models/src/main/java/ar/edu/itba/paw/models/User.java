@@ -14,9 +14,11 @@ public class User {
     private String description;
     private boolean allowMod;
     private boolean admin;
+    private String contentType;
+    private String base64image;
     private List<VerifyUser> verifications;
 
-    public User(long id, String username, String mail, String password, boolean enable, String description, boolean allowMod,boolean admin) {
+    public User(long id, String username, String mail, String password, boolean enable, String description, boolean allowMod,boolean admin, String contentType, String base64image) {
         this.id = id;
         this.username = username;
         this.mail = mail;
@@ -25,9 +27,18 @@ public class User {
         this.description = description;
         this.allowMod = allowMod;
         this.admin = admin;
+        this.contentType = contentType;
+        this.base64image = base64image;
         verifications = new ArrayList<>();
     }
 
+    public String getBase64image() {
+        return base64image;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
 
     public String getDescription() {
         return description;
@@ -77,7 +88,15 @@ public class User {
         }
         return false;
     }
+    public boolean hasAppliedToFramework(long frameworkId){
+        for (VerifyUser v: verifications) {
+            if(v.getFrameworkId()==frameworkId){
+                return true;
+            }
 
+        }
+        return false;
+    }
     public boolean isAdmin() {
         return admin;
     }

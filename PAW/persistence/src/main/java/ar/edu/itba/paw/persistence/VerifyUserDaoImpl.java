@@ -4,20 +4,20 @@ import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class VerifyUserDaoImpl implements VerifyUserDao {
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final static RowMapper<VerifyUser> ROW_MAPPER= VerifyUserDaoImpl::VerifyMapRow;
     private final static String SELECTION_VERIFY="select v.verification_id, v.framework_id,v.user_id,v.comment_id,v.pending,user_name,framework_name,c.description,c.tstamp,(CASE WHEN v.comment_id IS NULL THEN false ELSE true END) AS has_comment, count(case when vote=-1 then vote end) as neg, reference, count(case when vote=1 then vote end) as pos,(CASE WHEN v.pending IS false THEN true ELSE false END) AS is_verify,f.category,CASE WHEN admin_id IS NULL THEN false ELSE true END AS is_admin from verify_users v left join frameworks f on f.framework_id = v.framework_id left join comments c on c.comment_id = v.comment_id left join users u on u.user_id = v.user_id left join comment_votes cv on v.comment_id = cv.comment_id left join admins a on c.user_id = a.user_id ";
@@ -31,6 +31,7 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
 
     @Autowired
     public VerifyUserDaoImpl(final DataSource ds) {
+        namedJdbcTemplate = new NamedParameterJdbcTemplate(ds);
         jdbcTemplate = new JdbcTemplate(ds);
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                     .withTableName("verify_users")
@@ -59,7 +60,8 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
                 rs.getString("user_name"),
                 rs.getInt("framework_id"),
                 rs.getString("framework_name"),
-                rs.getBoolean("pending")
+                rs.getBoolean("pending"),
+                FrameworkCategories.getByName(rs.getString("category"))
         );
     }
 
@@ -97,9 +99,28 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
 
     @Override
     public List<VerifyUser> getByFramework(long frameworkId, boolean pending) {
-        String value = SELECTION_VERIFY+"WHERE v.framework_id = ? and v.pending = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[] {frameworkId,pending}, ROW_MAPPER);
+        if( !pending ) {
+            String value = SELECTION_VERIFY + "WHERE v.framework_id = ? and v.pending = ?" + GROUP_BY;
+            return jdbcTemplate.query(value, new Object[]{frameworkId, pending}, ROW_MAPPER);
+        }
+        String value = SELECTION_VERIFY + "WHERE v.framework_id = ? and v.pending = ? and v.comment_id IS NOT NULL" + GROUP_BY;
+        return jdbcTemplate.query(value, new Object[]{frameworkId, pending}, ROW_MAPPER);
     }
+
+    @Override
+    public List<VerifyUser> getByFrameworks( List<Long> frameworksIds, boolean pending, long page, long pageSize){
+        Map<String, List<Long>> params = new HashMap<>();
+        params.put("framework_id", frameworksIds);
+        String query;
+
+        if( !pending )
+            query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = false" + GROUP_BY + "  order by verification_id LIMIT " + pageSize + " OFFSET " + (page-1)*pageSize;
+        else
+            query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = true and v.comment_id IS NOT NULL " + GROUP_BY + "  order by verification_id LIMIT " + pageSize + " OFFSET " + (page-1)*pageSize;
+
+        return namedJdbcTemplate.query(query, params, ROW_MAPPER);
+    }
+
     @Override
     public Optional<VerifyUser> getByFrameworkAndUser(long frameworkId, long userId) {
         String value = SELECTION_VERIFY+"WHERE v.framework_id = ? and v.user_id = ?"+GROUP_BY;
@@ -124,9 +145,13 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
     }
 
     @Override
-    public List<VerifyUser> getByPending(boolean pending) {
-        String value = SELECTION_VERIFY+"WHERE v.pending = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[] {pending}, ROW_MAPPER);
+    public List<VerifyUser> getByPending(boolean pending, long page, long pageSize) {
+        if( !pending ) {
+            String value = SELECTION_VERIFY + "WHERE v.pending = ?" + GROUP_BY + "  order by verification_id LIMIT ? OFFSET ?";
+            return jdbcTemplate.query(value, new Object[]{pending, pageSize, (page - 1) * pageSize}, ROW_MAPPER);
+        }
+        String value = SELECTION_VERIFY + "WHERE v.pending = ? AND v.comment_id IS NOT NULL" + GROUP_BY + "  order by verification_id LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(value, new Object[]{pending, pageSize, (page - 1) * pageSize}, ROW_MAPPER);
     }
 
     @Override
@@ -135,7 +160,28 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
     }
 
     @Override
+    public void deleteVerificationByUser(long userId) {
+        jdbcTemplate.update("DELETE FROM verify_users WHERE user_id = ?", new Object[]{userId});
+    }
+
+    @Override
     public void verify(long verificationId) {
         jdbcTemplate.update("UPDATE verify_users SET pending = false WHERE verification_id = ?", new Object[]{verificationId});
+    }
+
+    @Override
+    public List<VerifyUser> getApplicantsByPending(boolean pending, long page, long pageSize) {
+        String value = SELECTION_VERIFY+"WHERE v.pending = ? AND v.comment_id IS NULL"+GROUP_BY + " order by verification_id LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(value, new Object[] {pending, pageSize, (page-1)*pageSize}, ROW_MAPPER);
+    }
+
+    @Override
+    public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
+        Map<String, List<Long>> params = new HashMap<>();
+        params.put("framework_id", new ArrayList<>(frameworksIds));
+        String query;
+        query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = true and v.comment_id IS NULL " + GROUP_BY + " order by verification_id LIMIT " + pageSize + " OFFSET " + pageSize*(page-1);
+
+        return namedJdbcTemplate.query(query, params, ROW_MAPPER);
     }
 }

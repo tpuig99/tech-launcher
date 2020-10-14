@@ -9,12 +9,20 @@ public class VerifyUser {
         private long frameworkId;
         private String frameworkName;
         private boolean pending;
+        private boolean admin;
+        private FrameworkCategories category;
 
     public VerifyUser(long verificationId, Comment comment, boolean pending) {
         this.verificationId = verificationId;
         this.comment = comment;
         this.pending = pending;
         isRequested = false;
+        userName=comment.getUserName();
+        userId=comment.getUserId();
+        frameworkId=comment.getFrameworkId();
+        frameworkName=comment.getFrameworkName();
+        admin=comment.isAdmin();
+        category=comment.getEnumCategory();
     }
 
     public VerifyUser(long verificationId, long userId,String userName, long frameworkId, String frameworkName, boolean pending) {
@@ -25,6 +33,33 @@ public class VerifyUser {
         this.frameworkName = frameworkName;
         this.pending = pending;
         isRequested = true;
+    }
+
+    public VerifyUser(long verificationId, long userId,String userName, long frameworkId, String frameworkName, boolean pending, FrameworkCategories category) {
+        this.verificationId = verificationId;
+        this.userId = userId;
+        this.userName = userName;
+        this.frameworkId = frameworkId;
+        this.frameworkName = frameworkName;
+        this.pending = pending;
+        isRequested = true;
+        this.category = category;
+    }
+
+    public String getCategory() {
+        return category.getNameCat();
+    }
+
+    public void setCategory(FrameworkCategories category) {
+        this.category = category;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public long getVerificationId() {

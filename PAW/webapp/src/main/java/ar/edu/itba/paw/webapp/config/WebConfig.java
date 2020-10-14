@@ -7,17 +7,16 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -27,7 +26,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
-
+@EnableTransactionManagement
 @EnableWebMvc
 @ComponentScan({ "ar.edu.itba.paw.webapp.controller","ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence","ar.edu.itba.paw.webapp.form"})
 @Configuration
@@ -58,9 +57,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ds.setDriverClass(org.postgresql.Driver.class);
 
 //        Uncomment when using the Development BD (Ctrl + '/')
-        ds.setUrl("jdbc:postgresql://ec2-52-22-216-69.compute-1.amazonaws.com:5432/d86l7934jmqblf");
-        ds.setUsername("gbhbqhgxqihynh");
-        ds.setPassword("959523c108bbcbbf94a86d25428acea2051845a79486cc83f71163d39ee834b9");
+       ds.setUrl("jdbc:postgresql://ec2-52-22-216-69.compute-1.amazonaws.com:5432/d86l7934jmqblf");
+       ds.setUsername("gbhbqhgxqihynh");
+       ds.setPassword("959523c108bbcbbf94a86d25428acea2051845a79486cc83f71163d39ee834b9");
 
 //        Uncomment when using the Local Forwarded Pampero (Ctrl + '/')
 //        ds.setUrl("jdbc:postgresql://localhost:5600/paw-2020b-1");
@@ -81,7 +80,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         dsi.setDatabasePopulator(databasePopulator());
         return dsi;
     }
-        
+
     private DatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
         dbp.addScript(schemaSql);
@@ -90,12 +89,30 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public MessageSource messageSource() {
         final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setFallbackToSystemLocale(false);
         messageSource.setBasename("classpath:i18n/messages");
-                messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
         messageSource.setCacheSeconds(5);
         return messageSource;
     }
 
+    @Bean
+    public CommonsMultipartResolver multipartResolver(){
+        return new CommonsMultipartResolver();
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(final DataSource ds) {
+        return new DataSourceTransactionManager(ds);
+    }
+
+    @Controller
+    static class FaviconController {
+        @RequestMapping("favicon.ico")
+        String favicon() {
+            return "forward:/resources/assets/favicon.ico";
+        }
+    }
 }
 
 

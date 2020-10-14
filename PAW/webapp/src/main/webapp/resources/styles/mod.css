@@ -11,3 +11,18 @@
 .verified .btn {
     float: right;
 }
+
+.btn-danger {
+    justify-content: center;
+}
+
+.content-no-sidebar{
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+    justify-content: center;
+    text-align: center;
+    vertical-align: center;
+    padding-top: 6.5em;
+    padding-bottom: 2em;
+    width: 100%;
+}

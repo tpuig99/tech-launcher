@@ -11,12 +11,13 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -29,7 +30,7 @@ public class UserDaoImpl implements UserDao {
     private final static RowMapper<VerifyUser> ROW_MAPPER_VERIFY_USER = UserDaoImpl::VerifyMapRow;
 
 
-    private final static String SELECTION="select users.user_id,user_name,mail,password,enabled,user_description,allow_moderator,CASE WHEN admin_id IS NULL THEN false ELSE true END AS is_admin from users left join admins a on users.user_id = a.user_id ";
+    private final static String SELECTION="select users.user_id,user_name,mail,password,enabled,user_description,allow_moderator,CASE WHEN admin_id IS NULL THEN false ELSE true END AS is_admin, picture from users left join admins a on users.user_id = a.user_id ";
     private final static String SELECTION_VERIFY="select v.verification_id, v.framework_id,v.user_id,v.comment_id,v.pending,user_name,framework_name,c.description,c.tstamp,(CASE WHEN v.comment_id IS NULL THEN false ELSE true END) AS has_comment, count(case when vote=-1 then vote end) as neg, reference, count(case when vote=1 then vote end) as pos,(CASE WHEN v.pending IS false THEN true ELSE false END) AS is_verify,f.category,CASE WHEN admin_id IS NULL THEN false ELSE true END AS is_admin from verify_users v left join frameworks f on f.framework_id = v.framework_id left join comments c on c.comment_id = v.comment_id left join users u on u.user_id = v.user_id left join comment_votes cv on v.comment_id = cv.comment_id left join admins a on c.user_id = a.user_id WHERE v.user_id=? group by v.verification_id,u.user_name,f.framework_name,c.description, v.framework_id, v.user_id, v.comment_id, v.pending, user_name, framework_name, v.verification_id, c.tstamp, (CASE WHEN v.comment_id IS NULL THEN false ELSE true END),c.reference,f.category,a.admin_id";
     @Autowired
     public UserDaoImpl(final DataSource ds) {
@@ -40,6 +41,20 @@ public class UserDaoImpl implements UserDao {
     }
 
     private static User userMapRow(ResultSet rs, int rowNum) throws SQLException {
+        byte[] image = rs.getBytes("picture");
+        String encodeBase64 = "";
+        String contentType = "";
+
+        if (image != null) {
+            byte[] encodedByteArray = Base64.getEncoder().encode(rs.getBytes("picture"));
+            encodeBase64 = new String(encodedByteArray, StandardCharsets.UTF_8);
+            try {
+                contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(rs.getBytes("picture")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return new User(rs.getInt("user_id"),
                 rs.getString("user_name"),
                 rs.getString("mail"),
@@ -47,7 +62,9 @@ public class UserDaoImpl implements UserDao {
                 rs.getBoolean("enabled"),
                 rs.getString("user_description"),
                 rs.getBoolean("allow_moderator"),
-                rs.getBoolean("is_admin"));
+                rs.getBoolean("is_admin"),
+                contentType,
+                encodeBase64);
     }
 
     private static String usernameMapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -149,8 +166,9 @@ public class UserDaoImpl implements UserDao {
         args.put("user_description","");
         args.put("enabled",false);
         args.put("allow_moderator",true);
+        args.put("picture",new byte[]{});
         final Number userId = jdbcInsert.executeAndReturnKey(args);
-        return new User(userId.longValue(), user_name,mail,password,false,"",true,false);
+        return new User(userId.longValue(), user_name,mail,password,false,"",true,false, "", "");
     }
 
     @Override
@@ -186,7 +204,17 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void updatePicture(long id, byte[] picture) {
+        jdbcTemplate.update("UPDATE users set picture=? where user_id=?",picture,id);
+    }
+
+    @Override
     public void updatePassword(long id, String password) {
         jdbcTemplate.update("UPDATE users set password=? where user_id=?",password,id);
+    }
+
+    @Override
+    public void updateModAllow(long id, boolean allow) {
+        jdbcTemplate.update("UPDATE users set allow_moderator=? where user_id=?",allow,id);
     }
 }

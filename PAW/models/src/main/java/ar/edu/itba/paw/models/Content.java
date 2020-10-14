@@ -2,22 +2,28 @@ package ar.edu.itba.paw.models;
 
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Content {
     private long contentId;
     private long frameworkId;
     private long userId;
     private String title;
-    private long votesUp;
-    private long votesDown;
     private Timestamp timestamp;
     private String link;
     private ContentTypes type;
-    private Boolean pending;
+    private int votesUp;
+    private int votesDown;
     private String frameworkName;
     private FrameworkCategories category;
+    private String userName;
+    private Integer userAuthVote;
+    private boolean isVerify;
+    private boolean isAdmin;
+    private List<String> reportersNames = new ArrayList<>();
 
-    public Content(long contentId, long frameworkId, long userId, String title, long votesUp, long votesDown, Timestamp timestamp, String link, ContentTypes type, Boolean pending) {
+    public Content(long contentId, long frameworkId, long userId, String title, int votesUp, int votesDown, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin, String username,Integer userAuthVote) {
         this.contentId = contentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
@@ -27,54 +33,30 @@ public class Content {
         this.timestamp = timestamp;
         this.link = link;
         this.type = type;
-        this.pending = pending;
-
-    }
-    public Content(long contentId, long frameworkId, long userId, String title, long votesUp, long votesDown, Timestamp timestamp, String link, ContentTypes type, Boolean pending,String frameworkName) {
-        this.contentId = contentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.title = title;
-        this.votesUp = votesUp;
-        this.votesDown = votesDown;
-        this.timestamp = timestamp;
-        this.link = link;
-        this.type = type;
-        this.pending = pending;
-        this.frameworkName = frameworkName;
-    }
-
-
-    public Content(long contentId, long frameworkId, long userId, String title, long votesUp, long votesDown, Timestamp timestamp, String link, ContentTypes type, Boolean pending, String frameworkName, FrameworkCategories category ){
-        this.contentId = contentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.title = title;
-        this.votesUp = votesUp;
-        this.votesDown = votesDown;
-        this.timestamp = timestamp;
-        this.link = link;
-        this.type = type;
-        this.pending = pending;
         this.frameworkName = frameworkName;
         this.category = category;
+        this.userAuthVote = userAuthVote;
+        this.isVerify = isVerify;
+        this.isAdmin = isAdmin;
+        this.userName = username;
     }
-
-    public FrameworkCategories getCategory() {
-        return category;
-    }
-
-    public void setCategory(FrameworkCategories category) {
-        this.category = category;
-    }
-
-    public String getFrameworkName() {
-        return frameworkName;
-    }
-
-    public void setFrameworkName(String frameworkName) {
+    public Content(long contentId, long frameworkId, long userId, String title, int votesUp, int votesDown, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin,String userName) {
+        this.contentId = contentId;
+        this.frameworkId = frameworkId;
+        this.userId = userId;
+        this.title = title;
+        this.votesUp = votesUp;
+        this.votesDown = votesDown;
+        this.timestamp = timestamp;
+        this.link = link;
+        this.type = type;
         this.frameworkName = frameworkName;
+        this.category = category;
+        this.isVerify = isVerify;
+        this.isAdmin = isAdmin;
+        this.userName = userName;
     }
+
 
     public long getContentId() {
         return contentId;
@@ -92,11 +74,11 @@ public class Content {
         return title;
     }
 
-    public long getVotesUp() {
+    public int getVotesUp() {
         return votesUp;
     }
 
-    public long getVotesDown() {
+    public int getVotesDown() {
         return votesDown;
     }
 
@@ -112,11 +94,46 @@ public class Content {
         return type;
     }
 
-    public Boolean getPending() {
-        return pending;
+    public String getFrameworkName() {
+        return frameworkName;
     }
 
-    public void setPending(Boolean pending) {
-        this.pending = pending;
+    public FrameworkCategories getCategory() {
+        return category;
+    }
+
+    public Integer getUserAuthVote() {
+        return userAuthVote;
+    }
+
+    public boolean isVerify() {
+        return isVerify;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+    public boolean hasUserAuthVote(){
+        if(userAuthVote == null)
+            return false;
+        return userAuthVote == 0 ? false : true;
+    }
+    public void addReporter(String name) {
+        reportersNames.add(name);
+    }
+    public boolean isReporter(String name){
+        for (String rn:reportersNames) {
+            if(rn.equals(name))
+                return true;
+        }
+        return false;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public List<String> getReportersNames() {
+        return reportersNames;
     }
 }

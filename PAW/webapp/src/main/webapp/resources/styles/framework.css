@@ -256,3 +256,15 @@ label:hover:before {
 .rocket-color-admin:hover {
     text-shadow: 0 0 5px black;
 }
+
+.votedUp {
+    color: #D7263D;
+}
+
+.votedDown {
+    color: #067BC2;
+}
+
+.no-overflow-x ul {
+    overflow-x: hidden;
+}

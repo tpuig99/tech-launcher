@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.models;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,6 +14,12 @@ public class Framework {
     private String logo;
     private double stars;
     private int votesCant;
+    private String author;
+    private Timestamp publish_date;
+    private Timestamp lastComment;
+    private int commentsAmount;
+    private String contentType;
+    private String base64image;
 
     @Override
     public boolean equals(Object o) {
@@ -28,7 +35,9 @@ public class Framework {
         return Objects.hash(id, name);
     }
 
-    public Framework(long id, String name, FrameworkCategories category, String description, String introduction, String logo, double stars, int votesCant,FrameworkType type) {
+    public Framework(long id, String name, FrameworkCategories category, String description, String introduction,
+                     String logo, double stars, int votesCant,FrameworkType type,String author,Timestamp publish_date,
+                     Timestamp lastComment, int commentsAmount, String contentType, String base64image) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -38,6 +47,12 @@ public class Framework {
         this.stars = stars;
         this.votesCant = votesCant;
         this.type = type;
+        this.author = author;
+        this.publish_date = publish_date;
+        this.lastComment = lastComment;
+        this.commentsAmount = commentsAmount;
+        this.contentType = contentType;
+        this.base64image = base64image;
     }
 
     public int getVotesCant() {
@@ -86,4 +101,27 @@ public class Framework {
         return logo;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
+    public Timestamp getPublish_date() {
+        return publish_date;
+    }
+
+    public Timestamp getLastComment() {
+        return lastComment;
+    }
+
+    public int getCommentsAmount() {
+        return commentsAmount;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getBase64image() {
+        return base64image;
+    }
 }
