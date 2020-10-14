@@ -116,7 +116,7 @@
             <h2><spring:message code="profile.comments"/></h2>
         </div>
         <c:choose>
-            <c:when test="${not empty comments || comments_page != 1}">
+            <c:when test="${not empty comments}">
                 <div class="container d-flex justify-content-center">
                     <c:forEach var="comment" items="${comments}">
                         <div class="card emphasis emph-comment row mb-2">
@@ -146,7 +146,7 @@
                             </a>
                         </li>
                         <c:choose>
-                            <c:when test="${comments.size() < page_size}">
+                            <c:when test="${comments_page*page_size >= commentsCount}">
                                 <li class="page-item disabled">
                             </c:when>
                             <c:otherwise>
@@ -173,7 +173,7 @@
             <h2><spring:message code="profile.contents"/></h2>
         </div>
         <c:choose>
-            <c:when test="${not empty contents || contents_page != 1}">
+            <c:when test="${not empty contents}">
                 <div class="container d-flex justify-content-center">
                     <c:forEach var="content" items="${contents}">
                         <div class="card emphasis emph-content row mb-2">
@@ -212,7 +212,7 @@
                             </a>
                         </li>
                         <c:choose>
-                        <c:when test="${contents.size() < page_size}">
+                        <c:when test="${contents_page*page_size >= contentCount}">
                         <li class="page-item disabled">
                             </c:when>
                             <c:otherwise>
@@ -237,7 +237,7 @@
             <h2><spring:message code="profile.votes"/></h2>
         </div>
         <c:choose>
-            <c:when test="${not empty votes || votes_page != 1}">
+            <c:when test="${not empty votes}">
                 <div class="container row equal justify-content-center">
                     <c:forEach var="vote" items="${votes}">
                         <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
@@ -272,7 +272,7 @@
                         </a>
                     </li>
                     <c:choose>
-                    <c:when test="${votes.size() < page_size*2}">
+                    <c:when test="${votes_page*page_size*2 >= votesCount}">
                     <li class="page-item disabled">
                         </c:when>
                         <c:otherwise>
@@ -292,7 +292,7 @@
         </c:choose>
 
     <!-- Frameworks -->
-    <c:if test="${not empty frameworks || frameworks_page != 1}">
+    <c:if test="${not empty frameworks}">
         <div class="page-title mb-4 ml-2 text-left">
             <h2><spring:message code="profile.frameworks"/></h2>
          </div>
@@ -334,7 +334,7 @@
                     </a>
                 </li>
                 <c:choose>
-                <c:when test="${frameworks.size() < frameworks_page_size}">
+                <c:when test="${frameworks_page*frameworks_page_size >= frameworksCount}">
                 <li class="page-item disabled">
                     </c:when>
                     <c:otherwise>
