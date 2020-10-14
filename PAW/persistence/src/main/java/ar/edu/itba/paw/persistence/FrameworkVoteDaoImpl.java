@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import javax.swing.text.html.Option;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final static RowMapper<FrameworkVote> ROW_MAPPER = FrameworkVoteDaoImpl::frameworkMapRow;
+    private final static RowMapper<Integer> ROW_MAPPER_COUNT = FrameworkVoteDaoImpl::mapRowCount;
     private final static String SELECTION="select framework_name,v.framework_id,category,vote_id,user_id,stars from framework_votes v natural join frameworks ";
 
     @Autowired
@@ -29,6 +31,10 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("framework_votes")
                 .usingGeneratedKeyColumns("vote_id");
+    }
+
+    private static Integer mapRowCount(ResultSet rs, int i) throws SQLException {
+        return rs.getInt("count");
     }
 
     private static FrameworkVote frameworkMapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -63,6 +69,11 @@ public class FrameworkVoteDaoImpl implements FrameworkVoteDao {
     public List<FrameworkVote> getAllByUser(long userId, long page, long pageSize) {
         String value=SELECTION+"WHERE user_id=? LIMIT ? OFFSET ?";
         return jdbcTemplate.query(value, new Object[] { userId, pageSize, pageSize * (page-1) }, ROW_MAPPER);
+    }
+
+    @Override
+    public Optional<Integer> getAllCountByUser(long userId){
+        return jdbcTemplate.query("select count (*) from framework_votes inner join users on framework_votes.user_id = users.user_id where framework_votes.user_id = ?", new Object[] {userId}, ROW_MAPPER_COUNT).stream().findFirst();
     }
 
     @Override

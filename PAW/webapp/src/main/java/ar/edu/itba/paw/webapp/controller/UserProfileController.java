@@ -65,17 +65,25 @@ public class UserProfileController {
             final List<Content> contentList = contentService.getContentByUser(userId, STARTPAGE);
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId, STARTPAGE);
             final List<Framework> frameworks = frameworkService.getByUser(userId, STARTPAGE);
+            final Optional<Integer> contentCount = contentService.getContentCountByUser(userId);
+            final Optional<Integer> commentsCount = commentService.getCommentsCountByUser(userId);
+            final Optional<Integer> votesCount = voteService.getAllCountByUser(userId);
+            final Optional<Integer> frameworksCount = frameworkService.getByUserCount(userId);
 
             mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
             mav.addObject("contents", contentList);
             mav.addObject("contents_page", STARTPAGE);
+            contentCount.ifPresent(value -> mav.addObject("contentCount", value));
             mav.addObject("comments", commentList);
             mav.addObject("comments_page", STARTPAGE);
+            commentsCount.ifPresent(value -> mav.addObject("commentsCount", value));
             mav.addObject("votes", votesList);
             mav.addObject("votes_page", STARTPAGE);
+            votesCount.ifPresent(value -> mav.addObject("votesCount", value));
             mav.addObject("frameworks",frameworks);
             mav.addObject("frameworks_page", STARTPAGE);
             mav.addObject("frameworks_page_size", frameworkPageSize);
+            frameworksCount.ifPresent(value -> mav.addObject("frameworksCount", value));
             mav.addObject("page_size", pageSize);
             mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
             mav.addObject("isAdmin", user.get().isAdmin());
@@ -88,7 +96,12 @@ public class UserProfileController {
     }
 
     @RequestMapping(path={"/users/{username}/pages"}, method = RequestMethod.GET)
-    public ModelAndView userProfilePagination(@PathVariable String username, @ModelAttribute("profileForm") final ProfileForm form, @RequestParam(value = "comments_page", required = false) final long commentsPage, @RequestParam(value = "contents_page", required = false) final long contentsPage, @RequestParam(value = "votes_page", required = false) final long votesPage, @RequestParam(value = "frameworks_page", required = false) final long frameworksPage) {
+    public ModelAndView userProfilePagination(@PathVariable String username,
+                                              @ModelAttribute("profileForm") final ProfileForm form,
+                                              @RequestParam(value = "comments_page", required = false) final long commentsPage,
+                                              @RequestParam(value = "contents_page", required = false) final long contentsPage,
+                                              @RequestParam(value = "votes_page", required = false) final long votesPage,
+                                              @RequestParam(value = "frameworks_page", required = false) final long frameworksPage) {
         ModelAndView mav = new ModelAndView("session/user_profile");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
@@ -104,17 +117,25 @@ public class UserProfileController {
             final List<Content> contentList = contentService.getContentByUser(userId, contentsPage);
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId, votesPage);
             final List<Framework> frameworks = frameworkService.getByUser(userId, frameworksPage);
+            final Optional<Integer> contentCount = contentService.getContentCountByUser(userId);
+            final Optional<Integer> commentsCount = commentService.getCommentsCountByUser(userId);
+            final Optional<Integer> votesCount = voteService.getAllCountByUser(userId);
+            final Optional<Integer> frameworksCount = frameworkService.getByUserCount(userId);
 
             mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
             mav.addObject("contents", contentList);
             mav.addObject("contents_page", contentsPage);
+            contentCount.ifPresent(value -> mav.addObject("contentCount", value));
             mav.addObject("comments", commentList);
             mav.addObject("comments_page", commentsPage);
+            commentsCount.ifPresent(value -> mav.addObject("commentsCount", value));
             mav.addObject("votes", votesList);
             mav.addObject("votes_page", votesPage);
+            votesCount.ifPresent(value -> mav.addObject("votesCount", value));
             mav.addObject("frameworks",frameworks);
             mav.addObject("frameworks_page", frameworksPage);
             mav.addObject("frameworks_page_size", frameworkPageSize);
+            frameworksCount.ifPresent(value -> mav.addObject("frameworksCount", value));
             mav.addObject("page_size", pageSize);
             mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
             mav.addObject("isAdmin", user.get().isAdmin());

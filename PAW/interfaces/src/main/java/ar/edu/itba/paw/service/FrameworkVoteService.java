@@ -10,6 +10,9 @@ public interface FrameworkVoteService {
     Optional<FrameworkVote> getById(long voteId);
     Optional<FrameworkVote> getByFrameworkAndUser(long frameworkId, long userId);
     List<FrameworkVote> getAllByUser(long userId, long page);
+
+    Optional<Integer> getAllCountByUser(long userId);
+
     FrameworkVote insert(long frameworkId, long userId, int stars);
     int delete(long voteId);
     Optional<FrameworkVote> update(long voteId, int stars);

@@ -89,17 +89,21 @@
                     </div>
                 </div>
                 <div class="row mx-2 justify-content-center">
-                    <div class="col-4 emphasis">
-                        <h2><strong><c:out value="${fn:length(contents)}"/></strong></h2>
+                    <div class="col-3 emphasis">
+                        <h2><strong><c:out value="${contentCount}"/></strong></h2>
                         <p><small><spring:message code="profile.uploaded_contents"/></small></p>
                     </div>
-                    <div class="col-4 emphasis">
-                        <h2><strong><c:out value="${fn:length(comments)}"/></strong></h2>
+                    <div class="col-3 emphasis">
+                        <h2><strong><c:out value="${commentsCount}"/></strong></h2>
                         <p><small><spring:message code="profile.comments"/></small></p>
                     </div>
-                    <div class="col-4 emphasis">
-                        <h2><strong><c:out value="${fn:length(votes)}"/> </strong></h2>
+                    <div class="col-3 emphasis">
+                        <h2><strong><c:out value="${votesCount}"/> </strong></h2>
                         <p><small><spring:message code="profile.votes_given"/></small></p>
+                    </div>
+                    <div class="col-3 emphasis">
+                        <h2><strong><c:out value="${frameworksCount}"/> </strong></h2>
+                        <p><small><spring:message code="profile.frameworks"/></small></p>
                     </div>
                 </div>
 

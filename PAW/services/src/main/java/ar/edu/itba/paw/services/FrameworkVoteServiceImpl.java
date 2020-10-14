@@ -41,6 +41,12 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
         return vs.getAllByUser(userId, page, PAGESIZE);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<Integer> getAllCountByUser( long userId ){
+        return vs.getAllCountByUser(userId);
+    }
+
 
     @Transactional
     @Override
