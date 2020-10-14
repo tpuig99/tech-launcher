@@ -114,9 +114,9 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
         String query;
 
         if( !pending )
-            query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = false" + GROUP_BY + " LIMIT " + pageSize + " OFFSET " + (page-1)*pageSize;
+            query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = false" + GROUP_BY + "  order by verification_id LIMIT " + pageSize + " OFFSET " + (page-1)*pageSize;
         else
-            query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = true and v.comment_id IS NOT NULL " + GROUP_BY + " LIMIT " + pageSize + " OFFSET " + (page-1)*pageSize;
+            query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = true and v.comment_id IS NOT NULL " + GROUP_BY + "  order by verification_id LIMIT " + pageSize + " OFFSET " + (page-1)*pageSize;
 
         return namedJdbcTemplate.query(query, params, ROW_MAPPER);
     }
@@ -147,10 +147,10 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
     @Override
     public List<VerifyUser> getByPending(boolean pending, long page, long pageSize) {
         if( !pending ) {
-            String value = SELECTION_VERIFY + "WHERE v.pending = ?" + GROUP_BY + " LIMIT ? OFFSET ?";
+            String value = SELECTION_VERIFY + "WHERE v.pending = ?" + GROUP_BY + "  order by verification_id LIMIT ? OFFSET ?";
             return jdbcTemplate.query(value, new Object[]{pending, pageSize, (page - 1) * pageSize}, ROW_MAPPER);
         }
-        String value = SELECTION_VERIFY + "WHERE v.pending = ? AND v.comment_id IS NOT NULL" + GROUP_BY + " LIMIT ? OFFSET ?";
+        String value = SELECTION_VERIFY + "WHERE v.pending = ? AND v.comment_id IS NOT NULL" + GROUP_BY + "  order by verification_id LIMIT ? OFFSET ?";
         return jdbcTemplate.query(value, new Object[]{pending, pageSize, (page - 1) * pageSize}, ROW_MAPPER);
     }
 
@@ -171,7 +171,7 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
 
     @Override
     public List<VerifyUser> getApplicantsByPending(boolean pending, long page, long pageSize) {
-        String value = SELECTION_VERIFY+"WHERE v.pending = ? AND v.comment_id IS NULL"+GROUP_BY + " LIMIT ? OFFSET ?";
+        String value = SELECTION_VERIFY+"WHERE v.pending = ? AND v.comment_id IS NULL"+GROUP_BY + " order by verification_id LIMIT ? OFFSET ?";
         return jdbcTemplate.query(value, new Object[] {pending, pageSize, (page-1)*pageSize}, ROW_MAPPER);
     }
 
@@ -180,7 +180,7 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
         Map<String, List<Long>> params = new HashMap<>();
         params.put("framework_id", new ArrayList<>(frameworksIds));
         String query;
-        query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = true and v.comment_id IS NULL " + GROUP_BY + " LIMIT " + pageSize + " OFFSET " + pageSize*(page-1);
+        query = SELECTION_VERIFY + " WHERE v.framework_id IN (:framework_id) and v.pending = true and v.comment_id IS NULL " + GROUP_BY + " order by verification_id LIMIT " + pageSize + " OFFSET " + pageSize*(page-1);
 
         return namedJdbcTemplate.query(query, params, ROW_MAPPER);
     }
