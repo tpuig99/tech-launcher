@@ -117,7 +117,7 @@
                 </c:if>
 
                 <!-- Bibliography -->
-                <c:if test="${not empty books}">
+                <c:if test="${not empty books || books_page != 1}">
                 <div class="container">
                    <span><h4 class="subtitle margin-left"><spring:message code="tech.content.bibliography"/></h4></span>
                     <ul class="margin-bottom list-group margin-left list-group-flush description">
@@ -176,7 +176,7 @@
                 </c:if>
 
                 <!-- Courses -->
-                <c:if test="${not empty courses}">
+                <c:if test="${not empty courses || courses_page != 1}">
                 <div class="container">
                     <h4 class="subtitle margin-left "><spring:message code="tech.content.courses"/></h4>
 
@@ -236,7 +236,7 @@
                 </c:if>
 
                 <!-- Tutorials -->
-                <c:if test="${not empty tutorials}">
+                <c:if test="${not empty tutorials || tutorials_page != 1}">
                 <div class="container">
                    <h4 class="subtitle margin-left"><spring:message code="tech.content.tutorials"/></h4>
                     <ul class="  margin-bottom list-group margin-left list-group-flush description">
@@ -296,7 +296,7 @@
 
 
                 <!-- Comments -->
-                <c:if test="${not empty comments}">
+                <c:if test="${not empty comments || comments_page != 1}">
                 <div class="container">
                     <h4 class="title"><spring:message code="tech.comments"/></h4>
                 </div>
