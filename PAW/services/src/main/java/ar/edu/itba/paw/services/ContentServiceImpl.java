@@ -53,6 +53,12 @@ public class ContentServiceImpl implements ContentService {
 
     @Transactional(readOnly = true)
     @Override
+    public Optional<Integer> getContentCountByUser( long userId ){
+        return content.getContentCountByUser(userId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page) {
         return content.getContentByFrameworkAndType(frameworkId, type, page, PAGESIZE);
     }

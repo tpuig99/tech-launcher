@@ -26,6 +26,7 @@ public class ContentDaoImpl implements ContentDao {
 
     private final ResultSetExtractor<List<Content>> SET_EXTRACTOR = ContentDaoImpl::extractor;
     private final ResultSetExtractor<List<Content>> SET_EXTRACTOR_USER_VOTE = ContentDaoImpl::extractorUserVote;
+    private final RowMapper<Integer> ROW_MAPPER_COUNT = ContentDaoImpl::mapRowCount;
 
     @Autowired
     public ContentDaoImpl(final DataSource ds) {
@@ -114,6 +115,10 @@ public class ContentDaoImpl implements ContentDao {
         return list;
     }
 
+    private static Integer mapRowCount(ResultSet rs, int i) throws SQLException {
+        return rs.getInt("count");
+    }
+
     @Override
     public Optional<Content> getById(long contentId) {
         return jdbcTemplate.query(SELECTION+FROM+" WHERE c.content_id = ?"+GROUP_BY, new Object[] {contentId}, SET_EXTRACTOR).stream().findFirst();
@@ -138,6 +143,12 @@ public class ContentDaoImpl implements ContentDao {
     @Override
     public List<Content> getContentByUser(long userId, long page, long pageSize) {
         return jdbcTemplate.query(SELECTION+FROM+" where c.user_id=?"+GROUP_BY + " LIMIT ? OFFSET ?", new Object[] { userId, pageSize, pageSize*(page-1) }, SET_EXTRACTOR);
+    }
+
+    @Override
+    public Optional<Integer> getContentCountByUser(long userId){
+        return jdbcTemplate.query("select count (*) from content inner join users on content.user_id = users.user_id where content.user_id = ?", new Object[] { userId}, ROW_MAPPER_COUNT).stream().findFirst();
+
     }
 
     @Override
