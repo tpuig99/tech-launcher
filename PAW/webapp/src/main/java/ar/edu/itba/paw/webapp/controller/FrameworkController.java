@@ -140,6 +140,8 @@ public class FrameworkController {
             LOGGER.info("Tech {}: Requested and found, retrieving data", id);
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
             mav.addObject("framework", framework.get());
+            mav.addObject("category_translated", ts.getCategory(framework.get().getCategory()));
+            mav.addObject("type_translated", ts.getType(framework.get().getType()));
 
             mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book, booksPage));
             mav.addObject("books_page", booksPage);
