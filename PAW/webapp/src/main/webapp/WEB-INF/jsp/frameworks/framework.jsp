@@ -118,7 +118,7 @@
 
                 <!-- Bibliography -->
                 <c:if test="${not empty books || books_page != 1}">
-                <div class="container">
+                <div class="container no-overflow-x">
                    <span><h4 class="subtitle margin-left"><spring:message code="tech.content.bibliography"/></h4></span>
                     <ul class="margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="book" items="${books}">
@@ -177,7 +177,7 @@
 
                 <!-- Courses -->
                 <c:if test="${not empty courses || courses_page != 1}">
-                <div class="container">
+                <div class="container no-overflow-x">
                     <h4 class="subtitle margin-left "><spring:message code="tech.content.courses"/></h4>
 
                     <ul class=" margin-bottom list-group margin-left list-group-flush description">
@@ -237,7 +237,7 @@
 
                 <!-- Tutorials -->
                 <c:if test="${not empty tutorials || tutorials_page != 1}">
-                <div class="container">
+                <div class="container no-overflow-x">
                    <h4 class="subtitle margin-left"><spring:message code="tech.content.tutorials"/></h4>
                     <ul class="  margin-bottom list-group margin-left list-group-flush description">
                         <c:forEach var="tutorial" items="${tutorials}">

@@ -264,3 +264,7 @@ label:hover:before {
 .votedDown {
     color: #067BC2;
 }
+
+.no-overflow-x ul {
+    overflow-x: hidden;
+}
