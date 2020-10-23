@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.Entity;
+
+@Entity
 public class VerifyUser {
         private long verificationId;
         private boolean isRequested;

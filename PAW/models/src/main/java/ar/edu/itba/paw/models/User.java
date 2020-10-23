@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -36,6 +37,9 @@ public class User {
     String contentType;
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "user")
     private Admin admin;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<VerifyUser> verifications;
 
     public User() {
     }
@@ -144,35 +148,13 @@ public class User {
     public boolean isAdmin() {
         return admin!=null;
     }
-
-    /*
-    private List<VerifyUser> verifications;
-
-    public User(long id, String username, String mail, String password, boolean enable, String description, boolean allowMod,boolean admin, String contentType, String base64image) {
-        this.id = id;
-        this.username = username;
-        this.mail = mail;
-        this.password = password;
-        this.enable = enable;
-        this.description = description;
-        this.allowMod = allowMod;
-        this.admin = admin;
-        this.contentType = contentType;
-        this.base64image = base64image;
-        verifications = new ArrayList<>();
-    }
-
-
     public void setVerifications(List<VerifyUser> verifications) {
-        this.verifications.addAll(verifications);
+        //this.verifications.addAll(verifications);
+        this.verifications = verifications;
     }
 
     public List<VerifyUser> getVerifications() {
         return verifications;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     public boolean isVerifyForFramework(long frameworkId){
@@ -199,6 +181,25 @@ public class User {
                 return true;
         }
         return false;
+    }
+
+
+    /*
+    public User(long id, String username, String mail, String password, boolean enable, String description, boolean allowMod,boolean admin, String contentType, String base64image) {
+        this.id = id;
+        this.username = username;
+        this.mail = mail;
+        this.password = password;
+        this.enable = enable;
+        this.description = description;
+        this.allowMod = allowMod;
+        this.admin = admin;
+        this.contentType = contentType;
+        this.base64image = base64image;
+        verifications = new ArrayList<>();
+    }
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
  */
 }
