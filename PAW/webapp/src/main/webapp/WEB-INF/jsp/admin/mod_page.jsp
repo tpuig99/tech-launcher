@@ -244,7 +244,7 @@
                                         <div class="card emphasis emph-comment mb-2 verified">
                                             <div class="card-body my-auto">
                                                 <div class="border-bottom">
-                                                <p class="my-1"><spring:message code="moderate.report.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedComment.userNameOwner}"/>"><c:out value="${reportedComment.userNameOwner}" default=""/></a></p>
+                                                <p class="my-1"><spring:message code="moderate.report.comment.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedComment.userNameOwner}"/>"><c:out value="${reportedComment.userNameOwner}" default=""/></a></p>
                                                 <p class="my-1"><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/${reportedComment.categoryAsString}/${reportedComment.frameworkId}"/>"><c:out value="${reportedComment.frameworkName}" default=""/></a></p>
                                                 <p class="my-1"><spring:message code="moderate.comment.description"/>:&nbsp;<c:out value="${reportedComment.commentDescription}" default=""/></p>
                                                 </div>
@@ -320,7 +320,7 @@
                                     <div class="card d-flex flex-wrap emphasis emph-comment mb-2 verified">
                                         <div class="card-body my-auto">
                                             <div class="border-bottom">
-                                            <p class="my-1"><spring:message code="moderate.report.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedContent.userNameOwner}"/>"><c:out value="${reportedContent.userNameOwner}" default=""/></a></p>
+                                            <p class="my-1"><spring:message code="moderate.report.content.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedContent.userNameOwner}"/>"><c:out value="${reportedContent.userNameOwner}" default=""/></a></p>
                                             <p class="my-1"><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a></p>
                                             <p class="my-1"><spring:message code="moderate.content.description"/>:&nbsp;<a href="<c:url value="${reportedContent.link}"/>"><c:out value="${reportedContent.title}" default=""/></a></p>
                                             </div>
