@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col">
                             <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
-                            <div><spring:message code="tech.author"/>:&nbsp;<a href="<c:url value="/users/${framework.author}"/>">${framework.author}</a></div>
+                            <div><spring:message code="tech.author"/>:&nbsp;<a href="<c:url value="/users/${framework.author}"/>">${framework.author}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i></div>
                             <div><spring:message code="tech.date"/>:&nbsp;${framework.publish_date.toLocaleString()}</div>
                             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.category"/>"> ${category_translated}</span>
                             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.type"/>"> ${type_translated}</span>
@@ -390,6 +390,9 @@
                                             <c:when test="${comment.verify}">
                                                 <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="<spring:message code="tooltip.moderator"/>"></i>
                                             </c:when>
+                                            <c:when test="${comment.userName == framework.author}">
+                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i>
+                                            </c:when>
                                         </c:choose>
                                         <c:out value="${comment.userName}" default=""/>
                                     </a>
@@ -591,7 +594,7 @@
                 </div>
             </div>
             <c:choose>
-                <c:when test="${!hasAppliedToFramework && !isAdmin && user.name != 'anonymousUser' && allowMod}">
+                <c:when test="${!hasAppliedToFramework && !isAdmin && user.name != 'anonymousUser' && allowMod && !isOwner}">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center">
                             <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>
