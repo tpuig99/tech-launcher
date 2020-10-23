@@ -19,7 +19,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-@Repository
 public class UserDaoImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -55,7 +54,7 @@ public class UserDaoImpl implements UserDao {
             }
         }
 
-        return new User(rs.getInt("user_id"),
+        /*return new User(rs.getInt("user_id"),
                 rs.getString("user_name"),
                 rs.getString("mail"),
                 rs.getString("password"),
@@ -65,6 +64,8 @@ public class UserDaoImpl implements UserDao {
                 rs.getBoolean("is_admin"),
                 contentType,
                 encodeBase64);
+         */
+    return new User();
     }
 
     private static String usernameMapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -113,11 +114,11 @@ public class UserDaoImpl implements UserDao {
 
     private void getVerify(List<User> users) {
         for (User user: users) {
-            user.setVerifications(jdbcTemplate.query(SELECTION_VERIFY, new Object[] { user.getId()}, ROW_MAPPER_VERIFY_USER));
+            //user.setVerifications(jdbcTemplate.query(SELECTION_VERIFY, new Object[] { user.getId()}, ROW_MAPPER_VERIFY_USER));
         }
     }
     private void getVerify(User user) {
-            user.setVerifications(jdbcTemplate.query(SELECTION_VERIFY, new Object[] { user.getId()}, ROW_MAPPER_VERIFY_USER));
+            //user.setVerifications(jdbcTemplate.query(SELECTION_VERIFY, new Object[] { user.getId()}, ROW_MAPPER_VERIFY_USER));
 
     }
 
@@ -168,7 +169,8 @@ public class UserDaoImpl implements UserDao {
         args.put("allow_moderator",true);
         args.put("picture",new byte[]{});
         final Number userId = jdbcInsert.executeAndReturnKey(args);
-        return new User(userId.longValue(), user_name,mail,password,false,"",true,false, "", "");
+        //return new User(userId.longValue(), user_name,mail,password,false,"",true,false, "", "");
+        return new User();
     }
 
     @Override
