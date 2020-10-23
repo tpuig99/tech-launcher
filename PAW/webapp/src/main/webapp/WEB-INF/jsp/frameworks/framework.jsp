@@ -384,14 +384,14 @@
                                 <div class="col secondary-font">
                                     <a href="<c:url value='/users/${comment.userName}'/>">
                                         <c:choose>
+                                            <c:when test="${comment.userName == framework.author}">
+                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i>
+                                            </c:when>
                                             <c:when test="${comment.admin}">
                                                 <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-admin" data-toggle="tooltip" title="<spring:message code="tooltip.admin"/>"></i>
                                             </c:when>
                                             <c:when test="${comment.verify}">
                                                 <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="<spring:message code="tooltip.moderator"/>"></i>
-                                            </c:when>
-                                            <c:when test="${comment.userName == framework.author}">
-                                                <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i>
                                             </c:when>
                                         </c:choose>
                                         <c:out value="${comment.userName}" default=""/>
