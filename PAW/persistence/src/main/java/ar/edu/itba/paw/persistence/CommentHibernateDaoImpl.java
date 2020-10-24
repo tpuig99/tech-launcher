@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -158,14 +159,18 @@ public class CommentHibernateDaoImpl implements CommentDao {
 
     @Override
     public List<Comment> getCommentsByFramework(long frameworkId,Long userId) {
-        String value;
+
         if(userId!=null)
         {
-            value = SELECTION+USER_VOTE+FROM+"where c.framework_id = ?"+GROUP_BY;
-            return jdbcTemplate.query(value, new Object[] {userId,frameworkId},SET_EXTRACTOR_USER_VOTE  );
+            final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.user.id = :userId and c.framework.id = :frameworkId ", Comment.class);
+            query.setParameter("userId", userId);
+            query.setParameter("frameworkId", frameworkId);
+            return query.getResultList();
         }
-        value = SELECTION+FROM+"where c.framework_id = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[] {frameworkId},  SET_EXTRACTOR );
+        final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.framework.id = :frameworkId ", Comment.class);
+        query.setParameter("frameworkId", frameworkId);
+
+        return query.getResultList();
     }
 
     @Override
