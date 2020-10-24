@@ -1,18 +1,38 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "comments")
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comments_comment_id_seq")
+    @SequenceGenerator(sequenceName = "comments_comment_id_seq", name = "comments_comment_id_seq", allocationSize = 1)
+    @Column(name = "comment_id")
     private long commentId;
+
+
     private long frameworkId;
+
+
     private long userId;
+
+    @Column(name = "description", nullable = false, length = 500)
     private String description;
+
+
     private long votesUp;
     private long votesDown;
+
+    @Column(name = "tstamp", nullable = false)
     private Timestamp timestamp;
+
+    @Column(name = "reference")
     private Long reference;
+
     private String frameworkName;
     private String userName;
     private FrameworkCategories category;
@@ -51,6 +71,10 @@ public class Comment {
         this.isVerify = isVerify;
         this.isAdmin = isAdmin;
         this.userAuthVote = userAuthVote;
+    }
+
+    public Comment() {
+
     }
 
 

@@ -41,7 +41,7 @@ public class User {
     @JoinColumn(name = "user_id")
     private Admin admin;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @JoinColumn(name = "user_id")
     private List<VerifyUser> verifications;
 
