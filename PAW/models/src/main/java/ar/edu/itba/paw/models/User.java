@@ -50,6 +50,10 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<Comment> comments;
 
+    /*this refers to the other relation mapped in CommentVote*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @JoinColumn(name = "user_id")
+    private List<CommentVote> commentVotes;
 
 
     public User() {

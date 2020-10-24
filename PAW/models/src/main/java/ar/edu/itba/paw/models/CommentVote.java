@@ -1,16 +1,38 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "comment_votes")
 public class CommentVote {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_votes_vote_id_seq")
+    @SequenceGenerator(sequenceName = "comment_votes_vote_id_seq", name = "comment_votes_vote_id_seq", allocationSize = 1)
+    @Column(name = "vote_id")
     long commentVoteId;
-    long commentId;
-    long userId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "comment_id", nullable = false)
+    Comment comment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column
     int vote;
 
-    public CommentVote(long commentVoteId, long commentId, long userId, int vote) {
+    public CommentVote(long commentVoteId, Comment comment, User user, int vote) {
+
         this.commentVoteId = commentVoteId;
-        this.commentId = commentId;
-        this.userId = userId;
+        this.comment = comment;
+        this.user = user;
         this.vote = vote;
+    }
+
+    public CommentVote() {
+
     }
 
     public long getCommentVoteId() {
@@ -18,11 +40,11 @@ public class CommentVote {
     }
 
     public long getCommentId() {
-        return commentId;
+        return comment.getCommentId();
     }
 
     public long getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public int getVote() {

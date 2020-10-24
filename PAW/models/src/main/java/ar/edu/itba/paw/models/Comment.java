@@ -14,17 +14,8 @@ public class Comment {
     @Column(name = "comment_id")
     private long commentId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "framework_id",nullable = false)
-    private Framework framework;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @Column(name = "description", nullable = false, length = 500)
     private String description;
-
 
     private long votesUp;
     private long votesDown;
@@ -34,6 +25,20 @@ public class Comment {
 
     @Column(name = "reference")
     private Long reference;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "framework_id",nullable = false)
+    private Framework framework;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    /*this refers to the other relation mapped in CommentVote*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
+    @JoinColumn(name = "comment_id")
+    private List<CommentVote> commentVotes;
+
 
     private String frameworkName;
     private String userName;
