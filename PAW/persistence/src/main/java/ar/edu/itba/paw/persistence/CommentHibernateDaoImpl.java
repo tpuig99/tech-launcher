@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.FrameworkCategories;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -37,15 +34,6 @@ public class CommentHibernateDaoImpl implements CommentDao {
     }
 
 
-    @Autowired
-    public CommentHibernateDaoImpl(final DataSource ds) {
-        this.jdbcTemplate = new JdbcTemplate(ds);
-
-        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("comments")
-                .usingGeneratedKeyColumns("comment_id");
-
-    }
     private static List<Comment> extractor(ResultSet rs) throws SQLException {
         List<Comment> list=new ArrayList<>();
         Long currentComment = null;
@@ -165,8 +153,7 @@ public class CommentHibernateDaoImpl implements CommentDao {
 
     @Override
     public Optional<Comment> getById(long commentId) {
-        String value = SELECTION+FROM+"WHERE c.comment_id = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[] {commentId},SET_EXTRACTOR).stream().findFirst();
+        return Optional.ofNullable(em.find(Comment.class, commentId));
     }
 
     @Override
@@ -245,14 +232,17 @@ public class CommentHibernateDaoImpl implements CommentDao {
 
 
     @Override
-    public int deleteComment(long commentId) {
-        return jdbcTemplate.update("DELETE FROM comments WHERE comment_id = ? OR reference = ?", new Object[]{commentId,commentId});
+    public void deleteComment(long commentId) {
+        em.remove(em.getReference(VerifyUser.class,commentId));
     }
 
     @Override
     public Optional<Comment> changeComment(long commentId, String description) {
-        jdbcTemplate.update("UPDATE comments SET description = ? WHERE comment_id = ?", new Object[]{description, commentId});
-        return getById(commentId);
+
+        Comment comment = em.find(Comment.class, commentId);
+        comment.setDescription(description);
+        em.merge(comment);
+        return Optional.ofNullable(comment);
     }
 
 }

@@ -82,8 +82,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public int deleteComment(long commentId) {
-        return cmts.deleteComment(commentId);
+    public void deleteComment(long commentId) {
+        cmts.deleteComment(commentId);
     }
 
     @Transactional

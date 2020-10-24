@@ -22,7 +22,7 @@ public interface CommentService {
 
     /*** Comment Methods ***/
     Comment insertComment(long frameworkId, long userId, String description, Long reference);
-    int deleteComment(long commentId);
+    void deleteComment(long commentId);
     Optional<Comment> changeComment(long commentId, String description);
 
     /***Votes methods***/
