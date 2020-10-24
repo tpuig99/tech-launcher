@@ -11,10 +11,10 @@ import java.util.Optional;
 
 @Repository
 public class UserHibernateDao implements UserDao {
-    static private String DESC_DEFAULT ="";
-    static private Boolean ENABLED_DEFAULT =false;
-    static private byte[] PICTURE_DEFAULT;
-    static private Boolean ALLOW_DEFAULT =true;
+    static private final String DESC_DEFAULT ="";
+    static private final boolean ENABLED_DEFAULT =false;
+    static private final byte[] PICTURE_DEFAULT = null;
+    static private final boolean ALLOW_DEFAULT =true;
 
     @PersistenceContext
     private EntityManager em;
@@ -27,48 +27,53 @@ public class UserHibernateDao implements UserDao {
     }
 
     @Override
-    public int delete(long userId) {
-        return 0;
+    public void delete(long userId) {
+        em.remove(em.getReference(User.class,userId));
     }
 
     @Override
     public Optional<User> update(long userId, String username, String mail, String password) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<String> getMails() {
-        return null;
-    }
-
-    @Override
-    public List<String> getUserNames() {
-        return null;
+        User user = em.find(User.class,userId);
+        user.setUsername(username);
+        user.setMail(mail);
+        user.setPassword(password);
+        em.merge(user);
+        return Optional.ofNullable(user);
     }
 
     @Override
     public void setEnable(long id) {
-
+        User user = em.find(User.class,id);
+        user.setEnable(true);
+        em.merge(user);
     }
 
     @Override
     public void updateDescription(long userId, String description) {
-
+        User user = em.find(User.class,userId);
+        user.setDescription(description);
+        em.merge(user);
     }
 
     @Override
     public void updatePicture(long id, byte[] picture) {
-
+        User user = em.find(User.class,id);
+        user.setPicture(picture);
+        em.merge(user);
     }
 
     @Override
     public void updatePassword(long userId, String password) {
-
+        User user = em.find(User.class,userId);
+        user.setPassword(password);
+        em.merge(user);
     }
 
     @Override
     public void updateModAllow(long userId, boolean allow) {
-
+        User user = em.find(User.class,userId);
+        user.setAllowMod(allow);
+        em.merge(user);
     }
 
     @Override

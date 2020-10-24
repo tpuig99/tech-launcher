@@ -93,15 +93,17 @@ public class UserDaoImpl implements UserDao {
                     rs.getBoolean("is_admin")
 
             );
-            return new VerifyUser(rs.getInt("verification_id"),comment,rs.getBoolean("pending"));
+            //return new VerifyUser(rs.getInt("verification_id"),comment,rs.getBoolean("pending"));
         }
-        return new VerifyUser(rs.getInt("verification_id"),
+        /*return new VerifyUser(rs.getInt("verification_id"),
                 rs.getLong("user_id"),
                 rs.getString("user_name"),
                 rs.getInt("framework_id"),
                 rs.getString("framework_name"),
                 rs.getBoolean("pending")
                 );
+         */
+        return new VerifyUser();
     }
 
 

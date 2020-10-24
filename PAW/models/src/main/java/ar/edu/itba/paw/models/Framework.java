@@ -1,9 +1,9 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.Entity;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
-
 public class Framework {
     private long id;
     private String name;

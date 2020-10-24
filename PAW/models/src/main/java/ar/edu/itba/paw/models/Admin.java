@@ -11,7 +11,7 @@ public class Admin {
     @Column(name = "admin_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.EAGER,optional = false)
-    @Column(name = "user_id")
+    @OneToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "user_id")
     private User user;
 }

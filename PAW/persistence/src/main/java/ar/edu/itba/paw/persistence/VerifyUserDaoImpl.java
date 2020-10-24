@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Repository
 public class VerifyUserDaoImpl implements VerifyUserDao {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
@@ -53,8 +52,9 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
                     rs.getBoolean("is_verify"),
                     rs.getBoolean("is_admin")
             );
-            return new VerifyUser(rs.getInt("verification_id"),comment,rs.getBoolean("pending"));
+            //return new VerifyUser(rs.getInt("verification_id"),comment,rs.getBoolean("pending"));
         }
+        /*
         return new VerifyUser(rs.getInt("verification_id"),
                 rs.getLong("user_id"),
                 rs.getString("user_name"),
@@ -62,7 +62,8 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
                 rs.getString("framework_name"),
                 rs.getBoolean("pending"),
                 FrameworkCategories.getByName(rs.getString("category"))
-        );
+        );*/
+        return new VerifyUser();
     }
 
 
@@ -75,7 +76,8 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
         args.put("pending",true);
         final Number verify = jdbcInsert.executeAndReturnKey(args);
         Optional<Comment> comment = cd.getById(commentId);
-        return new VerifyUser(verify.longValue(),comment.get(),false);
+        //return new VerifyUser(verify.longValue(),comment.get(),false);
+        return new VerifyUser();
     }
 
     @Override
@@ -88,7 +90,8 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
         final Number verify = jdbcInsert.executeAndReturnKey(args);
         Optional<Framework> frm = fd.findById(frameworkId);
         Optional<User> user = ud.findById(userId);
-        return new VerifyUser(verify.longValue(),userId,user.get().getUsername(),frameworkId,frm.get().getName(),false);
+        //return new VerifyUser(verify.longValue(),userId,user.get().getUsername(),frameworkId,frm.get().getName(),false);
+        return new VerifyUser();
     }
 
     @Override

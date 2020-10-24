@@ -27,7 +27,6 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
     private final long PAGESIZE=6;
     private static final long USER_NOT_EXISTS = -1;
-    @Qualifier("userDaoImpl")
     @Autowired
     private UserDao userDao;
     @Autowired
@@ -88,8 +87,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public int delete(long userId) {
-        return userDao.delete(userId);
+    public void delete(long userId) {
+         userDao.delete(userId);
     }
 
     @Transactional

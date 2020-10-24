@@ -31,14 +31,18 @@ public class User {
     private String description;
     @Column(name = "allow_moderator", nullable = false)
     private boolean allowMod;
+
     @Lob
     private byte[] picture;
     String base64image;
     String contentType;
+
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "user")
+    @JoinColumn(name = "user_id")
     private Admin admin;
 
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private List<VerifyUser> verifications;
 
     public User() {
@@ -183,23 +187,11 @@ public class User {
         return false;
     }
 
+    public Admin getAdmin() {
+        return admin;
+    }
 
-    /*
-    public User(long id, String username, String mail, String password, boolean enable, String description, boolean allowMod,boolean admin, String contentType, String base64image) {
-        this.id = id;
-        this.username = username;
-        this.mail = mail;
-        this.password = password;
-        this.enable = enable;
-        this.description = description;
-        this.allowMod = allowMod;
+    public void setAdmin(Admin admin) {
         this.admin = admin;
-        this.contentType = contentType;
-        this.base64image = base64image;
-        verifications = new ArrayList<>();
     }
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
- */
 }
