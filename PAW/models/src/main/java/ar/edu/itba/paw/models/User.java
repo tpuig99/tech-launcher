@@ -45,6 +45,13 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<VerifyUser> verifications;
 
+    /*this refers to the other relation mapped in Comment*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @JoinColumn(name = "user_id")
+    private List<Comment> comments;
+
+
+
     public User() {
     }
     public User(String username, String mail, String password, boolean enable, String description, boolean allowMod,byte[] picture) {

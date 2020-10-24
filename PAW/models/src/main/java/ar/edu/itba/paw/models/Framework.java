@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +23,11 @@ public class Framework {
     private int commentsAmount;
     private String contentType;
     private String base64image;
+
+    /*this refers to the other relation mapped in Comment*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @JoinColumn(name = "framework_id")
+    private List<Comment> comments;
 
     @Override
     public boolean equals(Object o) {

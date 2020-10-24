@@ -14,11 +14,13 @@ public class Comment {
     @Column(name = "comment_id")
     private long commentId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "framework_id",nullable = false)
+    private Framework framework;
 
-    private long frameworkId;
-
-
-    private long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "description", nullable = false, length = 500)
     private String description;
@@ -41,10 +43,10 @@ public class Comment {
     private Integer userAuthVote;
     private List<String> reportersNames = new ArrayList<>();
 
-    public Comment(long commentId, long frameworkId, long userId, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin) {
+    public Comment(long commentId, Framework framework, User user, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin) {
         this.commentId = commentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
+        this.framework = framework;
+        this.user = user;
         this.description = description;
         this.votesUp = votesUp;
         this.votesDown = votesDown;
