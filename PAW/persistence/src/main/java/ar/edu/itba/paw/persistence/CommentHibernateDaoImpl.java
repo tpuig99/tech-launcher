@@ -26,131 +26,13 @@ public class CommentHibernateDaoImpl implements CommentDao {
 
 
     @Override
-    public Comment insertComment(long framework_id, long user_id, String description, Long reference) {
+    public Comment insertComment(Framework framework, User user, String description, Long reference) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        final Comment comment = new Comment(em.getReference(Framework.class, framework_id), em.getReference(User.class, user_id), description, VOTES_DEFAULT, VOTES_DEFAULT, ts, reference);
+        final Comment comment = new Comment( framework, user, description, VOTES_DEFAULT, VOTES_DEFAULT, ts, reference);
 
         em.persist(comment);
         return comment;
     }
-
-
-    private static List<Comment> extractor(ResultSet rs) throws SQLException {
-        List<Comment> list=new ArrayList<>();
-        Long currentComment = null;
-        Comment rc = null;
-        while(rs.next()){
-            Long nextComment=rs.getLong("comment_id");
-            if(currentComment==null||currentComment!=nextComment){
-                if(rc!=null){
-                    list.add(rc);
-                }
-                currentComment = nextComment;
-                rc = new Comment(rs.getLong("comment_id"),
-                        rs.getInt("framework_id"),
-                        rs.getLong("user_id"),
-                        rs.getString("description"),
-                        rs.getInt("pos"),
-                        rs.getInt("neg"),
-                        rs.getTimestamp("tstamp"),
-                        rs.getLong("reference"),
-                        rs.getString("framework_name"),
-                        rs.getString("user_name"),
-                        FrameworkCategories.getByName(rs.getString("category")),
-                        rs.getBoolean("is_verify"),
-                        rs.getBoolean("is_admin")
-                );
-                String report =rs.getString("user_name_reporter");
-                if(report!=null)
-                    rc.addReporter(report);
-            }else{
-                rc.addReporter(rs.getString("user_name_reporter"));
-            }
-        }
-        if(rc!=null){
-            list.add(rc);
-        }
-        return list;
-    }
-
-    private static List<Comment> extractorUserVote(ResultSet rs) throws SQLException {
-        List<Comment> list=new ArrayList<>();
-        Long currentComment = null;
-        Comment rc = null;
-        while(rs.next()){
-            Long nextComment=rs.getLong("comment_id");
-            if(currentComment==null||currentComment!=nextComment){
-                if(rc!=null){
-                    list.add(rc);
-                }
-                currentComment = nextComment;
-                rc = new Comment(rs.getLong("comment_id"),
-                        rs.getInt("framework_id"),
-                        rs.getLong("user_id"),
-                        rs.getString("description"),
-                        rs.getInt("pos"),
-                        rs.getInt("neg"),
-                        rs.getTimestamp("tstamp"),
-                        rs.getLong("reference"),
-                        rs.getString("framework_name"),
-                        rs.getString("user_name"),
-                        FrameworkCategories.getByName(rs.getString("category")),
-                        rs.getBoolean("is_verify"),
-                        rs.getBoolean("is_admin"),
-                        rs.getInt("user_vote")
-                );
-                String report =rs.getString("user_name_reporter");
-                if(report!=null)
-                    rc.addReporter(report);
-            }else{
-                rc.addReporter(rs.getString("user_name_reporter"));
-            }
-        }
-        if(rc!=null){
-            list.add(rc);
-        }
-        return list;
-    }
-
-    private static Integer mapRowCount(ResultSet rs, int i) throws SQLException {
-        return rs.getInt("count");
-    }
-
-    private static Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Comment(rs.getLong("comment_id"),
-                rs.getInt("framework_id"),
-                rs.getLong("user_id"),
-                rs.getString("description"),
-                rs.getInt("pos"),
-                rs.getInt("neg"),
-                rs.getTimestamp("tstamp"),
-                rs.getLong("reference"),
-                rs.getString("framework_name"),
-                rs.getString("user_name"),
-                FrameworkCategories.getByName(rs.getString("category")),
-                rs.getBoolean("is_verify"),
-                rs.getBoolean("is_admin")
-        );
-    }
-
-    private static Comment mapRowUserAuthVote(ResultSet rs, int rowNum) throws SQLException {
-        return new Comment(rs.getLong("comment_id"),
-                rs.getInt("framework_id"),
-                rs.getLong("user_id"),
-                rs.getString("description"),
-                rs.getInt("pos"),
-                rs.getInt("neg"),
-                rs.getTimestamp("tstamp"),
-                rs.getLong("reference"),
-                rs.getString("framework_name"),
-                rs.getString("user_name"),
-                FrameworkCategories.getByName(rs.getString("category")),
-                rs.getBoolean("is_verify"),
-                rs.getBoolean("is_admin"),
-                rs.getInt("user_vote")
-        );
-    }
-
 
     @Override
     public Optional<Comment> getById(long commentId) {

@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.ReportComment;
+import ar.edu.itba.paw.models.User;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +23,7 @@ public interface CommentService {
     Map<Long, List<Comment>> getRepliesByFramework(long frameworkId);
 
     /*** Comment Methods ***/
-    Comment insertComment(long frameworkId, long userId, String description, Long reference);
+    Comment insertComment(Framework framework, User user, String description, Long reference);
     void deleteComment(long commentId);
     Optional<Comment> changeComment(long commentId, String description);
 

@@ -76,8 +76,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public Comment insertComment(long frameworkId, long userId, String description, Long reference) {
-       return cmts.insertComment(frameworkId, userId, description, reference);
+    public Comment insertComment(Framework framework, User user, String description, Long reference) {
+       return cmts.insertComment(framework, user, description, reference);
     }
 
     @Transactional
