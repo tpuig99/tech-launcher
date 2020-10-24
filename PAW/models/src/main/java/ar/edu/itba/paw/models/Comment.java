@@ -53,8 +53,7 @@ public class Comment {
     private Integer userAuthVote;
     private List<String> reportersNames = new ArrayList<>();
 
-    public Comment(long commentId, Framework framework, User user, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin) {
-        this.commentId = commentId;
+    public Comment(Framework framework, User user, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference) {
         this.framework = framework;
         this.user = user;
         this.description = description;
@@ -62,14 +61,13 @@ public class Comment {
         this.votesDown = votesDown;
         this.timestamp = timestamp;
         this.reference = reference;
-        this.frameworkName = frameworkName;
-        this.userName = userName;
-        this.category = category;
-        this.isVerify = isVerify;
-        this.isAdmin = isAdmin;
+        this.frameworkName = framework.getName();
+        this.userName = user.getUsername();
+        this.category = framework.getFrameCategory();
+        this.isVerify = user.isVerify();
+        this.isAdmin = user.isAdmin();
     }
-    public Comment(long commentId, Framework framework, User user, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin, Integer userAuthVote) {
-        this.commentId = commentId;
+    public Comment(Framework framework, User user, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, FrameworkCategories category, Integer userAuthVote) {
         this.framework = framework;
         this.user = user;
         this.description = description;
@@ -77,11 +75,11 @@ public class Comment {
         this.votesDown = votesDown;
         this.timestamp = timestamp;
         this.reference = reference;
-        this.frameworkName = frameworkName;
-        this.userName = userName;
+        this.frameworkName = framework.getName();
+        this.userName = user.getUsername();
         this.category = category;
-        this.isVerify = isVerify;
-        this.isAdmin = isAdmin;
+        this.isVerify = user.isVerify();
+        this.isAdmin = user.isAdmin();
         this.userAuthVote = userAuthVote;
     }
 
