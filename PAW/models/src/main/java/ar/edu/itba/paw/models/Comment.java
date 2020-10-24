@@ -58,10 +58,10 @@ public class Comment {
         this.isVerify = isVerify;
         this.isAdmin = isAdmin;
     }
-    public Comment(long commentId, long frameworkId, long userId, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin, Integer userAuthVote) {
+    public Comment(long commentId, Framework framework, User user, String description, long votesUp, long votesDown, Timestamp timestamp, Long reference, String frameworkName, String userName, FrameworkCategories category, boolean isVerify, boolean isAdmin, Integer userAuthVote) {
         this.commentId = commentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
+        this.framework = framework;
+        this.user = user;
         this.description = description;
         this.votesUp = votesUp;
         this.votesDown = votesDown;
@@ -76,7 +76,6 @@ public class Comment {
     }
 
     public Comment() {
-
     }
 
 
@@ -85,11 +84,11 @@ public class Comment {
     }
 
     public long getFrameworkId() {
-        return frameworkId;
+        return framework.getId();
     }
 
     public long getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public String getDescription() {
@@ -154,5 +153,21 @@ public class Comment {
                 return true;
         }
         return false;
+    }
+
+    public Framework getFramework() {
+        return framework;
+    }
+
+    public void setFramework(Framework framework) {
+        this.framework = framework;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
