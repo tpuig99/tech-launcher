@@ -1,14 +1,33 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.*;
 
+@Entity
+@Table(name = "comment_report")
 public class ReportComment {
-    private long commentId;
-    private long frameworkId;
-    private long userId;
-    private String commentDescription;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_report_report_id_seq")
+    @SequenceGenerator(sequenceName = "comment_report_report_id_seq", name = "comment_report_report_id_seq", allocationSize = 1)
+    @Column(name = "report_id")
+    private Long reportId;
+
+    @Column(name="description", nullable = false)
     private String reportDescription;
+
+    //TODO user and comment should be UNIQUE(user_id,conmment_id), dont know how to do it
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id", nullable = false)
+    private Comment comment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    private long frameworkId;
+    private String commentDescription;
     private Timestamp timestamp;
     private Long reference;
     private String frameworkName;
@@ -16,10 +35,10 @@ public class ReportComment {
     private Map<Long,String> userNameReporters;
     private FrameworkCategories category;
 
-    public ReportComment(long commentId, long frameworkId, long userId, String commentDescription,String reportDescription, Timestamp timestamp, Long reference, String frameworkName, String userNameOwner,FrameworkCategories category) {
-        this.commentId = commentId;
+    public ReportComment(Comment comment, long frameworkId, User user, String commentDescription,String reportDescription, Timestamp timestamp, Long reference, String frameworkName, String userNameOwner,FrameworkCategories category) {
+        this.comment = comment;
         this.frameworkId = frameworkId;
-        this.userId = userId;
+        this.user = user;
         this.commentDescription = commentDescription;
         this.reportDescription = reportDescription;
         this.timestamp = timestamp;
@@ -30,8 +49,12 @@ public class ReportComment {
         this.category = category;
     }
 
+    public ReportComment() {
+
+    }
+
     public long getCommentId() {
-        return commentId;
+        return comment.getCommentId();
     }
 
     public long getFrameworkId() {
@@ -39,7 +62,7 @@ public class ReportComment {
     }
 
     public long getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public String getCommentDescription() {
@@ -86,5 +109,21 @@ public class ReportComment {
     }
     public void addUserReporter(long reportId,String userName){
         userNameReporters.put(reportId,userName);
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

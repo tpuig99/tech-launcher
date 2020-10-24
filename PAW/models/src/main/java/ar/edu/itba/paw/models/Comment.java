@@ -39,6 +39,11 @@ public class Comment {
     @JoinColumn(name = "comment_id")
     private List<CommentVote> commentVotes;
 
+    /*this refers to the other relation mapped in ReportComment*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
+    @JoinColumn(name = "comment_id")
+    private List<ReportComment> reports;
+
 
     private String frameworkName;
     private String userName;
