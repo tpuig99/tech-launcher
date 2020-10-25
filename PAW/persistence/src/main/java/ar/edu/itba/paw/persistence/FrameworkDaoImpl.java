@@ -3,7 +3,6 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -294,7 +293,7 @@ public class FrameworkDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public Optional<Framework> create(String framework_name,FrameworkCategories category,String description,String introduction,FrameworkType type,long userId, byte[] picture) {
+    public Optional<Framework> create(String framework_name, FrameworkCategories category, String description, String introduction, FrameworkType type, long userId, byte[] picture) {
         final Map<String, Object> args = new HashMap<>();
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         args.put("framework_name", framework_name); // la key es el nombre de la columna

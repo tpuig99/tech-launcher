@@ -62,6 +62,10 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<ReportComment> commentsReported;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @JoinColumn(name = "user_id")
+    private List<Framework> ownedFrameworks;
+
 
 
     public User() {
