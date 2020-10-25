@@ -60,39 +60,57 @@ public class CommentHibernateDaoImpl implements CommentDao {
         String value;
         if(userId!=null)
         {
-            value = SELECTION+USER_VOTE+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY + " LIMIT ? OFFSET ?";
-            return jdbcTemplate.query(value, new Object[] {userId,frameworkId, pageSize, (page-1)*pageSize},  SET_EXTRACTOR_USER_VOTE );
+            final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.user.id = :userId and c.framework.id = :frameworkId and c.reference is null ", Comment.class);
+            query.setParameter("frameworkId", frameworkId);
+            query.setParameter("userId", userId);
+            query.setFirstResult((int) ((page-1) * pageSize));
+            query.setMaxResults((int) pageSize);
+            return query.getResultList();
         }
-        value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY + " LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(value, new Object[] {frameworkId, pageSize, (page-1)*pageSize},  SET_EXTRACTOR);
+        final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.framework.id = :frameworkId and c.reference is null ", Comment.class);
+        query.setParameter("frameworkId", frameworkId);
+        query.setFirstResult((int) ((page-1) * pageSize));
+        query.setMaxResults((int) pageSize);
+        return query.getResultList();
     }
 
     public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId) {
         String value;
         if(userId!=null)
         {
-            value = SELECTION+USER_VOTE+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY + " LIMIT ? OFFSET ?";
-            return jdbcTemplate.query(value, new Object[] {userId,frameworkId},  SET_EXTRACTOR_USER_VOTE );
+
+            final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.user.id = :userId and c.framework.id = :frameworkId and c.reference is null ", Comment.class);
+            query.setParameter("frameworkId", frameworkId);
+            query.setParameter("userId", userId);
+            return query.getResultList();
         }
-        value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[] {frameworkId},  SET_EXTRACTOR);
+        final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.framework.id = :frameworkId and c.reference is null ", Comment.class);
+        query.setParameter("frameworkId", frameworkId);
+        return query.getResultList();
     }
 
     @Override
     public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
-        String value = SELECTION+FROM+"WHERE c.framework_id = ? AND c.user_id = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[] {frameworkId, userId},  SET_EXTRACTOR);
+        final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.framework.id = :frameworkId and c.user.id = :userId", Comment.class);
+        query.setParameter("frameworkId", frameworkId);
+        query.setParameter("userId", userId);
+        return query.getResultList();
     }
 
     @Override
     public List<Comment> getCommentsByUser(long userId, long page, long pageSize ) {
-        String value = SELECTION +FROM+"WHERE c.user_id = ?"+GROUP_BY + " LIMIT ? OFFSET ?" ;
-        return jdbcTemplate.query(value, new Object[] {userId, pageSize, (page-1)*pageSize}, SET_EXTRACTOR);
+        final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.user.id = :userId", Comment.class);
+        query.setParameter("userId", userId);
+        query.setFirstResult((int) ((page-1) * pageSize));
+        query.setMaxResults((int) pageSize);
+        return query.getResultList();
     }
 
     @Override
     public Optional<Integer> getCommentsCountByUser(long userId){
-        return jdbcTemplate.query("select count (*) from comments inner join users on comments.user_id = users.user_id where comments.user_id = ?", new Object[] {userId}, ROW_MAPPER_COUNT).stream().findFirst();
+        final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.user.id = :userId", Comment.class);
+        query.setParameter("userId", userId);
+        return Optional.of(query.getResultList().size());
     }
 
     //TODO optimize queries
@@ -101,14 +119,20 @@ public class CommentHibernateDaoImpl implements CommentDao {
         Map<Long, List<Comment>> toReturn = new HashMap<>();
         List<Comment> replies = new ArrayList<>();
         long commentId;
+        TypedQuery<Comment> query;
+
 
         List<Comment> commentsWithoutRef = getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,null);
 
         if(!commentsWithoutRef.isEmpty()) {
-            String value = SELECTION+FROM+"where c.framework_id = ? AND c.reference = ?"+GROUP_BY;
+
+
             for (Comment comment : commentsWithoutRef) {
                 commentId = comment.getCommentId();
-                toReturn.put(commentId, jdbcTemplate.query(value, new Object[]{frameworkId, commentId}, SET_EXTRACTOR));
+                query = em.createQuery("from Comment as c where c.framework.id = :frameworkId AND c.reference = :commentId", Comment.class);
+                query.setParameter("frameworkId", frameworkId);
+                query.setParameter("commentId", commentId);
+                toReturn.put(commentId, query.getResultList());
 
             }
         }
