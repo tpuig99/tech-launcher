@@ -23,9 +23,8 @@ public class CommentVote {
     @Column
     int vote;
 
-    public CommentVote(long commentVoteId, Comment comment, User user, int vote) {
+    public CommentVote(Comment comment, User user, int vote) {
 
-        this.commentVoteId = commentVoteId;
         this.comment = comment;
         this.user = user;
         this.vote = vote;
@@ -55,4 +54,7 @@ public class CommentVote {
         return vote==1;
     }
 
+    public void setVote(int vote) {
+        this.vote = vote;
+    }
 }
