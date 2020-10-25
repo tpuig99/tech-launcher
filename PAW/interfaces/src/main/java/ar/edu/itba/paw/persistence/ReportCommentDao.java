@@ -12,7 +12,7 @@ public interface ReportCommentDao {
     List<ReportComment> getAll(long page, long pageSize);
     List<ReportComment> getByFramework(long frameworkId);
     Optional<ReportComment> getByComment(long commentId);
-    void insert(Comment comment, User user, String description);
+    void insert(long commentId, long userId, String description);
     void delete(long reportId);
     void deleteReportByComment(long commentId);
 

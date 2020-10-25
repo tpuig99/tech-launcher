@@ -47,10 +47,10 @@ public class ReportCommentHiberateDaoImpl implements ReportCommentDao{
     }
 
     @Override
-    public void insert(Comment comment, User user, String description) {
+    public void insert(long commentId, long userId, String description) {
         ReportComment reportComment = new ReportComment();
-        reportComment.setComment(comment);
-        reportComment.setUser(user);
+        reportComment.setComment(em.getReference(Comment.class, commentId));
+        reportComment.setUser(em.getReference(User.class, userId));
         reportComment.setReportDescription(description);
         em.persist(reportComment);
     }
