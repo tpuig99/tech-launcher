@@ -26,6 +26,7 @@ public class ReportComment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+
     private long frameworkId;
     private String commentDescription;
     private Timestamp timestamp;
@@ -125,5 +126,9 @@ public class ReportComment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setReportDescription(String reportDescription) {
+        this.reportDescription = reportDescription;
     }
 }
