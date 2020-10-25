@@ -26,11 +26,11 @@ public class CommentHibernateDaoImpl implements CommentDao {
 
 
     @Override
-    public Comment insertComment(Framework framework, User user, String description, Long reference) {
+    public Comment insertComment(long frameworkId, long userId, String description, Long reference) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Comment comment = new Comment();
-        comment.setFramework(framework);
-        comment.setUser(user);
+        comment.setFramework(em.getReference(Framework.class, frameworkId));
+        comment.setUser(em.getReference(User.class, userId));
         comment.setDescription(description);
         comment.setTimestamp(ts);
         em.persist(comment);

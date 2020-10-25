@@ -23,7 +23,7 @@ public interface CommentService {
     Map<Long, List<Comment>> getRepliesByFramework(long frameworkId);
 
     /*** Comment Methods ***/
-    Comment insertComment(Framework framework, User user, String description, Long reference);
+    Comment insertComment(long frameworkId, long userId, String description, Long reference);
     void deleteComment(long commentId);
     Optional<Comment> changeComment(long commentId, String description);
 
