@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.service;
 
+import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.models.VerifyUser;
@@ -27,10 +28,8 @@ public interface UserService {
 
     void updatePicture(long userId, byte[] picture);
 
-    VerifyUser createVerify(long userId, long frameworkId, long commentId);
-
     /** moderator **/
-    VerifyUser createVerify(long userId, long frameworkId);
+    VerifyUser createVerify(User user, Framework framework);
     List<VerifyUser> getVerifyByUser(long userId,boolean pending);
     List<VerifyUser> getVerifyByFramework(long frameworkId,boolean pending);
     List<VerifyUser> getVerifyByFrameworks( List<Long> frameworksIds, boolean pending, long page );

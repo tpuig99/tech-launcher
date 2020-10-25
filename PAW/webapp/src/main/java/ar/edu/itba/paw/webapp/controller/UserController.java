@@ -52,8 +52,12 @@ public class UserController {
         Optional<User> user = us.findByUsername(username);
         if(user.isPresent()){
             Optional<VerifyUser> vu = us.getVerifyByFrameworkAndUser(frameworkId,user.get().getId());
-            if(!vu.isPresent())
-                us.createVerify(user.get().getId(),frameworkId);
+            if(!vu.isPresent()){
+                Optional<Framework> framework = fs.findById(frameworkId);
+                if(framework.isPresent())
+                   us.createVerify(user.get(),framework.get());
+            }
+
         }
         String referer = request.getHeader("Referer");
 

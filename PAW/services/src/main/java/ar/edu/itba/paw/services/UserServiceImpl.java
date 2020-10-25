@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Framework;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -21,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -159,16 +162,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
 
-    @Transactional
-    @Override
-    public VerifyUser createVerify(long userId, long frameworkId, long commentId) {
-        return verifyUserDao.create(userId,frameworkId,commentId);
-    }
 
     @Transactional
     @Override
-    public VerifyUser createVerify(long userId, long frameworkId) {
-        return verifyUserDao.create(userId,frameworkId);
+    public VerifyUser createVerify(User user, Framework framework) {
+        return verifyUserDao.create(user,framework,null);
     }
 
     @Transactional(readOnly = true)

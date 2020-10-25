@@ -114,7 +114,7 @@ public class CommentServiceImpl implements CommentService {
             Comment c=comment.get();
             Optional<User> user = userDao.findById(c.getUserId());
             if(user.isPresent() && user.get().isAllowMod() && !user.get().isAdmin() && !user.get().hasAppliedToFramework(c.getFrameworkId())) {
-                    verifyUserDao.create(c.getUserId(), c.getFrameworkId(), c.getCommentId());
+                    verifyUserDao.create(c.getUser(), c.getFramework(), c);
 
             }
         }

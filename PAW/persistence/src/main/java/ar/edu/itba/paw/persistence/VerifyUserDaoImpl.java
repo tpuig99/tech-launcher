@@ -38,7 +38,7 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
     }
     private static VerifyUser VerifyMapRow(ResultSet rs, int i) throws SQLException {
         if(rs.getBoolean("has_comment")){
-            Comment comment = new Comment(rs.getLong("comment_id"),
+            /*Comment comment = new Comment(rs.getLong("comment_id"),
                     rs.getInt("framework_id"),
                     rs.getLong("user_id"),
                     rs.getString("description"),
@@ -51,7 +51,7 @@ public class VerifyUserDaoImpl implements VerifyUserDao {
                     FrameworkCategories.getByName(rs.getString("category")),
                     rs.getBoolean("is_verify"),
                     rs.getBoolean("is_admin")
-            );
+            );*/
             //return new VerifyUser(rs.getInt("verification_id"),comment,rs.getBoolean("pending"));
         }
         /*

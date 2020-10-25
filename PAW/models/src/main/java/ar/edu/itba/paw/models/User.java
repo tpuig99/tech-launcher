@@ -37,10 +37,12 @@ public class User {
     String base64image;
     String contentType;
 
+    /*this refers to the other relation mapped in Admin*/
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "user")
     @JoinColumn(name = "user_id")
     private Admin admin;
 
+    /*this refers to the other relation mapped in VerifyUser*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @JoinColumn(name = "user_id")
     private List<VerifyUser> verifications;

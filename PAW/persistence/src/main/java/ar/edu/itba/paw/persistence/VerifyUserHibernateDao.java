@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -21,15 +20,8 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     private EntityManager em;
 
     @Override
-    public VerifyUser create(long userId, long frameworkId, long commentId) {
-        final VerifyUser verifyUser = new VerifyUser(em.getReference(User.class,userId),em.getReference(Framework.class,frameworkId),em.getReference(Comment.class,commentId),PENDING_DEFAULT);
-        em.persist(verifyUser);
-        return verifyUser;
-    }
-
-    @Override
-    public VerifyUser create(long userId, long frameworkId) {
-        final VerifyUser verifyUser = new VerifyUser(em.getReference(User.class,userId),em.getReference(Framework.class,frameworkId),null,PENDING_DEFAULT);
+    public VerifyUser create(User user, Framework framework, Comment comment) {
+        final VerifyUser verifyUser = new VerifyUser(user,framework,comment,PENDING_DEFAULT);
         em.persist(verifyUser);
         return verifyUser;
     }
@@ -89,14 +81,11 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
 
     @Override
     public List<VerifyUser> getByPending(boolean pending, long page, long pageSize) {
-        if(!pending){
-            final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.pending = :pending", VerifyUser.class);
-            query.setParameter("pending", pending);
-            query.setFirstResult((int) ((page-1) * pageSize));
-            query.setMaxResults((int) pageSize);
-            return query.getResultList();
-        }
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.comment is not null", VerifyUser.class);
+        final TypedQuery<VerifyUser> query;
+        if(!pending)
+            query = em.createQuery("from VerifyUser as vu where vu.pending = :pending", VerifyUser.class);
+        else
+            query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.comment is not null", VerifyUser.class);
         query.setParameter("pending", pending);
         query.setFirstResult((int) ((page-1) * pageSize));
         query.setMaxResults((int) pageSize);

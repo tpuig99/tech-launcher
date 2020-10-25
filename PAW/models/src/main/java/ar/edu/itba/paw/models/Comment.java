@@ -44,6 +44,10 @@ public class Comment {
     @JoinColumn(name = "comment_id")
     private List<ReportComment> reports;
 
+    /*this refers to the other relation mapped in VerifyUser*/
+    @OneToOne(fetch = FetchType.LAZY,mappedBy = "comment")
+    @JoinColumn(name = "comment_id")
+    private VerifyUser verifyUser;
 
     private String frameworkName;
     private String userName;
