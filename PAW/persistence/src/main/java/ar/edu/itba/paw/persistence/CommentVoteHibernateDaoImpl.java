@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.CommentVote;
+import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.User;
 import org.springframework.stereotype.Repository;
 
@@ -46,9 +47,9 @@ public class CommentVoteHibernateDaoImpl implements CommentVoteDao{
     }
 
     @Override
-    public CommentVote insert(Comment comment, User user, int vote) {
+    public CommentVote insert(long commentId, long userId, int vote) {
 
-        final CommentVote commentVote = new CommentVote( comment, user, vote);
+        final CommentVote commentVote = new CommentVote( em.getReference(Comment.class, commentId), em.getReference(User.class, userId), vote);
 
         em.persist(commentVote);
         return commentVote;

@@ -12,7 +12,7 @@ public interface CommentVoteDao {
     List<CommentVote> getByComment(long commentId);
     Optional<CommentVote> getById(long voteId);
     Optional<CommentVote> getByCommentAndUser(long commentId, long userId);
-    CommentVote insert(Comment comment, User user, int vote);
+    CommentVote insert(long commentId, long userId, int vote);
     void delete(long voteId);
     Optional<CommentVote> update(long voteId, int vote);
 }
