@@ -67,17 +67,14 @@
                         <c:if test="${not empty profile.description}">
                             <p><strong><spring:message code="profile.description"/></strong> <c:out value="${profile.description}"/></p>
                         </c:if>
-                        <c:if test="${user.name == profile.username && !isAdmin}">
-                            <div class="row allow-mod">
-                                <strong><spring:message code="profile.allow_mod"/></strong>
-                                <label class="switch align-items-end">
-                                    <input type="checkbox" id="enableMod" onclick="setModEnable()">
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                        </c:if>
+
                         <c:if test="${profile.verify}">
-                            <p><strong><spring:message code="profile.moderator"/></strong>
+
+                            <p>
+                                <c:if test="${user.name == profile.username && !isAdmin}">
+                            <button class="btn" type="button" onclick="openStopBeingAModModal()"><i class="fas fa-trash-alt fa-sm mr-1"></i></button>
+                                </c:if>
+                                    <strong><spring:message code="profile.moderator"/></strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
                                 <c:if test="${!verifiedTech.pending}">
                                     <a class="tags" href="<c:url value="/${verifiedTech.category}/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
@@ -350,6 +347,8 @@
         </c:if>
     </div>
 
+    <!--Edit Profile Modal -->
+
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -362,6 +361,7 @@
                     <span aria-hidden="true">&times;</span>
                 </div>
                 <div class="modal-body container">
+                    <!-- Change profile picture-->
                     <c:url value="/users/${username}/upload" var="postPathUploadPhoto"/>
                     <form id="updatePictureForm" class="border-bottom" action="${postPathUploadPhoto}"  method="post" enctype="multipart/form-data">
                         <div class="mb-2"><spring:message code="profile.change_picture"/></div>
@@ -376,10 +376,42 @@
                             </div>
                         </div>
                     </form>
+                    <!-- Change description-->
                     <jsp:include page="profileForm.jsp">
                         <jsp:param name="username" value="${profile.username}" />
                         <jsp:param name="description" value="${previousDescription}" />
                     </jsp:include>
+
+                    <!-- Change password -->
+                    <div>
+                        <span><a href="${pageContext.request.contextPath}/chgpassword"><spring:message code="profile.change_password"/></a></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stop being a mod Modal -->
+
+    <div class="modal fade" id="stopBeingAModModal" tabindex="-1" role="dialog" aria-labelledby="stopBeingAModModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="stopBeingAModModalLabel"><spring:message code="profile.allow_mod"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row padding-left justify-content-center align-items-center">
+                        <div><spring:message code="profile.are_you_sure_stop_mod"/></div>
+                        <div><spring:message code="profile.description_stop_mod"/></div>
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                        <button class="btn btn-danger ml-4" onclick="stopBeingAMod()"><spring:message code="button.stop_being_a_mod"/></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -402,8 +434,9 @@
     });
     </c:if>
 
-    function setModEnable(){
-        window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/' +  $('#enableMod').is(":checked")
+
+    function stopBeingAMod(){
+        window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/false'
     }
 
     $(document).ready(function(){
@@ -433,6 +466,10 @@
             $("#updatePictureLoading").prop("hidden",false);
         });
     });
+
+    function openStopBeingAModModal(){
+        $('#stopBeingAModModal').modal('show');
+    }
 
 </script>
 
