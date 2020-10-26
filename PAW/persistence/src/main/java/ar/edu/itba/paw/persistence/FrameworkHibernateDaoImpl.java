@@ -118,7 +118,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> getByMinStars(int stars) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f having coalesce(avg(f.stars), 0) >= :stars ", Framework.class);
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join f.frameworkVotes v group by f having coalesce(avg(v.stars), 0) >= :stars", Framework.class);
         query.setParameter("stars", stars);
         return query.getResultList();
     }
@@ -245,9 +245,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     @Override
     public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated, Integer order, long page, long pageSize) {
 
-
-
-
+        
 
 
 
