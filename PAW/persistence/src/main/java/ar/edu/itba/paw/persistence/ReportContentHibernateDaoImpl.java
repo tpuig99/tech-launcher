@@ -38,7 +38,11 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
 
     @Override
     public List<ReportContent> getByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
-        return null;
+        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContet rc where rc.framework.id in :frameworksIds", ReportContent.class);
+        query.setParameter("frameworksIds", frameworksIds);
+        query.setFirstResult((int) ((page-1) * pageSize));
+        query.setMaxResults((int) pageSize);
+        return query.getResultList();
     }
 
     @Override
