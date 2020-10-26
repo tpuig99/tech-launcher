@@ -290,7 +290,7 @@ public class UserController {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            if( user.isAdmin() ){
+            if( user.isAdmin() || user.isVerify()){
                 Optional<Content> contentOptional = contentService.getById(form.getDeleteContentId());
                 if( contentOptional.isPresent() ){
                     contentService.acceptReport(form.getDeleteContentId());
@@ -313,7 +313,7 @@ public class UserController {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            if( user.isAdmin() ){
+            if( user.isAdmin() || user.isVerify()){
                 Optional<Content> contentOptional = contentService.getById(form.getIgnoreContentId());
                 if( contentOptional.isPresent() ){
                     contentService.denyReport(form.getIgnoreContentId());
