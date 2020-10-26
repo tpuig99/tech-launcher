@@ -41,6 +41,8 @@ public class FrameworkVoteHibernateDaoImpl implements FrameworkVoteDao {
     public List<FrameworkVote> getAllByUser(long userId, long page, long pageSize) {
         final TypedQuery<FrameworkVote> query = em.createQuery("select fv from FrameworkVote fv where fv.user.id= :userId", FrameworkVote.class);
         query.setParameter("userId", userId);
+        query.setFirstResult((int) ((page-1) * pageSize));
+        query.setMaxResults((int) pageSize);
         return query.getResultList();
     }
 

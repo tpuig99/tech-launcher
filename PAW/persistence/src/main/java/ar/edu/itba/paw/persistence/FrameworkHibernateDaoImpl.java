@@ -30,11 +30,13 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         return query.getResultList();
     }
 
-    /*TODO: Add pagination*/
+    
     @Override
     public List<Framework> getByCategory(FrameworkCategories category, long page, long pageSize) {
         final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.category= :category", Framework.class);
         query.setParameter("category", category);
+        query.setFirstResult((int) ((page-1) * pageSize));
+        query.setMaxResults((int) pageSize);
         return query.getResultList();
     }
 
@@ -133,6 +135,8 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     public List<Framework> getByUser(long userId, long page, long pageSize) {
         final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.author.id = :userId", Framework.class);
         query.setParameter("userId", userId);
+        query.setFirstResult((int) ((page-1) * pageSize));
+        query.setMaxResults((int) pageSize);
         return query.getResultList();
     }
 
@@ -240,7 +244,17 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated, Integer order, long page, long pageSize) {
-        return null;
+
+
+
+
+
+
+
+
+
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join User u on f.author.id = u.id where u.id = :userId", Framework.class);
+        return query.getResultList();
     }
 
     @Override
