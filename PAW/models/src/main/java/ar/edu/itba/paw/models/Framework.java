@@ -23,7 +23,7 @@ public class Framework {
     @Column(name = "framework_name", length = 50)
     private String name;
 
-    @Column(name = category, length = 50)
+    @Column(name = "category", length = 50)
     @Enumerated(EnumType.STRING)
     private FrameworkCategories category;
 
@@ -33,7 +33,7 @@ public class Framework {
     @Column(name = "introduction", length = 1500)
     private String introduction;
 
-    @Column(name = type, length = 100)
+    @Column(name = "type", length = 100)
     @Enumerated(EnumType.STRING)
     private FrameworkType type;
 
@@ -256,74 +256,4 @@ public class Framework {
     public void setVotesCant(int votesCant) {
         this.votesCant = votesCant;
     }
-
-    //    public int getVotesCant() {
-//        return votesCant;
-//    }
-//
-//    public double getStars(){
-//        return stars;
-//    }
-//
-//    public String getStarsFormated() {
-//        return String.format("%.2f", stars);
-//    }
-//
-//    public long getId() {
-//        return id;
-//    }
-//
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public String getCategory() {
-//        return category.getNameCat();
-//    }
-//    public FrameworkCategories getFrameCategory(){
-//        return category;
-//    }
-//
-//    public String getType(){
-//        return type.getType();
-//    }
-//    public FrameworkType getFrameType() {
-//        return type;
-//    }
-//
-//    public String getDescription() {
-//        return description;
-//    }
-//
-//    public String getIntroduction() {
-//        return introduction;
-//    }
-//
-//    public String getLogo() {
-//        return logo;
-//    }
-//
-//    public String getAuthor() {
-//        return author;
-//    }
-//
-//    public Timestamp getPublish_date() {
-//        return publish_date;
-//    }
-//
-//    public Timestamp getLastComment() {
-//        return lastComment;
-//    }
-//
-//    public int getCommentsAmount() {
-//        return commentsAmount;
-//    }
-//
-//    public String getContentType() {
-//        return contentType;
-//    }
-//
-//    public String getBase64image() {
-//        return base64image;
-//    }
 }

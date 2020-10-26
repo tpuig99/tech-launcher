@@ -19,7 +19,7 @@ public class FrameworkVoteHibernateDaoImpl implements FrameworkVoteDao {
 
     @Override
     public List<FrameworkVote> getByFramework(long frameworkId) {
-        final TypedQuery<FrameworkVote> query = em.createQuery("from FrameworkVote fv where fv.framework.id= :frameworkId", FrameworkVote.class);
+        final TypedQuery<FrameworkVote> query = em.createQuery("select fv from FrameworkVote fv where fv.framework.id= :frameworkId", FrameworkVote.class);
         query.setParameter("frameworkId", frameworkId);
         return query.getResultList();
     }
@@ -31,7 +31,7 @@ public class FrameworkVoteHibernateDaoImpl implements FrameworkVoteDao {
 
     @Override
     public Optional<FrameworkVote> getByFrameworkAndUser(long frameworkId, long userId) {
-        final TypedQuery<FrameworkVote> query = em.createQuery("from FrameworkVote fv where fv.framework.id= :frameworkId and fv.user.id= :userId", FrameworkVote.class);
+        final TypedQuery<FrameworkVote> query = em.createQuery("select fv from FrameworkVote fv where fv.framework.id= :frameworkId and fv.user.id= :userId", FrameworkVote.class);
         query.setParameter("frameworkId", frameworkId);
         query.setParameter("userId", userId);
         return query.getResultList().stream().findFirst();
@@ -39,14 +39,14 @@ public class FrameworkVoteHibernateDaoImpl implements FrameworkVoteDao {
 
     @Override
     public List<FrameworkVote> getAllByUser(long userId, long page, long pageSize) {
-        final TypedQuery<FrameworkVote> query = em.createQuery("from FrameworkVote fv where fv.user.id= :userId", FrameworkVote.class);
+        final TypedQuery<FrameworkVote> query = em.createQuery("select fv from FrameworkVote fv where fv.user.id= :userId", FrameworkVote.class);
         query.setParameter("userId", userId);
         return query.getResultList();
     }
 
     @Override
     public Optional<Integer> getAllCountByUser(long userId) {
-        final TypedQuery<FrameworkVote> query = em.createQuery("from FrameworkVote fv where fv.user.id= :userId", FrameworkVote.class);
+        final TypedQuery<FrameworkVote> query = em.createQuery("select fv from FrameworkVote fv where fv.user.id= :userId", FrameworkVote.class);
         query.setParameter("userId", userId);
         return Optional.of(query.getResultList().size());
     }
