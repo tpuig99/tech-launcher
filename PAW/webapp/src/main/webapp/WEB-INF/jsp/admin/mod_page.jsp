@@ -23,24 +23,24 @@
 
 
         <div class="content-no-sidebar row">
-
-
             <!-- Mods managing -->
             <div class="container">
                <ul class="nav nav-tabs">
                     <li class="nav-item active">
                         <a class="nav-link" href="#1" data-toggle="tab">PROMOTE</a>
                     </li>
-                    <li><a class="nav-link" href="#2" data-toggle="tab">MODERATE</a>
+                    <li><a class="nav-link" href="#2" data-toggle="tab">DEMOTE</a>
                     </li>
                     <li><a class="nav-link" href="#3" data-toggle="tab">SEE REPORTS</a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
+                    <!-- PROMOTE -->
                     <div class="tab-pane active" id="1">
                         <div>Here you can promote a person to moderator or ignore the petition</div>
-                        <div>
+                        <div class="row">
+                            <div class="col-6">
                             <!-- pending to verify by comments -->
                             <div class="page-title"><spring:message code="moderator.pending"/></div>
                             <div class="page-description"></div>
@@ -111,7 +111,8 @@
                                     </li>
                                 </ul>
                             </c:if>
-
+                            </div>
+                            <div class="col">
                             <!-- pending applicants to verify -->
                             <div class="page-title"><spring:message code="moderator.pendingApplicants"/></div>
                             <div class="page-description"></div>
@@ -180,14 +181,15 @@
                                     </li>
                                 </ul>
                             </c:if>
+                            </div>
                         </div>
 
                     </div>
+                    <!-- DEMOTE -->
                     <div class="tab-pane" id="2">
-                        <div>Here you can moderate</div>
+                        <div>Here you can demote a person from being a moderator</div>
                         <div>
                             <c:if test="${isAdmin}">
-                                <div class="page-title"><spring:message code="moderator.title"/></div>
                                 <div class="page-description"></div>
                                 <div class="d-flex flex-wrap justify-content-center">
                                     <c:choose>
@@ -255,10 +257,12 @@
 
                         </div>
                     </div>
+                    <!-- SEE REPORTS -->
                     <div class="tab-pane" id="3">
                         <div>Here you can see the content that has been reported and delete it or ignore the petition</div>
                         <!-- Reported Comments -->
-                        <div>
+                        <div class="row">
+                            <div class="col-6">
                             <c:if test="${isAdmin}">
                                 <div class="page-title"><spring:message code="moderate.comment.title"/></div>
                                 <div class="page-description"></div>
@@ -335,7 +339,9 @@
                                     </ul>
                                 </c:if>
                             </c:if>
-                            <!-- reported content -->
+                            </div>
+                            <div class="col">
+                                <!-- reported content -->
                             <div class="page-title"><spring:message code="moderate.content.title"/></div>
                             <div class="page-description"></div>
                             <div class="row justify-content-center">
@@ -411,16 +417,11 @@
                                     </li>
                                 </ul>
                             </c:if>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
         </div>
 
         
