@@ -67,7 +67,7 @@ public class Comment {
         this.reference = reference;
         this.frameworkName = framework.getName();
         this.userName = user.getUsername();
-        this.category = framework.getFrameCategory();
+        this.category = framework.getCategory();
         this.isVerify = user.isVerify();
         this.isAdmin = user.isAdmin();
     }

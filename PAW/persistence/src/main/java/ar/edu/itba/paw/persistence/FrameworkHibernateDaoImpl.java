@@ -33,7 +33,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     
     @Override
     public List<Framework> getByCategory(FrameworkCategories category, long page, long pageSize) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.category= :category", Framework.class);
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.category= :category order by f.id", Framework.class);
         query.setParameter("category", category);
         query.setFirstResult((int) ((page-1) * pageSize));
         query.setMaxResults((int) pageSize);
@@ -118,7 +118,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> getByMinStars(int stars) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f having coalesce(avg(f.stars), 0) >= :stars ", Framework.class);
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join f.frameworkVotes v group by f having coalesce(avg(v.stars), 0) >= :stars", Framework.class);
         query.setParameter("stars", stars);
         return query.getResultList();
     }
@@ -133,7 +133,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     /* TODO: add pagination  */
     @Override
     public List<Framework> getByUser(long userId, long page, long pageSize) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.author.id = :userId", Framework.class);
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.author.id = :userId order by f.id", Framework.class);
         query.setParameter("userId", userId);
         query.setFirstResult((int) ((page-1) * pageSize));
         query.setMaxResults((int) pageSize);
@@ -147,113 +147,105 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         return Optional.of(query.getResultList().size());
     }
 
-//    @Override
-//    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated, Integer order, long page, long pageSize) {
-//
-//        CriteriaBuilder cb = em.getCriteriaBuilder();
-//        CriteriaQuery<Framework> cQuery = cb.createQuery(Framework.class);
-//        Root<Framework> root = cQuery.from(Framework.class);
-//        cQuery.select(root);
-//
-//        if(toSearch==null && categories==null && types == null && starsLeft == 0 && starsRight == 5 && commentAmount==0 && lastComment==null && lastUpdated==null && (order==null||order==0)) {
-//            final TypedQuery<Framework> query = em.createQuery(cQuery);
-//            return query.getResultList();
-//        }
-//
-//        List<Predicate> predicates = new ArrayList<>();
-//
-//        if(toSearch!=null && !toSearch.isEmpty()){
-//            final String searchValue = "%"+toSearch.toLowerCase()+"%";
-//            if(nameFlag || toSearch.length() < 3) {
-//                predicates.add(cb.like(root.get("name"), searchValue));
-//            }
-//            else {
-//                Predicate namePredicate = cb.like(root.get("name"), searchValue);
-//                Predicate descriptionPredicate= cb.like(root.get("description"), searchValue);
-//                Predicate introductionPredicate= cb.like(root.get("introduction"), searchValue);
-//                predicates.add(cb.or(namePredicate, descriptionPredicate, introductionPredicate));
-//            }
-//        }
-//
-//        if(categories != null) {
-//            predicates.add(root.get("category").in(categories));
-//        }
-//
-//        if(types != null) {
-//            predicates.add(root.get("type").in(types));
-//        }
-//
-//        if(lastUpdated != null){
-//            predicates.add(cb.greaterThanOrEqualTo(root.get("date"), lastUpdated));
-//        }
-//
-//        cQuery.where(predicates);
-//
-//        if(order != null && order != 0){
-//            switch (order){
-//                case -1:
-//                    cQuery.orderBy(cb.asc(root.get("stars")));
-//                    break;
-//                case 1:
-//                    cQuery.orderBy(cb.desc(root.get("stars")));
-//                    break;
-//                case -2:
-//                    cQuery.orderBy(cb.asc(root.get("commentAmount")));
-//                    break;
-//                case 2:
-//                    cQuery.orderBy(cb.desc(root.get("commentAmount")));
-//                    break;
-//                case -3:
-//                    cQuery.orderBy(cb.asc(root.get("date")));
-//                    break;
-//                case 3:
-//                    cQuery.orderBy(cb.desc(root.get("date")));
-//                    break;
-//                case -4:
-//                    cQuery.orderBy(cb.asc(root.get("lastComment")));
-//                    break;
-//                case 4:
-//                    cQuery.orderBy(cb.desc(root.get("lastComment")));
-//                    break;
-//            }
-//        }
-//
-//        List<Expression<?>> expressions = new ArrayList<>();
-//
-//        expressions.add(root.get("stars"));
-//        expressions.add(root.get("commentAmount"));
-//
-//        cQuery.groupBy(expressions);
-//
-//        List<Predicate> havingList = new ArrayList<>();
-//
-//        havingList.add(cb.ge(root.get("stars"), starsLeft));
-//        havingList.add(cb.le(root.get("stars"), starsRight));
-//        havingList.add(cb.ge(root.get("commentAmount"), commentAmount));
-//
-//        if(lastComment!=null) {
-//            havingList.add(cb.ge(cb.max(root.get("date"))))
-//        }
-//
-//        cQuery.having(havingList);
-//
-//            have=have.concat(" and max(c.tstamp)>='"+lastComment+"'");
-//        return namedJdbcTemplate.query(SELECTION+aux+GROUP_BY+have+orderAux+" LIMIT " + pageSize +" OFFSET " + pageSize*(page-1),params,ROW_MAPPER);
-//
-//    }
-
     @Override
     public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated, Integer order, long page, long pageSize) {
 
+        if(toSearch == null && categories == null && types == null && starsLeft == 0 && starsRight == 5 && commentAmount == 0
+                && lastComment == null && lastUpdated == null && (order == null || order == 0)) {
+
+            if (page == -1 && pageSize == -1) {
+                return getAll();
+            }
+
+            final TypedQuery<Framework> query = em.createQuery("select f from Framework f", Framework.class);
+            query.setFirstResult((int) ((page-1) * pageSize));
+            query.setMaxResults((int) pageSize);
+            return query.getResultList();
+        }
+
+        StringBuilder sb = new StringBuilder(" select f from Framework f inner join f.frameworkVotes v inner join f.comments c ");
+
+        if(toSearch!=null || categories!=null || types != null || lastUpdated!=null) {
+            sb.append(" where ");
+        }
+
+        String search = "";
+
+        if(toSearch != null && !toSearch.isEmpty()){
+            search = "%"+toSearch+"%";
+            if(nameFlag || toSearch.length() < 3) {
+                sb.append(" lower(f.name) like :search ");
+            }
+            else {
+                sb.append(" lower(f.name) like :search ");
+                sb.append(" or lower(f.description) like :search ");
+                sb.append(" or lower(f.introduction) like :search ");
+            }
+       }
+
+        if (categories != null) {
+            if(!sb.toString().contains("where")) {
+                sb.append(" and ");
+            }
+            sb.append(" f.category in (:categories) ");
+        }
+
+        if (types != null) {
+            if(!sb.toString().contains("where")) {
+                sb.append(" and ");
+            }
+            sb.append(" f.type in (:types) ");
+        }
+
+        if (lastUpdated != null) {
+            if(!sb.toString().contains("where")) {
+                sb.append(" and ");
+            }
+            sb.append(" f.date >= :lastUpdated ");
+        }
 
 
+        if(order != null && order != 0){
+            sb.append(" group by f order by ");
 
+            switch (Math.abs(order)){
+                case 1:
+                    sb.append(" coalesce(avg(v.stars),0) ").append(order > 0 ?" desc ":" asc ");
+                    break;
+                case 2:
+                    sb.append(" count(distinct c.commentId) ").append(order > 0 ?" desc ":" asc ");
+                    break;
+                case 3:
+                    sb.append(" f.publishDate ").append(order > 0 ?" desc ":" asc ");
+                    break;
+                case 4:
+                    sb.append(" max(c.timestamp) ").append(order > 0 ?" desc ":" asc ");
+                    break;
+            }
+        }
 
+        sb.append(" having coalesce(avg(v.stars),0) >= :starsLeft and coalesce(avg(v.stars),0) <= :starsRight and count(distinct c.commentId) >= :commentAmount ");
 
+        if(lastComment!=null) {
+            sb.append(" and max(c.timestamp) >= :lastComment ");
+        }
 
+        final TypedQuery<Framework> query = em.createQuery(sb.toString(), Framework.class);
 
+        if (page != -1 || pageSize != -1) {
+            query.setFirstResult((int) ((page-1) * pageSize));
+            query.setMaxResults((int) pageSize);
+        }
 
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join User u on f.author.id = u.id where u.id = :userId", Framework.class);
+        query.setParameter("search", search);
+        query.setParameter("categories", categories);
+        query.setParameter("types", types);
+        query.setParameter("lastUpdated", lastUpdated);
+        query.setParameter("starsLeft", starsLeft);
+        query.setParameter("starsRight", starsRight);
+        query.setParameter("commentAmount", commentAmount);
+        query.setParameter("lastComment", lastComment);
+
         return query.getResultList();
     }
 

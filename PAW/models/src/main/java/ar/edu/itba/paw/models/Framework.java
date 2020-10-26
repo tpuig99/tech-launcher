@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "frameworks")
@@ -50,15 +48,13 @@ public class Framework {
 
     @Lob
     private byte[] picture;
-    private String contentType;
-    private String base64image;
+
+    /* Relationships */
 
     /* References other relation mapped in Comment */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
     @JoinColumn(name = "framework_id")
     private List<Comment> comments;
-    private Timestamp lastComment;
-    private int commentsAmount;
 
     /* References other relation mapped in Content */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
@@ -69,8 +65,26 @@ public class Framework {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
     @JoinColumn(name = "framework_id")
     private List<FrameworkVote> frameworkVotes;
+
+    /* Transient attributes loaded on Post Load */
+
+    @Transient
+    private String contentType;
+
+    @Transient
+    private String base64image;
+
+    @Transient
     private double stars;
+
+    @Transient
     private int votesCant;
+
+    @Transient
+    private Timestamp lastComment;
+
+    @Transient
+    private int commentsAmount;
 
     @Override
     public boolean equals(Object o) {
@@ -101,6 +115,35 @@ public class Framework {
 
     public Framework(){
         /* Empty constructor */
+    }
+
+    @PostLoad
+    public void postLoad() {
+        try {
+            contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(picture));
+        } catch (IOException e) {
+            contentType = "";
+        }
+
+        byte[] encodedByteArray = Base64.getEncoder().encode(picture);
+        base64image = new String(encodedByteArray, StandardCharsets.UTF_8);
+
+        double rating = 0;
+        for (FrameworkVote vote : frameworkVotes) {
+            rating += vote.getStars();
+        }
+        stars = rating / frameworkVotes.size();
+        votesCant = frameworkVotes.size();
+        lastComment = Collections.max(comments, Comparator.comparingDouble((x) -> x.getTimestamp().getTime())).getTimestamp();
+        commentsAmount = comments.size();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -173,32 +216,6 @@ public class Framework {
 
     public void setPicture(byte[] picture) {
         this.picture = picture;
-
-        if (picture != null) {
-            byte[] encodedByteArray = Base64.getEncoder().encode(picture);
-            setBase64image(new String(encodedByteArray, StandardCharsets.UTF_8));
-            try {
-                setContentType(URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(picture)));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public String getBase64image() {
-        return base64image;
-    }
-
-    public void setBase64image(String base64image) {
-        this.base64image = base64image;
     }
 
     public List<Comment> getComments() {
@@ -207,22 +224,6 @@ public class Framework {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-    }
-
-    public Timestamp getLastComment() {
-        return lastComment;
-    }
-
-    public void setLastComment(Timestamp lastComment) {
-        this.lastComment = lastComment;
-    }
-
-    public int getCommentsAmount() {
-        return commentsAmount;
-    }
-
-    public void setCommentsAmount(int commentsAmount) {
-        this.commentsAmount = commentsAmount;
     }
 
     public List<Content> getContents() {
@@ -241,6 +242,22 @@ public class Framework {
         this.frameworkVotes = frameworkVotes;
     }
 
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getBase64image() {
+        return base64image;
+    }
+
+    public void setBase64image(String base64image) {
+        this.base64image = base64image;
+    }
+
     public double getStars() {
         return stars;
     }
@@ -255,5 +272,21 @@ public class Framework {
 
     public void setVotesCant(int votesCant) {
         this.votesCant = votesCant;
+    }
+
+    public Timestamp getLastComment() {
+        return lastComment;
+    }
+
+    public void setLastComment(Timestamp lastComment) {
+        this.lastComment = lastComment;
+    }
+
+    public int getCommentsAmount() {
+        return commentsAmount;
+    }
+
+    public void setCommentsAmount(int commentsAmount) {
+        this.commentsAmount = commentsAmount;
     }
 }
