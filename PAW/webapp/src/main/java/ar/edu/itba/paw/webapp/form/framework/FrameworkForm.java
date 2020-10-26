@@ -1,39 +1,43 @@
-package ar.edu.itba.paw.webapp.form;
+package ar.edu.itba.paw.webapp.form.framework;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@FrameworkName
+@Multipart
 public class FrameworkForm {
     @NotNull
     @NotEmpty
-    @Size(max = 50)
-    @FrameworkName
-    @Pattern(regexp = "[a-zA-Z0-9]+")
+    @Size(min = 3, max = 50)
+    @Pattern(regexp = "[a-zA-Z0-9 -]+")
     private String frameworkName;
+
     @NotNull
     @NotEmpty
     @Size(max = 50)
-    @Pattern(regexp = "[a-zA-Z0-9]+")
-    private String Category;
+    private String category;
+
     @NotNull
     @NotEmpty
     @Size(max = 100)
-    @Pattern(regexp = "[a-zA-Z0-9]+")
-    private String Type;
+    private String type;
+
     @NotNull
     @NotEmpty
     @Size(max = 500)
-    @Pattern(regexp = "[a-zA-Z0-9]+")
-    private String Description;
+    private String description;
+
     @NotNull
     @NotEmpty
     @Size(max = 5000)
-    @Pattern(regexp = "[a-zA-Z0-9]+")
     private String introduction;
-    private long userId;
+    private MultipartFile picture;
+    private Long frameworkId;
+
     public String getFrameworkName() {
         return frameworkName;
     }
@@ -43,27 +47,27 @@ public class FrameworkForm {
     }
 
     public String getCategory() {
-        return Category;
+        return category;
     }
 
     public void setCategory(String category) {
-        Category = category;
+        this.category = category;
     }
 
     public String getType() {
-        return Type;
+        return type;
     }
 
     public void setType(String type) {
-        Type = type;
+        this.type = type;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     public String getIntroduction() {
@@ -74,11 +78,19 @@ public class FrameworkForm {
         this.introduction = introduction;
     }
 
-    public long getUserId() {
-        return userId;
+    public MultipartFile getPicture() {
+        return picture;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setPicture(MultipartFile picture) {
+        this.picture = picture;
+    }
+
+    public Long getFrameworkId() {
+        return frameworkId;
+    }
+
+    public void setFrameworkId(long frameworkId) {
+        this.frameworkId = frameworkId;
     }
 }

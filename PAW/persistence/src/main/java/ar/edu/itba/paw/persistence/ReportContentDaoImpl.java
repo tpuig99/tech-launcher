@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.ReportContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -18,13 +19,15 @@ import java.util.*;
 public class ReportContentDaoImpl implements ReportContentDao{
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final String SELECTION ="select cr.content_id, c.framework_id, title,  c.tstamp,c.link,c.type,f.framework_name,f.category, uc.user_name as user_name_owner,ucr.user_name as user_name_reporter, cr.report_id,c.user_id as user_id_owner,cr.description as report_description " +
-            "from content_report cr left join content c on c.content_id = cr.content_id left join frameworks f on c.framework_id = f.framework_id left join users uc on uc.user_id = c.user_id left join users ucr on ucr.user_id=cr.user_id";
+            "from content_report cr left join content c on c.content_id = cr.content_id left join frameworks f on c.framework_id = f.framework_id left join users uc on uc.user_id = c.user_id left join users ucr on ucr.user_id=cr.user_id ";
     private final String ORDER_BY=" order by cr.content_id";
     private final ResultSetExtractor<List<ReportContent>> EXTRACTOR = ReportContentDaoImpl::extractor;
 
     @Autowired
     public ReportContentDaoImpl(final DataSource ds) {
+        this.namedJdbcTemplate = new NamedParameterJdbcTemplate(ds);
         this.jdbcTemplate = new JdbcTemplate(ds);
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("content_report")
@@ -71,8 +74,8 @@ public class ReportContentDaoImpl implements ReportContentDao{
     }
 
     @Override
-    public List<ReportContent> getAll() {
-        return jdbcTemplate.query(SELECTION+ORDER_BY,EXTRACTOR);
+    public List<ReportContent> getAll(long page, long pageSize) {
+        return jdbcTemplate.query(SELECTION+ORDER_BY + " LIMIT ? OFFSET ? ", new Object[]{pageSize, (page-1)*pageSize},EXTRACTOR);
     }
 
     @Override
@@ -105,5 +108,15 @@ public class ReportContentDaoImpl implements ReportContentDao{
     public void deleteByContent(long contentId) {
         jdbcTemplate.update("DELETE FROM content_report WHERE content_id = ?", new Object[]{contentId});
 
+    }
+
+    @Override
+    public List<ReportContent> getByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
+        Map<String, List<Long>> params = new HashMap<>();
+        params.put("framework_id", new ArrayList<>(frameworksIds));
+        String query;
+        query = SELECTION + " WHERE f.framework_id IN (:framework_id) " + ORDER_BY + " LIMIT " + pageSize + " OFFSET " + (page-1)*pageSize;
+
+        return namedJdbcTemplate.query(query, params, EXTRACTOR);
     }
 }

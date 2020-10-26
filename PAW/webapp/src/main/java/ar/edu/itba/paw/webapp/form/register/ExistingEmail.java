@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.form.frameworks;
+package ar.edu.itba.paw.webapp.form.register;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,10 +11,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = ContentValidator.class)
+@Constraint(validatedBy = EmailExistingValidator.class)
 @Documented
-public @interface ContentName {
-    String message() default "That title already exists!";
+public @interface ExistingEmail {
+    String message() default "Invalid email";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

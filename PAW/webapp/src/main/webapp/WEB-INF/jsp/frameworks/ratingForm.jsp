@@ -31,15 +31,15 @@
 
             <c:choose>
                 <c:when test="${!param.isEnable}">
-                    <button class="btn primary-button" type="button"  data-toggle="modal" data-target="#confirmMailModal"><spring:message code="tech.rating.button"/></button>
+                    <button class="btn btn-primary" type="button"  data-toggle="modal" data-target="#confirmMailModal"><spring:message code="tech.rating.button"/></button>
                 </c:when>
                 <c:otherwise>
-                    <button class="btn primary-button" type="submit"><spring:message code="tech.rating.button"/></button>
+                    <button class="btn btn-primary" type="submit"><spring:message code="tech.rating.button"/></button>
                 </c:otherwise>
             </c:choose>
         </c:when>
         <c:otherwise>
-            <button class="btn primary-button" type="button"  data-toggle="modal" data-target="#loginModal"><spring:message code="tech.rating.button"/></button>
+            <button class="btn btn-primary" type="button"  data-toggle="modal" data-target="#loginModal"><spring:message code="tech.rating.button"/></button>
         </c:otherwise>
     </c:choose>
 </form:form>

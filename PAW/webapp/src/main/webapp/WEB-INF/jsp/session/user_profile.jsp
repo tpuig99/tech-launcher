@@ -67,17 +67,14 @@
                         <c:if test="${not empty profile.description}">
                             <p><strong><spring:message code="profile.description"/></strong> <c:out value="${profile.description}"/></p>
                         </c:if>
-                        <c:if test="${user.name == profile.username && (user_isMod || !isAllowMod) && !isAdmin}">
-                            <div class="row allow-mod">
-                                <strong>Allow moderator: </strong>
-                                <label class="switch align-items-end">
-                                    <input type="checkbox" id="enableMod" onclick="setModEnable()">
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                        </c:if>
+
                         <c:if test="${profile.verify}">
-                            <p><strong><spring:message code="profile.moderator"/></strong>
+
+                            <p>
+                                <c:if test="${user.name == profile.username && !isAdmin}">
+                            <button class="btn" type="button" onclick="openStopBeingAModModal()"><i class="fas fa-trash-alt fa-sm mr-1"></i></button>
+                                </c:if>
+                                    <strong><spring:message code="profile.moderator"/></strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
                                 <c:if test="${!verifiedTech.pending}">
                                     <a class="tags" href="<c:url value="/${verifiedTech.category}/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
@@ -89,17 +86,21 @@
                     </div>
                 </div>
                 <div class="row mx-2 justify-content-center">
-                    <div class="col-4 emphasis">
-                        <h2><strong><c:out value="${fn:length(contents)}"/></strong></h2>
+                    <div class="col-3 emphasis">
+                        <h2><strong><c:out value="${contentCount}"/></strong></h2>
                         <p><small><spring:message code="profile.uploaded_contents"/></small></p>
                     </div>
-                    <div class="col-4 emphasis">
-                        <h2><strong><c:out value="${fn:length(comments)}"/></strong></h2>
+                    <div class="col-3 emphasis">
+                        <h2><strong><c:out value="${commentsCount}"/></strong></h2>
                         <p><small><spring:message code="profile.comments"/></small></p>
                     </div>
-                    <div class="col-4 emphasis">
-                        <h2><strong><c:out value="${fn:length(votes)}"/> </strong></h2>
+                    <div class="col-3 emphasis">
+                        <h2><strong><c:out value="${votesCount}"/> </strong></h2>
                         <p><small><spring:message code="profile.votes_given"/></small></p>
+                    </div>
+                    <div class="col-3 emphasis">
+                        <h2><strong><c:out value="${frameworksCount}"/> </strong></h2>
+                        <p><small><spring:message code="profile.frameworks"/></small></p>
                     </div>
                 </div>
 
@@ -127,6 +128,34 @@
                             </div>
                         </div>
                     </c:forEach>
+                    <ul class="pagination">
+                        <c:choose>
+                            <c:when test="${comments_page == 1}">
+                                <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item ">
+                            </c:otherwise>
+                        </c:choose>
+                            <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page-1}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
+                                <span aria-hidden="true">&lsaquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <c:choose>
+                            <c:when test="${comments_page*page_size >= commentsCount}">
+                                <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                                <li class="page-item">
+                            </c:otherwise>
+                        </c:choose>
+                                <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page+1}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
+                                    <span aria-hidden="true">&rsaquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                    </ul>
                 </div>
             </c:when>
             <c:otherwise>
@@ -165,6 +194,34 @@
                             </div>
                         </div>
                     </c:forEach>
+                    <ul class="pagination">
+                        <c:choose>
+                        <c:when test="${contents_page == 1}">
+                        <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                        <li class="page-item ">
+                            </c:otherwise>
+                            </c:choose>
+                            <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page-1}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
+                                <span aria-hidden="true">&lsaquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <c:choose>
+                        <c:when test="${contents_page*page_size >= contentCount}">
+                        <li class="page-item disabled">
+                            </c:when>
+                            <c:otherwise>
+                        <li class="page-item">
+                            </c:otherwise>
+                            </c:choose>
+                            <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page + 1}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
+                                <span aria-hidden="true">&rsaquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </c:when>
             <c:otherwise>
@@ -197,6 +254,34 @@
                         </div>
                     </c:forEach>
                 </div>
+                <ul class="pagination justify-content-center">
+                    <c:choose>
+                    <c:when test="${votes_page == 1}">
+                    <li class="page-item disabled">
+                        </c:when>
+                        <c:otherwise>
+                    <li class="page-item ">
+                        </c:otherwise>
+                        </c:choose>
+                        <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page-1}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
+                            <span aria-hidden="true">&lsaquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <c:choose>
+                    <c:when test="${votes_page*page_size*2 >= votesCount}">
+                    <li class="page-item disabled">
+                        </c:when>
+                        <c:otherwise>
+                    <li class="page-item">
+                        </c:otherwise>
+                        </c:choose>
+                        <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page+1}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
+                            <span aria-hidden="true">&rsaquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
             </c:when>
             <c:otherwise>
                 <spring:message code="profile.empty.votes"/>
@@ -213,7 +298,14 @@
                     <div class="card mx-4 mb-4">
                         <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
                             <div class="card-body">
-                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.name} logo"></div>
+                                <c:choose>
+                                    <c:when test="${not empty framework.base64image}">
+                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <div class="card-footer text-dark">
                                 <span>${framework.name} | </span>
@@ -224,8 +316,38 @@
                     </div>
                 </c:forEach>
             </div>
+            <ul class="pagination justify-content-center">
+                <c:choose>
+                <c:when test="${frameworks_page == 1}">
+                <li class="page-item disabled">
+                    </c:when>
+                    <c:otherwise>
+                <li class="page-item ">
+                    </c:otherwise>
+                    </c:choose>
+                    <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
+                        <span aria-hidden="true">&lsaquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                <c:choose>
+                <c:when test="${frameworks_page*frameworks_page_size >= frameworksCount}">
+                <li class="page-item disabled">
+                    </c:when>
+                    <c:otherwise>
+                <li class="page-item">
+                    </c:otherwise>
+                    </c:choose>
+                    <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page+1}"/>" aria-label="Next">
+                        <span aria-hidden="true">&rsaquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
         </c:if>
     </div>
+
+    <!--Edit Profile Modal -->
 
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -239,7 +361,9 @@
                     <span aria-hidden="true">&times;</span>
                 </div>
                 <div class="modal-body container">
-                    <form id="updatePictureForm" class="border-bottom" action="/users/${username}/upload"  method="post" enctype="multipart/form-data">
+                    <!-- Change profile picture-->
+                    <c:url value="/users/${username}/upload" var="postPathUploadPhoto"/>
+                    <form id="updatePictureForm" class="border-bottom" action="${postPathUploadPhoto}"  method="post" enctype="multipart/form-data">
                         <div class="mb-2"><spring:message code="profile.change_picture"/></div>
                         <div class="d-flex justify-content-center mb-4">
                             <input id="uploadPictureInput" name="picture" type="file" accept="image/*" />
@@ -252,10 +376,42 @@
                             </div>
                         </div>
                     </form>
+                    <!-- Change description-->
                     <jsp:include page="profileForm.jsp">
                         <jsp:param name="username" value="${profile.username}" />
                         <jsp:param name="description" value="${previousDescription}" />
                     </jsp:include>
+
+                    <!-- Change password -->
+                    <div>
+                        <span><a href="${pageContext.request.contextPath}/chgpassword"><spring:message code="profile.change_password"/></a></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stop being a mod Modal -->
+
+    <div class="modal fade" id="stopBeingAModModal" tabindex="-1" role="dialog" aria-labelledby="stopBeingAModModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="stopBeingAModModalLabel"><spring:message code="profile.allow_mod"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row padding-left justify-content-center align-items-center">
+                        <div><spring:message code="profile.are_you_sure_stop_mod"/></div>
+                        <div><spring:message code="profile.description_stop_mod"/></div>
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                        <button class="btn btn-danger ml-4" onclick="stopBeingAMod()"><spring:message code="button.stop_being_a_mod"/></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -278,8 +434,9 @@
     });
     </c:if>
 
-    function setModEnable(){
-        window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/' +  $('#enableMod').is(":checked")
+
+    function stopBeingAMod(){
+        window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/false'
     }
 
     $(document).ready(function(){
@@ -309,6 +466,10 @@
             $("#updatePictureLoading").prop("hidden",false);
         });
     });
+
+    function openStopBeingAModModal(){
+        $('#stopBeingAModModal').modal('show');
+    }
 
 </script>
 

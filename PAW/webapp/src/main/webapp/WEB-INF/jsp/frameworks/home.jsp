@@ -31,6 +31,19 @@
     </div>
 
     <div>
+        <c:if test="${user_isMod}">
+            <div class="d-flex row justify-content-center align-middle">
+                <h4 class="mx-2 my-auto"><spring:message code="techs.add_new"/></h4>
+
+                <a href="<c:url value="/add_tech"/>" >
+                    <button class="btn btn-primary" type="button">
+                        <i class="fa fa-plus fa-sm mr-1"></i>
+                        <spring:message code="button.add_tech"/>
+                    </button>
+                </a>
+            </div>
+        </c:if>
+
         <h4 class="title"><spring:message code="techs.best_rated"/></h4>
 
         <div class="row equal">
@@ -38,7 +51,14 @@
                 <div class="card mx-4 mb-4">
                     <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
                         <div class="card-body">
-                            <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.logo} logo"></div>
+                            <c:choose>
+                                <c:when test="${not empty framework.base64image}">
+                                    <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                         <div class="card-footer text-dark">${framework.name}</div>
                     </a>
@@ -56,7 +76,14 @@
                             <div class="card mx-4 mb-4">
                                 <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
                                     <div class="card-body">
-                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="${framework.logo} logo"></div>
+                                        <c:choose>
+                                            <c:when test="${not empty framework.base64image}">
+                                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                     <div class="card-footer text-dark">${framework.name}</div>
                                 </a>

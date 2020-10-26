@@ -37,15 +37,6 @@
                         window.location.href = serverContext +'/register/success/3';
                     })
                     .catch(function(message) {
-                        /* fijarse que onda aca
-                        if(data.responseJSON.error.indexOf("MailError") > -1) {
-                            window.location.href = serverContext + "emailError.html";
-                        }
-                        else {
-                            window.location.href =
-                                serverContext + "login.html?message=" + data.responseJSON.message;
-                        }
-                         */
                     });
             }
         </script>
