@@ -23,24 +23,26 @@
 
 
         <div class="content-no-sidebar row">
+            <div class="page-title-big"><spring:message code="moderate.moderation_panel"/></div>
+
             <!-- Mods managing -->
             <div class="container">
                <ul class="nav nav-tabs">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#1" data-toggle="tab">PROMOTE</a>
+                        <a class="nav-link" href="#1" data-toggle="tab"><spring:message code="moderate.promote"/></a>
                     </li>
                    <c:if test="${isAdmin}">
-                    <li><a class="nav-link" href="#2" data-toggle="tab">DEMOTE</a>
+                    <li><a class="nav-link" href="#2" data-toggle="tab"><spring:message code="moderate.demote"/></a>
                     </li>
                    </c:if>
-                    <li><a class="nav-link" href="#3" data-toggle="tab">SEE REPORTS</a>
+                    <li><a class="nav-link" href="#3" data-toggle="tab"><spring:message code="moderate.see_reports"/></a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
                     <!-- PROMOTE -->
                     <div class="tab-pane active" id="1">
-                        <div>Here you can promote a person to moderator or ignore the petition</div>
+                        <div class="add-margin"><h5><spring:message code="moderate.promote_description"/></h5></div>
                         <div class="row">
                             <div class="col-6">
                             <!-- pending to verify by comments -->
@@ -189,7 +191,8 @@
                     </div>
                     <!-- DEMOTE -->
                     <div class="tab-pane" id="2">
-                        <div>Here you can demote a person from being a moderator</div>
+                        <div class="add-margin"><h5><spring:message code="moderate.demote_description"/></h5></div>
+                        <div class="page-title"><spring:message code="moderator.title"/></div>
                         <div>
                             <c:if test="${isAdmin}">
                                 <div class="page-description"></div>
@@ -261,7 +264,7 @@
                     </div>
                     <!-- SEE REPORTS -->
                     <div class="tab-pane" id="3">
-                        <div>Here you can see the content that has been reported and delete it or ignore the petition</div>
+                        <div class="add-margin"><h5><spring:message code="moderate.see_reports_description"/></h5></div>
                         <!-- Reported Comments -->
                         <c:if test="${isAdmin}"><div class="row">
                         <div class="col-6"></c:if>
