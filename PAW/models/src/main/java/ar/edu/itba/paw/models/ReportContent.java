@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ReportContent {
     private long contentId;
-    private long frameworkId;
+    private Long frameworkId;
     private long userId;
     private String title;
     private Timestamp timestamp;
@@ -19,6 +19,16 @@ public class ReportContent {
     private String userNameOwner;
     private String reportDescription;
     private Map<Long,String> userNameReporters;
+
+    public ReportContent(){
+
+    }
+
+    public ReportContent( long contentId, long userId, String reportDescription){
+        this.contentId = contentId;
+        this.userId = userId;
+        this.reportDescription = reportDescription;
+    }
 
     public ReportContent(long contentId, long frameworkId, long userId, String title, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, String userNameOwner, String reportDescription) {
         this.contentId = contentId;
