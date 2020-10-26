@@ -2,21 +2,39 @@ package ar.edu.itba.paw.models;
 
 import jdk.jfr.ContentType;
 
+import javax.persistence.*;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
+@Table(name = "content")
 public class Content {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "content_content_id_seq")
+    @SequenceGenerator(sequenceName = "content_content_id_seq", name = "content_content_id_seq", allocationSize = 1)
+    @Column(name = "content_id")
     private Long contentId;
+
+    @Column(name = "framework_id")
     private long frameworkId;
+
+    @Column(name = "user_id")
     private long userId;
+
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "tstamp")
     private Timestamp timestamp;
+
+    @Column(name = "link")
     private String link;
+
+    @Column(name = "type")
     private ContentTypes type;
-    private int votesUp;
-    private int votesDown;
+
+
     private String frameworkName;
     private FrameworkCategories category;
     private String userName;
@@ -29,13 +47,11 @@ public class Content {
 
     }
 
-    public Content(long contentId, long frameworkId, long userId, String title, int votesUp, int votesDown, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin, String username,Integer userAuthVote) {
+    public Content(long contentId, long frameworkId, long userId, String title, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin, String username,Integer userAuthVote) {
         this.contentId = contentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
         this.title = title;
-        this.votesUp = votesUp;
-        this.votesDown = votesDown;
         this.timestamp = timestamp;
         this.link = link;
         this.type = type;
@@ -46,13 +62,11 @@ public class Content {
         this.isAdmin = isAdmin;
         this.userName = username;
     }
-    public Content(long contentId, long frameworkId, long userId, String title, int votesUp, int votesDown, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin,String userName) {
+    public Content(long contentId, long frameworkId, long userId, String title, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin,String userName) {
         this.contentId = contentId;
         this.frameworkId = frameworkId;
         this.userId = userId;
         this.title = title;
-        this.votesUp = votesUp;
-        this.votesDown = votesDown;
         this.timestamp = timestamp;
         this.link = link;
         this.type = type;
@@ -86,14 +100,6 @@ public class Content {
 
     public String getTitle() {
         return title;
-    }
-
-    public int getVotesUp() {
-        return votesUp;
-    }
-
-    public int getVotesDown() {
-        return votesDown;
     }
 
     public Timestamp getTimestamp() {

@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.models;
 
+import jdk.jfr.ContentType;
+
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,13 +10,34 @@ import java.util.List;
 import java.util.Map;
 
 public class ReportContent {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "content_report_content_id_seq")
+    @SequenceGenerator(sequenceName = "content_report_content_id_seq", name = "content_report_content_id_seq", allocationSize = 1)
+    @Column(name = "report_id")
+    private Long reportId;
+
+    @Column(name = "content_id", nullable = false)
     private long contentId;
-    private Long frameworkId;
+
+    @Column(name = "framework_id", nullable = false)
+    private long frameworkId;
+
+    @Column(name = "user_id", nullable = false)
     private long userId;
+
+    @Column(name = "title", nullable = false)
     private String title;
+
+    @Column(name = "tstamp", nullable = false)
     private Timestamp timestamp;
+
+    @Column(name = "link", nullable = false)
     private String link;
+
+    @Column(name = "type", nullable = false)
     private ContentTypes type;
+
     private String frameworkName;
     private FrameworkCategories category;
     private String userNameOwner;

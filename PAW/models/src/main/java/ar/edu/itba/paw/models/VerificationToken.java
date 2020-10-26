@@ -1,11 +1,22 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 public class VerificationToken {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_token_vtoken_id_seq")
+    @SequenceGenerator(sequenceName = "verification_token_vtoken_id_seq", name = "verification_token_vtoken_id_seq", allocationSize = 1)
     private Long tokenId;
+
+    @JoinColumn(name = "token",nullable = false)
     private String token;
+
+    @JoinColumn(name = "user_id", nullable = false)
     private long userId;
+
+    @JoinColumn(name = "exp_date", nullable = false)
     private Timestamp expiryDay;
 
     public VerificationToken(){
