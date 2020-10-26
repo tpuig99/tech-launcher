@@ -28,6 +28,9 @@
 
 <div class="content-search">
     <div class="sidebar-search">
+        <div class="d-flex flex-row-reverse">
+        <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="explore.filter"/></button>
+        </div>
 
         <!-- Filter By Categories -->
         <div class="subtitle"><h4><spring:message code="explore.categories"/></h4></div>
@@ -57,7 +60,7 @@
             </div>
 
         <!-- Filter By Types -->
-        <div class="subtitle"> <h4><spring:message code="explore.types"/></h4></div>
+        <div class="subtitle sidebar-title"><h4><spring:message code="explore.types"/></h4></div>
         <c:forEach items="${types}" var="type" begin="0" end="5">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="check${type}">
@@ -85,7 +88,7 @@
 
         <!--Filter By Comments Date-->
 
-        <div class="subtitle"><h4><spring:message code="explore.update_date"/></h4></div>
+        <div class="subtitle sidebar-title"><h4><spring:message code="explore.update_date"/></h4></div>
 
         <span>
             <select id="update-date-dropdown">
@@ -100,7 +103,7 @@
 
         <!--Filter By Comments Date-->
 
-        <div class="subtitle"><h4><spring:message code="explore.comment_date"/></h4></div>
+        <div class="subtitle sidebar-title"><h4><spring:message code="explore.comment_date"/></h4></div>
         <span>
             <select id="comments-date-dropdown">
                 <option value="0" <c:if test="${dateComment == 0}"> selected </c:if>><spring:message code="explore.any_date"/></option>
@@ -114,7 +117,7 @@
 
         <!--Filter By Comments Amount-->
 
-        <div class="subtitle"><h4><spring:message code="explore.comments"/></h4></div>
+        <div class="subtitle sidebar-title"><h4><spring:message code="explore.comments"/></h4></div>
 
         <span>
             <select id="comments-dropdown">
@@ -128,7 +131,7 @@
          </span>
 
         <!--Filter By Rating-->
-        <div class="subtitle"><h4><spring:message code="explore.rating"/></h4></div>
+        <div class="subtitle sidebar-title"><h4><spring:message code="explore.rating"/></h4></div>
 
         <span><spring:message code="explore.from"/></span>
         <span>
@@ -155,7 +158,7 @@
     </div>
 
     <!-- Search Bar -->
-    <div class="search-bar">
+    <div class="search-bar sidebar-title">
         <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="text" value="${techNameQuery}" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
             <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="search.title"/></button>
