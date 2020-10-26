@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.FrameworkCategories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +21,8 @@ public class CommentDaoImpl implements CommentDao {
     private final SimpleJdbcInsert jdbcInsert;
     private final ResultSetExtractor<List<Comment>> SET_EXTRACTOR = CommentDaoImpl::extractor;
     private final ResultSetExtractor<List<Comment>> SET_EXTRACTOR_USER_VOTE = CommentDaoImpl::extractorUserVote;
+    private final RowMapper<Integer> ROW_MAPPER_COUNT = CommentDaoImpl::mapRowCount;
+
     private final String SELECTION ="select cru.user_name as user_name_reporter, (CASE WHEN vu.pending IS false THEN true ELSE false END) AS is_verify,c.comment_id,c.framework_id,c.user_id,c.description,tstamp,reference,framework_name,f.category,count(case when vote=-1 then vote end) as neg,count(case when vote=1 then vote end) as pos, cu.user_name,(case when a.user_id is null then false else true end) as is_admin";
     private final String FROM =" from comments c left join comment_votes cv on c.comment_id = cv.comment_id left join frameworks f on c.framework_id = f.framework_id left join users cu on cu.user_id = c.user_id left join verify_users vu on c.user_id=vu.user_id and f.framework_id = vu.framework_id left join admins a on c.user_id=a.user_id left join comment_report cr on c.comment_id = cr.comment_id left join users cru on cru.user_id = cr.user_id ";
     private final String GROUP_BY = " group by c.comment_id , framework_name, cru.user_name,cu.user_name,f.category,pending,a.user_id order by c.comment_id";
@@ -111,6 +114,10 @@ public class CommentDaoImpl implements CommentDao {
         return list;
     }
 
+    private static Integer mapRowCount(ResultSet rs, int i) throws SQLException {
+        return rs.getInt("count");
+    }
+
     private static Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Comment(rs.getLong("comment_id"),
                 rs.getInt("framework_id"),
@@ -166,15 +173,26 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
+    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId, long page, long pageSize) {
+        String value;
+        if(userId!=null)
+        {
+            value = SELECTION+USER_VOTE+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY + " LIMIT ? OFFSET ?";
+            return jdbcTemplate.query(value, new Object[] {userId,frameworkId, pageSize, (page-1)*pageSize},  SET_EXTRACTOR_USER_VOTE );
+        }
+        value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY + " LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(value, new Object[] {frameworkId, pageSize, (page-1)*pageSize},  SET_EXTRACTOR);
+    }
+
     public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId) {
         String value;
         if(userId!=null)
         {
-            value = SELECTION+USER_VOTE+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
+            value = SELECTION+USER_VOTE+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY + " LIMIT ? OFFSET ?";
             return jdbcTemplate.query(value, new Object[] {userId,frameworkId},  SET_EXTRACTOR_USER_VOTE );
         }
         value = SELECTION+FROM+"where c.framework_id = ? AND c.reference IS NULL"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[] {frameworkId},  SET_EXTRACTOR );
+        return jdbcTemplate.query(value, new Object[] {frameworkId},  SET_EXTRACTOR);
     }
 
     @Override
@@ -184,9 +202,14 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
-    public List<Comment> getCommentsByUser(long userId) {
-        String value = SELECTION+FROM+"WHERE c.user_id = ?"+GROUP_BY;
-        return jdbcTemplate.query(value, new Object[] {userId}, SET_EXTRACTOR);
+    public List<Comment> getCommentsByUser(long userId, long page, long pageSize ) {
+        String value = SELECTION +FROM+"WHERE c.user_id = ?"+GROUP_BY + " LIMIT ? OFFSET ?" ;
+        return jdbcTemplate.query(value, new Object[] {userId, pageSize, (page-1)*pageSize}, SET_EXTRACTOR);
+    }
+
+    @Override
+    public Optional<Integer> getCommentsCountByUser(long userId){
+        return jdbcTemplate.query("select count (*) from comments inner join users on comments.user_id = users.user_id where comments.user_id = ?", new Object[] {userId}, ROW_MAPPER_COUNT).stream().findFirst();
     }
 
     //TODO optimize queries

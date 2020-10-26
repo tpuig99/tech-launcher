@@ -1,13 +1,13 @@
 package ar.edu.itba.paw.webapp.form.framework;
 
 public class DeleteFrameworkForm {
-    private long frameworkId;
+    private long frameworkIdx;
 
-    public long getFrameworkId() {
-        return frameworkId;
+    public long getFrameworkIdx() {
+        return frameworkIdx;
     }
 
-    public void setFrameworkId(long frameworkId) {
-        this.frameworkId = frameworkId;
+    public void setFrameworkIdx(long frameworkIdx) {
+        this.frameworkIdx = frameworkIdx;
     }
 }

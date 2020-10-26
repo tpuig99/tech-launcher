@@ -249,11 +249,19 @@ label:hover:before {
     color: #733bce;
 }
 
+.rocket-color-owner {
+    color: orange;
+}
+
 .rocket-color:hover {
     text-shadow: 0 0 5px black;
 }
 
 .rocket-color-admin:hover {
+    text-shadow: 0 0 5px black;
+}
+
+.rocket-color-owner:hover {
     text-shadow: 0 0 5px black;
 }
 
@@ -263,4 +271,8 @@ label:hover:before {
 
 .votedDown {
     color: #067BC2;
+}
+
+.no-overflow-x ul {
+    overflow-x: hidden;
 }

@@ -12,9 +12,12 @@ public interface CommentService {
     /*** Getters ***/
     Optional<Comment> getById(long contentId);
     List<Comment> getCommentsByFramework(long frameworkId,Long userId);
-    List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId);
+    List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId, long page);
     List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId);
-    List<Comment> getCommentsByUser(long userId);
+    List<Comment> getCommentsByUser(long userId, long page);
+
+    Optional<Integer> getCommentsCountByUser(long userId);
+
     Map<Long, List<Comment>> getRepliesByFramework(long frameworkId);
 
     /*** Comment Methods ***/
@@ -23,12 +26,12 @@ public interface CommentService {
     Optional<Comment> changeComment(long commentId, String description);
 
     /***Votes methods***/
-    Optional<Comment> voteUp(long commentId,long userId);
-    Optional<Comment> voteDown(long commentId,long userId);
+    Optional<Comment> vote(long commentId,long userId,int voteSign);
 
-    /***Reports***/
+
+        /***Reports***/
     Optional<ReportComment> getReportById(long reportId);
-    List<ReportComment> getAllReport();
+    List<ReportComment> getAllReport(long page);
     List<ReportComment> getReportByFramework(long frameworkId);
     Optional<ReportComment> getReportByComment(long commentId);
     void addReport(long commentId,long userId,String description);

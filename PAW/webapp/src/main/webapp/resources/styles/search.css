@@ -9,7 +9,6 @@
     height: 100%;
     width: 20em;
     z-index: 1;
-    top: 4em;
     left: 0;
     overflow-x: hidden;
     padding-top: 20px;
@@ -18,12 +17,11 @@
 }
 
 .content-search {
-    position: absolute;
-    top: 4.5em;
-    left: 20.5em;
-    margin-right: 1em;
+    position: relative;
+    margin-left: 22em;
     padding-left: 10px;
     padding-top: 10px;
+    width: calc(100% - 23em);
 }
 
 .sidebar-search select {
@@ -76,6 +74,6 @@
     background-color: #b4b6b7;
 }
 
-.margin-top{
+.margin-top {
     margin-top: 1em;
 }

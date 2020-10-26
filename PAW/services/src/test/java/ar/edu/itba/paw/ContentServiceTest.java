@@ -29,7 +29,7 @@ public class ContentServiceTest {
     public void testVoteUpNew() {
         Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.empty());
 
-        contentService.voteUp(CONTENT_ID,USER_ID);
+        contentService.vote(CONTENT_ID,USER_ID,POS);
 
         Mockito.verify(mockDao,Mockito.times(1)).insert(CONTENT_ID,USER_ID,POS);
         Mockito.verify(mockDao,Mockito.never()).delete(VOTE_ID);
@@ -41,7 +41,7 @@ public class ContentServiceTest {
     public void testDownNew() {
         Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.empty());
 
-        contentService.voteDown(1,1);
+        contentService.vote(CONTENT_ID,USER_ID,NEG);
 
         Mockito.verify(mockDao,Mockito.times(1)).insert(CONTENT_ID,USER_ID,NEG);
         Mockito.verify(mockDao,Mockito.never()).delete(VOTE_ID);
@@ -52,7 +52,7 @@ public class ContentServiceTest {
     public void testVoteUpOnPreviousDown() {
         Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.of(new ContentVote(VOTE_ID,CONTENT_ID,USER_ID,NEG )));
 
-        contentService.voteUp(CONTENT_ID,USER_ID);
+        contentService.vote(CONTENT_ID,USER_ID,POS);
 
         Mockito.verify(mockDao,Mockito.never()).insert(CONTENT_ID,USER_ID,POS);
         Mockito.verify(mockDao,Mockito.never()).delete(VOTE_ID);
@@ -63,7 +63,7 @@ public class ContentServiceTest {
     public void testVoteDownOnPreviousUp() {
         Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.of(new ContentVote(VOTE_ID,CONTENT_ID,USER_ID,POS)));
 
-        contentService.voteDown(CONTENT_ID,USER_ID);
+        contentService.vote(CONTENT_ID,USER_ID,NEG);
 
         Mockito.verify(mockDao,Mockito.never()).insert(CONTENT_ID,USER_ID,NEG);
         Mockito.verify(mockDao,Mockito.never()).delete(VOTE_ID);
@@ -74,7 +74,7 @@ public class ContentServiceTest {
     public void testVoteUpOnPreviousUp() {
         Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.of(new ContentVote(VOTE_ID,CONTENT_ID,USER_ID,POS )));
 
-        contentService.voteUp(CONTENT_ID,USER_ID);
+        contentService.vote(CONTENT_ID,USER_ID,POS);
 
         Mockito.verify(mockDao,Mockito.never()).insert(CONTENT_ID,USER_ID,POS);
         Mockito.verify(mockDao,Mockito.times(1)).delete(VOTE_ID);
@@ -84,7 +84,7 @@ public class ContentServiceTest {
     public void testVoteDownOnPreviousDown() {
         Mockito.when(mockDao.getByContentAndUser(CONTENT_ID,USER_ID)).thenReturn(Optional.of(new ContentVote(VOTE_ID,CONTENT_ID,USER_ID,NEG )));
 
-        contentService.voteDown(CONTENT_ID,USER_ID);
+        contentService.vote(CONTENT_ID,USER_ID,NEG);
 
         Mockito.verify(mockDao,Mockito.never()).insert(CONTENT_ID,USER_ID,NEG);
         Mockito.verify(mockDao,Mockito.times(1)).delete(VOTE_ID);

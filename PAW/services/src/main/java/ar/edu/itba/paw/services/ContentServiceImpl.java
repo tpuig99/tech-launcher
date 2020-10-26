@@ -25,6 +25,8 @@ public class ContentServiceImpl implements ContentService {
     @Autowired
     ReportContentDao rc;
 
+    private long PAGESIZE = 5;
+
     @Transactional(readOnly = true)
     @Override
     public Optional<Content> getById(long contentId) {
@@ -45,14 +47,20 @@ public class ContentServiceImpl implements ContentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Content> getContentByUser(long userId) {
-        return content.getContentByUser(userId);
+    public List<Content> getContentByUser(long userId, long page) {
+        return content.getContentByUser(userId, page, PAGESIZE );
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type) {
-        return content.getContentByFrameworkAndType(frameworkId, type);
+    public Optional<Integer> getContentCountByUser( long userId ){
+        return content.getContentCountByUser(userId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page) {
+        return content.getContentByFrameworkAndType(frameworkId, type, page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)
@@ -81,29 +89,15 @@ public class ContentServiceImpl implements ContentService {
 
     @Transactional
     @Override
-    public void voteUp(long contentId, long userId) {
+    public void vote(long contentId, long userId,int voteSign) {
         Optional<ContentVote> vote = cv.getByContentAndUser(contentId,userId);
         if(vote.isPresent()){
-            if(vote.get().isVoteUp())
+            if(vote.get().getVote() == voteSign)
                 cv.delete(vote.get().getContentVoteId());
             else
-                cv.update(vote.get().getContentVoteId(),1);
+                cv.update(vote.get().getContentVoteId(),voteSign);
         }else {
-            cv.insert(contentId, userId, 1);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void voteDown(long contentId, long userId) {
-        Optional<ContentVote> vote = cv.getByContentAndUser(contentId,userId);
-        if(vote.isPresent()){
-            if(!vote.get().isVoteUp())
-                cv.delete(vote.get().getContentVoteId());
-            else
-                cv.update(vote.get().getContentVoteId(),-1);
-        }else {
-            cv.insert(contentId, userId, -1);
+            cv.insert(contentId, userId, voteSign);
         }
     }
 
@@ -115,8 +109,8 @@ public class ContentServiceImpl implements ContentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ReportContent> getAllReports() {
-        return rc.getAll();
+    public List<ReportContent> getAllReports(long page) {
+        return rc.getAll(page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)
@@ -155,4 +149,9 @@ public class ContentServiceImpl implements ContentService {
         rc.delete(reportId);
     }
 
+    @Transactional
+    @Override
+    public List<ReportContent> getReportsByFrameworks(List<Long> frameworksIds, long page) {
+        return rc.getByFrameworks(frameworksIds, page, PAGESIZE);
+    }
 }

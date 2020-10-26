@@ -35,6 +35,6 @@ public class PawUserDetailsService implements UserDetailsService {
             aut.add(new SimpleGrantedAuthority("ROLE_MODERATOR"));
         }
         final Collection<? extends GrantedAuthority> authorities = aut;
-        return new org.springframework.security.core.userdetails.User(username, user.get().getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(), authorities);
     }
 }

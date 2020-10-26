@@ -6,27 +6,26 @@ import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.mod_page.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UserController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     UserService us;
     @Autowired
@@ -39,6 +38,13 @@ public class UserController {
     ContentService contentService;
     @Autowired
     MessageSource messageSource;
+
+    private final long pageStart=1;
+    private final long PAGESIZE=5;
+
+    private static final String MOD_VIEW = "/mod";
+
+    public static ModelAndView redirectToModView() { return new ModelAndView("redirect:" + MOD_VIEW); }
 
     @RequestMapping("/apply")
     public String AddCandidate(HttpServletRequest request, @RequestParam("id") final long frameworkId) {
@@ -61,7 +67,7 @@ public class UserController {
             us.deleteVerification(form.getRejectUserVerificationId());
         }
 
-        return modPage();
+        return modPage(null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/rejectPending"}, method = RequestMethod.POST )
@@ -71,7 +77,7 @@ public class UserController {
             us.deleteVerification(form.getRejectPendingUserVerificationId());
         }
 
-        return modPage();
+        return modPage(null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/accept"}, method = RequestMethod.POST)
@@ -82,7 +88,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
             }
-        return modPage();
+        return modPage(null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/acceptPending"}, method = RequestMethod.POST)
@@ -93,7 +99,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
         }
-        return modPage();
+        return modPage(null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/demote"}, method = RequestMethod.POST)
@@ -101,13 +107,19 @@ public class UserController {
         Optional<VerifyUser> vu = us.getVerifyById(form.getRevokePromotionVerificationId());
         if( vu.isPresent() && !vu.get().isPending() ){
             us.deleteVerification(form.getRevokePromotionVerificationId());
+            LOGGER.info("User: Demoted user according to Verification {}",form.getRevokePromotionVerificationId());
         }
 
-        return modPage();
+        LOGGER.error("User: Attempting to demote a non promoted user");
+        return modPage(null, null, null, null, null);
     }
 
     @RequestMapping("/mod")
-    public ModelAndView modPage(){
+    public ModelAndView modPage(@RequestParam(value = "modsPage", required = false) final Long modsPage,
+                                @RequestParam(value = "rComPage", required = false) final Long rComPage,
+                                @RequestParam(value = "applicantsPage", required = false) final Long applicantsPage,
+                                @RequestParam(value = "verifyPage", required = false) final Long verifyPage,
+                                @RequestParam(value = "rConPage", required = false) final Long rConPage){
         ModelAndView mav = new ModelAndView("admin/mod_page");
 
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
@@ -121,74 +133,91 @@ public class UserController {
         mav.addObject("promotePendingUserForm", new PromotePendingUserForm());
         mav.addObject("revokePromotionForm", new RevokePromotionForm());
 
-
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> userOptional = us.findByUsername(username);
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( userOptional.isPresent()){
             User user = userOptional.get();
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             mav.addObject("isAdmin",user.isAdmin());
             if( user.isAdmin()) {
-                List<VerifyUser> mods = us.getVerifyByPending(false);
-                List<VerifyUser> verify = us.getVerifyByPending(true);
-                List<VerifyUser> applicants = new LinkedList<>();
-                verify.forEach(verifyUser -> {
-                    if(verifyUser.getComment() == null ){
-                        applicants.add(verifyUser);
-                    }
-                });
-                verify.removeAll(applicants);
+                List<VerifyUser> mods = us.getVerifyByPending(false, modsPage == null ? pageStart:modsPage);
+                List<VerifyUser> verify = us.getVerifyByPending(true, verifyPage == null ? pageStart:verifyPage);
+                List<VerifyUser> applicants = us.getApplicantsByPending(true, applicantsPage == null ? pageStart:applicantsPage);
+                List<ReportComment> reportedComments = commentService.getAllReport(rComPage == null ? pageStart:rComPage);
+                List<ReportContent> reportedContents = contentService.getAllReports(rConPage == null ? pageStart:rConPage);
+                mav.addObject("pageSize", PAGESIZE);
+
                 mav.addObject("mods",mods);
+                mav.addObject("modsPage", modsPage == null ? pageStart:modsPage);
+
                 mav.addObject("pendingToVerify", verify);
+                mav.addObject("verifyPage", verifyPage == null ? pageStart:verifyPage);
+
                 mav.addObject("pendingApplicants", applicants);
-                mav.addObject("reportedComments", commentService.getAllReport());
-                mav.addObject("reportedContents", contentService.getAllReports());
+                mav.addObject("applicantsPage", applicantsPage == null ? pageStart:applicantsPage);
+
+                mav.addObject("reportedComments", reportedComments);
+                mav.addObject("rComPage", rComPage == null ? pageStart:rComPage);
+
+                mav.addObject("reportedContents", reportedContents );
+                mav.addObject("rConPage", rConPage == null ? pageStart:rConPage);
+
                 return mav;
             }
             else if( user.isVerify() ){
-                List<VerifyUser> verify = new LinkedList<>();
-                user.getVerifications().forEach(verifyUser -> {
-                    verify.addAll(us.getVerifyByFramework(verifyUser.getFrameworkId(),true));
-                });
-                List<VerifyUser> applicants = new LinkedList<>();
-                verify.forEach(verifyUser -> {
-                    if(verifyUser.getComment() == null ){
-                        applicants.add(verifyUser);
-                    }
-                });
-                verify.removeAll(applicants);
-                mav.addObject("pendingToVerify",verify);
-                mav.addObject("pendingApplicants", applicants);
-                List<ReportContent> reportContents = new LinkedList<>();
+                List<Long> frameworksIds = new LinkedList<>();
                 user.getVerifications().forEach( verifyUser -> {
-                    reportContents.addAll(contentService.getReportsByFramework(verifyUser.getFrameworkId()));
+                    if( !verifyUser.isPending() )
+                        frameworksIds.add(verifyUser.getFrameworkId());
                 });
+                List<VerifyUser> verify = us.getVerifyByFrameworks(frameworksIds, true, verifyPage == null ? pageStart:verifyPage);
+                List<VerifyUser> applicants = us.getApplicantsByFrameworks(frameworksIds, applicantsPage == null ? pageStart:applicantsPage);
+                List<ReportContent> reportContents = contentService.getReportsByFrameworks(frameworksIds, rConPage == null ? pageStart:rConPage);
+
+                mav.addObject("pageSize", PAGESIZE);
+
+                mav.addObject("pendingToVerify",verify);
+                mav.addObject("verifyPage", verifyPage == null ? pageStart:verifyPage);
+
+                mav.addObject("pendingApplicants", applicants);
+                mav.addObject("applicantsPage", applicantsPage == null ? pageStart:applicantsPage);
+
                 mav.addObject("reportedContents", reportContents);
+                mav.addObject("rConPage", rConPage == null ? pageStart:rConPage);
                 return mav;
             }
+
+            LOGGER.error("User: User {} does not have enough privileges to access Mod Page", user.getId());
+            return ErrorController.redirectToErrorView();
         }
+
+        LOGGER.error("User: Unauthorized user attempted to access mod page");
         return ErrorController.redirectToErrorView();
     }
+
     @RequestMapping("/dismiss")
     public ModelAndView DismissMod(@RequestParam("id") final long verificationId) {
-        //check the mav you want
         final ModelAndView mav = new ModelAndView("admin/mod_page");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> userOptional = us.findByUsername(username);
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( userOptional.isPresent()){
             User user = userOptional.get();
             if(user.isAdmin()) {
                 Optional<VerifyUser> vu = us.getVerifyById(verificationId);
                 if (vu.isPresent()) {
                     us.deleteVerification(verificationId);
+                    LOGGER.info("User: User {} was dismissed as Mod from Tech {}", vu.get().getUserId(), vu.get().getFrameworkId());
                 }
                 return mav;
             }
+            LOGGER.error("User: User {} does not have enough privileges to dismiss a mod", user.getId());
+            return ErrorController.redirectToErrorView();
         }
+
+        LOGGER.error("User: Unauthorized user attempted to dismiss a mod");
         return ErrorController.redirectToErrorView();
     }
+
     @RequestMapping("/quit")
     public ModelAndView QuitMod(@RequestParam("id") final long verificationId) {
         //check the mav you want
@@ -203,13 +232,15 @@ public class UserController {
             if (vu.isPresent()) {
                 VerifyUser verifyUser = vu.get();
                 if(verifyUser.getUserId()!=user.getId()){
-                    //raise error --> only owner
+                    LOGGER.error("User: Another User attempted to remove User {} from Mod privileges in Tech {}", vu.get().getUserId(), vu.get().getFrameworkId());
                     return ErrorController.redirectToErrorView();
                 }
                 us.deleteVerification(verificationId);
+                LOGGER.info("User: User {} quitted as Mod from Tech {}", vu.get().getUserId(), vu.get().getFrameworkId());
             }
             return mav;
         }
+        LOGGER.error("User: Unauthorized user attempted to remove a Mod");
         return ErrorController.redirectToErrorView();
     }
 
@@ -222,11 +253,17 @@ public class UserController {
                 Optional<Comment> commentOptional = commentService.getById(form.getDeleteCommentId());
                 if( commentOptional.isPresent() ){
                     commentService.acceptReport(form.getDeleteCommentId());
-                    return modPage();
+                    LOGGER.info("User: Comment {} was successfully deleted", form.getDeleteCommentId());
+                    return modPage(null, null, null, null, null);
                 }
+                LOGGER.error("User: Comment {} was not found", form.getDeleteCommentId());
+                return ErrorController.redirectToErrorView();
             }
+            LOGGER.error("User: User {} has not enough privileges to remove a reported comment", user.getId());
+            return ErrorController.redirectToErrorView();
         }
 
+        LOGGER.error("User: Unauthorized user attempted to remove a reported comment");
         return ErrorController.redirectToErrorView();
     }
 
@@ -237,11 +274,14 @@ public class UserController {
             User user = userOptional.get();
             if( user.isAdmin() ){
                 commentService.denyReport(form.getIgnoreCommentId());
-
-                return modPage();
+                LOGGER.info("User: Comment {} was removed from its report", form.getIgnoreCommentId());
+                return modPage(null, null, null, null, null);
             }
+            LOGGER.error("User: User {} has not enough privileges to ignore a reported comment", user.getId());
+            return ErrorController.redirectToErrorView();
         }
 
+        LOGGER.error("User: Unauthorized user attempted to ignore a reported comment");
         return ErrorController.redirectToErrorView();
     }
 
@@ -250,15 +290,21 @@ public class UserController {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            if( user.isAdmin() ){
+            if( user.isAdmin() || user.isVerify()){
                 Optional<Content> contentOptional = contentService.getById(form.getDeleteContentId());
                 if( contentOptional.isPresent() ){
                     contentService.acceptReport(form.getDeleteContentId());
-                    return modPage();
+                    LOGGER.info("User: Content {} was successfully deleted", form.getDeleteContentId());
+                    return modPage(null, null, null, null, null);
                 }
+                LOGGER.error("User: Content {} was not found", form.getDeleteContentId());
+                return ErrorController.redirectToErrorView();
             }
+            LOGGER.error("User: User {} has not enough privileges to delete a reported content", user.getId());
+            return ErrorController.redirectToErrorView();
         }
 
+        LOGGER.error("User: Unauthorized user attempted to delete a reported content");
         return ErrorController.redirectToErrorView();
     }
 
@@ -267,15 +313,19 @@ public class UserController {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            if( user.isAdmin() ){
+            if( user.isAdmin() || user.isVerify()){
                 Optional<Content> contentOptional = contentService.getById(form.getIgnoreContentId());
                 if( contentOptional.isPresent() ){
                     contentService.denyReport(form.getIgnoreContentId());
-                    return modPage();
+                    LOGGER.info("User: Content {} was removed from its report", form.getIgnoreContentId());
+                    return modPage(null, null, null, null, null);
                 }
             }
+            LOGGER.error("User: User {} has not enough privileges to ignore a reported content", user.getId());
+            return ErrorController.redirectToErrorView();
         }
 
+        LOGGER.error("User: Unauthorized user attempted to ignore a reported content");
         return ErrorController.redirectToErrorView();
     }
 

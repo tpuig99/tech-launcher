@@ -2,7 +2,6 @@ package ar.edu.itba.paw;
 
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.persistence.CommentDao;
-import ar.edu.itba.paw.persistence.ContentDao;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -190,7 +188,7 @@ public class CommentDaoTest {
         }
 
         // Act
-        final List<Comment> commentList = commentDao.getCommentsByUser(USER_ID);
+        final List<Comment> commentList = commentDao.getCommentsByUser(USER_ID, 1, 5);
 
         // Assert
         Assert.assertFalse(commentList.isEmpty());
@@ -198,7 +196,7 @@ public class CommentDaoTest {
     }
 
     @Test
-    public void getCommentsByFrameworkAndUser() {
+    public void testGetCommentsByFrameworkAndUser() {
         // Arrange
         for (int i = 0; i < SIZE; i++) {
             final Map<String, Object> args = getArgumentsMap(FRAMEWORK_ID+i, USER_ID+i, Math.random() > 0.5 ? DESCRIPTION : DESCRIPTION_NEW, new Timestamp(System.currentTimeMillis()), null);
@@ -243,7 +241,7 @@ public class CommentDaoTest {
         }
 
         // Act
-        final List<Comment> returnValue = commentDao.getCommentsWithoutReferenceByFrameworkWithUser(FRAMEWORK_ID, null);
+        final List<Comment> returnValue = commentDao.getCommentsWithoutReferenceByFrameworkWithUser(FRAMEWORK_ID, null, 1, 5);
 
         // Assert
         Assert.assertFalse(returnValue.isEmpty());

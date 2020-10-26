@@ -1,13 +1,7 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.CommentVote;
-import ar.edu.itba.paw.models.ReportComment;
-import ar.edu.itba.paw.models.VerifyUser;
-import ar.edu.itba.paw.persistence.CommentDao;
-import ar.edu.itba.paw.persistence.CommentVoteDao;
-import ar.edu.itba.paw.persistence.ReportCommentDao;
-import ar.edu.itba.paw.persistence.VerifyUserDao;
+import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.persistence.*;
 import ar.edu.itba.paw.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,16 +16,21 @@ public class CommentServiceImpl implements CommentService {
     private static final int VOTES_FOR_VERIFY =10;
 
     @Autowired
-    CommentDao cmts;
+    private CommentDao cmts;
 
     @Autowired
-    VerifyUserDao verifyUserDao;
+    private UserDao userDao;
 
     @Autowired
-    CommentVoteDao cmtVotes;
+    private VerifyUserDao verifyUserDao;
 
     @Autowired
-    ReportCommentDao rc;
+    private CommentVoteDao cmtVotes;
+
+    @Autowired
+    private ReportCommentDao rc;
+
+    private long PAGESIZE = 5;
 
     @Transactional(readOnly = true)
     @Override
@@ -47,8 +46,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId) {
-        return cmts.getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,userId);
+    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId, long page) {
+        return cmts.getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,userId, page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)
@@ -59,8 +58,14 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Comment> getCommentsByUser(long userId) {
-        return cmts.getCommentsByUser(userId);
+    public List<Comment> getCommentsByUser(long userId, long page) {
+        return cmts.getCommentsByUser(userId, page, PAGESIZE);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<Integer> getCommentsCountByUser(long userId){
+        return cmts.getCommentsCountByUser(userId);
     }
 
     @Transactional(readOnly = true)
@@ -89,46 +94,30 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public Optional<Comment> voteUp(long commentId,long userId) {
+    public Optional<Comment> vote(long commentId,long userId,int voteSign) {
         Optional<CommentVote> vote = cmtVotes.getByCommentAndUser(commentId,userId);
         if(vote.isPresent()){
-            if(vote.get().isVoteUp())
+            if(vote.get().getVote()==voteSign)
                 cmtVotes.delete(vote.get().getCommentVoteId());
             else
-                cmtVotes.update(vote.get().getCommentVoteId(),1);
+                cmtVotes.update(vote.get().getCommentVoteId(),voteSign);
         }else {
-            cmtVotes.insert(commentId, userId, 1);
+            cmtVotes.insert(commentId, userId, voteSign);
         }
         Optional<Comment> comment = cmts.getById(commentId);
-        checkForVerify(comment);
+        if(voteSign>0)
+            checkForVerify(comment);
         return comment;
     }
-
     private void checkForVerify(Optional<Comment> comment) {
         if(comment.isPresent() && comment.get().getVotesUp()==VOTES_FOR_VERIFY){
             Comment c=comment.get();
-            Optional<VerifyUser> v = verifyUserDao.getByFrameworkAndUser(c.getFrameworkId(),c.getUserId());
-            if(!v.isPresent()){
-                verifyUserDao.create(c.getUserId(),c.getFrameworkId(),c.getCommentId());
+            Optional<User> user = userDao.findById(c.getUserId());
+            if(user.isPresent() && user.get().isAllowMod() && !user.get().isAdmin() && !user.get().hasAppliedToFramework(c.getFrameworkId())) {
+                    verifyUserDao.create(c.getUserId(), c.getFrameworkId(), c.getCommentId());
+
             }
         }
-    }
-
-    @Transactional
-    @Override
-    public Optional<Comment> voteDown(long commentId,long userId) {
-        Optional<CommentVote> vote = cmtVotes.getByCommentAndUser(commentId,userId);
-
-        if(vote.isPresent()){
-            if(!vote.get().isVoteUp())
-                cmtVotes.delete(vote.get().getCommentVoteId());
-            else
-                cmtVotes.update(vote.get().getCommentVoteId(),-1);
-        }else {
-            cmtVotes.insert(commentId, userId, -1);
-        }
-
-        return cmts.getById(commentId);
     }
 
     @Transactional(readOnly = true)
@@ -139,8 +128,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ReportComment> getAllReport() {
-        return rc.getAll();
+    public List<ReportComment> getAllReport(long page) {
+        return rc.getAll(page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)

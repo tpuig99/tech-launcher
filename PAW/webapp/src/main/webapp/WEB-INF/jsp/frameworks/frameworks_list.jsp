@@ -19,10 +19,11 @@
 </head>
 <body>
 
-<jsp:include page="../components/navbar-search.jsp">
+<jsp:include page="../components/navbar.jsp">
     <jsp:param name="connected" value="${user}"/>
     <jsp:param name="username" value="${user.name}"/>
     <jsp:param name="isMod" value="${user_isMod}"/>
+    <jsp:param name="search_page" value="${search_page}"/>
 </jsp:include>
 
 <div class="content-search">
@@ -34,7 +35,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="check${category}">
                     <label class="form-check-label" for="check${category}">
-                            ${category}
+                        <c:out value="${categories_translated.get(category)}"/>
                     </label>
                 </div>
             </c:forEach>
@@ -46,7 +47,7 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="check${category}">
                         <label class="form-check-label" for="check${category}">
-                                ${category}
+                            <c:out value="${categories_translated.get(category)}"/>
                         </label>
                     </div>
                 </c:forEach>
@@ -61,7 +62,7 @@
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="check${type}">
                 <label class="form-check-label" for="check${type}">
-                        ${type}
+                    <c:out value="${types_translated.get(type)}"/>
                 </label>
             </div>
         </c:forEach>
@@ -73,7 +74,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="check${type}">
                     <label class="form-check-label" for="check${type}">
-                            ${type}
+                        <c:out value="${types_translated.get(type)}"/>
                     </label>
                 </div>
             </c:forEach>
@@ -127,7 +128,6 @@
          </span>
 
         <!--Filter By Rating-->
-
         <div class="subtitle"><h4><spring:message code="explore.rating"/></h4></div>
 
         <span><spring:message code="explore.from"/></span>
@@ -152,7 +152,7 @@
                 <option value="5"<c:if test="${starsQuery2 == 5 || starsQuery2==null}"> selected </c:if>>5</option>
             </select>
         </span>
-</div>
+    </div>
 
     <!-- Search Bar -->
     <div class="search-bar">
@@ -216,7 +216,7 @@
             <h2><spring:message code="explore.title"/></h2>
             </c:when>
             <c:otherwise>
-                <h2><spring:message code="explore.search_results"/> (${fn:length(matchingFrameworks)})</h2>
+                <h2><spring:message code="explore.search_results"/> (${searchResultsNumber})</h2>
             </c:otherwise>
         </c:choose>
     </div>
@@ -230,12 +230,12 @@
                 </c:if>
                 <c:if test="${not empty categoriesQuery}">
                     <c:forEach items="${categoriesQuery}" var="categoryQuery">
-                        <span id="name${categoryQuery}" class="badge badge-pill secondary-badge"><c:out value="${categoryQuery}"/></span>
+                        <span id="name${categoryQuery}" class="badge badge-pill secondary-badge"><c:out value="${categories_translated.get(categoryQuery)}"/></span>
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty typesQuery}">
                     <c:forEach items="${typesQuery}" var="typeQuery">
-                        <span id="name${typeQuery}" class="badge badge-pill secondary-badge"><c:out value="${typeQuery}"/></span>
+                        <span id="name${typeQuery}" class="badge badge-pill secondary-badge"><c:out value="${types_translated.get(typeQuery)}"/></span>
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty starsQuery1}">
@@ -319,6 +319,34 @@
                     </div>
                 </c:forEach>
             </div>
+            <ul class="pagination justify-content-center">
+                <c:choose>
+                <c:when test="${page == 1}">
+                <li class="page-item disabled">
+                    </c:when>
+                    <c:otherwise>
+                <li class="page-item ">
+                    </c:otherwise>
+                    </c:choose>
+                    <a class="page-link" href="<c:url value="/search?toSearch=${techNameQuery}&categories=${categoriesString}&types=${typesString}&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderQuery}&page=${page-1}"/>" aria-label="Previous">
+                        <span aria-hidden="true">&lsaquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                <c:choose>
+                <c:when test="${page_size*page >= searchResultsNumber}">
+                <li class="page-item disabled">
+                    </c:when>
+                    <c:otherwise>
+                <li class="page-item">
+                    </c:otherwise>
+                    </c:choose>
+                    <a class="page-link" href="<c:url value="/search?toSearch=${techNameQuery}&categories=${categoriesString}&types=${typesString}&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderQuery}&page=${page+1}"/>" aria-label="Next">
+                        <span aria-hidden="true">&rsaquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
         </c:otherwise>
     </c:choose>
 </div>
@@ -329,10 +357,10 @@
 
         let tags = [];
         <c:forEach items="${categories}" var="category">
-            tags.push('${category}');
+            tags.push('${categories_translated.get(category)}');
         </c:forEach>
         <c:forEach items="${types}" var="type">
-            tags.push('${type}');
+            tags.push('${types_translated.get(type)}');
         </c:forEach>
         <c:forEach items="${frameworkNames}" var="names">
             tags.push('${names}');
@@ -434,14 +462,15 @@
         </c:if>
 
         <c:if test="${fn:length(matchingFrameworks) > 1}">
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order + '&page=${page}';
         </c:if>
     }
-
-    form = document.getElementById("search").addEventListener('submit', e => {
-        e.preventDefault();
-        searchFrameworks(0);
-    })
+    if( document.getElementById("search") != null ) {
+        form = document.getElementById("search").addEventListener('submit', e => {
+            e.preventDefault();
+            searchFrameworks(0);
+        });
+    }
 
     function showMore(element){
         document.getElementById("hidden"+element).style.display = "block";
@@ -464,10 +493,7 @@
         <c:forEach items="${types}" var="type" >
 
         if(document.getElementById('check'+'${type}').checked) {
-            <%--document.getElementById('badge'+'${type}').style.display = "inline";--%>
             queryTypes = queryTypes.concat('${type},');
-        }else{
-            <%--document.getElementById('badge'+'${type}').style.display = "none";--%>
         }
         </c:forEach>
 
@@ -496,29 +522,12 @@
     function getRatingLeft(){
 
         let left = document.getElementById("stars-dropdown-1").value;
-        console.log(left)
- /*
-        if(left ==="" && right !==""){
-            $("#badgeRating").text(right+' stars');
-            // document.getElementById('badgeRating').style.display = "inline";
-
-        }else if(left !=="" && right ===""){
-            $("#badgeRating").text(left+' stars');
-            // document.getElementById('badgeRating').style.display = "inline";
-
-        }else if(left !=="" && right !==""){
-            $("#badgeRating").text(left+' to '+right+' stars');
-            // document.getElementById('badgeRating').style.display = "inline";
-        }else {
-            // document.getElementById('badgeRating').style.display = "none";
-        }
-*/
         return left;
     }
     function getRatingRight(){
 
         let right = document.getElementById("stars-dropdown-2").value;
-        console.log(right)
+
         return right;
     }
     function getCommentAmount(){
@@ -581,7 +590,6 @@
         </c:if>
         return string;
     }
-
 
 
 </script>

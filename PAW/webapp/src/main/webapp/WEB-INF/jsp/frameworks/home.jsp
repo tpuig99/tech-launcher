@@ -33,8 +33,14 @@
     <div>
         <c:if test="${user_isMod}">
             <div class="d-flex row justify-content-center align-middle">
-                <h4 class="mx-1 my-auto"><spring:message code="techs.add_new"/></h4>
-                <a class="btn btn-primary mx-1" href="<c:url value="/add_tech"/>" role="button"><spring:message code="button.add_tech"/></a>
+                <h4 class="mx-2 my-auto"><spring:message code="techs.add_new"/></h4>
+
+                <a href="<c:url value="/add_tech"/>" >
+                    <button class="btn btn-primary" type="button">
+                        <i class="fa fa-plus fa-sm mr-1"></i>
+                        <spring:message code="button.add_tech"/>
+                    </button>
+                </a>
             </div>
         </c:if>
 
