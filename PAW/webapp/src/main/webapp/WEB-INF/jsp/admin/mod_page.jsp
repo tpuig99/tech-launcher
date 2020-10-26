@@ -29,8 +29,10 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="#1" data-toggle="tab">PROMOTE</a>
                     </li>
+                   <c:if test="${isAdmin}">
                     <li><a class="nav-link" href="#2" data-toggle="tab">DEMOTE</a>
                     </li>
+                   </c:if>
                     <li><a class="nav-link" href="#3" data-toggle="tab">SEE REPORTS</a>
                     </li>
                 </ul>
@@ -261,8 +263,8 @@
                     <div class="tab-pane" id="3">
                         <div>Here you can see the content that has been reported and delete it or ignore the petition</div>
                         <!-- Reported Comments -->
-                        <div class="row">
-                            <div class="col-6">
+                        <c:if test="${isAdmin}"><div class="row">
+                        <div class="col-6"></c:if>
                             <c:if test="${isAdmin}">
                                 <div class="page-title"><spring:message code="moderate.comment.title"/></div>
                                 <div class="page-description"></div>
@@ -339,8 +341,9 @@
                                     </ul>
                                 </c:if>
                             </c:if>
-                            </div>
-                            <div class="col">
+                            <c:if test="${isAdmin}"></div></c:if>
+
+                            <c:if test="${isAdmin}"><div class="col"></c:if>
                                 <!-- reported content -->
                             <div class="page-title"><spring:message code="moderate.content.title"/></div>
                             <div class="page-description"></div>
@@ -417,8 +420,8 @@
                                     </li>
                                 </ul>
                             </c:if>
-                            </div>
-                        </div>
+                            <c:if test="${isAdmin}"></div></c:if>
+                        <c:if test="${isAdmin}"></div></c:if>
                     </div>
                 </div>
             </div>
