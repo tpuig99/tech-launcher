@@ -109,7 +109,7 @@ public class VerificationTokenDaoTest {
         assertEquals(true,vt.isPresent());
         assertEquals(TOKEN, vt.get().getToken());
         assertEquals(USER_ID,vt.get().getUserId());
-        assertEquals(id.longValue(), vt.get().getTokenId());
+        assertEquals(id, vt.get().getTokenId());
     }
     @Test()
     public void testGetByIdNotExisting() {
@@ -134,7 +134,7 @@ public class VerificationTokenDaoTest {
         assertEquals(true,vt.isPresent());
         assertEquals(TOKEN, vt.get().getToken());
         assertEquals(USER_ID,vt.get().getUserId());
-        assertEquals(id.longValue(), vt.get().getTokenId());
+        assertEquals(id, vt.get().getTokenId());
     }
     @Test
     public void testGetByUserNotExisting() {
@@ -157,7 +157,7 @@ public class VerificationTokenDaoTest {
         assertEquals(true,vt.isPresent());
         assertEquals(TOKEN, vt.get().getToken());
         assertEquals(USER_ID,vt.get().getUserId());
-        assertEquals(id.longValue(), vt.get().getTokenId());
+        assertEquals(id, vt.get().getTokenId());
     }
     @Test
     public void testGetByTokenNotExisting() {
