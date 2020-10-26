@@ -1,12 +1,14 @@
 package ar.edu.itba.paw.models;
 
+import jdk.jfr.ContentType;
+
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Content {
-    private long contentId;
+    private Long contentId;
     private long frameworkId;
     private long userId;
     private String title;
@@ -22,6 +24,10 @@ public class Content {
     private boolean isVerify;
     private boolean isAdmin;
     private List<String> reportersNames = new ArrayList<>();
+
+    public Content(){
+
+    }
 
     public Content(long contentId, long frameworkId, long userId, String title, int votesUp, int votesDown, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin, String username,Integer userAuthVote) {
         this.contentId = contentId;
@@ -55,6 +61,14 @@ public class Content {
         this.isVerify = isVerify;
         this.isAdmin = isAdmin;
         this.userName = userName;
+    }
+
+    public Content(long frameworkId, long userId, String title, String link, ContentTypes type){
+        this.frameworkId = frameworkId;
+        this.userId = userId;
+        this.title = title;
+        this.link = link;
+        this.type = type;
     }
 
 
@@ -135,5 +149,17 @@ public class Content {
 
     public List<String> getReportersNames() {
         return reportersNames;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public void setType(ContentTypes type) {
+        this.type = type;
     }
 }
