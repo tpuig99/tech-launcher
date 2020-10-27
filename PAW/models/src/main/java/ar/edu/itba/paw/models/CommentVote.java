@@ -12,7 +12,7 @@ public class CommentVote {
     @Column(name = "vote_id")
     long commentVoteId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
     Comment comment;
 
@@ -31,7 +31,6 @@ public class CommentVote {
     }
 
     public CommentVote() {
-
     }
 
     public long getCommentVoteId() {
@@ -56,5 +55,25 @@ public class CommentVote {
 
     public void setVote(int vote) {
         this.vote = vote;
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setCommentVoteId(long commentVoteId) {
+        this.commentVoteId = commentVoteId;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

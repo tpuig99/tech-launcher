@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.ReportContent;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import org.springframework.stereotype.Repository;
 
@@ -31,14 +33,14 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
 
     @Override
     public List<ReportContent> getByFramework(long frameworkId) {
-        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent rc WHERE rc.frameworkId = :frameworkId", ReportContent.class);
+        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent rc WHERE rc.content.framework.id = :frameworkId", ReportContent.class);
         query.setParameter("frameworkId", frameworkId);
         return query.getResultList();
     }
 
     @Override
     public List<ReportContent> getByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
-        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContet rc where rc.framework.id in :frameworksIds", ReportContent.class);
+        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent rc where rc.content.framework.id in :frameworksIds", ReportContent.class);
         query.setParameter("frameworksIds", frameworksIds);
         query.setFirstResult((int) ((page-1) * pageSize));
         query.setMaxResults((int) pageSize);
@@ -47,14 +49,14 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
 
     @Override
     public Optional<ReportContent> getByContent(long contentId) {
-        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent rc WHERE rc.contentId = :contentId", ReportContent.class);
+        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent rc WHERE rc.content.id = :contentId", ReportContent.class);
         query.setParameter("contentId",contentId);
         return query.getResultList().stream().findFirst();
     }
 
     @Override
     public void add(long contentId, long userId, String description) {
-        final ReportContent rc = new ReportContent(contentId, userId, description);
+        final ReportContent rc = new ReportContent(em.getReference(Content.class,contentId), em.getReference(User.class,userId), description);
         em.persist(rc);
     }
 
@@ -65,7 +67,7 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
 
     @Override
     public void deleteByContent(long contentId) {
-        em.createQuery("DELETE FROM ReportContent rc WHERE rc.contentId = :contentId")
+        em.createQuery("DELETE FROM ReportContent rc WHERE rc.content.id = :contentId")
                 .setParameter("contentId", contentId)
                 .executeUpdate();
     }

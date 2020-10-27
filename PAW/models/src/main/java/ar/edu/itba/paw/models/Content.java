@@ -1,12 +1,11 @@
 package ar.edu.itba.paw.models;
 
-import jdk.jfr.ContentType;
 
 import javax.persistence.*;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 @Table(name = "content")
 public class Content {
@@ -16,70 +15,40 @@ public class Content {
     @Column(name = "content_id")
     private Long contentId;
 
-    @Column(name = "framework_id")
-    private long frameworkId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "framework_id",nullable = false)
+    private Framework framework;
 
-    @Column(name = "user_id")
-    private long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "title")
+    @Column
     private String title;
 
     @Column(name = "tstamp")
     private Timestamp timestamp;
 
-    @Column(name = "link")
+    @Column
     private String link;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private ContentTypes type;
 
-
-    private String frameworkName;
-    private FrameworkCategories category;
-    private String userName;
-    private Integer userAuthVote;
-    private boolean isVerify;
-    private boolean isAdmin;
-    private List<String> reportersNames = new ArrayList<>();
+    /*this refers to the other relation mapped in ReportComment*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "content")
+    @JoinColumn(name = "content_id")
+    private List<ReportContent> reports;
 
     public Content(){
 
     }
 
-    public Content(long contentId, long frameworkId, long userId, String title, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin, String username,Integer userAuthVote) {
-        this.contentId = contentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.title = title;
-        this.timestamp = timestamp;
-        this.link = link;
-        this.type = type;
-        this.frameworkName = frameworkName;
-        this.category = category;
-        this.userAuthVote = userAuthVote;
-        this.isVerify = isVerify;
-        this.isAdmin = isAdmin;
-        this.userName = username;
-    }
-    public Content(long contentId, long frameworkId, long userId, String title, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, boolean isVerify, boolean isAdmin,String userName) {
-        this.contentId = contentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.title = title;
-        this.timestamp = timestamp;
-        this.link = link;
-        this.type = type;
-        this.frameworkName = frameworkName;
-        this.category = category;
-        this.isVerify = isVerify;
-        this.isAdmin = isAdmin;
-        this.userName = userName;
-    }
 
-    public Content(long frameworkId, long userId, String title, String link, ContentTypes type){
-        this.frameworkId = frameworkId;
-        this.userId = userId;
+    public Content(Framework framework, User user, String title, String link, ContentTypes type){
+        this.framework = framework;
+        this.user = user;
         this.title = title;
         this.link = link;
         this.type = type;
@@ -91,11 +60,11 @@ public class Content {
     }
 
     public long getFrameworkId() {
-        return frameworkId;
+        return framework.getId();
     }
 
     public long getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public String getTitle() {
@@ -115,46 +84,40 @@ public class Content {
     }
 
     public String getFrameworkName() {
-        return frameworkName;
+        return framework.getName();
     }
 
     public FrameworkCategories getCategory() {
-        return category;
+        return framework.getCategory();
     }
 
-    public Integer getUserAuthVote() {
-        return userAuthVote;
-    }
 
     public boolean isVerify() {
-        return isVerify;
+        return user.isVerify();
     }
 
     public boolean isAdmin() {
-        return isAdmin;
+        return user.isAdmin();
     }
-    public boolean hasUserAuthVote(){
-        if(userAuthVote == null)
-            return false;
-        return userAuthVote == 0 ? false : true;
-    }
-    public void addReporter(String name) {
-        reportersNames.add(name);
-    }
+
     public boolean isReporter(String name){
-        for (String rn:reportersNames) {
-            if(rn.equals(name))
+        for (ReportContent rc: reports) {
+            if(rc.getUserReporterName().equals(name))
                 return true;
         }
         return false;
     }
 
     public String getUserName() {
-        return userName;
+        return user.getUsername();
     }
 
     public List<String> getReportersNames() {
-        return reportersNames;
+        List<String> list = new ArrayList<>();
+        for (ReportContent rc:reports) {
+            list.add(rc.getUserReporterName());
+        }
+        return list;
     }
 
     public void setTitle(String title) {
@@ -167,5 +130,45 @@ public class Content {
 
     public void setType(ContentTypes type) {
         this.type = type;
+    }
+
+    public void setContentId(Long contentId) {
+        this.contentId = contentId;
+    }
+
+    public void setFramework(Framework framework) {
+        this.framework = framework;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Framework getFramework() {
+        return framework;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public List<ReportContent> getReports() {
+        return reports;
+    }
+
+    public List<Long> getReportsIds() {
+        List<Long> list = new ArrayList<>();
+        for (ReportContent rc:reports) {
+            list.add(rc.getReportId());
+        }
+        return list;
+    }
+
+    public void setReports(List<ReportContent> reports) {
+        this.reports = reports;
     }
 }

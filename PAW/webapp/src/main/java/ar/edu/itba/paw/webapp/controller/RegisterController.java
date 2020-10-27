@@ -135,7 +135,7 @@ public class RegisterController {
                     return "redirect:/register/success/2";
                 }
                 Calendar cal = Calendar.getInstance();
-                if ((verificationToken.get().getexpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
+                if ((verificationToken.get().getExpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
                     LOGGER.error("Register: Verification token for user {} expired", user.get().getId());
                     model.addAttribute("message", messageSource.getMessage("register.error.link_expired", new Object[]{}, LocaleContextHolder.getLocale()));
                     model.addAttribute("expired", true);

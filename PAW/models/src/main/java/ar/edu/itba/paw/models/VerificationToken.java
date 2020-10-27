@@ -3,8 +3,9 @@ package ar.edu.itba.paw.models;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Entity
+@Table(name = "verification_token")
 public class VerificationToken {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_token_vtoken_id_seq")
     @SequenceGenerator(sequenceName = "verification_token_vtoken_id_seq", name = "verification_token_vtoken_id_seq", allocationSize = 1)
@@ -13,8 +14,9 @@ public class VerificationToken {
     @JoinColumn(name = "token",nullable = false)
     private String token;
 
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private long userId;
+    private User user;
 
     @JoinColumn(name = "exp_date", nullable = false)
     private Timestamp expiryDay;
@@ -23,18 +25,10 @@ public class VerificationToken {
         //For Hibernate
     }
 
-    public VerificationToken(final long tokenId, final String token, final long userId, final Timestamp expiryDay) {
-        this.tokenId = tokenId;
+    public VerificationToken(String token, User user, Timestamp expiryDay) {
         this.token = token;
-        this.userId = userId;
+        this.user = user;
         this.expiryDay = expiryDay;
-    }
-
-    public VerificationToken( final String token, final long userId, final Timestamp expiryDay) {
-        this.token = token;
-        this.userId = userId;
-        this.expiryDay = expiryDay;
-        this.tokenId = null;
     }
 
     public Long getTokenId() {
@@ -46,14 +40,30 @@ public class VerificationToken {
     }
 
     public long getUserId() {
-        return userId;
+        return user.getId();
     }
 
-    public Timestamp getexpiryDay() {
+    public Timestamp getExpiryDay() {
         return expiryDay;
     }
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public void setTokenId(Long tokenId) {
+        this.tokenId = tokenId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setExpiryDay(Timestamp expiryDay) {
+        this.expiryDay = expiryDay;
     }
 }

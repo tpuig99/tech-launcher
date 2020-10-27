@@ -2,14 +2,12 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.ContentDao;
-import ar.edu.itba.paw.persistence.ContentVoteDao;
 import ar.edu.itba.paw.persistence.ReportContentDao;
 import ar.edu.itba.paw.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +16,6 @@ public class ContentServiceImpl implements ContentService {
 
     @Autowired
     ContentDao content;
-
-    @Autowired
-    ContentVoteDao cv;
 
     @Autowired
     ReportContentDao rc;
@@ -87,19 +82,7 @@ public class ContentServiceImpl implements ContentService {
         return content.changeContent(contentId, title, link, types);
     }
 
-    @Transactional
-    @Override
-    public void vote(long contentId, long userId,int voteSign) {
-        Optional<ContentVote> vote = cv.getByContentAndUser(contentId,userId);
-        if(vote.isPresent()){
-            if(vote.get().getVote() == voteSign)
-                cv.delete(vote.get().getContentVoteId());
-            else
-                cv.update(vote.get().getContentVoteId(),voteSign);
-        }else {
-            cv.insert(contentId, userId, voteSign);
-        }
-    }
+    
 
     @Transactional(readOnly = true)
     @Override

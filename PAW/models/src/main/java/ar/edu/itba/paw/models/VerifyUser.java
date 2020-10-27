@@ -37,7 +37,7 @@ public class VerifyUser {
     }
 
     public String getCategory() {
-        return framework.getCategory();
+        return framework.getCategory().getNameCat();
     }
 
     public boolean isAdmin() {

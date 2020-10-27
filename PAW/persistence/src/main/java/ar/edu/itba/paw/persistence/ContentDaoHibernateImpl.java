@@ -2,6 +2,8 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.ContentTypes;
+import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -23,14 +25,14 @@ public class ContentDaoHibernateImpl implements  ContentDao{
 
     @Override
     public List<Content> getContentByFramework(long frameworkId) {
-        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.frameworkId = :frameworkId", Content.class);
+        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.framework.id = :frameworkId", Content.class);
         query.setParameter("frameworkId", frameworkId);
         return query.getResultList();
     }
 
     @Override
     public List<Content> getContentByFrameworkAndUser(long frameworkId, long userId) {
-        final TypedQuery<Content> query = em.createQuery("FROM Content  c WHERE c.frameworkId = :frameworkId and c.userId = :userId", Content.class);
+        final TypedQuery<Content> query = em.createQuery("FROM Content  c WHERE c.framework.id = :frameworkId and c.user.id = :userId", Content.class);
         query.setParameter("frameworkId", frameworkId);
         query.setParameter("userId", userId);
         return query.getResultList();
@@ -38,7 +40,7 @@ public class ContentDaoHibernateImpl implements  ContentDao{
 
     @Override
     public List<Content> getContentByFrameworkAndType(long userId, ContentTypes type, long page, long pageSize) {
-        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.userId = :userId and c.type = :type", Content.class);
+        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.user.id = :userId and c.type = :type", Content.class);
         query.setParameter("userId",userId);
         query.setParameter("type",type);
         query.setMaxResults((int) pageSize);
@@ -48,7 +50,7 @@ public class ContentDaoHibernateImpl implements  ContentDao{
 
     @Override
     public List<Content> getContentByUser(long userId, long page, long pagesize) {
-        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.userId = :userId", Content.class);
+        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.user.id = :userId", Content.class);
         query.setParameter("userId",userId);
         query.setMaxResults((int) pagesize);
         query.setFirstResult((int) ((page-1)*pagesize));
@@ -57,14 +59,14 @@ public class ContentDaoHibernateImpl implements  ContentDao{
 
     @Override
     public Optional<Integer> getContentCountByUser(long userId) {
-        final TypedQuery<Integer> query = em.createQuery("SELECT count(c.contentId) FROM Content c WHERE c.userId = :userId", Integer.class );
+        final TypedQuery<Integer> query = em.createQuery("SELECT count(c.contentId) FROM Content c WHERE c.user.id = :userId", Integer.class );
         query.setParameter("userId",userId);
         return query.getResultList().stream().findFirst();
     }
 
     @Override
     public List<Content> getContentByFrameworkAndTypeAndTitle(long frameworkId, ContentTypes type, String title) {
-        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.frameworkId = :frameworkId and c.type = :type and c.title = :title", Content.class);
+        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.framework.id = :frameworkId and c.type = :type and c.title = :title", Content.class);
         query.setParameter("frameworkId", frameworkId);
         query.setParameter("type", type);
         query.setParameter("title", title);
@@ -73,7 +75,7 @@ public class ContentDaoHibernateImpl implements  ContentDao{
 
     @Override
     public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
-        Content content = new Content(frameworkId,userId,title,link,type);
+        Content content = new Content(em.getReference(Framework.class,frameworkId),em.getReference(User.class,userId),title,link,type);
         em.persist(content);
         return content;
     }

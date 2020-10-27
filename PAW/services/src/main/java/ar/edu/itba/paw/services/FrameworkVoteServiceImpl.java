@@ -62,8 +62,8 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
 
     @Transactional
     @Override
-    public int delete(long voteId) {
-        return vs.delete(voteId);
+    public void delete(long voteId) {
+         vs.delete(voteId);
     }
 
     @Transactional

@@ -34,13 +34,20 @@ public class User {
 
     @Lob
     private byte[] picture;
+    @Transient
     String base64image;
+    @Transient
     String contentType;
 
     /*this refers to the other relation mapped in Admin*/
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     @JoinColumn(name = "user_id")
     private Admin admin;
+
+    /*this refers to the other relation mapped in VerificationToken*/
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    @JoinColumn(name = "user_id")
+    private VerificationToken verificationToken;
 
     /*this refers to the other relation mapped in VerifyUser*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
@@ -52,6 +59,11 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<Comment> comments;
 
+    /* References other relation mapped in Content */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @JoinColumn(name = "user_id")
+    private List<Content> contents;
+
     /*this refers to the other relation mapped in CommentVote*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @JoinColumn(name = "user_id")
@@ -62,9 +74,20 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<ReportComment> commentsReported;
 
+    /*this refers to the other relation mapped in ReportContent*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @JoinColumn(name = "user_id")
+    private List<ReportContent> contentsReported;
+
+    /*this refers to the other relation mapped in Framework*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @JoinColumn(name = "author")
     private List<Framework> ownedFrameworks;
+
+    /*this refers to the other relation mapped in FrameworkVotes */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @JoinColumn(name = "user_id", nullable = false)
+    private List<FrameworkVote> frameworkVotes;
 
 
 
@@ -216,5 +239,84 @@ public class User {
 
     public void setAdmin(Admin admin) {
         this.admin = admin;
+    }
+
+    public boolean hasCommentVote(long commentId){
+        for (CommentVote cv: commentVotes) {
+            if(cv.getCommentId() == commentId)
+                return true;
+        }
+        return false;
+    }
+    public CommentVote getCommentVote(long commentId){
+        for (CommentVote cv: commentVotes) {
+            if(cv.getCommentId() == commentId)
+                return cv;
+        }
+        return null;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public List<Content> getContents() {
+        return contents;
+    }
+
+    public List<CommentVote> getCommentVotes() {
+        return commentVotes;
+    }
+
+    public List<ReportComment> getCommentsReported() {
+        return commentsReported;
+    }
+
+    public List<ReportContent> getContentsReported() {
+        return contentsReported;
+    }
+
+    public List<Framework> getOwnedFrameworks() {
+        return ownedFrameworks;
+    }
+
+    public List<FrameworkVote> getFrameworkVotes() {
+        return frameworkVotes;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void setContents(List<Content> contents) {
+        this.contents = contents;
+    }
+
+    public void setCommentVotes(List<CommentVote> commentVotes) {
+        this.commentVotes = commentVotes;
+    }
+
+    public void setCommentsReported(List<ReportComment> commentsReported) {
+        this.commentsReported = commentsReported;
+    }
+
+    public void setContentsReported(List<ReportContent> contentsReported) {
+        this.contentsReported = contentsReported;
+    }
+
+    public void setOwnedFrameworks(List<Framework> ownedFrameworks) {
+        this.ownedFrameworks = ownedFrameworks;
+    }
+
+    public void setFrameworkVotes(List<FrameworkVote> frameworkVotes) {
+        this.frameworkVotes = frameworkVotes;
+    }
+
+    public VerificationToken getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(VerificationToken verificationToken) {
+        this.verificationToken = verificationToken;
     }
 }

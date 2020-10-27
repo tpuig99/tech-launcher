@@ -26,30 +26,6 @@ public class ReportComment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-
-    private long frameworkId;
-    private String commentDescription;
-    private Timestamp timestamp;
-    private Long reference;
-    private String frameworkName;
-    private String userNameOwner;
-    private Map<Long,String> userNameReporters;
-    private FrameworkCategories category;
-
-    public ReportComment(Comment comment, long frameworkId, User user, String commentDescription,String reportDescription, Timestamp timestamp, Long reference, String frameworkName, String userNameOwner,FrameworkCategories category) {
-        this.comment = comment;
-        this.frameworkId = frameworkId;
-        this.user = user;
-        this.commentDescription = commentDescription;
-        this.reportDescription = reportDescription;
-        this.timestamp = timestamp;
-        this.reference = reference;
-        this.frameworkName = frameworkName;
-        this.userNameOwner = userNameOwner;
-        this.userNameReporters = new HashMap<>();
-        this.category = category;
-    }
-
     public ReportComment() {
 
     }
@@ -59,15 +35,17 @@ public class ReportComment {
     }
 
     public long getFrameworkId() {
-        return frameworkId;
+        return comment.getFrameworkId();
     }
 
     public long getUserId() {
         return user.getId();
     }
 
+    public String getUserReporterName(){ return user.getUsername();}
+
     public String getCommentDescription() {
-        return commentDescription;
+        return comment.getDescription();
     }
 
     public String getReportDescription() {
@@ -75,41 +53,33 @@ public class ReportComment {
     }
 
     public Timestamp getTimestamp() {
-        return timestamp;
+        return comment.getTimestamp();
     }
 
     public Long getReference() {
-        return reference;
+        return comment.getReference();
     }
 
     public String getFrameworkName() {
-        return frameworkName;
+        return comment.getFrameworkName();
     }
 
     public String getUserNameOwner() {
-        return userNameOwner;
-    }
-
-    public Map<Long,String> getUserNameReporters() {
-        return userNameReporters;
+        return comment.getUserName();
     }
 
     public FrameworkCategories getCategory() {
-        return category;
+        return comment.getFramework().getCategory();
     }
-    public String getCategoryAsString(){return category.getNameCat();}
-    public List<Long> getReportsIds(){
-        List<Long> list = new ArrayList<>();
-        list.addAll(userNameReporters.keySet());
-        return list;
-    }
+    public String getCategoryAsString(){return comment.getFramework().getCategory().getNameCat();}
+
+
     public List<String> getReportsUserName(){
         List<String> list = new ArrayList<>();
-        list.addAll(userNameReporters.values());
+        for (ReportComment rc:comment.getReports()) {
+            list.add(rc.getUserReporterName());
+        }
         return list;
-    }
-    public void addUserReporter(long reportId,String userName){
-        userNameReporters.put(reportId,userName);
     }
 
     public Comment getComment() {
@@ -130,5 +100,13 @@ public class ReportComment {
 
     public void setReportDescription(String reportDescription) {
         this.reportDescription = reportDescription;
+    }
+
+    public Long getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(Long reportId) {
+        this.reportId = reportId;
     }
 }

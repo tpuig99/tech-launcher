@@ -23,9 +23,6 @@ public interface ContentService {
     int deleteContent(long contentId);
     Optional<Content> changeContent(long contentId, String title, String link, ContentTypes types);
 
-    /*** Votes methods ***/
-    void vote(long contentId, long userId,int voteSign);
-
     /*** Reports ***/
     Optional<ReportContent> getReporstById(long reportId);
     List<ReportContent> getAllReports( long page);

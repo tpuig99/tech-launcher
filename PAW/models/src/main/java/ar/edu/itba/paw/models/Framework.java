@@ -11,7 +11,6 @@ import java.util.*;
 @Entity
 @Table(name = "frameworks")
 public class Framework {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "frameworks_framework_id_seq")
     @SequenceGenerator(sequenceName = "frameworks_framework_id_seq", name = "frameworks_framework_id_seq", allocationSize = 1)
@@ -65,6 +64,11 @@ public class Framework {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
     @JoinColumn(name = "framework_id")
     private List<FrameworkVote> frameworkVotes;
+
+    /* References other relation mapped in Verify User */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @JoinColumn(name = "framework_id")
+    private List<VerifyUser> verifyUsers;
 
     /* Transient attributes loaded on Post Load */
 

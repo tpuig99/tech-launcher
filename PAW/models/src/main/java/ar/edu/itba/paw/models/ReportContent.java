@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Entity
+@Table(name = "content_report")
 public class ReportContent {
 
     @Id
@@ -17,136 +18,108 @@ public class ReportContent {
     @Column(name = "report_id")
     private Long reportId;
 
-    @Column(name = "content_id", nullable = false)
-    private long contentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "content_id", nullable = false)
+    private Content content;
 
-    @Column(name = "framework_id", nullable = false)
-    private long frameworkId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "user_id", nullable = false)
-    private long userId;
-
-    @Column(name = "title", nullable = false)
-    private String title;
-
-    @Column(name = "tstamp", nullable = false)
-    private Timestamp timestamp;
-
-    @Column(name = "link", nullable = false)
-    private String link;
-
-    @Column(name = "type", nullable = false)
-    private ContentTypes type;
-
-    private String frameworkName;
-    private FrameworkCategories category;
-    private String userNameOwner;
-    private String reportDescription;
-    private Map<Long,String> userNameReporters;
+    @Column(name = "description", nullable = false)
+    private String description;
 
     public ReportContent(){
 
     }
 
-    public ReportContent( long contentId, long userId, String reportDescription){
-        this.contentId = contentId;
-        this.userId = userId;
-        this.reportDescription = reportDescription;
+    public ReportContent( Content content, User user, String reportDescription){
+        this.content = content;
+        this.user = user;
+        this.description = reportDescription;
     }
 
-    public ReportContent(long contentId, long frameworkId, long userId, String title, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, String userNameOwner, String reportDescription) {
-        this.contentId = contentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.title = title;
-        this.timestamp = timestamp;
-        this.link = link;
-        this.type = type;
-        this.frameworkName = frameworkName;
-        this.category = category;
-        this.userNameOwner = userNameOwner;
-        this.reportDescription = reportDescription;
-        userNameReporters = new HashMap<>();
-    }
-
-    public ReportContent(long contentId, long frameworkId, long userId, String title, String reportDescription, Timestamp timestamp, String link, ContentTypes type, String frameworkName, String userNameOwner, FrameworkCategories category) {
-        this.contentId = contentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.title = title;
-        this.reportDescription = reportDescription;
-        this.timestamp = timestamp;
-        this.link = link;
-        this.type = type;
-        this.frameworkName = frameworkName;
-        this.userNameOwner = userNameOwner;
-        this.userNameReporters = new HashMap<>();
-        this.category = category;
-    }
 
     public long getContentId() {
-        return contentId;
+        return content.getContentId();
     }
 
     public long getFrameworkId() {
-        return frameworkId;
+        return content.getFrameworkId();
     }
 
     public long getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public String getTitle() {
-        return title;
+        return content.getTitle();
     }
 
     public String getReportDescription() {
-        return reportDescription;
+        return description;
     }
 
     public Timestamp getTimestamp() {
-        return timestamp;
+        return content.getTimestamp();
     }
 
 
     public String getFrameworkName() {
-        return frameworkName;
+        return content.getFrameworkName();
     }
 
     public String getUserNameOwner() {
-        return userNameOwner;
+        return content.getUserName();
     }
 
-    public Map<Long,String> getUserNameReporters() {
-        return userNameReporters;
-    }
 
     public FrameworkCategories getCategory() {
-        return category;
+        return content.getCategory();
     }
 
-    public String getCategoryAsString(){return category.getNameCat();}
+    public String getCategoryAsString(){return content.getCategory().getNameCat();}
 
     public String getLink() {
-        return link;
+        return content.getLink();
     }
 
     public ContentTypes getType() {
-        return type;
+        return content.getType();
     }
-    public String getTypeAsString(){return type.name();}
+    public String getTypeAsString(){return content.getType().name();}
 
-    public List<Long> getReportsIds(){
-        List<Long> list = new ArrayList<>();
-        list.addAll(userNameReporters.keySet());
-        return list;
+    public Long getReportId() {
+        return reportId;
     }
-    public List<String> getReportsUserName(){
-        List<String> list = new ArrayList<>();
-        list.addAll(userNameReporters.values());
-        return list;
+
+    public Content getContent() {
+        return content;
     }
-    public void addUserReporter(long reportId,String userName){
-        userNameReporters.put(reportId,userName);
+
+    public User getUser() {
+        return user;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setReportId(Long reportId) {
+        this.reportId = reportId;
+    }
+
+    public void setContent(Content content) {
+        this.content = content;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getUserReporterName() { return user.getUsername(); }
 }

@@ -147,7 +147,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public void addReport(long commentId, long userId, String description) {
-        rc.add(commentId,userId,description);
+        rc.insert(commentId,userId,description);
     }
 
     @Transactional

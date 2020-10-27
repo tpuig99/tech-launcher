@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +23,7 @@ public class VerificationTokenHibernateDaoImpl implements VerificationTokenDao {
         calendar.setTime(ts);
         calendar.add(Calendar.MINUTE,60*24);
         ts = new Timestamp(calendar.getTime().getTime());
-        final VerificationToken vt = new VerificationToken(token, userId, ts);
+        final VerificationToken vt = new VerificationToken(token, em.getReference(User.class,userId), ts);
         em.persist(vt);
 
     }
@@ -34,7 +35,7 @@ public class VerificationTokenHibernateDaoImpl implements VerificationTokenDao {
 
     @Override
     public Optional<VerificationToken> getByUser(long userId) {
-        final TypedQuery<VerificationToken> query = em.createQuery("FROM VerificationToken vt WHERE vt.userId = :userId", VerificationToken.class);
+        final TypedQuery<VerificationToken> query = em.createQuery("FROM VerificationToken vt WHERE vt.user.id = :userId", VerificationToken.class);
         query.setParameter("userId", userId);
         return query.getResultList().stream().findFirst();
     }
