@@ -41,52 +41,42 @@ public class User {
 
     /*this refers to the other relation mapped in Admin*/
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
-    @JoinColumn(name = "user_id")
     private Admin admin;
 
     /*this refers to the other relation mapped in VerificationToken*/
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
-    @JoinColumn(name = "user_id")
     private VerificationToken verificationToken;
 
     /*this refers to the other relation mapped in VerifyUser*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @JoinColumn(name = "user_id")
     private List<VerifyUser> verifications;
 
     /*this refers to the other relation mapped in Comment*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @JoinColumn(name = "user_id")
     private List<Comment> comments;
 
     /* References other relation mapped in Content */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
-    @JoinColumn(name = "user_id")
     private List<Content> contents;
 
     /*this refers to the other relation mapped in CommentVote*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @JoinColumn(name = "user_id")
     private List<CommentVote> commentVotes;
 
     /*this refers to the other relation mapped in ReportComment*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @JoinColumn(name = "user_id")
     private List<ReportComment> commentsReported;
 
     /*this refers to the other relation mapped in ReportContent*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @JoinColumn(name = "user_id")
     private List<ReportContent> contentsReported;
 
     /*this refers to the other relation mapped in Framework*/
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @JoinColumn(name = "author")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     private List<Framework> ownedFrameworks;
 
     /*this refers to the other relation mapped in FrameworkVotes */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @JoinColumn(name = "user_id", nullable = false)
     private List<FrameworkVote> frameworkVotes;
 
 

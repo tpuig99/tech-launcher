@@ -38,7 +38,6 @@ public class Content {
 
     /*this refers to the other relation mapped in ReportComment*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "content")
-    @JoinColumn(name = "content_id")
     private List<ReportContent> reports;
 
     public Content(){

@@ -52,22 +52,18 @@ public class Framework {
 
     /* References other relation mapped in Comment */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
-    @JoinColumn(name = "framework_id")
     private List<Comment> comments;
 
     /* References other relation mapped in Content */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
-    @JoinColumn(name = "framework_id")
     private List<Content> contents;
 
     /* References other relation mapped in Framework Votes */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
-    @JoinColumn(name = "framework_id")
     private List<FrameworkVote> frameworkVotes;
 
     /* References other relation mapped in Verify User */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
-    @JoinColumn(name = "framework_id")
     private List<VerifyUser> verifyUsers;
 
     /* Transient attributes loaded on Post Load */
