@@ -119,15 +119,16 @@ public class Framework {
 
     @PostLoad
     public void postLoad() {
-        try {
-            contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(picture));
-        } catch (IOException e) {
-            contentType = "";
+        if(picture!=null) {
+            try {
+                contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(picture));
+            } catch (IOException e) {
+                contentType = "";
+            }
+
+            byte[] encodedByteArray = Base64.getEncoder().encode(picture);
+            base64image = new String(encodedByteArray, StandardCharsets.UTF_8);
         }
-
-        byte[] encodedByteArray = Base64.getEncoder().encode(picture);
-        base64image = new String(encodedByteArray, StandardCharsets.UTF_8);
-
         double rating = 0;
         for (FrameworkVote vote : frameworkVotes) {
             rating += vote.getStars();

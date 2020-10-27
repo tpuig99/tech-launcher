@@ -96,7 +96,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     /* TODO: when Content is ready, update this query */
     @Override
     public List<Framework> getUserInterests(long userId) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join Content c on f.id = c.framework_id where c.user.id = :userId", Framework.class);
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join Content c on f.id = c.framework.id where c.user.id = :userId", Framework.class);
         query.setParameter("userId", userId);
         return query.getResultList();
     }
@@ -118,8 +118,9 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> getByMinStars(int stars) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join f.frameworkVotes v group by f having coalesce(avg(v.stars), 0) >= :stars", Framework.class);
-        query.setParameter("stars", stars);
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join FrameworkVote v on f.id = v.framework.id group by f having coalesce(avg(v.stars), 0) >= :stars", Framework.class);
+        Double st = Double.valueOf(stars);
+        query.setParameter("stars", st);
         return query.getResultList();
     }
 
