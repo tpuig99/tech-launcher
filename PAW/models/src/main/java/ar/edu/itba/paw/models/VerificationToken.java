@@ -7,8 +7,9 @@ import java.sql.Timestamp;
 @Table(name = "verification_token")
 public class VerificationToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_token_vtoken_id_seq")
-    @SequenceGenerator(sequenceName = "verification_token_vtoken_id_seq", name = "verification_token_vtoken_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_token_token_id_seq")
+    @SequenceGenerator(sequenceName = "verification_token_token_id_seq", name = "verification_token_token_id_seq", allocationSize = 1)
+    @Column(name = "token_id")
     private Long tokenId;
 
     @JoinColumn(name = "token",nullable = false)
