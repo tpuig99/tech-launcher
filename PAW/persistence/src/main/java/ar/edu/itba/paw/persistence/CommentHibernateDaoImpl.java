@@ -110,10 +110,16 @@ public class CommentHibernateDaoImpl implements CommentDao {
         @SuppressWarnings("unchecked")
         List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
 
+        if(!resultList.isEmpty()) {
+            TypedQuery<Comment> query = em.createQuery("from Comment as c where c.commentId in (:resultList)", Comment.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return new ArrayList<>();
+        }
 
-        TypedQuery<Comment> query = em.createQuery("from Comment as c where c.commentId in (:resultList)", Comment.class);
-        query.setParameter("resultList", resultList);
-        return query.getResultList();
+
+
     }
 
     @Override
