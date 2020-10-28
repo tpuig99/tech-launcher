@@ -173,7 +173,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         String search = "";
 
         if(toSearch != null && !toSearch.isEmpty()){
-            search = "%"+toSearch+"%";
+            search = "%"+toSearch.toLowerCase()+"%";
             if(nameFlag || toSearch.length() < 3) {
                 sb.append(" lower(f.name) like :search ");
             }
