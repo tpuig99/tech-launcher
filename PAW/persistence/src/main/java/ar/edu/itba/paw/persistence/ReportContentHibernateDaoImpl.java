@@ -1,17 +1,17 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.ReportContent;
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.VerificationToken;
+import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class ReportContentHibernateDaoImpl implements ReportContentDao {
@@ -25,10 +25,17 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
 
     @Override
     public List<ReportContent> getAll(long page, long pageSize) {
-        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent", ReportContent.class);
-        query.setMaxResults((int) pageSize);
-        query.setFirstResult((int) ((page-1)*pageSize));
-        return query.getResultList();
+        Query pagingQuery = em.createNativeQuery("SELECT report_id FROM content_report " + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<ReportContent> query = em.createQuery("from ReportContent as c where c.reportId in (:resultList)", ReportContent.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return new ArrayList<>();
+        }
     }
 
     @Override

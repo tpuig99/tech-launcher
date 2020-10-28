@@ -9,11 +9,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class ReportCommentHiberateDaoImpl implements ReportCommentDao{
@@ -27,8 +29,17 @@ public class ReportCommentHiberateDaoImpl implements ReportCommentDao{
 
     @Override
     public List<ReportComment> getAll(long page, long pageSize) {
-        final TypedQuery<ReportComment> query = em.createQuery("from CommentVote", ReportComment.class);
-        return query.getResultList();
+        Query pagingQuery = em.createNativeQuery("SELECT report_id FROM comment_report " + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<ReportComment> query = em.createQuery("from ReportComment as c where c.reportId in (:resultList)", ReportComment.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return new ArrayList<>();
+        }
     }
 
     @Override
