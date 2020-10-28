@@ -48,6 +48,8 @@ public class VerificationTokenHibernateDaoImpl implements VerificationTokenDao {
         calendar.setTime(ts);
         calendar.add(Calendar.MINUTE,60*24);
         ts = new Timestamp(calendar.getTime().getTime());
+        vt.setToken(token);
+        vt.setExpiryDay(ts);
         em.merge(vt);
     }
 

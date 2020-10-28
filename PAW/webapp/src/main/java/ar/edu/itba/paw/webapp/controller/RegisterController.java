@@ -76,7 +76,7 @@ public class RegisterController {
             String appUrl = request.getRequestURL().toString();
             appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl, false));
-            internalLogin(form.getUsername(), form.getPassword(),request);
+           // internalLogin(form.getUsername(), form.getPassword(),request);
             LOGGER.info("Register: User '{}' registered successfully with id {}", registered.getUsername(),registered.getId());
 
         } catch (UserAlreadyExistException uaeEx) {
