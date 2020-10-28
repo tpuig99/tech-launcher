@@ -12,14 +12,14 @@ public class VerificationToken {
     @Column(name = "token_id")
     private Long tokenId;
 
-    @JoinColumn(name = "token",nullable = false)
+    @Column(name = "token",nullable = false)
     private String token;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @JoinColumn(name = "exp_date", nullable = false)
+    @Column(name = "exp_date", nullable = false)
     private Timestamp expiryDay;
 
     public VerificationToken(){
