@@ -48,7 +48,7 @@ public class ContentServiceImpl implements ContentService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Integer> getContentCountByUser( long userId ){
+    public Optional<Long> getContentCountByUser( long userId ){
         return content.getContentCountByUser(userId);
     }
 

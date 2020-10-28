@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.models;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -46,7 +48,7 @@ public class Framework {
     private Timestamp publishDate;
 
     @Lob
-    @Column (length = 5000000)
+    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] picture;
 
     /* Relationships */

@@ -1,10 +1,13 @@
 package ar.edu.itba.paw.models;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 @Entity
@@ -33,6 +36,7 @@ public class User {
     private boolean allowMod;
 
     @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] picture;
     @Transient
     String base64image = null;
@@ -56,7 +60,7 @@ public class User {
     private List<Comment> comments;
 
     /* References other relation mapped in Content */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<Content> contents;
 
     /*this refers to the other relation mapped in CommentVote*/
@@ -172,13 +176,15 @@ public class User {
     }
 
     private void calculateStringImage() {
-        if (picture != null) {
-            base64image = new String(picture, StandardCharsets.UTF_8);
+        if(picture!=null) {
             try {
                 contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(picture));
             } catch (IOException e) {
-                e.printStackTrace();
+                contentType = "";
             }
+
+            byte[] encodedByteArray = Base64.getEncoder().encode(picture);
+            base64image = new String(encodedByteArray, StandardCharsets.UTF_8);
         }
     }
 

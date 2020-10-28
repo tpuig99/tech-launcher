@@ -58,8 +58,8 @@ public class ContentDaoHibernateImpl implements  ContentDao{
     }
 
     @Override
-    public Optional<Integer> getContentCountByUser(long userId) {
-        final TypedQuery<Integer> query = em.createQuery("SELECT count(c.contentId) FROM Content c WHERE c.user.id = :userId", Integer.class );
+    public Optional<Long> getContentCountByUser(long userId) {
+        final TypedQuery<Long> query = em.createQuery("SELECT count(c.contentId) FROM Content c WHERE c.user.id = :userId", Long.class );
         query.setParameter("userId",userId);
         return query.getResultList().stream().findFirst();
     }
