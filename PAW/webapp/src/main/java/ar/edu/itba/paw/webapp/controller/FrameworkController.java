@@ -81,15 +81,16 @@ public class FrameworkController {
         if (framework.isPresent()) {
             LOGGER.info("Tech {}: Requested and found, retrieving data", id);
             Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
-            mav.addObject("framework", framework.get());
-            mav.addObject("category_translated", ts.getCategory(framework.get().getCategory().getNameCat()));
-            mav.addObject("type_translated", ts.getType(framework.get().getType().getType()));
+            Framework frame = framework.get();
+            mav.addObject("framework", frame);
+            mav.addObject("category_translated", ts.getCategory(frame.getCategory().getNameCat()));
+            mav.addObject("type_translated", ts.getType(frame.getType().getType()));
 
-            mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book, startPage));
+            mav.addObject("books", frame.getContentByType(ContentTypes.book));
             mav.addObject("books_page", startPage);
-            mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course, startPage));
+            mav.addObject("courses", frame.getContentByType(ContentTypes.course));
             mav.addObject("courses_page", startPage);
-            mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial, startPage));
+            mav.addObject("tutorials", frame.getContentByType(ContentTypes.tutorial));
             mav.addObject("tutorials_page", startPage);
             mav.addObject("page_size", pageSize);
             mav.addObject("category", category);

@@ -46,6 +46,7 @@ public class Framework {
     private Timestamp publishDate;
 
     @Lob
+    @Column (length = 5000000)
     private byte[] picture;
 
     /* Relationships */
@@ -295,5 +296,14 @@ public class Framework {
 
     public void setCommentsAmount(int commentsAmount) {
         this.commentsAmount = commentsAmount;
+    }
+
+    public List<Content> getContentByType(ContentTypes type){
+        List<Content> content = new ArrayList<>();
+        for (Content ct: contents) {
+            if(ct.getType().equals(type))
+                content.add(ct);
+        }
+        return content;
     }
 }

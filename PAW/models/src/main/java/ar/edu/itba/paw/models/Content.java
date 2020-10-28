@@ -170,4 +170,5 @@ public class Content {
     public void setReports(List<ReportContent> reports) {
         this.reports = reports;
     }
+
 }
