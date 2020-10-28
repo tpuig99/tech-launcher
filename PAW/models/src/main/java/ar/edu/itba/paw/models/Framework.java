@@ -76,7 +76,7 @@ public class Framework {
     private String base64image;
 
     @Transient
-    private double stars;
+    private double stars = 0;
 
     @Transient
     private int votesCant;
@@ -130,16 +130,18 @@ public class Framework {
             byte[] encodedByteArray = Base64.getEncoder().encode(picture);
             base64image = new String(encodedByteArray, StandardCharsets.UTF_8);
         }
-        double rating = 0;
-        for (FrameworkVote vote : frameworkVotes) {
-            rating += vote.getStars();
+        if(frameworkVotes != null && !frameworkVotes.isEmpty()) {
+            double rating = 0;
+            for (FrameworkVote vote : frameworkVotes) {
+                rating += vote.getStars();
+            }
+            stars = rating / frameworkVotes.size();
         }
-        stars = rating / frameworkVotes.size();
         votesCant = frameworkVotes.size();
         if(comments != null && !comments.isEmpty()) {
             lastComment = Collections.max(comments, Comparator.comparingDouble((x) -> x.getTimestamp().getTime())).getTimestamp();
-            commentsAmount = comments.size()
-        ;} else
+            commentsAmount = comments.size();
+        } else
             commentsAmount = 0;
     }
 
@@ -267,7 +269,7 @@ public class Framework {
         return stars;
     }
     public String getStarsFormated(){
-        return String.format("%.2f", 1.9999);
+        return String.format("%.2f", stars);
     }
 
     public void setStars(double stars) {
