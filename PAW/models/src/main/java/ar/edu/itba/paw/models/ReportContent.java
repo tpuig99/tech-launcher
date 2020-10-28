@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.models;
 
-import jdk.jfr.ContentType;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

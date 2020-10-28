@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -102,6 +103,9 @@ public class CommentHibernateDaoImpl implements CommentDao {
 
     @Override
     public List<Comment> getCommentsByUser(long userId, long page, long pageSize ) {
+     /*   Query pagingQuery = em.createNativeQuery("SELECT c.userid FROM comments c WHERE c.userid = " + String.valueOf(userId)+ "LIMIT " + String.valueOf(pageSize) + "OFFSET " + String.valueOf((page-1)*pageSize));
+        pagingQuery.getResultList(); */
+
         final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.user.id = :userId", Comment.class);
         query.setParameter("userId", userId);
         query.setFirstResult((int) ((page-1) * pageSize));

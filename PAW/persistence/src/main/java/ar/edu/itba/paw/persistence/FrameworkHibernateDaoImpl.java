@@ -96,7 +96,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     /* TODO: when Content is ready, update this query */
     @Override
     public List<Framework> getUserInterests(long userId) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join Content c on f.id = c.framework.id where c.user.id = :userId", Framework.class);
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f left outer join Content c on f.id = c.framework.id where c.user.id = :userId", Framework.class);
         query.setParameter("userId", userId);
         return query.getResultList();
     }
@@ -118,7 +118,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> getByMinStars(int stars) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join FrameworkVote v on f.id = v.framework.id group by f having coalesce(avg(v.stars), 0) >= :stars", Framework.class);
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f left outer join FrameworkVote v on f.id = v.framework.id group by f having coalesce(avg(v.stars), 0) >= :stars", Framework.class);
         Double st = Double.valueOf(stars);
         query.setParameter("stars", st);
         return query.getResultList();
@@ -143,7 +143,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
 
     @Override
     public Optional<Integer> getByUserCount(long userId) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f inner join User u on f.author.id = u.id where u.id = :userId", Framework.class);
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f left outer join User u on f.author.id = u.id where u.id = :userId", Framework.class);
         query.setParameter("userId", userId);
         return Optional.of(query.getResultList().size());
     }
@@ -164,8 +164,8 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
             return query.getResultList();
         }
 
-        StringBuilder sb = new StringBuilder(" select f from Framework f inner join f.frameworkVotes v inner join f.comments c ");
-
+        StringBuilder sb = new StringBuilder(" select f from Framework f left outer join f.frameworkVotes v on f.id = v.framework.id left outer join f.comments c on f.id = c.framework.id");
+    //TypedQuery<Framework> query2 = em.createQuery("select f from Framework f left outer join f.frameworkVotes v on f.id = v.framework.id left outer join f.comments c on f.id = c.framework.id", Framework.class);
         if(toSearch!=null || categories!=null || types != null || lastUpdated!=null) {
             sb.append(" where ");
         }
@@ -185,21 +185,24 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
        }
 
         if (categories != null) {
-            if(!sb.toString().contains("where")) {
+            if(!sb.toString().substring(sb.length()-6).contains("where")){
                 sb.append(" and ");
             }
             sb.append(" f.category in (:categories) ");
         }
 
         if (types != null) {
-            if(!sb.toString().contains("where")) {
+            if(!sb.toString().substring(sb.length()-6).contains("where")){
                 sb.append(" and ");
             }
+          /*  if(!sb.toString().contains("where")) {
+                sb.append(" and ");
+            }*/
             sb.append(" f.type in (:types) ");
         }
 
         if (lastUpdated != null) {
-            if(!sb.toString().contains("where")) {
+            if(!sb.toString().substring(sb.length()-6).contains("where")){
                 sb.append(" and ");
             }
             sb.append(" f.date >= :lastUpdated ");
@@ -233,7 +236,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         }
 
         final TypedQuery<Framework> query = em.createQuery(sb.toString(), Framework.class);
-
         if (page != -1 || pageSize != -1) {
             query.setFirstResult((int) ((page-1) * pageSize));
             query.setMaxResults((int) pageSize);
