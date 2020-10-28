@@ -22,8 +22,8 @@
         </jsp:include>
 
 
-        <div class="content-no-sidebar row">
-            <div class="page-title-big"><spring:message code="moderate.moderation_panel"/></div>
+        <div class="content-no-sidebar">
+            <div class="page-title-big row"><spring:message code="moderate.moderation_panel"/></div>
 
             <!-- Mods managing -->
             <div class="container">
