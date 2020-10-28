@@ -67,13 +67,14 @@
                         <c:if test="${not empty profile.description}">
                             <p><strong><spring:message code="profile.description"/></strong> <c:out value="${profile.description}"/></p>
                         </c:if>
-
+                        <c:if test="${user.name == profile.username && !isAdmin}">
+                            <div class="custom-control custom-checkbox mb-2">
+                                <input type="checkbox" class="custom-control-input" onclick="openStopBeingAModModal()" id="modCheckbox">
+                                <label class="custom-control-label" for="modCheckbox"><strong><spring:message code="button.moderate"/></strong></label>
+                            </div>
+                        </c:if>
                         <c:if test="${profile.verify}">
-
                             <p>
-                                <c:if test="${user.name == profile.username && !isAdmin}">
-                            <button class="btn" type="button" onclick="openStopBeingAModModal()"><i class="fas fa-trash-alt fa-sm mr-1"></i></button>
-                                </c:if>
                                     <strong><spring:message code="profile.moderator"/></strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
                                 <c:if test="${!verifiedTech.pending}">
@@ -394,12 +395,12 @@
 
     <!-- Stop being a mod Modal -->
 
-    <div class="modal fade" id="stopBeingAModModal" tabindex="-1" role="dialog" aria-labelledby="stopBeingAModModalLabel" aria-hidden="true">
+    <div class="modal fade" id="stopBeingAModModal" tabindex="-1" role="dialog" aria-labelledby="stopBeingAModModalLabel"  aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="stopBeingAModModalLabel"><spring:message code="profile.allow_mod"/></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" onclick="checkMod()" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -409,7 +410,7 @@
                         <div><spring:message code="profile.description_stop_mod"/></div>
                     </div>
                     <div class="row justify-content-center align-items-center margin-top">
-                        <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                        <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" onclick="checkMod()" aria-label="Close"><spring:message code="button.cancel"/></button>
                         <button class="btn btn-danger ml-4" onclick="stopBeingAMod()"><spring:message code="button.stop_being_a_mod"/></button>
                     </div>
                 </div>
@@ -434,14 +435,21 @@
     });
     </c:if>
 
+    $(document).on('focusout','#stopBeingAModModal', function () {
+        checkMod();
+    });
 
     function stopBeingAMod(){
         window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/false'
     }
 
+    function enableBeingAMod(){
+        window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/true'
+    }
+
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
-        $("#enableMod").prop("checked", ${isAllowMod});
+        $("#modCheckbox").prop("checked", ${isAllowMod});
     });
 
     function editProfile(){
@@ -468,9 +476,18 @@
     });
 
     function openStopBeingAModModal(){
-        $('#stopBeingAModModal').modal('show');
+        $('#modCheckbox').on('change', function() {
+            // From the other examples
+            if (this.checked) {
+                enableBeingAMod();
+            } else {
+                $('#stopBeingAModModal').modal('show');
+            }
+        });
     }
-
+    function checkMod(){
+        $("#modCheckbox").prop("checked", ${isAllowMod});
+    }
 </script>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
