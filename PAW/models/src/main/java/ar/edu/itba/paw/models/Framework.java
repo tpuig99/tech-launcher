@@ -135,8 +135,11 @@ public class Framework {
         }
         stars = rating / frameworkVotes.size();
         votesCant = frameworkVotes.size();
-        lastComment = Collections.max(comments, Comparator.comparingDouble((x) -> x.getTimestamp().getTime())).getTimestamp();
-        commentsAmount = comments.size();
+        if(comments != null && !comments.isEmpty()) {
+            lastComment = Collections.max(comments, Comparator.comparingDouble((x) -> x.getTimestamp().getTime())).getTimestamp();
+            commentsAmount = comments.size()
+        ;} else
+            commentsAmount = 0;
     }
 
     public long getId() {
@@ -261,6 +264,9 @@ public class Framework {
 
     public double getStars() {
         return stars;
+    }
+    public String getStarsFormated(){
+        return String.format("%.2f", 1.9999);
     }
 
     public void setStars(double stars) {

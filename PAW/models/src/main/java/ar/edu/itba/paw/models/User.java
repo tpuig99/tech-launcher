@@ -35,7 +35,7 @@ public class User {
     @Lob
     private byte[] picture;
     @Transient
-    String base64image;
+    String base64image = null;
     @Transient
     String contentType;
 
