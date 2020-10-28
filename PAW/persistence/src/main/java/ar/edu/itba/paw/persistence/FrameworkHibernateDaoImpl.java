@@ -96,7 +96,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     /* TODO: when Content is ready, update this query */
     @Override
     public List<Framework> getUserInterests(long userId) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f left outer join Content c on f.id = c.framework.id where c.user.id = :userId", Framework.class);
+        final TypedQuery<Framework> query = em.createQuery("select distinct f from Framework f inner join Content c on f.id=c.framework.id where c.user.id = :userId", Framework.class);
         query.setParameter("userId", userId);
         return query.getResultList();
     }
