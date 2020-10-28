@@ -213,12 +213,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
             sb.append(" and max(c.timestamp) >= :lastComment ");
         }
 
-        final TypedQuery<Framework> query = em.createQuery(sb.toString(), Framework.class);
-
-        if (page != -1 || pageSize != -1) {
-            query.setFirstResult((int) ((page-1) * pageSize));
-            query.setMaxResults((int) pageSize);
-        }
         if(order != null && order != 0){
             sb.append(" order by ");
 
@@ -238,14 +232,25 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
             }
         }
 
-        query.setParameter("search", search);
-        query.setParameter("categories", categories);
-        query.setParameter("types", types);
-        query.setParameter("lastUpdated", lastUpdated);
-        query.setParameter("starsLeft", starsLeft);
-        query.setParameter("starsRight", starsRight);
-        query.setParameter("commentAmount", commentAmount);
-        query.setParameter("lastComment", lastComment);
+        final TypedQuery<Framework> query = em.createQuery(sb.toString(), Framework.class);
+
+        if (page != -1 || pageSize != -1) {
+            query.setFirstResult((int) ((page-1) * pageSize));
+            query.setMaxResults((int) pageSize);
+        }
+        if(toSearch != null && !toSearch.isEmpty())
+            query.setParameter("search", search);
+        if(categories != null)
+            query.setParameter("categories", categories);
+        if(types != null)
+            query.setParameter("types", types);
+        if(lastUpdated != null)
+            query.setParameter("lastUpdated", lastUpdated);
+        query.setParameter("starsLeft", Double.valueOf(starsLeft));
+        query.setParameter("starsRight", Double.valueOf(starsRight));
+        query.setParameter("commentAmount", Long.valueOf(commentAmount));
+        if(lastComment != null)
+            query.setParameter("lastComment", lastComment);
 
         return query.getResultList();
     }
