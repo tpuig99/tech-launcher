@@ -97,14 +97,13 @@ public class FrameworkController {
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
             mav.addObject("comments_page", startPage);
+            mav.addObject("comments",frame.getComments());
 
             mav.addObject("replies", replies);
 
             Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()){
                 User user = optionalUser.get();
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,user.getId(), startPage);
-                mav.addObject("comments",comments);
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
                 mav.addObject("hasAppliedToFramework",user.hasAppliedToFramework(id));
@@ -118,10 +117,6 @@ public class FrameworkController {
                 }else{
                     mav.addObject("stars",0);
                 }
-            }
-            else{
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,null, startPage);
-                mav.addObject("comments",comments);
             }
 
             return mav;

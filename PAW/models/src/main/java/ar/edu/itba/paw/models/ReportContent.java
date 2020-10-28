@@ -12,8 +12,8 @@ import java.util.Map;
 public class ReportContent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "content_report_content_id_seq")
-    @SequenceGenerator(sequenceName = "content_report_content_id_seq", name = "content_report_content_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "content_report_report_id_seq")
+    @SequenceGenerator(sequenceName = "content_report_report_id_seq", name = "content_report_report_id_seq", allocationSize = 1)
     @Column(name = "report_id")
     private Long reportId;
 

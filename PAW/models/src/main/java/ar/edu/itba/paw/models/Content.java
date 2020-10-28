@@ -12,7 +12,7 @@ public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "content_content_id_seq")
     @SequenceGenerator(sequenceName = "content_content_id_seq", name = "content_content_id_seq", allocationSize = 1)
-    @Column(name = "content_id")
+    @Column(name = "content_id",nullable = false)
     private Long contentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,13 +26,13 @@ public class Content {
     @Column
     private String title;
 
-    @Column(name = "tstamp")
+    @Column(name = "tstamp",nullable = false)
     private Timestamp timestamp;
 
-    @Column
+    @Column(nullable = false)
     private String link;
 
-    @Column(name = "type")
+    @Column(name = "type",nullable = false)
     @Enumerated(EnumType.STRING)
     private ContentTypes type;
 

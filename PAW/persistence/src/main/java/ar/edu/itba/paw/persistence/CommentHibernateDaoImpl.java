@@ -36,6 +36,7 @@ public class CommentHibernateDaoImpl implements CommentDao {
         comment.setUser(em.getReference(User.class, userId));
         comment.setDescription(description);
         comment.setTimestamp(ts);
+        comment.setReference(reference);
         em.persist(comment);
         return comment;
     }
@@ -153,7 +154,7 @@ public class CommentHibernateDaoImpl implements CommentDao {
 
     @Override
     public void deleteComment(long commentId) {
-        em.remove(em.getReference(VerifyUser.class,commentId));
+        em.remove(em.getReference(Comment.class,commentId));
     }
 
     @Override
