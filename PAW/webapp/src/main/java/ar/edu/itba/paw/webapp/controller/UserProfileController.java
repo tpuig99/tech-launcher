@@ -62,7 +62,7 @@ public class UserProfileController {
             mav.addObject("previousDescription", userOptional.get().getDescription());
 
             User user = userOptional.get();
-            final List<Comment> commentList = user.getComments();
+            final List<Comment> commentList =commentService.getCommentsByUser(userId, STARTPAGE);
             final List<Content> contentList = user.getContents();
             final List<FrameworkVote> votesList = user.getFrameworkVotes();
             final List<Framework> frameworks = user.getOwnedFrameworks();

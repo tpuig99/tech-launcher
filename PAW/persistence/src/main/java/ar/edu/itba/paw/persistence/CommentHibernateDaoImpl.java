@@ -17,6 +17,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Repository
 public class CommentHibernateDaoImpl implements CommentDao {
@@ -103,13 +105,13 @@ public class CommentHibernateDaoImpl implements CommentDao {
 
     @Override
     public List<Comment> getCommentsByUser(long userId, long page, long pageSize ) {
-     /*   Query pagingQuery = em.createNativeQuery("SELECT c.userid FROM comments c WHERE c.userid = " + String.valueOf(userId)+ "LIMIT " + String.valueOf(pageSize) + "OFFSET " + String.valueOf((page-1)*pageSize));
-        pagingQuery.getResultList(); */
+        Query pagingQuery = em.createNativeQuery("SELECT comment_id FROM comments WHERE user_id = " + String.valueOf(userId)+ " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
 
-        final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.user.id = :userId", Comment.class);
-        query.setParameter("userId", userId);
-        query.setFirstResult((int) ((page-1) * pageSize));
-        query.setMaxResults((int) pageSize);
+
+        TypedQuery<Comment> query = em.createQuery("from Comment as c where c.commentId in (:resultList)", Comment.class);
+        query.setParameter("resultList", resultList);
         return query.getResultList();
     }
 
