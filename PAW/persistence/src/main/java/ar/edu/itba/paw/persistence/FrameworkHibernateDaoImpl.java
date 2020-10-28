@@ -206,8 +206,21 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         }
 
 
+
+        sb.append(" group by f having coalesce(avg(v.stars),0) >= :starsLeft and coalesce(avg(v.stars),0) <= :starsRight and count(distinct c.commentId) >= :commentAmount ");
+
+        if(lastComment!=null) {
+            sb.append(" and max(c.timestamp) >= :lastComment ");
+        }
+
+        final TypedQuery<Framework> query = em.createQuery(sb.toString(), Framework.class);
+
+        if (page != -1 || pageSize != -1) {
+            query.setFirstResult((int) ((page-1) * pageSize));
+            query.setMaxResults((int) pageSize);
+        }
         if(order != null && order != 0){
-            sb.append(" group by f order by ");
+            sb.append(" order by ");
 
             switch (Math.abs(order)){
                 case 1:
@@ -223,19 +236,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
                     sb.append(" max(c.timestamp) ").append(order > 0 ?" desc ":" asc ");
                     break;
             }
-        }
-
-        sb.append(" having coalesce(avg(v.stars),0) >= :starsLeft and coalesce(avg(v.stars),0) <= :starsRight and count(distinct c.commentId) >= :commentAmount ");
-
-        if(lastComment!=null) {
-            sb.append(" and max(c.timestamp) >= :lastComment ");
-        }
-
-        final TypedQuery<Framework> query = em.createQuery(sb.toString(), Framework.class);
-
-        if (page != -1 || pageSize != -1) {
-            query.setFirstResult((int) ((page-1) * pageSize));
-            query.setMaxResults((int) pageSize);
         }
 
         query.setParameter("search", search);
