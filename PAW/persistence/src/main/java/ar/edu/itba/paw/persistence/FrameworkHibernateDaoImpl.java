@@ -205,7 +205,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
             if(!sb.toString().substring(sb.length()-6).contains("where")){
                 sb.append(" and ");
             }
-            sb.append(" f.date >= :lastUpdated ");
+            sb.append(" f.publishDate >= :lastUpdated ");
         }
 
 
