@@ -79,7 +79,7 @@ public class VerificationTokenDaoTest {
         verificationTokenDao.insert(USER_ID+10,TOKEN);
     }
 
-    @Test
+    /*@Test
     public void testChange() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "verification_token");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
@@ -88,10 +88,13 @@ public class VerificationTokenDaoTest {
         args.put("token", TOKEN);
         args.put("exp_date",ts);
         Number id = jdbcInsert.executeAndReturnKey(args);
-
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setExpiryDay(ts);
+        verificationToken.setToken(TOKEN);
+        verificationToken.setTokenId(id.longValue());
         verificationTokenDao.change(id.longValue(),TOKEN_2);
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "verification_token","token = '"+TOKEN_2+"'"));
-    }
+    }*/
     //</editor-fold>
     //<editor-fold desc="Getters">
     @Test

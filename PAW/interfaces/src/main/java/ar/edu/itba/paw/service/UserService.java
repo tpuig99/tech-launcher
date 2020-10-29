@@ -22,10 +22,10 @@ public interface UserService {
     void updateModAllow(long userId, boolean allow);
 
     /** register **/
-    void createVerificationToken(User user, String token);
+    void createVerificationToken(User user, String token,String appUrl);
     Optional<VerificationToken> getVerificationToken(String token);
     void saveRegisteredUser(User user);
-    void generateNewVerificationToken(User user, String token);
+    void generateNewVerificationToken(User user, String token, String appUrl);
     void internalLogin(String user, String pass, HttpServletRequest req);
     void updatePicture(long userId, byte[] picture);
 

@@ -162,7 +162,7 @@ public class RegisterController {
         Optional<VerificationToken> verificationToken = us.getVerificationToken(existingToken);
 
         if (verificationToken.isPresent()) {
-            Optional<User> registered = us.findById((int) verificationToken.get().getUserId());
+            Optional<User> registered = Optional.ofNullable(verificationToken.get().getUser());
             String appUrl = request.getRequestURL().toString();
             appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
             if (registered.isPresent()) {

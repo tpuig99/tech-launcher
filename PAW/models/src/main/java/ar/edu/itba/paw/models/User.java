@@ -9,6 +9,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "users")
@@ -308,8 +309,8 @@ public class User {
         this.frameworkVotes = frameworkVotes;
     }
 
-    public VerificationToken getVerificationToken() {
-        return verificationToken;
+    public Optional<VerificationToken> getVerificationToken() {
+        return Optional.ofNullable(verificationToken);
     }
 
     public void setVerificationToken(VerificationToken verificationToken) {

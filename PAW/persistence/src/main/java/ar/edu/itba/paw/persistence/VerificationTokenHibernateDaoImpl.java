@@ -41,16 +41,15 @@ public class VerificationTokenHibernateDaoImpl implements VerificationTokenDao {
     }
 
     @Override
-    public void change(long tokenId, String token) {
-        VerificationToken vt = em.find(VerificationToken.class, tokenId);
+    public void change(VerificationToken verificationToken, String token) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(ts);
         calendar.add(Calendar.MINUTE,60*24);
         ts = new Timestamp(calendar.getTime().getTime());
-        vt.setToken(token);
-        vt.setExpiryDay(ts);
-        em.merge(vt);
+        verificationToken.setToken(token);
+        verificationToken.setExpiryDay(ts);
+        em.merge(verificationToken);
     }
 
     @Override

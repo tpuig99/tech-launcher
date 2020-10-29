@@ -128,11 +128,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void createVerificationToken(User user, String token) {
-        Optional<VerificationToken> verificationToken = tokenDao.getByUser(user.getId());
-        verificationToken.ifPresent(value -> tokenDao.change(value.getTokenId(), token));
+    public void createVerificationToken(User user, String token,String appUrl) {
         tokenDao.insert(user.getId(),token);
+        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
+                "\r\n" +
+                appUrl + "/registrationConfirm.html?token=" + token;
+        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
+
     @Transactional(readOnly = true)
     @Override
     public Optional<VerificationToken> getVerificationToken(String token) {
@@ -147,9 +150,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void generateNewVerificationToken(User user, String token) {
-        Optional<VerificationToken> verificationToken = tokenDao.getByUser(user.getId());
-        verificationToken.ifPresent(value -> tokenDao.change(value.getTokenId(), token));
+    public void generateNewVerificationToken(User user, String token,String appUrl) {
+        Optional<VerificationToken> verificationToken = user.getVerificationToken();
+        if(verificationToken.isPresent())
+            tokenDao.change(verificationToken.get(),token);
+        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
+                         "\r\n" +
+                       appUrl + "/registrationConfirm.html?token=" + token;
+        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 
     @Transactional
