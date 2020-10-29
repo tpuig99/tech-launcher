@@ -4,9 +4,8 @@ package ar.edu.itba.paw.models;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 @Entity
 @Table(name = "content_report")
 public class ReportContent {
@@ -63,6 +62,13 @@ public class ReportContent {
         return content.getTimestamp();
     }
 
+    public List<String> getReportsUserName() {
+        List<String> list = new ArrayList<>();
+        for (ReportContent rc:content.getReports()) {
+            list.add(rc.getUserReporterName());
+        }
+        return list;
+    }
 
     public String getFrameworkName() {
         return content.getFrameworkName();

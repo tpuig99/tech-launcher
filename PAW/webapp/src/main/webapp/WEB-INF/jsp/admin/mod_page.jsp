@@ -326,7 +326,7 @@
                                             </div>
                                             <div class="mt-2">
                                             <p class="my-1"><spring:message code="moderate.report.description"/>:&nbsp;<c:out value=" ${reportedContent.reportDescription}" default=""/></p>
-<%--                                            <p class="my-1"><spring:message code="moderate.report.quantity"/>:&nbsp;${reportedContent.reportsUserName.size()}</p>--%>
+                                            <p class="my-1"><spring:message code="moderate.report.quantity"/>:&nbsp;${reportedContent.reportsUserName.size()}</p>
                                             </div>
                                         </div>
                                         <div class="card-footer row mx-2 justify-content-center">

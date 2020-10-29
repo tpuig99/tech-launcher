@@ -73,8 +73,8 @@ public class ReportCommentHiberateDaoImpl implements ReportCommentDao{
 
     @Override
     public void deleteReportByComment(long commentId) {
-        final TypedQuery<ReportComment> query = em.createQuery("delete from ReportComment rc where rc.comment.id = :commentId", ReportComment.class);
-        query.setParameter("commentId", commentId).executeUpdate();
-
+        final TypedQuery<Long> query = em.createQuery("select rc.reportId from ReportComment rc where rc.comment.commentId = :commentId", Long.class);
+        query.setParameter("commentId", commentId);
+        delete(query.getSingleResult());
     }
 }
