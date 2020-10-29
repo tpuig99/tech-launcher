@@ -82,8 +82,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public int deleteComment(long commentId) {
-        return cmts.deleteComment(commentId);
+    public void deleteComment(long commentId) {
+        cmts.deleteComment(commentId);
     }
 
     @Transactional
@@ -114,7 +114,7 @@ public class CommentServiceImpl implements CommentService {
             Comment c=comment.get();
             Optional<User> user = userDao.findById(c.getUserId());
             if(user.isPresent() && user.get().isAllowMod() && !user.get().isAdmin() && !user.get().hasAppliedToFramework(c.getFrameworkId())) {
-                    verifyUserDao.create(c.getUserId(), c.getFrameworkId(), c.getCommentId());
+                    verifyUserDao.create(c.getUser(), c.getFramework(), c);
 
             }
         }
@@ -147,7 +147,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public void addReport(long commentId, long userId, String description) {
-        rc.add(commentId,userId,description);
+        rc.insert(commentId,userId,description);
     }
 
     @Transactional

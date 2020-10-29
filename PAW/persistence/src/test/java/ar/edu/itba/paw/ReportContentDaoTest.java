@@ -1,7 +1,6 @@
 package ar.edu.itba.paw;
 
 import ar.edu.itba.paw.models.ContentTypes;
-import ar.edu.itba.paw.models.ContentVote;
 import ar.edu.itba.paw.models.ReportContent;
 import ar.edu.itba.paw.persistence.ReportContentDao;
 import org.junit.Before;
@@ -191,7 +190,7 @@ public class ReportContentDaoTest {
         final Optional<ReportContent> content = reportContentDao.getByContent(CONTENT_ID);
 
         assertEquals(true,content.isPresent());
-        assertEquals(5,content.get().getReportsIds().size());
+        assertEquals(5,content.get().getContent().getReportsIds().size());
         assertEquals(CONTENT_ID,content.get().getContentId());
     }
 
@@ -217,7 +216,7 @@ public class ReportContentDaoTest {
         assertEquals(1,content.size());
         for (ReportContent r: content) {
             assertEquals(FRAMEWORK_ID,r.getFrameworkId());
-            assertEquals(5,r.getReportsUserName().size());
+            assertEquals(5,r.getContent().getReportersNames().size());
         }
     }
     //</editor-fold>

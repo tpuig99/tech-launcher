@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum FrameworkType {
-    Online_Plataform("Online Platform"),
+    Online_Platform("Online Platform"),
     Framework("Framework"),
     Service("Service"),
     Database_System("Database System"),
     Programming_Languages("Programming Language"),
     Operating_System("Operating System"),
-    Runtime_Plataform("Runtime Platform"),
+    Runtime_Platform("Runtime Platform"),
     Libraries("Libraries"),
     Engine("Engine"),
     Shell("Shell"),

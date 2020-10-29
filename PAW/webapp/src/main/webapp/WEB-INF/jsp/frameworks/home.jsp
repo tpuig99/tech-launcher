@@ -49,7 +49,7 @@
         <div class="row equal">
             <c:forEach items="${hottestList}" var="framework">
                 <div class="card mx-4 mb-4">
-                    <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
+                    <a href="<c:url value="/${framework.category.nameCat}/${framework.id}"/>">
                         <div class="card-body">
                             <c:choose>
                                 <c:when test="${not empty framework.base64image}">
@@ -74,7 +74,7 @@
                     <div class="row equal">
                         <c:forEach items="${interestsList}" var="framework">
                             <div class="card mx-4 mb-4">
-                                <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
+                                <a href="<c:url value="/${framework.category.nameCat}/${framework.id}"/>">
                                     <div class="card-body">
                                         <c:choose>
                                             <c:when test="${not empty framework.base64image}">

@@ -1,21 +1,38 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Entity
+@Table(name = "verification_token")
 public class VerificationToken {
-    private long tokenId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_token_token_id_seq")
+    @SequenceGenerator(sequenceName = "verification_token_token_id_seq", name = "verification_token_token_id_seq", allocationSize = 1)
+    @Column(name = "token_id")
+    private Long tokenId;
+
+    @Column(name = "token",nullable = false)
     private String token;
-    private long userId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(name = "exp_date", nullable = false)
     private Timestamp expiryDay;
 
-    public VerificationToken(long tokenId, String token, long userId, Timestamp expiryDay) {
-        this.tokenId = tokenId;
+    public VerificationToken(){
+        //For Hibernate
+    }
+
+    public VerificationToken(String token, User user, Timestamp expiryDay) {
         this.token = token;
-        this.userId = userId;
+        this.user = user;
         this.expiryDay = expiryDay;
     }
 
-    public long getTokenId() {
+    public Long getTokenId() {
         return tokenId;
     }
 
@@ -24,14 +41,30 @@ public class VerificationToken {
     }
 
     public long getUserId() {
-        return userId;
+        return user.getId();
     }
 
-    public Timestamp getexpiryDay() {
+    public Timestamp getExpiryDay() {
         return expiryDay;
     }
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public void setTokenId(Long tokenId) {
+        this.tokenId = tokenId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setExpiryDay(Timestamp expiryDay) {
+        this.expiryDay = expiryDay;
     }
 }

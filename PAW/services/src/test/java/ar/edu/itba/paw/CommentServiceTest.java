@@ -31,7 +31,7 @@ public class CommentServiceTest {
     @Mock
     private CommentDao commentDao;
 
-    @Test
+    /*@Test
     public void testVoteUp() {
         // Arrange
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.empty());
@@ -114,5 +114,5 @@ public class CommentServiceTest {
         Mockito.verify(commentVoteDao,Mockito.never()).insert(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt());
         Mockito.verify(commentVoteDao,Mockito.never()).delete(Mockito.anyInt());
     }
-
+    */
 }

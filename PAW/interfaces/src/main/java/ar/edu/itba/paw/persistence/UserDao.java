@@ -14,10 +14,8 @@ public interface UserDao {
     Optional<User> findByUsernameOrMail(String username,String Mail);
     Optional<User> findByMail(String mail);
     User create(String username,String mail,String password);
-    int delete(long userId);
+    void delete(long userId);
     Optional<User> update(long userId, String username, String mail, String password);
-    List<String> getMails();
-    List<String> getUserNames();
     void setEnable(long id);
     void updateDescription(long userId,String description);
 

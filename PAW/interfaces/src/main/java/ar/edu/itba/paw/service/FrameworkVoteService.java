@@ -14,6 +14,6 @@ public interface FrameworkVoteService {
     Optional<Integer> getAllCountByUser(long userId);
 
     FrameworkVote insert(long frameworkId, long userId, int stars);
-    int delete(long voteId);
+    void delete(long voteId);
     Optional<FrameworkVote> update(long voteId, int stars);
 }
