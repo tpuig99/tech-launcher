@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.models.VerifyUser;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public interface UserService {
     Optional<VerificationToken> getVerificationToken(String token);
     void saveRegisteredUser(User user);
     void generateNewVerificationToken(User user, String token);
-
+    void internalLogin(String user, String pass, HttpServletRequest req);
     void updatePicture(long userId, byte[] picture);
 
     /** moderator **/

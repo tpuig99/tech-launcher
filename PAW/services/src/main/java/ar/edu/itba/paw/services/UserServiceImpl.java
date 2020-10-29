@@ -15,13 +15,22 @@ import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
+
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -36,6 +45,9 @@ public class UserServiceImpl implements UserService {
     private VerificationTokenDao tokenDao;
     @Autowired
     private VerifyUserDao verifyUserDao;
+
+    @Autowired
+    AuthenticationManager authManager;
 
     @Autowired
     MessageSource messageSource;
@@ -283,13 +295,26 @@ public class UserServiceImpl implements UserService {
         mailSender.send(email);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getApplicantsByPending(boolean pending, long page) {
         return verifyUserDao.getApplicantsByPending(true, page, PAGESIZE);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page) {
         return verifyUserDao.getApplicantsByFrameworks(frameworksIds, page, PAGESIZE);
+    }
+
+    @Transactional
+    public void internalLogin(String user, String pass, HttpServletRequest req) {
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user, pass);
+        Authentication auth = authManager.authenticate(authReq);
+
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+        HttpSession session = req.getSession(true);
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 }
