@@ -322,7 +322,7 @@
 
                                                     <button class="btn upVote btn-link" type="submit">
                                                         <c:choose>
-                                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote > 0}">
+                                                            <c:when test="${comment.getUserAuthVote(user.name) > 0}">
                                                                 <i class="fa fa-arrow-up arrow votedUp"> ${comment.votesUp}</i>
                                                             </c:when>
                                                             <c:otherwise>
@@ -359,7 +359,7 @@
 
                                                     <button class=" btn upVote btn-link" type="submit">
                                                         <c:choose>
-                                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote < 0}">
+                                                            <c:when test="${comment.getUserAuthVote(user.name) < 0}">
                                                                 <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
                                                             </c:when>
                                                             <c:otherwise>

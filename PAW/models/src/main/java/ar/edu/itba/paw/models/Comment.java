@@ -122,11 +122,19 @@ public class Comment {
         return user.isAdmin();
     }
 
-    public int getUserAuthVote() {
-        return user.getCommentVote(commentId).getVote();
+    public int getUserAuthVote(String username) {
+        for (CommentVote vote: commentVotes) {
+            if(vote.getUser().getUsername().equals(username))
+                return vote.getVote();
+        }
+        return 0;
     }
-    public boolean hasUserAuthVote(){
-        return user.hasCommentVote(commentId);
+    public boolean hasUserAuthVote(String username){
+        for (CommentVote vote: commentVotes) {
+            if(vote.getUser().getUsername().equals(username))
+                return true;
+        }
+        return false;
     }
 
     public boolean isReporter(String name){
