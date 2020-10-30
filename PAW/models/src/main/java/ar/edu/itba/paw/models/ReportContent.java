@@ -1,118 +1,130 @@
 package ar.edu.itba.paw.models;
 
+
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+@Entity
+@Table(name = "content_report")
 public class ReportContent {
-    private long contentId;
-    private long frameworkId;
-    private long userId;
-    private String title;
-    private Timestamp timestamp;
-    private String link;
-    private ContentTypes type;
-    private String frameworkName;
-    private FrameworkCategories category;
-    private String userNameOwner;
-    private String reportDescription;
-    private Map<Long,String> userNameReporters;
 
-    public ReportContent(long contentId, long frameworkId, long userId, String title, Timestamp timestamp, String link, ContentTypes type, String frameworkName, FrameworkCategories category, String userNameOwner, String reportDescription) {
-        this.contentId = contentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.title = title;
-        this.timestamp = timestamp;
-        this.link = link;
-        this.type = type;
-        this.frameworkName = frameworkName;
-        this.category = category;
-        this.userNameOwner = userNameOwner;
-        this.reportDescription = reportDescription;
-        userNameReporters = new HashMap<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "content_report_report_id_seq")
+    @SequenceGenerator(sequenceName = "content_report_report_id_seq", name = "content_report_report_id_seq", allocationSize = 1)
+    @Column(name = "report_id")
+    private Long reportId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "content_id", nullable = false)
+    private Content content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    public ReportContent(){
+
     }
 
-    public ReportContent(long contentId, long frameworkId, long userId, String title, String reportDescription, Timestamp timestamp, String link, ContentTypes type, String frameworkName, String userNameOwner, FrameworkCategories category) {
-        this.contentId = contentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.title = title;
-        this.reportDescription = reportDescription;
-        this.timestamp = timestamp;
-        this.link = link;
-        this.type = type;
-        this.frameworkName = frameworkName;
-        this.userNameOwner = userNameOwner;
-        this.userNameReporters = new HashMap<>();
-        this.category = category;
+    public ReportContent( Content content, User user, String reportDescription){
+        this.content = content;
+        this.user = user;
+        this.description = reportDescription;
     }
+
 
     public long getContentId() {
-        return contentId;
+        return content.getContentId();
     }
 
     public long getFrameworkId() {
-        return frameworkId;
+        return content.getFrameworkId();
     }
 
     public long getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public String getTitle() {
-        return title;
+        return content.getTitle();
     }
 
     public String getReportDescription() {
-        return reportDescription;
+        return description;
     }
 
     public Timestamp getTimestamp() {
-        return timestamp;
+        return content.getTimestamp();
     }
 
+    public List<String> getReportsUserName() {
+        List<String> list = new ArrayList<>();
+        for (ReportContent rc:content.getReports()) {
+            list.add(rc.getUserReporterName());
+        }
+        return list;
+    }
 
     public String getFrameworkName() {
-        return frameworkName;
+        return content.getFrameworkName();
     }
 
     public String getUserNameOwner() {
-        return userNameOwner;
+        return content.getUserName();
     }
 
-    public Map<Long,String> getUserNameReporters() {
-        return userNameReporters;
-    }
 
     public FrameworkCategories getCategory() {
-        return category;
+        return content.getCategory();
     }
 
-    public String getCategoryAsString(){return category.getNameCat();}
+    public String getCategoryAsString(){return content.getCategory().getNameCat();}
 
     public String getLink() {
-        return link;
+        return content.getLink();
     }
 
     public ContentTypes getType() {
-        return type;
+        return content.getType();
     }
-    public String getTypeAsString(){return type.name();}
+    public String getTypeAsString(){return content.getType().name();}
 
-    public List<Long> getReportsIds(){
-        List<Long> list = new ArrayList<>();
-        list.addAll(userNameReporters.keySet());
-        return list;
+    public Long getReportId() {
+        return reportId;
     }
-    public List<String> getReportsUserName(){
-        List<String> list = new ArrayList<>();
-        list.addAll(userNameReporters.values());
-        return list;
+
+    public Content getContent() {
+        return content;
     }
-    public void addUserReporter(long reportId,String userName){
-        userNameReporters.put(reportId,userName);
+
+    public User getUser() {
+        return user;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setReportId(Long reportId) {
+        this.reportId = reportId;
+    }
+
+    public void setContent(Content content) {
+        this.content = content;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getUserReporterName() { return user.getUsername(); }
 }

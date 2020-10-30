@@ -1,49 +1,108 @@
 package ar.edu.itba.paw.models;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.hibernate.annotations.Type;
 
+import javax.persistence.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+
+@Entity
+@Table(name = "users")
 public class User {
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_user_id_seq")
+    @SequenceGenerator(sequenceName = "users_user_id_seq", name = "users_user_id_seq", allocationSize = 1)
+    @Column(name = "user_id")
+    private Long id;
+
+    @Column(name = "user_name",length = 100, nullable = false, unique = true)
     private String username;
+
+    @Column(length = 100, nullable = false, unique = true)
     private String mail;
+
+    @Column(length = 100)
     private String password;
+
+    @Column(name = "enabled",nullable = false)
     private boolean enable = false;
+    @Column(name = "user_description",length = 200, nullable = false)
     private String description;
+    @Column(name = "allow_moderator", nullable = false)
     private boolean allowMod;
-    private boolean admin;
-    private String contentType;
-    private String base64image;
+
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] picture;
+    @Transient
+    String base64image = null;
+    @Transient
+    String contentType;
+
+    /*this refers to the other relation mapped in Admin*/
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    private Admin admin;
+
+    /*this refers to the other relation mapped in VerificationToken*/
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    private VerificationToken verificationToken;
+
+    /*this refers to the other relation mapped in VerifyUser*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<VerifyUser> verifications;
 
-    public User(long id, String username, String mail, String password, boolean enable, String description, boolean allowMod,boolean admin, String contentType, String base64image) {
-        this.id = id;
+    /*this refers to the other relation mapped in Comment*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Comment> comments;
+
+    /* References other relation mapped in Content */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Content> contents;
+
+    /*this refers to the other relation mapped in CommentVote*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<CommentVote> commentVotes;
+
+    /*this refers to the other relation mapped in ReportComment*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<ReportComment> commentsReported;
+
+    /*this refers to the other relation mapped in ReportContent*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<ReportContent> contentsReported;
+
+    /*this refers to the other relation mapped in Framework*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+    private List<Framework> ownedFrameworks;
+
+    /*this refers to the other relation mapped in FrameworkVotes */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<FrameworkVote> frameworkVotes;
+
+
+
+    public User() {
+    }
+    public User(String username, String mail, String password, boolean enable, String description, boolean allowMod,byte[] picture) {
         this.username = username;
         this.mail = mail;
         this.password = password;
         this.enable = enable;
         this.description = description;
         this.allowMod = allowMod;
-        this.admin = admin;
-        this.contentType = contentType;
-        this.base64image = base64image;
-        verifications = new ArrayList<>();
+        this.picture = picture;
     }
 
-    public String getBase64image() {
-        return base64image;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -51,32 +110,98 @@ public class User {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getMail() {
         return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public boolean isEnable() {
         return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isAllowMod() {
         return allowMod;
     }
 
+    public void setAllowMod(boolean allowMod) {
+        this.allowMod = allowMod;
+    }
+
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getBase64image() {
+        if(base64image==null)
+            calculateStringImage();
+        return base64image;
+    }
+
+    private void calculateStringImage() {
+        if(picture!=null) {
+            try {
+                contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(picture));
+            } catch (IOException e) {
+                contentType = "";
+            }
+
+            byte[] encodedByteArray = Base64.getEncoder().encode(picture);
+            base64image = new String(encodedByteArray, StandardCharsets.UTF_8);
+        }
+    }
+
+    public void setBase64image(String base64image) {
+        this.base64image = base64image;
+    }
+    public boolean isAdmin() {
+        return admin!=null;
+    }
     public void setVerifications(List<VerifyUser> verifications) {
-        this.verifications.addAll(verifications);
+        //this.verifications.addAll(verifications);
+        this.verifications = verifications;
     }
 
     public List<VerifyUser> getVerifications() {
         return verifications;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     public boolean isVerifyForFramework(long frameworkId){
@@ -97,14 +222,98 @@ public class User {
         }
         return false;
     }
-    public boolean isAdmin() {
-        return admin;
-    }
     public boolean isVerify() {
         for (VerifyUser v: verifications) {
             if(!v.isPending())
                 return true;
         }
         return false;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+    public boolean hasCommentVote(long commentId){
+        for (CommentVote cv: commentVotes) {
+            if(cv.getCommentId() == commentId)
+                return true;
+        }
+        return false;
+    }
+    public CommentVote getCommentVote(long commentId){
+        for (CommentVote cv: commentVotes) {
+            if(cv.getCommentId() == commentId)
+                return cv;
+        }
+        return null;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public List<Content> getContents() {
+        return contents;
+    }
+
+    public List<CommentVote> getCommentVotes() {
+        return commentVotes;
+    }
+
+    public List<ReportComment> getCommentsReported() {
+        return commentsReported;
+    }
+
+    public List<ReportContent> getContentsReported() {
+        return contentsReported;
+    }
+
+    public List<Framework> getOwnedFrameworks() {
+        return ownedFrameworks;
+    }
+
+    public List<FrameworkVote> getFrameworkVotes() {
+        return frameworkVotes;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void setContents(List<Content> contents) {
+        this.contents = contents;
+    }
+
+    public void setCommentVotes(List<CommentVote> commentVotes) {
+        this.commentVotes = commentVotes;
+    }
+
+    public void setCommentsReported(List<ReportComment> commentsReported) {
+        this.commentsReported = commentsReported;
+    }
+
+    public void setContentsReported(List<ReportContent> contentsReported) {
+        this.contentsReported = contentsReported;
+    }
+
+    public void setOwnedFrameworks(List<Framework> ownedFrameworks) {
+        this.ownedFrameworks = ownedFrameworks;
+    }
+
+    public void setFrameworkVotes(List<FrameworkVote> frameworkVotes) {
+        this.frameworkVotes = frameworkVotes;
+    }
+
+    public Optional<VerificationToken> getVerificationToken() {
+        return Optional.ofNullable(verificationToken);
+    }
+
+    public void setVerificationToken(VerificationToken verificationToken) {
+        this.verificationToken = verificationToken;
     }
 }

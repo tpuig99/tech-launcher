@@ -130,11 +130,10 @@ public class CommentVoteDaoTest {
         final int voteId = jdbcInsert.executeAndReturnKey(args).intValue();
 
         // Act
-        final int returnValue = commentVoteDao.delete(voteId);
+        commentVoteDao.delete(voteId);
 
         // Asserts
-        assertEquals(1, returnValue);
-        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comment_votes","vote_id ="+ returnValue));
+        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comment_votes","vote_id ="+ voteId));
     }
 
 

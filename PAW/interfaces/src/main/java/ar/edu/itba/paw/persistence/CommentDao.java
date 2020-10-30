@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.User;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,7 @@ public interface CommentDao {
     Optional<Integer> getCommentsCountByUser(long userId);
     Map<Long, List<Comment>> getRepliesByFramework(long frameworkId);
     Comment insertComment(long frameworkId, long userId, String description, Long reference);
-    int deleteComment(long commentId);
+    void deleteComment(long commentId);
     Optional<Comment> changeComment(long commentId, String description);
 
 }

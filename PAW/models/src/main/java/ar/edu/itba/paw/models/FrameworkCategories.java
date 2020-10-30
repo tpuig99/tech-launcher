@@ -7,7 +7,6 @@ public enum FrameworkCategories {
     Platforms("Platforms"),
     Front_End_Development("Front-End Development"),
     Back_End_Development("Back-End Development"),
-    Computer_Science("Computer Science"),
     Big_Data("Big Data"),
     Artificial_Intelligence("Artificial Intelligence"),
     Editors("Editors"),

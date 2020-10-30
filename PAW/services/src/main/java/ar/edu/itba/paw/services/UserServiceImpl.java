@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.models.Framework;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -14,26 +15,39 @@ import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
+
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final long PAGESIZE=6;
     private static final long USER_NOT_EXISTS = -1;
-    @Qualifier("userDaoImpl")
     @Autowired
     private UserDao userDao;
     @Autowired
     private VerificationTokenDao tokenDao;
     @Autowired
     private VerifyUserDao verifyUserDao;
+
+    @Autowired
+    AuthenticationManager authManager;
 
     @Autowired
     MessageSource messageSource;
@@ -88,8 +102,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public int delete(long userId) {
-        return userDao.delete(userId);
+    public void delete(long userId) {
+         userDao.delete(userId);
     }
 
     @Transactional
@@ -114,11 +128,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void createVerificationToken(User user, String token) {
-        Optional<VerificationToken> verificationToken = tokenDao.getByUser(user.getId());
-        verificationToken.ifPresent(value -> tokenDao.change(value.getTokenId(), token));
+    public void createVerificationToken(User user, String token,String appUrl) {
         tokenDao.insert(user.getId(),token);
+        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
+                "\r\n" +
+                appUrl + "/registrationConfirm.html?token=" + token;
+        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
+
     @Transactional(readOnly = true)
     @Override
     public Optional<VerificationToken> getVerificationToken(String token) {
@@ -133,9 +150,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void generateNewVerificationToken(User user, String token) {
-        Optional<VerificationToken> verificationToken = tokenDao.getByUser(user.getId());
-        verificationToken.ifPresent(value -> tokenDao.change(value.getTokenId(), token));
+    public void generateNewVerificationToken(User user, String token,String appUrl) {
+        Optional<VerificationToken> verificationToken = user.getVerificationToken();
+        if(verificationToken.isPresent())
+            tokenDao.change(verificationToken.get(),token);
+        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
+                         "\r\n" +
+                       appUrl + "/registrationConfirm.html?token=" + token;
+        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 
     @Transactional
@@ -160,16 +182,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
 
-    @Transactional
-    @Override
-    public VerifyUser createVerify(long userId, long frameworkId, long commentId) {
-        return verifyUserDao.create(userId,frameworkId,commentId);
-    }
 
     @Transactional
     @Override
-    public VerifyUser createVerify(long userId, long frameworkId) {
-        return verifyUserDao.create(userId,frameworkId);
+    public VerifyUser createVerify(User user, Framework framework) {
+        return verifyUserDao.create(user,framework,null);
     }
 
     @Transactional(readOnly = true)
@@ -286,13 +303,26 @@ public class UserServiceImpl implements UserService {
         mailSender.send(email);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getApplicantsByPending(boolean pending, long page) {
         return verifyUserDao.getApplicantsByPending(true, page, PAGESIZE);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page) {
         return verifyUserDao.getApplicantsByFrameworks(frameworksIds, page, PAGESIZE);
+    }
+
+    @Transactional
+    public void internalLogin(String user, String pass, HttpServletRequest req) {
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user, pass);
+        Authentication auth = authManager.authenticate(authReq);
+
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+        HttpSession session = req.getSession(true);
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 }

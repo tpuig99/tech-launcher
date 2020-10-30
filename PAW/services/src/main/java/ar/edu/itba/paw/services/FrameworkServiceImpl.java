@@ -139,7 +139,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     @Transactional(readOnly = true)
     @Override
     public List<Framework> getCompetitors(Framework framework) {
-        List<Framework> toReturn = getByCategory(framework.getFrameCategory(), 1);
+        List<Framework> toReturn = getByCategory(framework.getCategory(), 1);
         toReturn.remove(framework);
         return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
     }

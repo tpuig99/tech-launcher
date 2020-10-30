@@ -53,19 +53,20 @@ public class UserProfileController {
         ModelAndView mav = new ModelAndView("session/user_profile");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
-        final Optional<User> user = us.findByUsername(username);
-        if (user.isPresent()) {
+        final Optional<User> userOptional = us.findByUsername(username);
+        if (userOptional.isPresent()) {
             LOGGER.info("User Profile: Requested user {} exists, retrieving data", username);
 
-            long userId = user.get().getId();
-            mav.addObject("profile", user.get());
-            mav.addObject("previousDescription", user.get().getDescription());
+            long userId = userOptional.get().getId();
+            mav.addObject("profile", userOptional.get());
+            mav.addObject("previousDescription", userOptional.get().getDescription());
 
-            final List<Comment> commentList = commentService.getCommentsByUser(userId, STARTPAGE);
-            final List<Content> contentList = contentService.getContentByUser(userId, STARTPAGE);
-            final List<FrameworkVote> votesList = voteService.getAllByUser(userId, STARTPAGE);
-            final List<Framework> frameworks = frameworkService.getByUser(userId, STARTPAGE);
-            final Optional<Integer> contentCount = contentService.getContentCountByUser(userId);
+            User user = userOptional.get();
+            final List<Comment> commentList =commentService.getCommentsByUser(userId, STARTPAGE);
+            final List<Content> contentList = user.getContents();
+            final List<FrameworkVote> votesList = user.getFrameworkVotes();
+            final List<Framework> frameworks = user.getOwnedFrameworks();
+            final Optional<Long> contentCount = contentService.getContentCountByUser(userId);
             final Optional<Integer> commentsCount = commentService.getCommentsCountByUser(userId);
             final Optional<Integer> votesCount = voteService.getAllCountByUser(userId);
             final Optional<Integer> frameworksCount = frameworkService.getByUserCount(userId);
@@ -85,9 +86,9 @@ public class UserProfileController {
             mav.addObject("frameworks_page_size", frameworkPageSize);
             frameworksCount.ifPresent(value -> mav.addObject("frameworksCount", value));
             mav.addObject("page_size", pageSize);
-            mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
-            mav.addObject("isAdmin", user.get().isAdmin());
-            mav.addObject("isAllowMod", user.get().isAllowMod());
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("isAdmin", user.isAdmin());
+            mav.addObject("isAllowMod", user.isAllowMod());
             return mav;
         }
 
@@ -117,7 +118,7 @@ public class UserProfileController {
             final List<Content> contentList = contentService.getContentByUser(userId, contentsPage);
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId, votesPage);
             final List<Framework> frameworks = frameworkService.getByUser(userId, frameworksPage);
-            final Optional<Integer> contentCount = contentService.getContentCountByUser(userId);
+            final Optional<Long> contentCount = contentService.getContentCountByUser(userId);
             final Optional<Integer> commentsCount = commentService.getCommentsCountByUser(userId);
             final Optional<Integer> votesCount = voteService.getAllCountByUser(userId);
             final Optional<Integer> frameworksCount = frameworkService.getByUserCount(userId);

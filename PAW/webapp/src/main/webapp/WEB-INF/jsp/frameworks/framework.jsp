@@ -47,8 +47,8 @@
                     <div class="row">
                         <div class="col">
                             <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
-                            <div><spring:message code="tech.author"/>:&nbsp;<a href="<c:url value="/users/${framework.author}"/>">${framework.author}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i></div>
-                            <div><spring:message code="tech.date"/>:&nbsp;${framework.publish_date.toLocaleString()}</div>
+                            <div><spring:message code="tech.author"/>:&nbsp;<a href="<c:url value="/users/${framework.author.username}"/>">${framework.author.username}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i></div>
+                            <div><spring:message code="tech.date"/>:&nbsp;${framework.publishDate.toLocaleString()}</div>
                             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.category"/>"> ${category_translated}</span>
                             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.type"/>"> ${type_translated}</span>
                         </div>
@@ -322,7 +322,7 @@
 
                                                     <button class="btn upVote btn-link" type="submit">
                                                         <c:choose>
-                                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote > 0}">
+                                                            <c:when test="${comment.getUserAuthVote(user.name) > 0}">
                                                                 <i class="fa fa-arrow-up arrow votedUp"> ${comment.votesUp}</i>
                                                             </c:when>
                                                             <c:otherwise>
@@ -359,7 +359,7 @@
 
                                                     <button class=" btn upVote btn-link" type="submit">
                                                         <c:choose>
-                                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote < 0}">
+                                                            <c:when test="${comment.getUserAuthVote(user.name) < 0}">
                                                                 <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
                                                             </c:when>
                                                             <c:otherwise>
@@ -384,13 +384,13 @@
                                 <div class="col secondary-font">
                                     <a href="<c:url value='/users/${comment.userName}'/>">
                                         <c:choose>
-                                            <c:when test="${comment.userName == framework.author}">
+                                            <c:when test="${comment.userName == framework.author.username}">
                                                 <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i>
                                             </c:when>
-                                            <c:when test="${comment.admin}">
+                                            <c:when test="${comment.user.admin}">
                                                 <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-admin" data-toggle="tooltip" title="<spring:message code="tooltip.admin"/>"></i>
                                             </c:when>
-                                            <c:when test="${comment.verify}">
+                                            <c:when test="${comment.user.isVerifyForFramework(framework.id)}">
                                                 <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="<spring:message code="tooltip.moderator"/>"></i>
                                             </c:when>
                                         </c:choose>
@@ -633,7 +633,7 @@
             <div class="container d-flex">
                 <c:forEach items="${competitors}" var="competitor">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="<c:url value="/${competitor.frameCategory}/${competitor.id}"/>">
+                        <a href="<c:url value="/${competitor.category.nameCat}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <c:choose>
                                     <c:when test="${not empty competitor.base64image}">

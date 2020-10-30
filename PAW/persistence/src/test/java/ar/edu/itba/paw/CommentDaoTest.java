@@ -121,11 +121,10 @@ public class CommentDaoTest {
         final int commentId = jdbcInsert.executeAndReturnKey(args).intValue();
 
         // Act
-        final int returnValue = commentDao.deleteComment(commentId);
+        commentDao.deleteComment(commentId);
 
         // Assert
-        Assert.assertEquals(1, returnValue);
-        Assert.assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comments", "comment_id =" + returnValue));
+        Assert.assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comments", "comment_id =" + commentId));
     }
 
     @Test
@@ -139,10 +138,9 @@ public class CommentDaoTest {
         }
 
         // Act
-        final int returnValue = commentDao.deleteComment(commentId);
+        commentDao.deleteComment(commentId);
 
         // Assert
-        Assert.assertEquals(SIZE, returnValue);
         Assert.assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comments", "comment_id =" + commentId));
         Assert.assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comments", "reference =" + commentId));
     }

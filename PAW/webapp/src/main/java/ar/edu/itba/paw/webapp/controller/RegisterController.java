@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,12 +31,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Optional;
 
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Controller
 public class RegisterController {
@@ -51,8 +50,6 @@ public class RegisterController {
     @Autowired
     MessageSource messageSource;
 
-    @Autowired
-    AuthenticationManager authManager;
 
     @RequestMapping("/register")
     public ModelAndView index(@ModelAttribute("registerForm") final UserForm form) {
@@ -76,7 +73,7 @@ public class RegisterController {
             String appUrl = request.getRequestURL().toString();
             appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl, false));
-            internalLogin(form.getUsername(), form.getPassword(),request);
+            us.internalLogin(form.getUsername(), form.getPassword(),request);
             LOGGER.info("Register: User '{}' registered successfully with id {}", registered.getUsername(),registered.getId());
 
         } catch (UserAlreadyExistException uaeEx) {
@@ -135,7 +132,7 @@ public class RegisterController {
                     return "redirect:/register/success/2";
                 }
                 Calendar cal = Calendar.getInstance();
-                if ((verificationToken.get().getexpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
+                if ((verificationToken.get().getExpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
                     LOGGER.error("Register: Verification token for user {} expired", user.get().getId());
                     model.addAttribute("message", messageSource.getMessage("register.error.link_expired", new Object[]{}, LocaleContextHolder.getLocale()));
                     model.addAttribute("expired", true);
@@ -165,7 +162,7 @@ public class RegisterController {
         Optional<VerificationToken> verificationToken = us.getVerificationToken(existingToken);
 
         if (verificationToken.isPresent()) {
-            Optional<User> registered = us.findById((int) verificationToken.get().getUserId());
+            Optional<User> registered = Optional.ofNullable(verificationToken.get().getUser());
             String appUrl = request.getRequestURL().toString();
             appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
             if (registered.isPresent()) {
@@ -213,7 +210,7 @@ public class RegisterController {
             Optional<User> optionalUser = us.findById(form.getUserId());
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
-                internalLogin(user.getUsername(), form.getPassword(), request);
+                us.internalLogin(user.getUsername(), form.getPassword(), request);
             }
         }
         ModelAndView mav = new ModelAndView("/session/successful_cngPassw");
@@ -223,15 +220,8 @@ public class RegisterController {
         return mav;
     }
 
-    private void internalLogin(String user, String pass, HttpServletRequest req) {
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user, pass);
-        Authentication auth = authManager.authenticate(authReq);
 
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(auth);
-        HttpSession session = req.getSession(true);
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-    }
+
 
     @RequestMapping(value = "/forgetpassword")
     public ModelAndView forgetPassword(@ModelAttribute("ForgetPassForm") final ForgetPassForm form) {

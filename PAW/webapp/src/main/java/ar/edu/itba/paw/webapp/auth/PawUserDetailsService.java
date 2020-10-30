@@ -31,7 +31,7 @@ public class PawUserDetailsService implements UserDetailsService {
         if(user.get().isAdmin()){
             aut.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
-        if(user.get().isVerify()){
+        if(user.get().isEnable() && user.get().isVerify()){
             aut.add(new SimpleGrantedAuthority("ROLE_MODERATOR"));
         }
         final Collection<? extends GrantedAuthority> authorities = aut;
