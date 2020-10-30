@@ -105,20 +105,28 @@ public class CommentServiceImpl implements CommentService {
             cmtVotes.insert(commentId, userId, voteSign);
         }
         Optional<Comment> comment = cmts.getById(commentId);
-        if(voteSign>0)
-            checkForVerify(comment);
-        return comment;
-    }
-    private void checkForVerify(Optional<Comment> comment) {
-        if(comment.isPresent() && comment.get().getVotesUp()==VOTES_FOR_VERIFY){
-            Comment c=comment.get();
-            Optional<User> user = userDao.findById(c.getUserId());
-            if(user.isPresent() && user.get().isAllowMod() && !user.get().isAdmin() && !user.get().hasAppliedToFramework(c.getFrameworkId())) {
-                    verifyUserDao.create(c.getUser(), c.getFramework(), c);
 
+        if(voteSign > 0) {
+            if(comment.isPresent() && comment.get().getVotesUp()==VOTES_FOR_VERIFY){
+                Comment c = comment.get();
+                Optional<User> user = Optional.ofNullable(c.getUser());
+                if(user.isPresent() && user.get().isAllowMod() && !user.get().isAdmin() && !user.get().hasAppliedToFramework(c.getFrameworkId())) {
+                    verifyUserDao.create(c.getUser(), c.getFramework(), c);
+                }
             }
         }
+        return comment;
     }
+
+//    private void promoteToModeratorIfMeetRequirements(Optional<Comment> comment) {
+//        if(comment.isPresent() && comment.get().getVotesUp()==VOTES_FOR_VERIFY){
+//            Comment c=comment.get();
+//            Optional<User> user = Optional.ofNullable(c.getUser());
+//            if(user.isPresent() && user.get().isAllowMod() && !user.get().isAdmin() && !user.get().hasAppliedToFramework(c.getFrameworkId())) {
+//                    verifyUserDao.create(c.getUser(), c.getFramework(), c);
+//            }
+//        }
+//    }
 
     @Transactional(readOnly = true)
     @Override
