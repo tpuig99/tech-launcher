@@ -104,10 +104,10 @@ public class CommentServiceImpl implements CommentService {
         }else {
             cmtVotes.insert(commentId, userId, voteSign);
         }
-        Optional<Comment> comment = cmts.getById(commentId);
+        Optional<Comment> comment = getById(commentId);
 
-        if(voteSign > 0) {
-            if(comment.isPresent() && comment.get().getVotesUp()==VOTES_FOR_VERIFY){
+        if(voteSign > 0 && (!vote.isPresent() || vote.get().getVote()!=voteSign) && comment.isPresent()) {
+            if(comment.get().getVotesUp()==(VOTES_FOR_VERIFY - 1)){
                 Comment c = comment.get();
                 Optional<User> user = Optional.ofNullable(c.getUser());
                 if(user.isPresent() && user.get().isAllowMod() && !user.get().isAdmin() && !user.get().hasAppliedToFramework(c.getFrameworkId())) {
