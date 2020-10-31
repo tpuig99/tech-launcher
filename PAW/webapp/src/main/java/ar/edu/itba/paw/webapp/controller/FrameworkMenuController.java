@@ -33,40 +33,12 @@ public class FrameworkMenuController {
     @Autowired
     private TranslationService ts;
 
-    final private long startPage = 1;
+    private final String START_PAGE = "1";
     final private long PAGESIZE = 7;
 
     @RequestMapping("/{category}")
-    public ModelAndView frameworkMenu(@PathVariable String category) {
-        final ModelAndView mav = new ModelAndView("frameworks/frameworks_menu");
-
-        final Optional<FrameworkCategories> enumCategory = Optional.ofNullable(FrameworkCategories.getByName(category));
-
-        if (enumCategory.isPresent()) {
-            LOGGER.info("Techs: Getting Techs by category '{}'", enumCategory.get().getNameCat());
-
-            List<Framework> frameworks = fs.getByCategory(enumCategory.get(), startPage);
-
-            mav.addObject("category",category);
-            mav.addObject("category_translation",ts.getCategory(category));
-            mav.addObject("frameworksList", frameworks);
-            mav.addObject("frameworks_page", startPage);
-            mav.addObject("page_size", PAGESIZE);
-            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-
-            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            user.ifPresent(value -> mav.addObject("user_isMod", value.isVerify() || value.isAdmin()));
-
-            return mav;
-        }
-
-        LOGGER.error("Techs: Requested category '{}' was invalid", category);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping("/{category}/pages")
     public ModelAndView frameworkMenuPaging(@PathVariable String category,
-                                            @RequestParam("frameworks_page") final long frameworksPage) {
+                                            @RequestParam(value = "frameworks_page", required = false, defaultValue = START_PAGE) Long frameworksPage) {
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_menu");
 
         final Optional<FrameworkCategories> enumCategory = Optional.ofNullable(FrameworkCategories.getByName(category));

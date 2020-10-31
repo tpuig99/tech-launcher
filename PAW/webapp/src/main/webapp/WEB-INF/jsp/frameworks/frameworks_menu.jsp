@@ -60,11 +60,12 @@
         <li class="page-item ">
             </c:otherwise>
             </c:choose>
-            <a class="page-link" href="<c:url value="/${category}/pages?frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
+            <a class="page-link" href="<c:url value="/${category}?frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
                 <span aria-hidden="true">&lsaquo;</span>
                 <span class="sr-only">Previous</span>
             </a>
         </li>
+        <li class="page-item"><div class="page-link">${frameworks_page}</div></li>
         <c:choose>
         <c:when test="${frameworksList.size() < page_size}">
         <li class="page-item disabled">
@@ -73,7 +74,7 @@
         <li class="page-item">
             </c:otherwise>
             </c:choose>
-            <a class="page-link" href="<c:url value="/${category}/pages?frameworks_page=${frameworks_page+1}"/>" aria-label="Next">
+            <a class="page-link" href="<c:url value="/${category}?frameworks_page=${frameworks_page+1}"/>" aria-label="Next">
                 <span aria-hidden="true">&rsaquo;</span>
                 <span class="sr-only">Next</span>
             </a>
