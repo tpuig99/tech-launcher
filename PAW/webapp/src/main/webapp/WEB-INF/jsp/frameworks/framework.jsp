@@ -450,11 +450,11 @@
                             </div>
 
                             <div  class="collapse multi-collapse" id="See${comment.commentId}">
-                                <c:if test="${empty replies.get(comment.commentId)}">
+                                <c:if test="${empty comment.replies}">
                                     <div><spring:message code="tech.comment.no_replies_yet"/></div>
                                 </c:if>
-                                <c:if test="${not empty replies.get(comment.commentId)}">
-                                    <c:forEach var="reply" items="${replies.get(comment.commentId)}" varStatus="loop">
+                                <c:if test="${not empty comment.replies}">
+                                    <c:forEach var="reply" items="${comment.replies}" varStatus="loop">
                                         <div class="row margin-left">
                                             <div class="row d-flex align-items-center ">
                                                 <div class="vertical-divider margin-left">

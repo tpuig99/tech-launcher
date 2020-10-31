@@ -2,7 +2,6 @@ package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,6 +29,10 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reference")
+    private List<Comment> replies;
 
     /*this refers to the other relation mapped in CommentVote*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
@@ -200,6 +203,14 @@ public class Comment {
 
     public VerifyUser getVerifyUser() {
         return verifyUser;
+    }
+
+    public List<Comment> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<Comment> replies) {
+        this.replies = replies;
     }
 }
 

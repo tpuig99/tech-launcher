@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.form.framework.ContentForm;
 import ar.edu.itba.paw.webapp.form.framework.*;
 import ar.edu.itba.paw.webapp.form.frameworks.*;
 import org.slf4j.Logger;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -86,7 +84,6 @@ public class FrameworkController {
 
         if (framework.isPresent()) {
             LOGGER.info("Tech {}: Requested and found, retrieving data", id);
-            Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
             mav.addObject("framework", framework.get());
             mav.addObject("category_translated", ts.getCategory(framework.get().getCategory().getNameCat()));
             mav.addObject("type_translated", ts.getType(framework.get().getType().getType()));
@@ -103,14 +100,15 @@ public class FrameworkController {
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
             mav.addObject("comments_page", commentsPage);
 
-            mav.addObject("replies", replies);
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
+            List<Comment> comments = commentService.getCommentsWithoutReferenceByFramework(id, commentsPage);
+            mav.addObject("comments",comments);
+
             if( optionalUser.isPresent()){
                 User user = optionalUser.get();
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,user.getId(), commentsPage);
-                mav.addObject("comments",comments);
+
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
                 mav.addObject("isAdmin",user.isAdmin());
@@ -118,16 +116,14 @@ public class FrameworkController {
                 mav.addObject("allowMod",user.isAllowMod());
                 mav.addObject("isOwner", framework.get().getAuthor().getUsername().equals(user.getUsername()));
                 Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
+
                 if(fv.isPresent()){
                     mav.addObject("stars",fv.get().getStars());
                 }else{
                     mav.addObject("stars",0);
                 }
             }
-            else{
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,null, commentsPage);
-                mav.addObject("comments",comments);
-            }
+
             return mav;
         }
         LOGGER.error("Tech {}: Requested and not found", id);

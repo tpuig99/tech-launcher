@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.CommentVote;
+import ar.edu.itba.paw.models.ReportComment;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.*;
 import ar.edu.itba.paw.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -46,8 +48,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Comment> getCommentsWithoutReferenceByFrameworkWithUser(long frameworkId,Long userId, long page) {
-        return cmts.getCommentsWithoutReferenceByFrameworkWithUser(frameworkId,userId, page, PAGESIZE);
+    public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId, long page) {
+        return cmts.getCommentsWithoutReferenceByFramework(frameworkId, page, PAGESIZE);
     }
 
     @Transactional(readOnly = true)
@@ -66,12 +68,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Optional<Integer> getCommentsCountByUser(long userId){
         return cmts.getCommentsCountByUser(userId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Map<Long, List<Comment>> getRepliesByFramework(long frameworkId) {
-        return cmts.getRepliesByFramework(frameworkId);
     }
 
     @Transactional
