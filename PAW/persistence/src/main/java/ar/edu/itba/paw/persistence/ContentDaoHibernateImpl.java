@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -40,9 +39,9 @@ public class ContentDaoHibernateImpl implements  ContentDao{
     }
 
     @Override
-    public List<Content> getContentByFrameworkAndType(long userId, ContentTypes type, long page, long pageSize) {
-        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.user.id = :userId and c.type = :type", Content.class);
-        query.setParameter("userId",userId);
+    public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page, long pageSize) {
+        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.framework.id = :frameworkId and c.type = :type", Content.class);
+        query.setParameter("frameworkId",frameworkId);
         query.setParameter("type",type);
         query.setMaxResults((int) pageSize);
         query.setFirstResult((int) ((page-1)*pageSize));

@@ -50,8 +50,8 @@ public class FrameworkController {
     @Autowired
     private MessageSource messageSource;
 
-    private final long startPage = 1;
-    private final long pageSize = 5;
+    private final String START_PAGE = "1";
+    private final long PAGE_SIZE = 5;
 
     public static ModelAndView redirectToFramework(Long id, String category) {
         return new ModelAndView("redirect:/" + category + "/" + id);
@@ -72,61 +72,13 @@ public class FrameworkController {
     }
 
     @RequestMapping("/{category}/{id}")
-    public ModelAndView framework(@PathVariable long id, @PathVariable String category) {
-        final ModelAndView mav = new ModelAndView("frameworks/framework");
-        Optional<Framework> framework = fs.findById(id);
+    public ModelAndView framework(@PathVariable long id,
+                                  @PathVariable String category,
+                                  @RequestParam(value = "books_page", required = false, defaultValue = START_PAGE) Long booksPage,
+                                  @RequestParam(value = "courses_page", required = false, defaultValue = START_PAGE) Long coursesPage,
+                                  @RequestParam(value = "tutorials_page", required = false, defaultValue = START_PAGE) Long tutorialsPage,
+                                  @RequestParam(value = "comments_page", required = false, defaultValue = START_PAGE) Long commentsPage) {
 
-        loadForms(mav);
-
-        if (framework.isPresent()) {
-            LOGGER.info("Tech {}: Requested and found, retrieving data", id);
-            Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
-            Framework frame = framework.get();
-            mav.addObject("framework", frame);
-            mav.addObject("category_translated", ts.getCategory(frame.getCategory().getNameCat()));
-            mav.addObject("type_translated", ts.getType(frame.getType().getType()));
-
-            mav.addObject("books", frame.getContentByType(ContentTypes.book));
-            mav.addObject("books_page", startPage);
-            mav.addObject("courses", frame.getContentByType(ContentTypes.course));
-            mav.addObject("courses_page", startPage);
-            mav.addObject("tutorials", frame.getContentByType(ContentTypes.tutorial));
-            mav.addObject("tutorials_page", startPage);
-            mav.addObject("page_size", pageSize);
-            mav.addObject("category", category);
-            mav.addObject("competitors", fs.getCompetitors(framework.get()));
-            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-            mav.addObject("comments_page", startPage);
-            mav.addObject("comments",frame.getComments());
-
-            mav.addObject("replies", replies);
-
-            Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            if( optionalUser.isPresent()){
-                User user = optionalUser.get();
-                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-                mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
-                mav.addObject("hasAppliedToFramework",user.hasAppliedToFramework(id));
-                mav.addObject("isAdmin",user.isAdmin());
-                mav.addObject("isEnable",user.isEnable());
-                mav.addObject("allowMod",user.isAllowMod());
-                mav.addObject("isOwner", framework.get().getAuthor().getUsername().equals(user.getUsername()));
-                Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
-                if(fv.isPresent()){
-                    mav.addObject("stars",fv.get().getStars());
-                }else{
-                    mav.addObject("stars",0);
-                }
-            }
-
-            return mav;
-        }
-        LOGGER.error("Tech {}: Requested and not found", id);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping("/{category}/{id}/pages")
-    public ModelAndView framework(@PathVariable long id, @PathVariable String category, @RequestParam(value = "books_page", required = false) final long booksPage, @RequestParam(value = "courses_page", required = false) final long coursesPage, @RequestParam(value = "tutorials_page", required = false) final long tutorialsPage, @RequestParam(value = "comments_page", required = false) final long commentsPage) {
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Optional<Framework> framework = fs.findById(id);
 
@@ -145,7 +97,7 @@ public class FrameworkController {
             mav.addObject("courses_page", coursesPage);
             mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial, tutorialsPage));
             mav.addObject("tutorials_page", tutorialsPage);
-            mav.addObject("page_size", pageSize);
+            mav.addObject("page_size", PAGE_SIZE);
             mav.addObject("category", category);
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
@@ -307,7 +259,7 @@ public class FrameworkController {
         if (framework.isPresent()) {
             if(errors.hasErrors()){
                 LOGGER.info("Tech {}: Content Form has errors", frameworkId);
-                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory().getNameCat());
+                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory().getNameCat(), null, null, null, null);
 
                 loadForms(framework1);
                 framework1.addObject("contentFormError", true);
