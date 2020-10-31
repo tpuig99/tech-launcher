@@ -146,31 +146,32 @@
                 </ul>
                 <ul class="pagination justify-content-center">
                     <c:choose>
-                    <c:when test="${books_page == 1}">
-                    <li class="page-item disabled">
+                        <c:when test="${books_page == 1}">
+                            <li class="page-item disabled">
                         </c:when>
                         <c:otherwise>
-                    <li class="page-item ">
+                            <li class="page-item ">
                         </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}?books_page=${books_page-1}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Previous">
-                            <span aria-hidden="true">&lsaquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
+                    </c:choose>
+                                <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}?books_page=${books_page-1}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Previous">
+                                    <span aria-hidden="true">&lsaquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                            <li class="page-item"><div class="page-link">${books_page}</div></li>
                     <c:choose>
-                    <c:when test="${books.size() < page_size}">
-                    <li class="page-item disabled">
+                        <c:when test="${(books_page + 1) * page_size > framework.booksAmount}">
+                            <li class="page-item disabled">
                         </c:when>
                         <c:otherwise>
-                    <li class="page-item">
+                            <li class="page-item">
                         </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}?books_page=${books_page+1}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Next">
-                            <span aria-hidden="true">&rsaquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
+                    </c:choose>
+                                <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}?books_page=${books_page+1}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Next">
+                                    <span aria-hidden="true">&rsaquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
                 </ul>
             </div>
         </c:if>
@@ -218,8 +219,9 @@
                             <span class="sr-only">Previous</span>
                         </a>
                     </li>
+                    <li class="page-item"><div class="page-link">${courses_page}</div></li>
                     <c:choose>
-                    <c:when test="${courses.size() < page_size}">
+                    <c:when test="${(courses_page + 1) * page_size > framework.coursesAmount}">
                     <li class="page-item disabled">
                         </c:when>
                         <c:otherwise>
@@ -277,8 +279,9 @@
                             <span class="sr-only">Previous</span>
                         </a>
                     </li>
+                    <li class="page-item"><div class="page-link">${tutorials_page}</div></li>
                     <c:choose>
-                    <c:when test="${tutorials.size() < page_size}">
+                    <c:when test="${(tutorials_page + 1) * page_size > framework.tutorialsAmount}">
                     <li class="page-item disabled">
                         </c:when>
                         <c:otherwise>
@@ -528,8 +531,11 @@
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
+                    <li class="page-item"><div class="page-link">${comments_page}</div></li>
+                <p>${(comments_page)} * ${page_size} = ${comments.size()} </p>
                 <c:choose>
-                <c:when test="${comments.size() < page_size}">
+                <c:when test="${(comments_page * page_size) >= comments.size()}">
+
                 <li class="page-item disabled">
                     </c:when>
                     <c:otherwise>

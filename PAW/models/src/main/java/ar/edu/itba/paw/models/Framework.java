@@ -310,4 +310,20 @@ public class Framework {
         }
         return content;
     }
+
+    public long getBooksAmount() {
+        return getContentAmount(ContentTypes.book);
+    }
+
+    public long getCoursesAmount() {
+        return getContentAmount(ContentTypes.course);
+    }
+
+    public long getTutorialsAmount() {
+        return getContentAmount(ContentTypes.tutorial);
+    }
+
+    public long getContentAmount(ContentTypes type) {
+        return contents.stream().filter((x) -> x.getType() == type).count();
+    }
 }
