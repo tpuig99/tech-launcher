@@ -286,70 +286,26 @@
                     </div>
                 </c:forEach>
             </div>
-
             <!-- Paginación -->
-            <c:if test="${(searchResultsNumber/page_size) > 1}">
-                <ul class="pagination justify-content-center mt-2">
-                    <c:choose>
-                    <c:when test="${page == 1}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item ">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" onclick="moveToPage(${page-1})" aria-label="Previous">
-                            <span aria-hidden="true">&lsaquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                        <c:choose>
-                            <c:when test="${(searchResultsNumber/page_size) <= 2}">
-                                <li class="page-item <c:if test="${page == 1}">active</c:if>"><div class="page-link" onclick="moveToPage(1)" >1</div></li>
-                                <li class="page-item <c:if test="${page == 2}">active</c:if>"><div class="page-link" onclick="moveToPage(2)" >2</div></li>
-                            </c:when>
-                            <c:otherwise>
-                                <c:choose>
-                                    <c:when test="${page < 3}">
-                                        <li class="page-item <c:if test="${page == 1}">active</c:if>"><div class="page-link" onclick="moveToPage(1)" >1</div></li>
-                                        <li class="page-item <c:if test="${page == 2}">active</c:if>"><div class="page-link" onclick="moveToPage(2)" >2</div></li>
-                                        <li class="page-item <c:if test="${page == 3}">active</c:if>"><div class="page-link" onclick="moveToPage(3)" >3</div></li>
-                                        <c:if test="${(searchResultsNumber/page_size) > 3}">
-                                            <li class="page-item <c:if test="${page == 4}">active</c:if>"><div class="page-link" onclick="moveToPage(4)" >4</div></li>
-                                        </c:if>
-                                        <c:if test="${(searchResultsNumber/page_size) > 4}">
-                                            <li class="page-item <c:if test="${page == 5}">active</c:if>"><div class="page-link" onclick="moveToPage(5)" >5</div></li>
-                                        </c:if>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <li class="page-item"><div class="page-link" onclick="moveToPage(${page-2})">${page-2}</div></li>
-                                        <li class="page-item"><div class="page-link" onclick="moveToPage(${page-1})">${page-1}</div></li>
-                                        <li class="page-item active"><div class="page-link">${page}</div></li>
-                                        <c:if test="${(searchResultsNumber/page_size)-page > 0 }">
-                                            <li class="page-item"><div class="page-link" onclick="moveToPage(${page+1})">${page+1}</div></li>
-                                            <c:if test="${(searchResultsNumber/page_size)-page >=1 }">
-                                                <li class="page-item"><div class="page-link" onclick="moveToPage(${page+2})">${page+2}</div></li>
-                                            </c:if>
-                                        </c:if>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:otherwise>
-                        </c:choose>
-                   <c:choose>
-                    <c:when test="${page_size*page >= searchResultsNumber}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" onclick="moveToPage(${page+1})" aria-label="Next">
-                            <span aria-hidden="true">&rsaquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </c:if>
+            <jsp:include page="../components/pagination.jsp">
+                <jsp:param name="total" value="${searchResultsNumber}"/>
+                <jsp:param name="page" value="${page}"/>
+                <jsp:param name="page_size" value="${page_size}"/>
+                <jsp:param name="origin" value="search"/>
+                <jsp:param name="toSearch" value="${techNameQuery}"/>
+                <jsp:param name="categories" value="${categoriesQuery}"/>
+                <jsp:param name="types" value="${typesQuery}"/>
+                <jsp:param name="star1" value="${starsQuery1}"/>
+                <jsp:param name="star2" value="${starsQuery2}"/>
+                <jsp:param name="nameFlag" value="${nameFlagQuery}"/>
+                <jsp:param name="order" value="${orderValue}"/>
+                <jsp:param name="commentAmount" value="${commentAmount}"/>
+                <jsp:param name="commentDate" value="${dateComment}"/>
+                <jsp:param name="updateDate" value="${dateUpdate}"/>
+
+
+            </jsp:include>
+
         </c:otherwise>
     </c:choose>
 </div>
@@ -407,7 +363,7 @@
         let order = getOrder();
 
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(star1) && isEmpty(star2) && isEmpty(commentAmount) && isEmpty(commentDate) && isEmpty(updateDate))) {
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag +'&commentAmount=' + commentAmount +'&lastComment=' + commentDate +'&lastUpdate=' + updateDate +'&order=' + order;
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag +'&commentAmount=' + commentAmount +'&lastComment=' + commentDate +'&lastUpdate=' + updateDate +'&order=' + order + '&page=1';
         }
 
     }
@@ -485,7 +441,43 @@
         document.getElementById("showMore"+element).style.display = "block";
         document.getElementById("showLess"+element).style.display = "none";
     }
+    <%--function moveToPage(goingPage){--%>
+    <%--    console.log(${page} ${searchResultsNumber} ${page_size});--%>
+    <%--    let url = "<c:url value="/search?toSearch="/>" ;--%>
+    <%--    <c:if test="${not empty techNameQuery}">--%>
+    <%--    url = url + ${techNameQuery};--%>
+    <%--    </c:if>--%>
+    <%--    <c:if test="${not empty categoriesQuery}">--%>
+    <%--    url = url + '&categories=' + ${categoriesQuery};--%>
+    <%--    </c:if>--%>
+    <%--    <c:if test="${not empty typesQuery}">--%>
+    <%--    url = url + '&types=' + ${typesQuery};--%>
+    <%--    </c:if>--%>
+    <%--    <c:if test="${not empty starsQuery1}">--%>
+    <%--    url = url + '&starsLeft=' + ${starsQuery1};--%>
+    <%--    </c:if>--%>
+    <%--    <c:if test="${not empty starsQuery2}">--%>
+    <%--    url = url + '&starsRight=' + ${starsQuery2};--%>
+    <%--    </c:if>--%>
+    <%--    <c:if test="${not empty nameFlagQuery}">--%>
+    <%--    url = url + '&nameFlag=' + ${nameFlagQuery};--%>
+    <%--    </c:if>--%>
+    <%--    <c:if test="${not empty commentAmount}">--%>
+    <%--    url = url +'&commentAmount=' + ${commentAmount};--%>
+    <%--    </c:if>--%>
+    <%--    <c:if test="${not empty dateComment}">--%>
+    <%--    url = url +'&lastComment=' + ${dateComment};--%>
+    <%--    </c:if>--%>
+    <%--    <c:if test="${not empty dateUpdate}">--%>
+    <%--    url = url +'&lastUpdate=' + ${dateUpdate};--%>
+    <%--    </c:if>--%>
+    <%--    <c:if test="${not empty orderValue}">--%>
+    <%--    url = url +'&order=' + ${orderValue};--%>
+    <%--    </c:if>--%>
+    <%--    url = url +'&page='+goingPage;--%>
+    <%--    window.location.href = url;--%>
 
+    <%--}--%>
 
 
     function getCheckedTypes(){
@@ -503,56 +495,13 @@
         return queryTypes;
     }
 
-    function nextPage(){
-        let url = "<c:url value="/search?toSearch="/>" + "${techNameQuery}";
-
-        let categories = [];
-        <c:forEach var = "category" items="${categoriesQuery}">
-            categories.push("${category}");
-        </c:forEach>
-        url = url + "&categories=" + categories;
-
-        let types = [];
-        <c:forEach var = "type" items="${typesQuery}">
-            types.push("${type}");
-        </c:forEach>
-        url = url + "&types=" + types;
-
-        url = url + "&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderValue}&page=${page+1}";
-        window.location.href = url;
-    }
-
-    function moveToPage(goingPage){
-        console.log(goingPage);
-        let url = "<c:url value="/search?toSearch="/>" + "${techNameQuery}";
-
-        let categories = [];
-        <c:forEach var = "category" items="${categoriesQuery}">
-        categories.push("${category}");
-        </c:forEach>
-        url = url + "&categories=" + categories;
-
-        let types = [];
-        <c:forEach var = "type" items="${typesQuery}">
-        types.push("${type}");
-        </c:forEach>
-        url = url + "&types=" + types;
-
-        url = url + "&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderValue}&page="+goingPage;
-        window.location.href = url;
-    }
-
     function getCheckedCategories(){
         let queryCategories = "";
 
         <c:forEach items="${categories}" var="category" >
 
         if(document.getElementById('check'+'${category}').checked) {
-            <%--document.getElementById('badge'+'${category}').style.display = "inline";--%>
             queryCategories = queryCategories.concat('${category},');
-
-        }else{
-            <%--document.getElementById('badge'+'${category}').style.display = "none";--%>
         }
         </c:forEach>
 
