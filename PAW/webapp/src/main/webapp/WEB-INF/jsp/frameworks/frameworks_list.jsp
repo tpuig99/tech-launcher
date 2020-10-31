@@ -336,6 +336,7 @@
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
+                <li class="page-item"><div class="page-link">${page}</div></li>
                 <c:choose>
                 <c:when test="${page_size*page >= searchResultsNumber}">
                 <li class="page-item disabled">
