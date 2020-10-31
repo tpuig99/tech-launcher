@@ -40,69 +40,21 @@ public class UserProfileController {
     @Autowired
     UserService us;
 
-    final private long pageSize = 5;
-    final private long frameworkPageSize = 7;
-    final private long STARTPAGE = 1;
+    final private long PAGE_SIZE = 5;
+    final private long FRAMEWORK_PAGE_SIZE = 7;
+    final private String START_PAGE = "1";
 
     public static ModelAndView redirectToProfile(String username) {
         return new ModelAndView("redirect:/users/" + username);
     }
 
     @RequestMapping(path={"/users/{username}"}, method = RequestMethod.GET)
-    public ModelAndView userProfile(@PathVariable String username, @ModelAttribute("profileForm") final ProfileForm form) {
-        ModelAndView mav = new ModelAndView("session/user_profile");
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-
-        final Optional<User> userOptional = us.findByUsername(username);
-        if (userOptional.isPresent()) {
-            LOGGER.info("User Profile: Requested user {} exists, retrieving data", username);
-
-            long userId = userOptional.get().getId();
-            mav.addObject("profile", userOptional.get());
-            mav.addObject("previousDescription", userOptional.get().getDescription());
-
-            User user = userOptional.get();
-            final List<Comment> commentList =commentService.getCommentsByUser(userId, STARTPAGE);
-            final List<Content> contentList = user.getContents();
-            final List<FrameworkVote> votesList = user.getFrameworkVotes();
-            final List<Framework> frameworks = user.getOwnedFrameworks();
-            final Optional<Long> contentCount = contentService.getContentCountByUser(userId);
-            final Optional<Integer> commentsCount = commentService.getCommentsCountByUser(userId);
-            final Optional<Integer> votesCount = voteService.getAllCountByUser(userId);
-            final Optional<Integer> frameworksCount = frameworkService.getByUserCount(userId);
-
-            mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
-            mav.addObject("contents", contentList);
-            mav.addObject("contents_page", STARTPAGE);
-            contentCount.ifPresent(value -> mav.addObject("contentCount", value));
-            mav.addObject("comments", commentList);
-            mav.addObject("comments_page", STARTPAGE);
-            commentsCount.ifPresent(value -> mav.addObject("commentsCount", value));
-            mav.addObject("votes", votesList);
-            mav.addObject("votes_page", STARTPAGE);
-            votesCount.ifPresent(value -> mav.addObject("votesCount", value));
-            mav.addObject("frameworks",frameworks);
-            mav.addObject("frameworks_page", STARTPAGE);
-            mav.addObject("frameworks_page_size", frameworkPageSize);
-            frameworksCount.ifPresent(value -> mav.addObject("frameworksCount", value));
-            mav.addObject("page_size", pageSize);
-            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-            mav.addObject("isAdmin", user.isAdmin());
-            mav.addObject("isAllowMod", user.isAllowMod());
-            return mav;
-        }
-
-        LOGGER.error("User Profile: Requested user {} does not exist", username);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/users/{username}/pages"}, method = RequestMethod.GET)
     public ModelAndView userProfilePagination(@PathVariable String username,
                                               @ModelAttribute("profileForm") final ProfileForm form,
-                                              @RequestParam(value = "comments_page", required = false) final long commentsPage,
-                                              @RequestParam(value = "contents_page", required = false) final long contentsPage,
-                                              @RequestParam(value = "votes_page", required = false) final long votesPage,
-                                              @RequestParam(value = "frameworks_page", required = false) final long frameworksPage) {
+                                              @RequestParam(value = "comments_page",  required = false, defaultValue = START_PAGE) final Long commentsPage,
+                                              @RequestParam(value = "contents_page", required = false, defaultValue = START_PAGE) final Long contentsPage,
+                                              @RequestParam(value = "votes_page", required = false, defaultValue = START_PAGE) final Long votesPage,
+                                              @RequestParam(value = "frameworks_page", required = false, defaultValue = START_PAGE) final Long frameworksPage) {
         ModelAndView mav = new ModelAndView("session/user_profile");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
@@ -135,9 +87,9 @@ public class UserProfileController {
             votesCount.ifPresent(value -> mav.addObject("votesCount", value));
             mav.addObject("frameworks",frameworks);
             mav.addObject("frameworks_page", frameworksPage);
-            mav.addObject("frameworks_page_size", frameworkPageSize);
+            mav.addObject("frameworks_page_size", FRAMEWORK_PAGE_SIZE);
             frameworksCount.ifPresent(value -> mav.addObject("frameworksCount", value));
-            mav.addObject("page_size", pageSize);
+            mav.addObject("page_size", PAGE_SIZE);
             mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
             mav.addObject("isAdmin", user.get().isAdmin());
             mav.addObject("isAllowMod", user.get().isAllowMod());
@@ -175,7 +127,7 @@ public class UserProfileController {
         if (user.isPresent() && SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
             if(errors.hasErrors()){
                 LOGGER.info("User Profile: Description Form por updating User {} profile has errors",user.get().getId());
-                final ModelAndView userError = userProfile(username, form);
+                final ModelAndView userError = userProfilePagination(username, form,null,null,null,null);
                 userError.addObject("profileFormError", true);
                 userError.addObject("previousDescription", form.getDescription());
                 return userError;

@@ -138,11 +138,12 @@
                                 <li class="page-item ">
                             </c:otherwise>
                         </c:choose>
-                            <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page-1}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
+                            <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page-1}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
                                 <span aria-hidden="true">&lsaquo;</span>
                                 <span class="sr-only">Previous</span>
                             </a>
                         </li>
+                        <li class="page-item"><div class="page-link">${comments_page}</div></li>
                         <c:choose>
                             <c:when test="${comments_page*page_size >= commentsCount}">
                                 <li class="page-item disabled">
@@ -151,7 +152,7 @@
                                 <li class="page-item">
                             </c:otherwise>
                         </c:choose>
-                                <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page+1}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
+                                <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page+1}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
                                     <span aria-hidden="true">&rsaquo;</span>
                                     <span class="sr-only">Next</span>
                                 </a>
@@ -204,11 +205,12 @@
                         <li class="page-item ">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page-1}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
+                            <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page-1}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
                                 <span aria-hidden="true">&lsaquo;</span>
                                 <span class="sr-only">Previous</span>
                             </a>
                         </li>
+                            <li class="page-item"><div class="page-link">${contents_page}</div></li>
                         <c:choose>
                         <c:when test="${contents_page*page_size >= contentCount}">
                         <li class="page-item disabled">
@@ -217,7 +219,7 @@
                         <li class="page-item">
                             </c:otherwise>
                             </c:choose>
-                            <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page + 1}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
+                            <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page + 1}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
                                 <span aria-hidden="true">&rsaquo;</span>
                                 <span class="sr-only">Next</span>
                             </a>
@@ -264,11 +266,12 @@
                     <li class="page-item ">
                         </c:otherwise>
                         </c:choose>
-                        <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page-1}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
+                        <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page-1}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
                             <span aria-hidden="true">&lsaquo;</span>
                             <span class="sr-only">Previous</span>
                         </a>
                     </li>
+                    <li class="page-item"><div class="page-link">${votes_page}</div></li>
                     <c:choose>
                     <c:when test="${votes_page*page_size*2 >= votesCount}">
                     <li class="page-item disabled">
@@ -277,7 +280,7 @@
                     <li class="page-item">
                         </c:otherwise>
                         </c:choose>
-                        <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page+1}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
+                        <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page+1}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
                             <span aria-hidden="true">&rsaquo;</span>
                             <span class="sr-only">Next</span>
                         </a>
@@ -326,11 +329,12 @@
                 <li class="page-item ">
                     </c:otherwise>
                     </c:choose>
-                    <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
+                    <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
                         <span aria-hidden="true">&lsaquo;</span>
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
+                <li class="page-item"><div class="page-link">${frameworks_page}</div></li>
                 <c:choose>
                 <c:when test="${frameworks_page*frameworks_page_size >= frameworksCount}">
                 <li class="page-item disabled">
@@ -339,7 +343,7 @@
                 <li class="page-item">
                     </c:otherwise>
                     </c:choose>
-                    <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page+1}"/>" aria-label="Next">
+                    <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page+1}"/>" aria-label="Next">
                         <span aria-hidden="true">&rsaquo;</span>
                         <span class="sr-only">Next</span>
                     </a>

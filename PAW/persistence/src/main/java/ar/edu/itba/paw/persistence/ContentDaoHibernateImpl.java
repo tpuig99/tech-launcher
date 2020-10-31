@@ -54,7 +54,7 @@ public class ContentDaoHibernateImpl implements  ContentDao{
         query.setParameter("userId",userId);
         query.setMaxResults((int) pagesize);
         query.setFirstResult((int) ((page-1)*pagesize));
-        return null;
+        return query.getResultList();
     }
 
     @Override
