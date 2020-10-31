@@ -160,7 +160,7 @@
                             </li>
                             <li class="page-item"><div class="page-link">${books_page}</div></li>
                     <c:choose>
-                        <c:when test="${(books_page + 1) * page_size > framework.booksAmount}">
+                        <c:when test="${books_page * page_size >= framework.booksAmount}">
                             <li class="page-item disabled">
                         </c:when>
                         <c:otherwise>
@@ -221,7 +221,7 @@
                     </li>
                     <li class="page-item"><div class="page-link">${courses_page}</div></li>
                     <c:choose>
-                    <c:when test="${(courses_page + 1) * page_size > framework.coursesAmount}">
+                    <c:when test="${courses_page * page_size >= framework.coursesAmount}">
                     <li class="page-item disabled">
                         </c:when>
                         <c:otherwise>
@@ -281,7 +281,7 @@
                     </li>
                     <li class="page-item"><div class="page-link">${tutorials_page}</div></li>
                     <c:choose>
-                    <c:when test="${(tutorials_page + 1) * page_size > framework.tutorialsAmount}">
+                    <c:when test="${tutorials_page * page_size >= framework.tutorialsAmount}">
                     <li class="page-item disabled">
                         </c:when>
                         <c:otherwise>
@@ -532,9 +532,8 @@
                     </a>
                 </li>
                     <li class="page-item"><div class="page-link">${comments_page}</div></li>
-                <p>${(comments_page)} * ${page_size} = ${comments.size()} </p>
                 <c:choose>
-                <c:when test="${(comments_page * page_size) >= comments.size()}">
+                <c:when test="${(comments_page * page_size) >= framework.getCommentsWithoutReferenceAmount()}">
 
                 <li class="page-item disabled">
                     </c:when>
