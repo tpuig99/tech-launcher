@@ -190,26 +190,6 @@
         </div>
     </div>
 
-<%--    <div class="d-flex flex-row justify-content-end">--%>
-<%--        <div class="mx-2">--%>
-<%--            <label class="subtitle" for="sortSelect">Sort</label>--%>
-<%--            <select class="form-control" id="sortSelect" oninput="sortFrameworks()">--%>
-<%--                <option value="0" <c:if test="${sortValue == 0}"> selected </c:if>>None</option>--%>
-<%--                <option value="1"<c:if test="${sortValue == 1}"> selected </c:if>>Rating</option>--%>
-<%--                <option value="2"<c:if test="${sortValue == 2}"> selected </c:if>>Comments</option>--%>
-<%--                <option value="3"<c:if test="${sortValue == 3}"> selected </c:if>>Release</option>--%>
-<%--                <option value="4"<c:if test="${sortValue == 4}"> selected </c:if>>Recently Commented</option>--%>
-<%--            </select>--%>
-<%--        </div>--%>
-<%--        <div class="mx-2">--%>
-<%--            <label class="subtitle" for="orderSelect">Order</label>--%>
-<%--            <select class="form-control" id="orderSelect" oninput="sortFrameworks()">--%>
-<%--                <option value="1" <c:if test="${orderValue == 1}"> selected </c:if>>Descendant</option>--%>
-<%--                <option value="-1"<c:if test="${orderValue == -1}"> selected </c:if>>Ascendant</option>--%>
-<%--            </select>--%>
-<%--        </div>--%>
-<%--    </div>--%>
-
     <!--Search Results For / Explore -->
     <div class="page-description"></div>
     <div class="page-title">
@@ -272,22 +252,6 @@
             </div>
         </div>
 
-        <!-- Sort Dropdown -->
-<%--        <div class="col">--%>
-<%--            <div class="btn-group d-flex justify-content-end margin-top">--%>
-<%--                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--%>
-<%--                    <spring:message code="explore.sort_by"/>--%>
-<%--                </button>--%>
-<%--                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">--%>
-<%--                    <button class="dropdown-item" type="button" onclick="setSort(0)"><spring:message code="explore.sort_none"/></button>--%>
-<%--                    <button class="dropdown-item" type="button" onclick="setSort(1)"><spring:message code="explore.sort_rating"/></button>--%>
-<%--                    <button class="dropdown-item" type="button" onclick="setSort(2)"><spring:message code="explore.sort_comments"/></button>--%>
-<%--                    <button class="dropdown-item" type="button" onclick="setSort(3)"><spring:message code="explore.sort_release"/></button>--%>
-<%--                    <button class="dropdown-item" type="button" onclick="setSort(4)"><spring:message code="explore.sort_recently_commented"/></button>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-
     </div>
 
     <div class="page-description"></div>
@@ -322,40 +286,76 @@
                     </div>
                 </c:forEach>
             </div>
-            <ul class="pagination justify-content-center">
-                <c:choose>
-                <c:when test="${page == 1}">
-                <li class="page-item disabled">
-                    </c:when>
-                    <c:otherwise>
-                <li class="page-item ">
-                    </c:otherwise>
-                    </c:choose>
-                    <a class="page-link" onclick="previousPage()" aria-label="Previous">
-                        <span aria-hidden="true">&lsaquo;</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-                <li class="page-item"><div class="page-link">${page}</div></li>
-                <c:choose>
-                <c:when test="${page_size*page >= searchResultsNumber}">
-                <li class="page-item disabled">
-                    </c:when>
-                    <c:otherwise>
-                <li class="page-item">
-                    </c:otherwise>
-                    </c:choose>
-                    <a class="page-link" onclick="nextPage()" aria-label="Next">
-                        <span aria-hidden="true">&rsaquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            </ul>
+
+            <!-- Paginación -->
+            <c:if test="${(searchResultsNumber/page_size) > 1}">
+                <ul class="pagination justify-content-center mt-2">
+                    <c:choose>
+                    <c:when test="${page == 1}">
+                    <li class="page-item disabled">
+                        </c:when>
+                        <c:otherwise>
+                    <li class="page-item ">
+                        </c:otherwise>
+                        </c:choose>
+                        <a class="page-link" onclick="moveToPage(${page-1})" aria-label="Previous">
+                            <span aria-hidden="true">&lsaquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                        <c:choose>
+                            <c:when test="${(searchResultsNumber/page_size) <= 2}">
+                                <li class="page-item <c:if test="${page == 1}">active</c:if>"><div class="page-link" onclick="moveToPage(1)" >1</div></li>
+                                <li class="page-item <c:if test="${page == 2}">active</c:if>"><div class="page-link" onclick="moveToPage(2)" >2</div></li>
+                            </c:when>
+                            <c:otherwise>
+                                <c:choose>
+                                    <c:when test="${page < 3}">
+                                        <li class="page-item <c:if test="${page == 1}">active</c:if>"><div class="page-link" onclick="moveToPage(1)" >1</div></li>
+                                        <li class="page-item <c:if test="${page == 2}">active</c:if>"><div class="page-link" onclick="moveToPage(2)" >2</div></li>
+                                        <li class="page-item <c:if test="${page == 3}">active</c:if>"><div class="page-link" onclick="moveToPage(3)" >3</div></li>
+                                        <c:if test="${(searchResultsNumber/page_size) > 3}">
+                                            <li class="page-item <c:if test="${page == 4}">active</c:if>"><div class="page-link" onclick="moveToPage(4)" >4</div></li>
+                                        </c:if>
+                                        <c:if test="${(searchResultsNumber/page_size) > 4}">
+                                            <li class="page-item <c:if test="${page == 5}">active</c:if>"><div class="page-link" onclick="moveToPage(5)" >5</div></li>
+                                        </c:if>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li class="page-item"><div class="page-link" onclick="moveToPage(${page-2})">${page-2}</div></li>
+                                        <li class="page-item"><div class="page-link" onclick="moveToPage(${page-1})">${page-1}</div></li>
+                                        <li class="page-item active"><div class="page-link">${page}</div></li>
+                                        <c:if test="${(searchResultsNumber/page_size)-page > 0 }">
+                                            <li class="page-item"><div class="page-link" onclick="moveToPage(${page+1})">${page+1}</div></li>
+                                            <c:if test="${(searchResultsNumber/page_size)-page >=1 }">
+                                                <li class="page-item"><div class="page-link" onclick="moveToPage(${page+2})">${page+2}</div></li>
+                                            </c:if>
+                                        </c:if>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:otherwise>
+                        </c:choose>
+                   <c:choose>
+                    <c:when test="${page_size*page >= searchResultsNumber}">
+                    <li class="page-item disabled">
+                        </c:when>
+                        <c:otherwise>
+                    <li class="page-item">
+                        </c:otherwise>
+                        </c:choose>
+                        <a class="page-link" onclick="moveToPage(${page+1})" aria-label="Next">
+                            <span aria-hidden="true">&rsaquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </c:if>
         </c:otherwise>
     </c:choose>
 </div>
 
 <script>
+
 
     $(document).ready(function() {
 
@@ -382,8 +382,6 @@
             document.getElementById("check${type}").checked = true;
         </c:forEach>
         document.getElementById("searchOnlyByName").checked = ${nameFlagQuery};
-
-
     });
 
     function isEmpty( input ){
@@ -524,7 +522,8 @@
         window.location.href = url;
     }
 
-    function previousPage(){
+    function moveToPage(goingPage){
+        console.log(goingPage);
         let url = "<c:url value="/search?toSearch="/>" + "${techNameQuery}";
 
         let categories = [];
@@ -539,7 +538,7 @@
         </c:forEach>
         url = url + "&types=" + types;
 
-        url = url + "&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderValue}&page=${page-1}";
+        url = url + "&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderValue}&page="+goingPage;
         window.location.href = url;
     }
 
