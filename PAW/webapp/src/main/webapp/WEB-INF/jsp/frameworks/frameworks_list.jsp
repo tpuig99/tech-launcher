@@ -331,7 +331,7 @@
                 <li class="page-item ">
                     </c:otherwise>
                     </c:choose>
-                    <a class="page-link" href="<c:url value="/search?toSearch=${techNameQuery}&categories=${categoriesString}&types=${typesString}&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderQuery}&page=${page-1}"/>" aria-label="Previous">
+                    <a class="page-link" onclick="previousPage()" aria-label="Previous">
                         <span aria-hidden="true">&lsaquo;</span>
                         <span class="sr-only">Previous</span>
                     </a>
@@ -345,7 +345,7 @@
                 <li class="page-item">
                     </c:otherwise>
                     </c:choose>
-                    <a class="page-link" href="<c:url value="/search?toSearch=${techNameQuery}&categories=${categoriesString}&types=${typesString}&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderQuery}&page=${page+1}"/>" aria-label="Next">
+                    <a class="page-link" onclick="nextPage()" aria-label="Next">
                         <span aria-hidden="true">&rsaquo;</span>
                         <span class="sr-only">Next</span>
                     </a>
@@ -503,6 +503,44 @@
 
         queryTypes = queryTypes.substring(0,queryTypes.length-1);
         return queryTypes;
+    }
+
+    function nextPage(){
+        let url = "<c:url value="/search?toSearch="/>" + "${techNameQuery}";
+
+        let categories = [];
+        <c:forEach var = "category" items="${categoriesQuery}">
+            categories.push("${category}");
+        </c:forEach>
+        url = url + "&categories=" + categories;
+
+        let types = [];
+        <c:forEach var = "type" items="${typesQuery}">
+            types.push("${type}");
+        </c:forEach>
+        url = url + "&types=" + types;
+
+        url = url + "&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderValue}&page=${page+1}";
+        window.location.href = url;
+    }
+
+    function previousPage(){
+        let url = "<c:url value="/search?toSearch="/>" + "${techNameQuery}";
+
+        let categories = [];
+        <c:forEach var = "category" items="${categoriesQuery}">
+        categories.push("${category}");
+        </c:forEach>
+        url = url + "&categories=" + categories;
+
+        let types = [];
+        <c:forEach var = "type" items="${typesQuery}">
+        types.push("${type}");
+        </c:forEach>
+        url = url + "&types=" + types;
+
+        url = url + "&starsLeft=${starsQuery1}&starsRight=${starsQuery2}&nameFlag=${nameFlagQuery}&order=${orderValue}&page=${page-1}";
+        window.location.href = url;
     }
 
     function getCheckedCategories(){
