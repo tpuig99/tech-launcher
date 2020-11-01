@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface ContentDao {
     /***Getters***/
     Optional<Content> getById(long contentId);
-    List<Content> getContentByFramework(long frameworkId);
-    List<Content> getContentByFrameworkAndUser(long frameworkId, long userId);
     List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page, long pageSize);
     List<Content> getContentByUser(long userId, long page, long pagesize);
     Optional<Long> getContentCountByUser(long userId);

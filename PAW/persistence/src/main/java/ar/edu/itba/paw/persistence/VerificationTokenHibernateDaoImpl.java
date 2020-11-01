@@ -29,18 +29,6 @@ public class VerificationTokenHibernateDaoImpl implements VerificationTokenDao {
     }
 
     @Override
-    public Optional<VerificationToken> getById(long tokenId) {
-        return Optional.ofNullable(em.find(VerificationToken.class, tokenId));
-    }
-
-    @Override
-    public Optional<VerificationToken> getByUser(long userId) {
-        final TypedQuery<VerificationToken> query = em.createQuery("FROM VerificationToken vt WHERE vt.user.id = :userId", VerificationToken.class);
-        query.setParameter("userId", userId);
-        return query.getResultList().stream().findFirst();
-    }
-
-    @Override
     public void change(VerificationToken verificationToken, String token) {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();

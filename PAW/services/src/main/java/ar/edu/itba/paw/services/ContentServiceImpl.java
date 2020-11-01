@@ -20,7 +20,7 @@ public class ContentServiceImpl implements ContentService {
     @Autowired
     ReportContentDao rc;
 
-    private long PAGESIZE = 5;
+    private final long PAGE_SIZE = 5;
 
     @Transactional(readOnly = true)
     @Override
@@ -28,22 +28,11 @@ public class ContentServiceImpl implements ContentService {
         return content.getById(contentId);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<Content> getContentByFramework(long frameworkId) {
-        return content.getContentByFramework(frameworkId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Content> getContentByFrameworkAndUser(long frameworkId, long userId) {
-        return content.getContentByFrameworkAndUser(frameworkId, userId);
-    }
 
     @Transactional(readOnly = true)
     @Override
     public List<Content> getContentByUser(long userId, long page) {
-        return content.getContentByUser(userId, page, PAGESIZE );
+        return content.getContentByUser(userId, page, PAGE_SIZE );
     }
 
     @Transactional(readOnly = true)
@@ -55,7 +44,7 @@ public class ContentServiceImpl implements ContentService {
     @Transactional(readOnly = true)
     @Override
     public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page) {
-        return content.getContentByFrameworkAndType(frameworkId, type, page, PAGESIZE);
+        return content.getContentByFrameworkAndType(frameworkId, type, page, PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)
@@ -84,28 +73,12 @@ public class ContentServiceImpl implements ContentService {
 
     
 
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<ReportContent> getReporstById(long reportId) {
-        return rc.getById(reportId);
-    }
+
 
     @Transactional(readOnly = true)
     @Override
     public List<ReportContent> getAllReports(long page) {
-        return rc.getAll(page, PAGESIZE);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<ReportContent> getReportsByFramework(long frameworkId) {
-        return rc.getByFramework(frameworkId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<ReportContent> getReportsByContent(long contentId) {
-        return rc.getByContent(contentId);
+        return rc.getAll(page, PAGE_SIZE);
     }
 
     @Transactional
@@ -135,6 +108,6 @@ public class ContentServiceImpl implements ContentService {
     @Transactional
     @Override
     public List<ReportContent> getReportsByFrameworks(List<Long> frameworksIds, long page) {
-        return rc.getByFrameworks(frameworksIds, page, PAGESIZE);
+        return rc.getByFrameworks(frameworksIds, page, PAGE_SIZE);
     }
 }

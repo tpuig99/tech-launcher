@@ -98,11 +98,6 @@ public class UserHibernateDao implements UserDao {
         return query.getResultList().stream().findFirst();
     }
 
-    @Override
-    public List<User> getAll() {
-        final TypedQuery<User> query = em.createQuery("from User as u", User.class);
-        return query.getResultList();
-    }
 
     @Override
     public Optional<User> findById(long id) {

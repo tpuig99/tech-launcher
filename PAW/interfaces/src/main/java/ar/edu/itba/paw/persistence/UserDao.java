@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface UserDao {
-    List<User> getAll();
     Optional<User> findById(long id);
     Optional<User> findByUsername(String username);
     Optional<User> findByUsernameOrMail(String username,String Mail);

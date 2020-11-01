@@ -42,20 +42,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Comment> getCommentsByFramework(long frameworkId,Long userId) {
-        return cmts.getCommentsByFramework(frameworkId,userId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
     public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId, long page) {
         return cmts.getCommentsWithoutReferenceByFramework(frameworkId, page, PAGESIZE);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
-        return cmts.getCommentsByFrameworkAndUser(frameworkId, userId);
     }
 
     @Transactional(readOnly = true)
@@ -114,38 +102,11 @@ public class CommentServiceImpl implements CommentService {
         return comment;
     }
 
-//    private void promoteToModeratorIfMeetRequirements(Optional<Comment> comment) {
-//        if(comment.isPresent() && comment.get().getVotesUp()==VOTES_FOR_VERIFY){
-//            Comment c=comment.get();
-//            Optional<User> user = Optional.ofNullable(c.getUser());
-//            if(user.isPresent() && user.get().isAllowMod() && !user.get().isAdmin() && !user.get().hasAppliedToFramework(c.getFrameworkId())) {
-//                    verifyUserDao.create(c.getUser(), c.getFramework(), c);
-//            }
-//        }
-//    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<ReportComment> getReportById(long reportId) {
-        return Optional.empty();
-    }
 
     @Transactional(readOnly = true)
     @Override
     public List<ReportComment> getAllReport(long page) {
         return rc.getAll(page, PAGESIZE);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<ReportComment> getReportByFramework(long frameworkId) {
-        return rc.getByFramework(frameworkId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<ReportComment> getReportByComment(long commentId) {
-        return rc.getByComment(commentId);
     }
 
     @Transactional

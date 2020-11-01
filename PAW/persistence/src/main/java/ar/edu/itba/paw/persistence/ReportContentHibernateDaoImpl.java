@@ -19,11 +19,6 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
     private EntityManager em;
 
     @Override
-    public Optional<ReportContent> getById(long reportId) {
-        return Optional.ofNullable(em.find(ReportContent.class, reportId));
-    }
-
-    @Override
     public List<ReportContent> getAll(long page, long pageSize) {
         Query pagingQuery = em.createNativeQuery("SELECT report_id FROM content_report " + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
         @SuppressWarnings("unchecked")
@@ -39,26 +34,12 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
     }
 
     @Override
-    public List<ReportContent> getByFramework(long frameworkId) {
-        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent rc WHERE rc.content.framework.id = :frameworkId", ReportContent.class);
-        query.setParameter("frameworkId", frameworkId);
-        return query.getResultList();
-    }
-
-    @Override
     public List<ReportContent> getByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
         final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent rc where rc.content.framework.id in :frameworksIds", ReportContent.class);
         query.setParameter("frameworksIds", frameworksIds);
         query.setFirstResult((int) ((page-1) * pageSize));
         query.setMaxResults((int) pageSize);
         return query.getResultList();
-    }
-
-    @Override
-    public Optional<ReportContent> getByContent(long contentId) {
-        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent rc WHERE rc.content.id = :contentId", ReportContent.class);
-        query.setParameter("contentId",contentId);
-        return query.getResultList().stream().findFirst();
     }
 
     @Override

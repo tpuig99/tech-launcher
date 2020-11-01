@@ -9,9 +9,7 @@ import java.util.Optional;
 public interface CommentService {
     /*** Getters ***/
     Optional<Comment> getById(long contentId);
-    List<Comment> getCommentsByFramework(long frameworkId,Long userId);
     List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId, long page);
-    List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId);
     List<Comment> getCommentsByUser(long userId, long page);
 
     Optional<Integer> getCommentsCountByUser(long userId);
@@ -26,10 +24,7 @@ public interface CommentService {
 
 
         /***Reports***/
-    Optional<ReportComment> getReportById(long reportId);
     List<ReportComment> getAllReport(long page);
-    List<ReportComment> getReportByFramework(long frameworkId);
-    Optional<ReportComment> getReportByComment(long commentId);
     void addReport(long commentId,long userId,String description);
     void acceptReport(long commentId);
     void denyReport(long commentId);

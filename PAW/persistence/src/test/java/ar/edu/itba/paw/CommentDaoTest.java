@@ -193,22 +193,6 @@ public class CommentDaoTest {
         Assert.assertEquals(SIZE, commentList.size());
     }
 
-    @Test
-    public void testGetCommentsByFrameworkAndUser() {
-        // Arrange
-        for (int i = 0; i < SIZE; i++) {
-            final Map<String, Object> args = getArgumentsMap(FRAMEWORK_ID+i, USER_ID+i, Math.random() > 0.5 ? DESCRIPTION : DESCRIPTION_NEW, new Timestamp(System.currentTimeMillis()), null);
-            jdbcInsert.executeAndReturnKey(args);
-        }
-
-        // Act
-        final List<Comment> returnValue = commentDao.getCommentsByFrameworkAndUser(FRAMEWORK_ID, USER_ID);
-
-        // Assert
-        Assert.assertFalse(returnValue.isEmpty());
-        Assert.assertEquals(1, returnValue.size());
-    }
-
     //TODO MODIFY TEST
     @Test
     public void testGetRepliesByFramework() {

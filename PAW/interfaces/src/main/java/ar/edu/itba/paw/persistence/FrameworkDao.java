@@ -10,18 +10,9 @@ public interface FrameworkDao {
     Optional<Framework> findById(long id);
     List<String> getFrameworkNames();
     List<Framework> getByCategory(FrameworkCategories category, long page, long pageSize);
-    List<Framework> getByType(FrameworkType type);
-    List<Framework> getByCategoryAndType(FrameworkType type, FrameworkCategories category);
-    List<Framework> getByCategoryAndWord(FrameworkCategories category,String word);
-    List<Framework> getByTypeAndWord(FrameworkType type, String word);
-    List<Framework> getByCategoryAndTypeAndWord(FrameworkType type, FrameworkCategories category, String word);
     List<Framework> getAll();
-    List<Framework> getByWord(String toSearch);
     List<Framework> getUserInterests(long userId);
-    List<Framework> getByCategoryOrType(FrameworkType frameType, FrameworkCategories frameCategory);
-    List<Framework> getByMultipleCategories(List<FrameworkCategories> categories);
     List<Framework> getByMinStars(int stars);
-    List<Framework> getByMultipleTypes(List<FrameworkType> types);
     List<Framework> getByUser(long userId, long page, long pageSize);
     int getAmountByCategory(FrameworkCategories categories);
 

@@ -19,18 +19,6 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<FrameworkVote> getByFramework(long frameworkId) {
-        return vs.getByFramework(frameworkId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<FrameworkVote> getById(long voteId) {
-        return vs.getById(voteId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
     public Optional<FrameworkVote> getByFrameworkAndUser(long frameworkId, long userId) {
         return vs.getByFrameworkAndUser(frameworkId,userId);
     }

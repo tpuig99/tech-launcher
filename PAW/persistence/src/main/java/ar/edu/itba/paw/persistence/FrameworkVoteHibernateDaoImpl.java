@@ -18,18 +18,6 @@ public class FrameworkVoteHibernateDaoImpl implements FrameworkVoteDao {
     private EntityManager em;
 
     @Override
-    public List<FrameworkVote> getByFramework(long frameworkId) {
-        final TypedQuery<FrameworkVote> query = em.createQuery("select fv from FrameworkVote fv where fv.framework.id= :frameworkId", FrameworkVote.class);
-        query.setParameter("frameworkId", frameworkId);
-        return query.getResultList();
-    }
-
-    @Override
-    public Optional<FrameworkVote> getById(long voteId) {
-        return Optional.ofNullable(em.find(FrameworkVote.class, voteId));
-    }
-
-    @Override
     public Optional<FrameworkVote> getByFrameworkAndUser(long frameworkId, long userId) {
         final TypedQuery<FrameworkVote> query = em.createQuery("select fv from FrameworkVote fv where fv.framework.id= :frameworkId and fv.user.id= :userId", FrameworkVote.class);
         query.setParameter("frameworkId", frameworkId);

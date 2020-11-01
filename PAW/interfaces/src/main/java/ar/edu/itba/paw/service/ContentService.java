@@ -12,8 +12,6 @@ import java.util.Optional;
 public interface ContentService {
     /*** Getters ***/
     Optional<Content> getById(long contentId);
-    List<Content> getContentByFramework(long frameworkId);
-    List<Content> getContentByFrameworkAndUser(long frameworkId, long userId);
     List<Content> getContentByUser(long userId, long page);
     Optional<Long> getContentCountByUser(long userId);
     List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page);
@@ -24,11 +22,8 @@ public interface ContentService {
     Optional<Content> changeContent(long contentId, String title, String link, ContentTypes types);
 
     /*** Reports ***/
-    Optional<ReportContent> getReporstById(long reportId);
     List<ReportContent> getAllReports( long page);
-    List<ReportContent> getReportsByFramework(long frameworkId);
     List<ReportContent> getReportsByFrameworks( List<Long> frameworksIds, long page);
-    Optional<ReportContent> getReportsByContent(long contentId);
     void addReport(long contentId,long userId,String description);
     void acceptReport(long contentId);
     void denyReport(long contentId);

@@ -64,14 +64,6 @@ public class CommentHibernateDaoImpl implements CommentDao {
     }
 
     @Override
-    public List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId) {
-        final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.framework.id = :frameworkId and c.user.id = :userId", Comment.class);
-        query.setParameter("frameworkId", frameworkId);
-        query.setParameter("userId", userId);
-        return query.getResultList();
-    }
-
-    @Override
     public List<Comment> getCommentsByUser(long userId, long page, long pageSize ) {
         Query pagingQuery = em.createNativeQuery("SELECT comment_id FROM comments WHERE user_id = " + String.valueOf(userId)+ " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
         @SuppressWarnings("unchecked")

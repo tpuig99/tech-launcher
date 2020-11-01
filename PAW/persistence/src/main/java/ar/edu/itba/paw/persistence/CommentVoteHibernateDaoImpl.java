@@ -19,25 +19,6 @@ public class CommentVoteHibernateDaoImpl implements CommentVoteDao{
     private EntityManager em;
 
     @Override
-    public List<CommentVote> getAll() {
-        final TypedQuery<CommentVote> query = em.createQuery("from CommentVote", CommentVote.class);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<CommentVote> getByComment(long commentId) {
-        final TypedQuery<CommentVote> query = em.createQuery("from CommentVote cv where cv.comment.id= :commentId", CommentVote.class);
-        query.setParameter("commentId", commentId);
-        return query.getResultList();
-    }
-
-    @Override
-    public Optional<CommentVote> getById(long voteId) {
-        return Optional.ofNullable(em.find(CommentVote.class, voteId));
-
-    }
-
-    @Override
     public Optional<CommentVote> getByCommentAndUser(long commentId, long userId) {
 
         final TypedQuery<CommentVote> query = em.createQuery("from CommentVote as c where c.comment.id = :commentId and c.user.id = :userId", CommentVote.class);

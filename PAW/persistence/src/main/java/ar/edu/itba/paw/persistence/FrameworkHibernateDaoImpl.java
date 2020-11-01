@@ -41,55 +41,8 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> getByType(FrameworkType type) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.type= :frameworkType", Framework.class);
-        query.setParameter("frameworkType", type);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Framework> getByCategoryAndType(FrameworkType type, FrameworkCategories category) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.category= :category and f.type= :frameworkType", Framework.class);
-        query.setParameter("category", category);
-        query.setParameter("frameworkType", type);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Framework> getByCategoryAndWord(FrameworkCategories category, String word) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where lower(f.name) like :toSearch or f.category = :category", Framework.class);
-        query.setParameter("toSearch", "%"+word.toLowerCase()+"%");
-        query.setParameter("category", category);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Framework> getByTypeAndWord(FrameworkType type, String word) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where lower(f.name) like :toSearch or f.type = :type", Framework.class);
-        query.setParameter("toSearch", "%"+word.toLowerCase()+"%");
-        query.setParameter("type", type);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Framework> getByCategoryAndTypeAndWord(FrameworkType type, FrameworkCategories category, String word) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where lower(f.name) like :toSearch or f.type = :type or f.category = :category", Framework.class);
-        query.setParameter("toSearch", "%"+word.toLowerCase()+"%");
-        query.setParameter("type", type);
-        query.setParameter("category", category);
-        return query.getResultList();
-    }
-
-    @Override
     public List<Framework> getAll() {
         final TypedQuery<Framework> query = em.createQuery("select f from Framework f", Framework.class);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Framework> getByWord(String word) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where lower(f.name) like :toSearch", Framework.class);
-        query.setParameter("toSearch", "%"+word.toLowerCase()+"%");
         return query.getResultList();
     }
 
@@ -102,21 +55,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> getByCategoryOrType(FrameworkType frameType, FrameworkCategories frameCategory) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.category= :category or f.type= :frameworkType", Framework.class);
-        query.setParameter("category", frameCategory);
-        query.setParameter("frameworkType", frameType);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Framework> getByMultipleCategories(List<FrameworkCategories> categories) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.category in (:categories)", Framework.class);
-        query.setParameter("categories", categories);
-        return query.getResultList();
-    }
-
-    @Override
     public List<Framework> getByMinStars(int stars) {
         final TypedQuery<Framework> query = em.createQuery("select f from Framework f left outer join FrameworkVote v on f.id = v.framework.id group by f having coalesce(avg(v.stars), 0) >= :stars", Framework.class);
         Double st = Double.valueOf(stars);
@@ -124,12 +62,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         return query.getResultList();
     }
 
-    @Override
-    public List<Framework> getByMultipleTypes(List<FrameworkType> types) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.type in (:types)", Framework.class);
-        query.setParameter("types", types);
-        return query.getResultList();
-    }
 
     /* TODO: add pagination  */
     @Override

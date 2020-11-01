@@ -9,7 +9,6 @@ public interface CommentDao {
     Optional<Comment> getById(long contentId);
     List<Comment> getCommentsByFramework(long frameworkId,Long userId);
     List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId, long page, long pageSize);
-    List<Comment> getCommentsByFrameworkAndUser(long frameworkId, long userId);
     List<Comment> getCommentsByUser(long userId, long page, long pageSize);
     Optional<Integer> getCommentsCountByUser(long userId);
     Comment insertComment(long frameworkId, long userId, String description, Long reference);

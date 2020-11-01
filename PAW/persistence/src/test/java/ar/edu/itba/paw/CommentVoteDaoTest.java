@@ -136,23 +136,6 @@ public class CommentVoteDaoTest {
         assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comment_votes","vote_id ="+ voteId));
     }
 
-
-    @Test
-    public void testGetByComment() {
-        // Arrange
-        for (int i = 0; i < SIZE; i++) {
-            final Map<String,Object> args = getArgumentsMap(COMMENT_ID, USER_ID+i, VOTE_UP);
-            jdbcInsert.executeAndReturnKey(args);
-        }
-
-        // Act
-        final List<CommentVote> returnValue = commentVoteDao.getByComment(COMMENT_ID);
-
-        // Assert
-        Assert.assertFalse(returnValue.isEmpty());
-        Assert.assertEquals(SIZE, returnValue.size());
-    }
-
     @Test
     public void testGetByCommentAndUser() {
         // Arrange

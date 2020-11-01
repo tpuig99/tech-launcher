@@ -115,7 +115,7 @@ public class FrameworkController {
                 mav.addObject("isEnable",user.isEnable());
                 mav.addObject("allowMod",user.isAllowMod());
                 mav.addObject("isOwner", framework.get().getAuthor().getUsername().equals(user.getUsername()));
-                Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
+                Optional<FrameworkVote> fv = user.getVoteForFramework(id);
 
                 if(fv.isPresent()){
                     mav.addObject("stars",fv.get().getStars());

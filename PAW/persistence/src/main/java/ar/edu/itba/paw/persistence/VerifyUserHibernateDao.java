@@ -26,21 +26,6 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
         return verifyUser;
     }
 
-    @Override
-    public List<VerifyUser> getByUser(long userId, boolean pending) {
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.user.id = :userId and vu.pending = :pending", VerifyUser.class);
-        query.setParameter("userId", userId);
-        query.setParameter("pending", pending);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<VerifyUser> getByFramework(long frameworkId, boolean pending) {
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id = :frameworkId and vu.pending = :pending", VerifyUser.class);
-        query.setParameter("frameworkId", frameworkId);
-        query.setParameter("pending", pending);
-        return query.getResultList();
-    }
 
     @Override
     public List<VerifyUser> getByFrameworks(List<Long> frameworksIds, boolean pending, long page, long pageSize) {
@@ -56,13 +41,6 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     public List<VerifyUser> getAllByUser(long userId) {
         final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.user.id = :userId", VerifyUser.class);
         query.setParameter("userId", userId);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<VerifyUser> getAllByFramework(long frameworkId) {
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id = :frameworkId", VerifyUser.class);
-        query.setParameter("frameworkId", frameworkId);
         return query.getResultList();
     }
 

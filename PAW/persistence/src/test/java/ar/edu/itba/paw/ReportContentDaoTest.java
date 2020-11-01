@@ -123,31 +123,7 @@ public class ReportContentDaoTest {
     //</editor-fold>
 
     //<editor-fold desc="Getters">
-    @Test
-    public void testGetById() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
-        final Map<String, Object> args = new HashMap<>();
-        args.put("content_id", CONTENT_ID);
-        args.put("user_id",USER_ID);
-        args.put("description", DESCRIPTION);
-        Number id = jdbcInsert.executeAndReturnKey(args);
 
-        final Optional<ReportContent> content = reportContentDao.getById(id.longValue());
-
-        assertEquals(true,content.isPresent());
-        assertEquals(CONTENT_ID, content.get().getContentId());
-        assertEquals(USER_ID,content.get().getUserId());
-        assertEquals(DESCRIPTION, content.get().getReportDescription());
-        assertEquals(FRAMEWORK_ID,content.get().getFrameworkId());
-        assertEquals(String.valueOf("framework"+FRAMEWORK_ID),content.get().getFrameworkName());
-    }
-    @Test
-    public void testGetByIdEmpty() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
-
-        final Optional<ReportContent> content = reportContentDao.getById(1);
-        assertEquals(false,content.isPresent());
-    }
 
     @Test
     public void testGetAll() {
@@ -171,53 +147,8 @@ public class ReportContentDaoTest {
         assertEquals(6,content.size());
     }
 
-    @Test
-    public void testGetByContent() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
-        for (int i = 0; i < 5; i++) {
-            final Map<String, Object> args = new HashMap<>();
-            args.put("content_id", CONTENT_ID);
-            args.put("user_id",USER_ID+i);
-            args.put("description", DESCRIPTION);
-            jdbcInsert.execute(args);
-            args.clear();
-            args.put("content_id", CONTENT_ID+i+1);
-            args.put("user_id",USER_ID);
-            args.put("description", DESCRIPTION);
-            jdbcInsert.execute(args);
-        }
 
-        final Optional<ReportContent> content = reportContentDao.getByContent(CONTENT_ID);
 
-        assertEquals(true,content.isPresent());
-        assertEquals(5,content.get().getContent().getReportsIds().size());
-        assertEquals(CONTENT_ID,content.get().getContentId());
-    }
 
-    @Test
-    public void testGetByFramework() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
-        for (int i = 0; i < 5; i++) {
-            final Map<String, Object> args = new HashMap<>();
-            args.put("content_id", CONTENT_ID);
-            args.put("user_id",USER_ID+i);
-            args.put("description", DESCRIPTION);
-            jdbcInsert.execute(args);
-            args.clear();
-            args.put("content_id", CONTENT_ID+i+1);
-            args.put("user_id",USER_ID);
-            args.put("description", DESCRIPTION);
-            jdbcInsert.execute(args);
-        }
-
-        final List<ReportContent> content = reportContentDao.getByFramework(FRAMEWORK_ID);
-
-        assertEquals(false,content.isEmpty());
-        assertEquals(1,content.size());
-        for (ReportContent r: content) {
-            assertEquals(FRAMEWORK_ID,r.getFrameworkId());
-            assertEquals(5,r.getContent().getReportersNames().size());
-        }
-    }
     //</editor-fold>
 }

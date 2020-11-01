@@ -12,15 +12,9 @@ public interface FrameworkService {
     Optional<Framework> findById(long frameworkId);
     List<String> getFrameworkNames();
     List<Framework> getByCategory(FrameworkCategories category, long page);
-    List<Framework> getByType(FrameworkType type);
-    List<Framework> getAll();
     List<Framework> getCompetitors(Framework framework);
-    List<Framework> getByWord(String toSearch);
     List<Framework> getBestRatedFrameworks();
     List<Framework> getUserInterests(long userId);
-    List<Framework> getByMultipleCategories(List<FrameworkCategories> categories);
-    List<Framework> getByMultipleTypes(List<FrameworkType> types);
-    List<Framework> getByMinStars(int stars);
     List<Framework> getByUser(long userId, long page);
     List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated, Integer order,long page);
     Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated);

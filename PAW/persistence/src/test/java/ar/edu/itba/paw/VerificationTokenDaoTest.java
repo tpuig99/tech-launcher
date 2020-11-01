@@ -97,55 +97,7 @@ public class VerificationTokenDaoTest {
     }*/
     //</editor-fold>
     //<editor-fold desc="Getters">
-    @Test
-    public void testGetById() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verification_token");
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
-        final Map<String, Object> args = new HashMap<>();
-        args.put("user_id",USER_ID);
-        args.put("token", TOKEN);
-        args.put("exp_date",ts);
-        Number id = jdbcInsert.executeAndReturnKey(args);
 
-        Optional<VerificationToken> vt = verificationTokenDao.getById(id.longValue());
-
-        assertEquals(true,vt.isPresent());
-        assertEquals(TOKEN, vt.get().getToken());
-        assertEquals(USER_ID,vt.get().getUserId());
-        assertEquals(id, vt.get().getTokenId());
-    }
-    @Test()
-    public void testGetByIdNotExisting() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verification_token");
-
-        Optional<VerificationToken> vt = verificationTokenDao.getById(0);
-
-        assertEquals(false,vt.isPresent());
-    }
-    @Test
-    public void testGetByUser() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
-        final Map<String, Object> args = new HashMap<>();
-        args.put("user_id",USER_ID);
-        args.put("token", TOKEN);
-        args.put("exp_date",ts);
-        Number id = jdbcInsert.executeAndReturnKey(args);
-
-        Optional<VerificationToken> vt = verificationTokenDao.getByUser(USER_ID);
-
-        assertEquals(true,vt.isPresent());
-        assertEquals(TOKEN, vt.get().getToken());
-        assertEquals(USER_ID,vt.get().getUserId());
-        assertEquals(id, vt.get().getTokenId());
-    }
-    @Test
-    public void testGetByUserNotExisting() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
-        Optional<VerificationToken> vt = verificationTokenDao.getByUser(USER_ID);
-
-        assertEquals(false,vt.isPresent());
-    }
     @Test
     public void testGetByToken() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");

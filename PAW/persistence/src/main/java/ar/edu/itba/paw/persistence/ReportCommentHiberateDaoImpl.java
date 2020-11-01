@@ -23,11 +23,6 @@ public class ReportCommentHiberateDaoImpl implements ReportCommentDao{
     private EntityManager em;
 
     @Override
-    public Optional<ReportComment> getById(long reportId) {
-        return Optional.empty();
-    }
-
-    @Override
     public List<ReportComment> getAll(long page, long pageSize) {
         Query pagingQuery = em.createNativeQuery("SELECT report_id FROM comment_report " + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
         @SuppressWarnings("unchecked")
@@ -40,21 +35,6 @@ public class ReportCommentHiberateDaoImpl implements ReportCommentDao{
         }else{
             return new ArrayList<>();
         }
-    }
-
-    @Override
-    public List<ReportComment> getByFramework(long frameworkId) {
-
-        final TypedQuery<ReportComment> query = em.createQuery("from ReportComment rc where rc.frameworkId = :frameworkId", ReportComment.class);
-        query.setParameter("frameworkId", frameworkId);
-        return query.getResultList();
-    }
-
-    @Override
-    public Optional<ReportComment> getByComment(long commentId) {
-        final TypedQuery<ReportComment> query = em.createQuery("from ReportComment rc where rc.comment.id = :commentId", ReportComment.class);
-        query.setParameter("commentId", commentId);
-        return query.getResultList().stream().findFirst();
     }
 
     @Override

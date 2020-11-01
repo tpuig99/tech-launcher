@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FrameworkVoteService {
-    List<FrameworkVote> getByFramework(long frameworkId);
-    Optional<FrameworkVote> getById(long voteId);
     Optional<FrameworkVote> getByFrameworkAndUser(long frameworkId, long userId);
     List<FrameworkVote> getAllByUser(long userId, long page);
 

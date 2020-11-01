@@ -24,21 +24,6 @@ public class ContentDaoHibernateImpl implements  ContentDao{
     }
 
     @Override
-    public List<Content> getContentByFramework(long frameworkId) {
-        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.framework.id = :frameworkId", Content.class);
-        query.setParameter("frameworkId", frameworkId);
-        return query.getResultList();
-    }
-
-    @Override
-    public List<Content> getContentByFrameworkAndUser(long frameworkId, long userId) {
-        final TypedQuery<Content> query = em.createQuery("FROM Content  c WHERE c.framework.id = :frameworkId and c.user.id = :userId", Content.class);
-        query.setParameter("frameworkId", frameworkId);
-        query.setParameter("userId", userId);
-        return query.getResultList();
-    }
-
-    @Override
     public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page, long pageSize) {
         final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.framework.id = :frameworkId and c.type = :type", Content.class);
         query.setParameter("frameworkId",frameworkId);

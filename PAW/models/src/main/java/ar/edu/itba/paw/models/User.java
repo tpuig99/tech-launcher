@@ -3,6 +3,7 @@ package ar.edu.itba.paw.models;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.swing.text.html.Option;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLConnection;
@@ -315,5 +316,8 @@ public class User {
 
     public void setVerificationToken(VerificationToken verificationToken) {
         this.verificationToken = verificationToken;
+    }
+    public Optional<FrameworkVote> getVoteForFramework(long id){
+        return frameworkVotes.stream().filter((x)->x.getFramework().getId() == id).findFirst();
     }
 }

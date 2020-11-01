@@ -54,4 +54,16 @@ public class FrameworkVote {
     public FrameworkCategories getFrameworkCategory() { return framework.getCategory(); }
 
     public String getCategory(){ return framework.getCategory().getNameCat(); }
+
+    public long getId() {
+        return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Framework getFramework() {
+        return framework;
+    }
 }

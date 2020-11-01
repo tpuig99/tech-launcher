@@ -189,17 +189,6 @@ public class UserServiceImpl implements UserService {
         return verifyUserDao.create(user,framework,null);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<VerifyUser> getVerifyByUser(long userId, boolean pending) {
-        return verifyUserDao.getByUser(userId,pending);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<VerifyUser> getVerifyByFramework(long frameworkId, boolean pending) {
-        return verifyUserDao.getByFramework(frameworkId,pending);
-    }
 
     @Transactional(readOnly = true)
     @Override
@@ -207,16 +196,12 @@ public class UserServiceImpl implements UserService {
         return verifyUserDao.getByFrameworks(frameworksIds, pending, page, PAGESIZE);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getAllVerifyByUser(long userId) {
         return verifyUserDao.getAllByUser(userId);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<VerifyUser> getAllVerifyByFramework(long frameworkId) {
-        return verifyUserDao.getAllByFramework(frameworkId);
-    }
 
     @Transactional(readOnly = true)
     @Override
