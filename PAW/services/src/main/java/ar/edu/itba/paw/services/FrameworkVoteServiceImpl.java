@@ -15,7 +15,7 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
     @Autowired
     FrameworkVoteDao vs;
 
-    private long PAGESIZE = 10;
+    private final long PAGE_SIZE = 10;
 
     @Transactional(readOnly = true)
     @Override
@@ -26,7 +26,7 @@ public class FrameworkVoteServiceImpl implements FrameworkVoteService {
     @Transactional(readOnly = true)
     @Override
     public List<FrameworkVote> getAllByUser(long userId, long page) {
-        return vs.getAllByUser(userId, page, PAGESIZE);
+        return vs.getAllByUser(userId, page, PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)

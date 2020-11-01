@@ -152,8 +152,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void generateNewVerificationToken(User user, String token,String appUrl) {
         Optional<VerificationToken> verificationToken = user.getVerificationToken();
-        if(verificationToken.isPresent())
-            tokenDao.change(verificationToken.get(),token);
+        verificationToken.ifPresent(value -> tokenDao.change(value, token));
         String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
                          "\r\n" +
                        appUrl + "/register/confirm?token=" + token;

@@ -71,10 +71,6 @@ public class ContentServiceImpl implements ContentService {
         return content.changeContent(contentId, title, link, types);
     }
 
-    
-
-
-
     @Transactional(readOnly = true)
     @Override
     public List<ReportContent> getAllReports(long page) {

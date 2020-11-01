@@ -21,9 +21,6 @@ public class CommentServiceImpl implements CommentService {
     private CommentDao cmts;
 
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
     private VerifyUserDao verifyUserDao;
 
     @Autowired
@@ -32,7 +29,7 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private ReportCommentDao rc;
 
-    private long PAGE_SIZE = 5;
+    private final long PAGE_SIZE = 5;
 
     @Transactional(readOnly = true)
     @Override
