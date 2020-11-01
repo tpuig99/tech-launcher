@@ -23,6 +23,7 @@ public interface FrameworkDao {
     List<Framework> getByMinStars(int stars);
     List<Framework> getByMultipleTypes(List<FrameworkType> types);
     List<Framework> getByUser(long userId, long page, long pageSize);
+    int getAmountByCategory(FrameworkCategories categories);
 
     Optional<Integer> getByUserCount(long userId);
 

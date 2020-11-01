@@ -71,6 +71,11 @@ public class FrameworkServiceImpl implements FrameworkService {
         return frameworkDao.searchResultsNumber(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated);
     }
 
+    @Override
+    public int getAmountByCategory(FrameworkCategories categories) {
+        return frameworkDao.getAmountByCategory(categories);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<Framework> getByMultipleCategories(List<FrameworkCategories> categories) {

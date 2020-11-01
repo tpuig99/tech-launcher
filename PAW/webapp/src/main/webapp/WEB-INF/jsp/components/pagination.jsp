@@ -3,7 +3,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     <!--Paginación -->
-
 <c:if test="${(param.total/param.page_size) > 1}">
     <ul class="pagination justify-content-center mt-2">
             <c:if test="${param.page != 1}">
@@ -117,7 +116,9 @@
        else if(origin == 'tech_comments'){
            window.location.href="<c:url value="/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page=${param.courses_page}&tutorials_page=${param.tutorials_page}&comments_page="/>".concat(goingPage);
        }
-
+       else if(origin == 'category_list'){
+           window.location.href="<c:url value="/${param.category}?frameworks_page="/>".concat(goingPage);
+       }
    }
 
 </script>

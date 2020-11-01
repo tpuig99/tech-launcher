@@ -142,6 +142,13 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     }
 
     @Override
+    public int getAmountByCategory(FrameworkCategories categories) {
+        final TypedQuery<Framework> query = em.createQuery("from Framework f where category = :category", Framework.class);
+        query.setParameter("category", categories);
+        return query.getResultList().size();
+    }
+
+    @Override
     public Optional<Integer> getByUserCount(long userId) {
         final TypedQuery<Framework> query = em.createQuery("select f from Framework f left outer join User u on f.author.id = u.id where u.id = :userId", Framework.class);
         query.setParameter("userId", userId);

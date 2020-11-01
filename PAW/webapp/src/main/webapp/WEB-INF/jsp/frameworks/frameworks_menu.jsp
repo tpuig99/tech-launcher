@@ -51,35 +51,14 @@
             </div>
         </c:forEach>
     </div>
-    <ul class="pagination justify-content-center">
-        <c:choose>
-        <c:when test="${frameworks_page == 1}">
-        <li class="page-item disabled">
-            </c:when>
-            <c:otherwise>
-        <li class="page-item ">
-            </c:otherwise>
-            </c:choose>
-            <a class="page-link" href="<c:url value="/${category}?frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
-                <span aria-hidden="true">&lsaquo;</span>
-                <span class="sr-only">Previous</span>
-            </a>
-        </li>
-        <li class="page-item"><div class="page-link">${frameworks_page}</div></li>
-        <c:choose>
-        <c:when test="${frameworksList.size() < page_size}">
-        <li class="page-item disabled">
-            </c:when>
-            <c:otherwise>
-        <li class="page-item">
-            </c:otherwise>
-            </c:choose>
-            <a class="page-link" href="<c:url value="/${category}?frameworks_page=${frameworks_page+1}"/>" aria-label="Next">
-                <span aria-hidden="true">&rsaquo;</span>
-                <span class="sr-only">Next</span>
-            </a>
-        </li>
-    </ul>
+    <!-- List pagination -->
+    <jsp:include page="../components/pagination.jsp">
+        <jsp:param name="total" value="${framework_amount}"/>
+        <jsp:param name="page" value="${frameworks_page}"/>
+        <jsp:param name="page_size" value="${page_size}"/>
+        <jsp:param name="origin" value="category_list"/>
+        <jsp:param name="category" value="${category}"/>
+    </jsp:include>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

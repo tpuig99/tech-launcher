@@ -34,7 +34,7 @@ public class FrameworkMenuController {
     private TranslationService ts;
 
     private final String START_PAGE = "1";
-    final private long PAGESIZE = 7;
+    final private long PAGE_SIZE = 7;
 
     @RequestMapping("/{category}")
     public ModelAndView frameworkMenuPaging(@PathVariable String category,
@@ -46,13 +46,12 @@ public class FrameworkMenuController {
         if (enumCategory.isPresent()) {
             LOGGER.info("Techs: Getting Techs by category '{}'", enumCategory.get().getNameCat());
 
-            List<Framework> frameworks = fs.getByCategory(enumCategory.get(), frameworksPage);
-
             mav.addObject("category",category);
             mav.addObject("category_translation",ts.getCategory(category));
-            mav.addObject("frameworksList", frameworks);
+            mav.addObject("frameworksList", fs.getByCategory(enumCategory.get(), frameworksPage));
             mav.addObject("frameworks_page", frameworksPage);
-            mav.addObject("page_size", PAGESIZE);
+            mav.addObject("framework_amount",fs.getAmountByCategory(enumCategory.get()));
+            mav.addObject("page_size", PAGE_SIZE);
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

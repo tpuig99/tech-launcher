@@ -24,10 +24,12 @@ public interface FrameworkService {
     List<Framework> getByUser(long userId, long page);
     List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated, Integer order,long page);
     Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated);
+    int getAmountByCategory(FrameworkCategories categories);
 
     Optional<Integer> getByUserCount(long userId);
 
     Optional<Framework> create(String name, FrameworkCategories category, String description, String introduction, FrameworkType type, long userId, byte[] picture);
     Optional<Framework> update(long id,String name,FrameworkCategories category,String description,String introduction,FrameworkType type,byte[] picture);
     void delete(long id);
+
 }
