@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,7 +88,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated, Integer order, long page, long pageSize) {
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page, long pageSize) {
 
         if(toSearch == null && categories == null && types == null && starsLeft == 0 && starsRight == 5 && commentAmount == 0
                 && lastComment == null && lastUpdated == null && (order == null || order == 0)) {
@@ -198,7 +198,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
 
     @Override
     public Optional<Framework> create(String name, FrameworkCategories category, String description, String introduction, FrameworkType type, long userId, byte[] picture) {
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        Date ts = new Date(System.currentTimeMillis());
         final Framework framework = new Framework();
 
         framework.setName(name);
@@ -216,7 +216,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
 
     @Override
     public Optional<Framework> update(long id, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, byte[] picture) {
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        Date ts = new Date(System.currentTimeMillis());
         Framework framework = em.find(Framework.class, id);
 
         framework.setName(name);
@@ -242,7 +242,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     }
 
     @Override
-    public Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated) {
+    public Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Date lastComment, Date lastUpdated) {
         final List<Framework> resultList = search(toSearch, categories, types, starsLeft, starsRight, nameFlag, commentAmount, lastComment, lastUpdated,0, -1, -1);
         return resultList.size();
     }

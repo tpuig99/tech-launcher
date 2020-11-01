@@ -1,10 +1,10 @@
 package ar.edu.itba.paw.service;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.FrameworkCategories;
+import ar.edu.itba.paw.models.FrameworkType;
 
-import java.awt.*;
-import java.net.URL;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,8 +16,8 @@ public interface FrameworkService {
     List<Framework> getBestRatedFrameworks();
     List<Framework> getUserInterests(long userId);
     List<Framework> getByUser(long userId, long page);
-    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated, Integer order,long page);
-    Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated);
+    List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page);
+    Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Date lastComment, Date lastUpdated);
     int getAmountByCategory(FrameworkCategories categories);
 
     Optional<Integer> getByUserCount(long userId);

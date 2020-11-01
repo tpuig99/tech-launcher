@@ -2,8 +2,8 @@ package ar.edu.itba.paw.models;
 
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -27,7 +27,8 @@ public class Content {
     private String title;
 
     @Column(name = "tstamp",nullable = false)
-    private Timestamp timestamp;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timestamp;
 
     @Column(nullable = false)
     private String link;
@@ -70,7 +71,7 @@ public class Content {
         return title;
     }
 
-    public Timestamp getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
@@ -143,7 +144,7 @@ public class Content {
         this.user = user;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 

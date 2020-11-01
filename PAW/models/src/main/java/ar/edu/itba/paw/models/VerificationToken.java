@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Table(name = "verification_token")
@@ -20,13 +20,14 @@ public class VerificationToken {
     private User user;
 
     @Column(name = "exp_date", nullable = false)
-    private Timestamp expiryDay;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiryDay;
 
     public VerificationToken(){
         //For Hibernate
     }
 
-    public VerificationToken(String token, User user, Timestamp expiryDay) {
+    public VerificationToken(String token, User user, Date expiryDay) {
         this.token = token;
         this.user = user;
         this.expiryDay = expiryDay;
@@ -44,7 +45,7 @@ public class VerificationToken {
         return user.getId();
     }
 
-    public Timestamp getExpiryDay() {
+    public Date getExpiryDay() {
         return expiryDay;
     }
 
@@ -64,7 +65,7 @@ public class VerificationToken {
         this.user = user;
     }
 
-    public void setExpiryDay(Timestamp expiryDay) {
+    public void setExpiryDay(Date expiryDay) {
         this.expiryDay = expiryDay;
     }
 }

@@ -1,8 +1,9 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "comment_report")
@@ -52,7 +53,7 @@ public class ReportComment {
         return reportDescription;
     }
 
-    public Timestamp getTimestamp() {
+    public Date getTimestamp() {
         return comment.getTimestamp();
     }
 

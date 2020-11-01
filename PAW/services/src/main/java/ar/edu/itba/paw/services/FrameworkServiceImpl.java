@@ -1,21 +1,17 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.FrameworkCategories;
+import ar.edu.itba.paw.models.FrameworkType;
 import ar.edu.itba.paw.persistence.FrameworkDao;
-import ar.edu.itba.paw.service.CommentService;
-import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
-import ar.edu.itba.paw.service.FrameworkVoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class FrameworkServiceImpl implements FrameworkService {
@@ -45,7 +41,7 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft,Integer starsRight,boolean nameFlag,Integer commentAmount,Timestamp lastComment,Timestamp lastUpdated, Integer order, long page) {
+    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page) {
         if(starsLeft<starsRight)
             return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated,order, page, PAGE_SIZE_SEARCH);
         return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated,order, page, PAGE_SIZE_SEARCH);
@@ -53,7 +49,7 @@ public class FrameworkServiceImpl implements FrameworkService {
 
     @Transactional(readOnly = true)
     @Override
-    public Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Timestamp lastComment, Timestamp lastUpdated){
+    public Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Date lastComment, Date lastUpdated){
         if(starsLeft<starsRight)
             return frameworkDao.searchResultsNumber(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated);
         return frameworkDao.searchResultsNumber(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated);

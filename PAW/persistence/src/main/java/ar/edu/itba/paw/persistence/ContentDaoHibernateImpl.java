@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,7 +61,7 @@ public class ContentDaoHibernateImpl implements  ContentDao{
     @Override
     public Content insertContent(long frameworkId, long userId, String title, String link, ContentTypes type) {
         Content content = new Content(em.getReference(Framework.class,frameworkId),em.getReference(User.class,userId),title,link,type);
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        Date ts = new Date(System.currentTimeMillis());
         content.setTimestamp(ts);
         em.persist(content);
         return content;

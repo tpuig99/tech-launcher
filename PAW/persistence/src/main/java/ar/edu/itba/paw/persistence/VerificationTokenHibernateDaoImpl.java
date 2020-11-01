@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 
 @Repository
@@ -18,11 +18,11 @@ public class VerificationTokenHibernateDaoImpl implements VerificationTokenDao {
 
     @Override
     public void insert(long userId, String token) {
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        Date ts = new Date(System.currentTimeMillis());
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(ts);
         calendar.add(Calendar.MINUTE,60*24);
-        ts = new Timestamp(calendar.getTime().getTime());
+        ts = new Date(calendar.getTime().getTime());
         final VerificationToken vt = new VerificationToken(token, em.getReference(User.class,userId), ts);
         em.persist(vt);
 
@@ -30,11 +30,11 @@ public class VerificationTokenHibernateDaoImpl implements VerificationTokenDao {
 
     @Override
     public void change(VerificationToken verificationToken, String token) {
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        Date ts = new Date(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(ts);
         calendar.add(Calendar.MINUTE,60*24);
-        ts = new Timestamp(calendar.getTime().getTime());
+        ts = new Date(calendar.getTime().getTime());
         verificationToken.setToken(token);
         verificationToken.setExpiryDay(ts);
         em.merge(verificationToken);

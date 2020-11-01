@@ -7,7 +7,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
 import java.util.*;
 
 @Entity
@@ -45,7 +44,8 @@ public class Framework {
     private User author;
 
     @Column(name = "date")
-    private Timestamp publishDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date publishDate;
 
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
@@ -84,7 +84,7 @@ public class Framework {
     private int votesCant;
 
     @Transient
-    private Timestamp lastComment;
+    private Date lastComment;
 
     @Transient
     private int commentsAmount;
@@ -104,7 +104,7 @@ public class Framework {
     }
 
     public Framework(User author, String name, FrameworkCategories category, String description, String introduction,
-                     String logo, FrameworkType type, Timestamp publishDate, byte[] picture) {
+                     String logo, FrameworkType type, Date publishDate, byte[] picture) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -211,11 +211,11 @@ public class Framework {
         this.author = author;
     }
 
-    public Timestamp getPublishDate() {
+    public Date getPublishDate() {
         return publishDate;
     }
 
-    public void setPublishDate(Timestamp publishDate) {
+    public void setPublishDate(Date publishDate) {
         this.publishDate = publishDate;
     }
 
@@ -286,11 +286,11 @@ public class Framework {
         this.votesCant = votesCant;
     }
 
-    public Timestamp getLastComment() {
+    public Date getLastComment() {
         return lastComment;
     }
 
-    public void setLastComment(Timestamp lastComment) {
+    public void setLastComment(Date lastComment) {
         this.lastComment = lastComment;
     }
 

@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,7 +17,8 @@ public class Comment {
     private String description;
 
     @Column(name = "tstamp", nullable = false)
-    private Timestamp timestamp;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timestamp;
 
     @Column(name = "reference")
     private Long reference;
@@ -93,7 +94,7 @@ public class Comment {
         return votesDown;
     }
 
-    public Timestamp getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
@@ -169,7 +170,7 @@ public class Comment {
         this.description = description;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
