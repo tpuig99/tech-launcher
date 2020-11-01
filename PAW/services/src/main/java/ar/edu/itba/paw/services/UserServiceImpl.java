@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.Framework;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.models.VerifyUser;
@@ -13,8 +10,10 @@ import ar.edu.itba.paw.persistence.VerifyUserDao;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,17 +22,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
-
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.UUID;
+
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
         tokenDao.insert(user.getId(),token);
         String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
                 "\r\n" +
-                appUrl + "/registrationConfirm.html?token=" + token;
+                appUrl + "/register/confirm?token=" + token;
         sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 
@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService {
             tokenDao.change(verificationToken.get(),token);
         String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
                          "\r\n" +
-                       appUrl + "/registrationConfirm.html?token=" + token;
+                       appUrl + "/register/confirm?token=" + token;
         sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 
@@ -266,7 +266,7 @@ public class UserServiceImpl implements UserService {
             String recipientAddress = user.getMail();
 
             String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
-            String confirmationUrl = "/recoveringToken?token=" + token;
+            String confirmationUrl = "/recover/recovering_token?token=" + token;
 
             String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
             String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());

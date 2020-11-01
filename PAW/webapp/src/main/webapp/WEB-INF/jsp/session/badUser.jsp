@@ -32,9 +32,9 @@
             let serverContext = '${pageContext.request.contextPath}';
 
             function resendToken(token){
-                $.get(serverContext + "register/resendRegistrationToken?token=" + token,
+                $.get(serverContext + "resend_registration_token?token=" + token,
                     function(){
-                        window.location.href = serverContext +'/register/success/3';
+                        window.location.href = serverContext +'email_resent';
                     })
                     .catch(function(message) {
                     });

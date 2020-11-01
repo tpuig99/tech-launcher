@@ -30,7 +30,7 @@
             </c:if>
             <div class="page-description"></div>
 
-            <c:url value="/updpassword" var="postPath"/>
+            <c:url value="/recover/update_password" var="postPath"/>
             <form:form modelAttribute="passwordForm" action="${postPath}" method="post">
                 <form:label path="userId"><form:input  class="input-wrap" path="userId" type="hidden" value="${user_id}"/></form:label>
                 <div class="form-group">

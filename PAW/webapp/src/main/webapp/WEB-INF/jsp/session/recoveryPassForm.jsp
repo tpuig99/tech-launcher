@@ -30,7 +30,7 @@
             </c:if>
             <div class="page-description"></div>
 
-            <c:url value="/recoverpassword" var="postPath"/>
+            <c:url value="/recover/recover_password" var="postPath"/>
             <form:form modelAttribute="ForgetPassForm" action="${postPath}" method="post">
                 <div class="form-group">
                     <form:label path="email"><spring:message code="login.email"/></form:label>

@@ -318,7 +318,7 @@
 
                     <!-- Change password -->
                     <div>
-                        <span><a href="${pageContext.request.contextPath}/chgpassword"><spring:message code="profile.change_password"/></a></span>
+                        <span><a href="${pageContext.request.contextPath}/recover/change_password"><spring:message code="profile.change_password"/></a></span>
                     </div>
 
                 </div>
