@@ -6,19 +6,14 @@
 
 <c:if test="${(param.total/param.page_size) > 1}">
     <ul class="pagination justify-content-center mt-2">
-        <c:choose>
-            <c:when test="${param.page == 1}">
-                <li class="page-item disabled">
-            </c:when>
-            <c:otherwise>
+            <c:if test="${param.page != 1}">
               <li class="page-item ">
-            </c:otherwise>
-        </c:choose>
                     <a class="page-link" onclick="moveToPage(${param.page-1},'${param.origin}')" aria-label="Previous">
                         <span aria-hidden="true">&lsaquo;</span>
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
+            </c:if>
         <c:choose>
             <c:when test="${(param.total/param.page_size) <= 2}">
                 <li class="page-item <c:if test="${param.page == 1}">active</c:if>"><div class="page-link" onclick="moveToPage(1,'${param.origin}')" >1</div></li>
@@ -51,19 +46,14 @@
                 </c:choose>
             </c:otherwise>
         </c:choose>
-        <c:choose>
-        <c:when test="${param.page_size*param.page >= param.total}">
-            <li class="page-item disabled">
-                </c:when>
-                <c:otherwise>
+        <c:if test="${param.page_size*param.page < param.total}">
             <li class="page-item">
-                </c:otherwise>
-                </c:choose>
                 <a class="page-link" onclick="moveToPage(${param.page+1},'${param.origin}')" aria-label="Next">
                     <span aria-hidden="true">&rsaquo;</span>
                     <span class="sr-only">Next</span>
                 </a>
             </li>
+        </c:if>
     </ul>
 </c:if>
 
@@ -115,6 +105,19 @@
        else if(origin == 'profile_techs'){
         window.location.href="<c:url value="/users/${param.username}?comments_page=${param.comments_page}&contents_page=${param.contents_page}&votes_page=${param.votes_page}&frameworks_page="/>".concat(goingPage);
        }
+       else if(origin == 'tech_book'){
+           window.location.href="<c:url value="/${param.category}/${param.techs_id}?books_page="/>".concat(goingPage).concat("&courses_page=${param.courses_page}&tutorials_page=${param.tutorials_page}&comments_page=${param.comments_page}");
+       }
+       else if(origin == 'tech_courses'){
+           window.location.href="<c:url value="/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page="/>".concat(goingPage).concat("&tutorials_page=${param.tutorials_page}&comments_page=${param.comments_page}");
+       }
+       else if(origin == 'tech_tutorial'){
+           window.location.href="<c:url value="/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page=${param.courses_page}&tutorials_page="/>".concat(goingPage).concat("&comments_page=${param.comments_page}");
+       }
+       else if(origin == 'tech_comments'){
+           window.location.href="<c:url value="/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page=${param.courses_page}&tutorials_page=${param.tutorials_page}&comments_page="/>".concat(goingPage);
+       }
+
    }
 
 </script>
