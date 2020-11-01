@@ -42,6 +42,7 @@ public class UserProfileController {
 
     final private long PAGE_SIZE = 5;
     final private long FRAMEWORK_PAGE_SIZE = 7;
+    final private long VOTE_PAGE_SIZE = 10;
     final private String START_PAGE = "1";
 
     public static ModelAndView redirectToProfile(String username) {
@@ -84,6 +85,7 @@ public class UserProfileController {
             commentsCount.ifPresent(value -> mav.addObject("commentsCount", value));
             mav.addObject("votes", votesList);
             mav.addObject("votes_page", votesPage);
+            mav.addObject("votes_page_size",VOTE_PAGE_SIZE);
             votesCount.ifPresent(value -> mav.addObject("votesCount", value));
             mav.addObject("frameworks",frameworks);
             mav.addObject("frameworks_page", frameworksPage);

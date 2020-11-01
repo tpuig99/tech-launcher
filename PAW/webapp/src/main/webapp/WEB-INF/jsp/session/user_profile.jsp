@@ -129,35 +129,17 @@
                             </div>
                         </div>
                     </c:forEach>
-                    <ul class="pagination">
-                        <c:choose>
-                            <c:when test="${comments_page == 1}">
-                                <li class="page-item disabled">
-                            </c:when>
-                            <c:otherwise>
-                                <li class="page-item ">
-                            </c:otherwise>
-                        </c:choose>
-                            <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page-1}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
-                                <span aria-hidden="true">&lsaquo;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
-                        <li class="page-item"><div class="page-link">${comments_page}</div></li>
-                        <c:choose>
-                            <c:when test="${comments_page*page_size >= commentsCount}">
-                                <li class="page-item disabled">
-                            </c:when>
-                            <c:otherwise>
-                                <li class="page-item">
-                            </c:otherwise>
-                        </c:choose>
-                                <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page+1}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
-                                    <span aria-hidden="true">&rsaquo;</span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </li>
-                    </ul>
+                    <!-- Comment pagination -->
+                    <jsp:include page="../components/pagination.jsp">
+                        <jsp:param name="total" value="${commentsCount}"/>
+                        <jsp:param name="page" value="${comments_page}"/>
+                        <jsp:param name="page_size" value="${page_size}"/>
+                        <jsp:param name="origin" value="profile_comment"/>
+                        <jsp:param name="username" value="${username}"/>
+                        <jsp:param name="techs_page" value="${frameworks_page}"/>
+                        <jsp:param name="contents_page" value="${contents_page}"/>
+                        <jsp:param name="votes_page" value="${votes_page}"/>
+                    </jsp:include>
                 </div>
             </c:when>
             <c:otherwise>
@@ -196,35 +178,17 @@
                             </div>
                         </div>
                     </c:forEach>
-                    <ul class="pagination">
-                        <c:choose>
-                        <c:when test="${contents_page == 1}">
-                        <li class="page-item disabled">
-                            </c:when>
-                            <c:otherwise>
-                        <li class="page-item ">
-                            </c:otherwise>
-                            </c:choose>
-                            <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page-1}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
-                                <span aria-hidden="true">&lsaquo;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
-                            <li class="page-item"><div class="page-link">${contents_page}</div></li>
-                        <c:choose>
-                        <c:when test="${contents_page*page_size >= contentCount}">
-                        <li class="page-item disabled">
-                            </c:when>
-                            <c:otherwise>
-                        <li class="page-item">
-                            </c:otherwise>
-                            </c:choose>
-                            <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page + 1}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
-                                <span aria-hidden="true">&rsaquo;</span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </li>
-                    </ul>
+                    <!-- Content pagination -->
+                    <jsp:include page="../components/pagination.jsp">
+                        <jsp:param name="total" value="${contentCount}"/>
+                        <jsp:param name="page" value="${contents_page}"/>
+                        <jsp:param name="page_size" value="${page_size}"/>
+                        <jsp:param name="origin" value="profile_content"/>
+                        <jsp:param name="username" value="${username}"/>
+                        <jsp:param name="techs_page" value="${frameworks_page}"/>
+                        <jsp:param name="comments_page" value="${comments_page}"/>
+                        <jsp:param name="votes_page" value="${votes_page}"/>
+                    </jsp:include>
                 </div>
             </c:when>
             <c:otherwise>
@@ -257,35 +221,17 @@
                         </div>
                     </c:forEach>
                 </div>
-                <ul class="pagination justify-content-center">
-                    <c:choose>
-                    <c:when test="${votes_page == 1}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item ">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page-1}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
-                            <span aria-hidden="true">&lsaquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><div class="page-link">${votes_page}</div></li>
-                    <c:choose>
-                    <c:when test="${votes_page*page_size*2 >= votesCount}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page+1}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
-                            <span aria-hidden="true">&rsaquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
+                <!-- Votes pagination -->
+                <jsp:include page="../components/pagination.jsp">
+                    <jsp:param name="total" value="${votesCount}"/>
+                    <jsp:param name="page" value="${votes_page}"/>
+                    <jsp:param name="page_size" value="${votes_page_size}"/>
+                    <jsp:param name="origin" value="profile_votes"/>
+                    <jsp:param name="username" value="${username}"/>
+                    <jsp:param name="techs_page" value="${frameworks_page}"/>
+                    <jsp:param name="comments_page" value="${comments_page}"/>
+                    <jsp:param name="contents_page" value="${contents_page}"/>
+                </jsp:include>
             </c:when>
             <c:otherwise>
                 <spring:message code="profile.empty.votes"/>
@@ -320,35 +266,18 @@
                     </div>
                 </c:forEach>
             </div>
-            <ul class="pagination justify-content-center">
-                <c:choose>
-                <c:when test="${frameworks_page == 1}">
-                <li class="page-item disabled">
-                    </c:when>
-                    <c:otherwise>
-                <li class="page-item ">
-                    </c:otherwise>
-                    </c:choose>
-                    <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
-                        <span aria-hidden="true">&lsaquo;</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-                <li class="page-item"><div class="page-link">${frameworks_page}</div></li>
-                <c:choose>
-                <c:when test="${frameworks_page*frameworks_page_size >= frameworksCount}">
-                <li class="page-item disabled">
-                    </c:when>
-                    <c:otherwise>
-                <li class="page-item">
-                    </c:otherwise>
-                    </c:choose>
-                    <a class="page-link" href="<c:url value="/users/${username}?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page+1}"/>" aria-label="Next">
-                        <span aria-hidden="true">&rsaquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            </ul>
+        <!-- Tech pagination -->
+        <jsp:include page="../components/pagination.jsp">
+            <jsp:param name="total" value="${frameworksCount}"/>
+            <jsp:param name="page" value="${frameworks_page}"/>
+            <jsp:param name="page_size" value="${frameworks_page_size}"/>
+            <jsp:param name="origin" value="profile_techs"/>
+            <jsp:param name="username" value="${username}"/>
+            <jsp:param name="comments_page" value="${comments_page}"/>
+            <jsp:param name="contents_page" value="${contents_page}"/>
+            <jsp:param name="votes_page" value="${votes_page}"/>
+            <jsp:param name="techs_page" value="${frameworks_page}"/>
+        </jsp:include>
         </c:if>
     </div>
 
