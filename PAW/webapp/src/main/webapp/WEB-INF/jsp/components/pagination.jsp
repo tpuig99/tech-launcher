@@ -119,6 +119,22 @@
        else if(origin == 'category_list'){
            window.location.href="<c:url value="/${param.category}?frameworks_page="/>".concat(goingPage);
        }
-   }
+       else if(origin == 'mod_mod'){
+           window.location.href="<c:url value="/mod?modsPage="/>".concat(goingPage).concat("&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}");
+       }
+       else if(origin == 'mod_report_comment'){
+           window.location.href="<c:url value="/mod?modsPage=${param.modsPage}&rComPage="/>".concat(goingPage).concat("&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}");
+       }
+       else if(origin == 'mod_applicants'){
+           window.location.href="<c:url value="/mod?modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage="/>".concat(goingPage).concat("&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}");
+       }
+       else if(origin == 'mod_verify'){
+           window.location.href="<c:url value="/mod?modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage="/>".concat(goingPage).concat("&rConPage=${param.rConPage}");
+       }
+       else if(origin == 'mod_report_content'){
+           window.location.href="<c:url value="mod?modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage="/>".concat(goingPage);
+       }
+
+       }
 
 </script>

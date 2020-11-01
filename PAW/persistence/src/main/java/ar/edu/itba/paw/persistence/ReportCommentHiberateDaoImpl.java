@@ -38,6 +38,12 @@ public class ReportCommentHiberateDaoImpl implements ReportCommentDao{
     }
 
     @Override
+    public Optional<Integer> getAllReportsAmount() {
+        TypedQuery<ReportComment> query = em.createQuery("from ReportComment ", ReportComment.class);
+        return Optional.of(query.getResultList().size());
+    }
+
+    @Override
     public void insert(long commentId, long userId, String description) {
         ReportComment reportComment = new ReportComment();
         reportComment.setComment(em.getReference(Comment.class, commentId));

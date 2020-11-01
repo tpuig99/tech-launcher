@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface ReportCommentDao {
     List<ReportComment> getAll(long page, long pageSize);
+    Optional<Integer> getAllReportsAmount();
     void insert(long commentId, long userId, String description);
     void delete(long reportId);
     void deleteReportByComment(long commentId);

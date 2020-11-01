@@ -21,7 +21,6 @@
             <jsp:param name="isMod" value="${user_isMod}"/>
         </jsp:include>
 
-
         <div class="content-no-sidebar">
             <div class="page-title-big row"><spring:message code="moderate.moderation_panel"/></div>
 
@@ -86,34 +85,18 @@
                                 </c:choose>
                             </div>
                             <c:if test="${not empty pendingToVerify || verifyPage != 1}">
-                                <ul class="pagination justify-content-center">
-                                    <c:choose>
-                                    <c:when test="${verifyPage == 1}">
-                                    <li class="page-item disabled">
-                                        </c:when>
-                                        <c:otherwise>
-                                    <li class="page-item ">
-                                        </c:otherwise>
-                                        </c:choose>
-                                        <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage-1}&rConPage=${rConPage}"/>" aria-label="Previous">
-                                            <span aria-hidden="true">&lsaquo;</span>
-                                            <span class="sr-only">Previous</span>
-                                        </a>
-                                    </li>
-                                    <c:choose>
-                                    <c:when test="${pendingToVerify.size() < pageSize}">
-                                    <li class="page-item disabled">
-                                        </c:when>
-                                        <c:otherwise>
-                                    <li class="page-item">
-                                        </c:otherwise>
-                                        </c:choose>
-                                        <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage+1}&rConPage=${rConPage}"/>" aria-label="Next">
-                                            <span aria-hidden="true">&rsaquo;</span>
-                                            <span class="sr-only">Next</span>
-                                        </a>
-                                    </li>
-                                </ul>
+                                <!-- Pendings pagination -->
+                                <jsp:include page="../components/pagination.jsp">
+                                    <jsp:param name="total" value="${verifyAmount}"/>
+                                    <jsp:param name="page" value="${verifyPage}"/>
+                                    <jsp:param name="page_size" value="${pageSize}"/>
+                                    <jsp:param name="origin" value="mod_verify"/>
+                                    <jsp:param name="modsPage" value="${modsPage}"/>
+                                    <jsp:param name="rComPage" value="${rComPage}"/>
+                                    <jsp:param name="applicantsPage" value="${applicantsPage}"/>
+                                    <jsp:param name="verifyPage" value="${verifyPage}"/>
+                                    <jsp:param name="rConPage" value="${rConPage}"/>
+                                </jsp:include>
                             </c:if>
                             </div>
                             <div class="col">
@@ -156,34 +139,18 @@
                                 </c:choose>
                             </div>
                             <c:if test="${not empty pendingApplicants || applicantsPage != 1}">
-                                <ul class="pagination justify-content-center">
-                                    <c:choose>
-                                    <c:when test="${applicantsPage == 1}">
-                                    <li class="page-item disabled">
-                                        </c:when>
-                                        <c:otherwise>
-                                    <li class="page-item ">
-                                        </c:otherwise>
-                                        </c:choose>
-                                        <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage-1}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Previous">
-                                            <span aria-hidden="true">&lsaquo;</span>
-                                            <span class="sr-only">Previous</span>
-                                        </a>
-                                    </li>
-                                    <c:choose>
-                                    <c:when test="${pendingApplicants.size() < pageSize}">
-                                    <li class="page-item disabled">
-                                        </c:when>
-                                        <c:otherwise>
-                                    <li class="page-item">
-                                        </c:otherwise>
-                                        </c:choose>
-                                        <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage+1}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Next">
-                                            <span aria-hidden="true">&rsaquo;</span>
-                                            <span class="sr-only">Next</span>
-                                        </a>
-                                    </li>
-                                </ul>
+                                <!-- Applicants pagination -->
+                                <jsp:include page="../components/pagination.jsp">
+                                    <jsp:param name="total" value="${applicantsAmount}"/>
+                                    <jsp:param name="page" value="${applicantsPage}"/>
+                                    <jsp:param name="page_size" value="${pageSize}"/>
+                                    <jsp:param name="origin" value="mod_applicants"/>
+                                    <jsp:param name="modsPage" value="${modsPage}"/>
+                                    <jsp:param name="rComPage" value="${rComPage}"/>
+                                    <jsp:param name="applicantsPage" value="${applicantsPage}"/>
+                                    <jsp:param name="verifyPage" value="${verifyPage}"/>
+                                    <jsp:param name="rConPage" value="${rConPage}"/>
+                                </jsp:include>
                             </c:if>
                             </div>
                         </div>
@@ -228,38 +195,20 @@
                                     </c:choose>
                                 </div>
                                 <c:if test="${not empty mods || modsPage != 1}">
-                                    <ul class="pagination justify-content-center">
-                                        <c:choose>
-                                        <c:when test="${modsPage == 1}">
-                                        <li class="page-item disabled">
-                                            </c:when>
-                                            <c:otherwise>
-                                        <li class="page-item ">
-                                            </c:otherwise>
-                                            </c:choose>
-                                            <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage-1}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Previous">
-                                                <span aria-hidden="true">&lsaquo;</span>
-                                                <span class="sr-only">Previous</span>
-                                            </a>
-                                        </li>
-                                        <c:choose>
-                                        <c:when test="${mods.size() < pageSize}">
-                                        <li class="page-item disabled">
-                                            </c:when>
-                                            <c:otherwise>
-                                        <li class="page-item">
-                                            </c:otherwise>
-                                            </c:choose>
-                                            <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage+1}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Next">
-                                                <span aria-hidden="true">&rsaquo;</span>
-                                                <span class="sr-only">Next</span>
-                                            </a>
-                                        </li>
-                                    </ul>
+                                    <!-- Mods pagination -->
+                                    <jsp:include page="../components/pagination.jsp">
+                                        <jsp:param name="total" value="${modsAmount}"/>
+                                        <jsp:param name="page" value="${modsPage}"/>
+                                        <jsp:param name="page_size" value="${pageSize}"/>
+                                        <jsp:param name="origin" value="mod_mod"/>
+                                        <jsp:param name="modsPage" value="${modsPage}"/>
+                                        <jsp:param name="rComPage" value="${rComPage}"/>
+                                        <jsp:param name="applicantsPage" value="${applicantsPage}"/>
+                                        <jsp:param name="verifyPage" value="${verifyPage}"/>
+                                        <jsp:param name="rConPage" value="${rConPage}"/>
+                                    </jsp:include>
                                 </c:if>
                             </c:if>
-
-
                         </div>
                     </div>
                     <!-- SEE REPORTS -->
@@ -314,34 +263,18 @@
                                     </c:choose>
                                 </div>
                                 <c:if test="${not empty reportedComments || rComPage != 1}">
-                                    <ul class="pagination justify-content-center">
-                                        <c:choose>
-                                        <c:when test="${rComPage == 1}">
-                                        <li class="page-item disabled">
-                                            </c:when>
-                                            <c:otherwise>
-                                        <li class="page-item ">
-                                            </c:otherwise>
-                                            </c:choose>
-                                            <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage-1}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Previous">
-                                                <span aria-hidden="true">&lsaquo;</span>
-                                                <span class="sr-only">Previous</span>
-                                            </a>
-                                        </li>
-                                        <c:choose>
-                                        <c:when test="${reportedComments.size() < pageSize}">
-                                        <li class="page-item disabled">
-                                            </c:when>
-                                            <c:otherwise>
-                                        <li class="page-item">
-                                            </c:otherwise>
-                                            </c:choose>
-                                            <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage+1}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage}"/>" aria-label="Next">
-                                                <span aria-hidden="true">&rsaquo;</span>
-                                                <span class="sr-only">Next</span>
-                                            </a>
-                                        </li>
-                                    </ul>
+                                    <!-- Report Comment pagination -->
+                                    <jsp:include page="../components/pagination.jsp">
+                                        <jsp:param name="total" value="${reportedCommentsAmount}"/>
+                                        <jsp:param name="page" value="${rComPage}"/>
+                                        <jsp:param name="page_size" value="${pageSize}"/>
+                                        <jsp:param name="origin" value="mod_report_comment"/>
+                                        <jsp:param name="modsPage" value="${modsPage}"/>
+                                        <jsp:param name="rComPage" value="${rComPage}"/>
+                                        <jsp:param name="applicantsPage" value="${applicantsPage}"/>
+                                        <jsp:param name="verifyPage" value="${verifyPage}"/>
+                                        <jsp:param name="rConPage" value="${rConPage}"/>
+                                    </jsp:include>
                                 </c:if>
                             </c:if>
                             <c:if test="${isAdmin}"></div></c:if>
@@ -394,34 +327,18 @@
                                 </c:choose>
                             </div>
                             <c:if test="${not empty reportedContents || rConPage != 1}">
-                                <ul class="pagination justify-content-center">
-                                    <c:choose>
-                                    <c:when test="${rConPage == 1}">
-                                    <li class="page-item disabled">
-                                        </c:when>
-                                        <c:otherwise>
-                                    <li class="page-item ">
-                                        </c:otherwise>
-                                        </c:choose>
-                                        <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage-1}"/>" aria-label="Previous">
-                                            <span aria-hidden="true">&lsaquo;</span>
-                                            <span class="sr-only">Previous</span>
-                                        </a>
-                                    </li>
-                                    <c:choose>
-                                    <c:when test="${reportedContents.size() < pageSize}">
-                                    <li class="page-item disabled">
-                                        </c:when>
-                                        <c:otherwise>
-                                    <li class="page-item">
-                                        </c:otherwise>
-                                        </c:choose>
-                                        <a class="page-link" href="<c:url value="/mod?modsPage=${modsPage}&rComPage=${rComPage}&applicantsPage=${applicantsPage}&verifyPage=${verifyPage}&rConPage=${rConPage+1}"/>" aria-label="Next">
-                                            <span aria-hidden="true">&rsaquo;</span>
-                                            <span class="sr-only">Next</span>
-                                        </a>
-                                    </li>
-                                </ul>
+                                <!-- Report Content pagination -->
+                                <jsp:include page="../components/pagination.jsp">
+                                    <jsp:param name="total" value="${reportedContentAmount}"/>
+                                    <jsp:param name="page" value="${rConPage}"/>
+                                    <jsp:param name="page_size" value="${pageSize}"/>
+                                    <jsp:param name="origin" value="mod_report_content"/>
+                                    <jsp:param name="modsPage" value="${modsPage}"/>
+                                    <jsp:param name="rComPage" value="${rComPage}"/>
+                                    <jsp:param name="applicantsPage" value="${applicantsPage}"/>
+                                    <jsp:param name="verifyPage" value="${verifyPage}"/>
+                                    <jsp:param name="rConPage" value="${rConPage}"/>
+                                </jsp:include>
                             </c:if>
                             <c:if test="${isAdmin}"></div></c:if>
                         <c:if test="${isAdmin}"></div></c:if>

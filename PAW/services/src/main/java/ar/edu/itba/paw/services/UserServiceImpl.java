@@ -37,7 +37,7 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final long PAGESIZE=6;
+    private final long PAGE_SIZE=5;
     private static final long USER_NOT_EXISTS = -1;
     @Autowired
     private UserDao userDao;
@@ -193,7 +193,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByFrameworks(List<Long> frameworksIds, boolean pending, long page) {
-        return verifyUserDao.getByFrameworks(frameworksIds, pending, page, PAGESIZE);
+        return verifyUserDao.getByFrameworks(frameworksIds, pending, page, PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)
@@ -212,7 +212,27 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByPending(boolean pending, long page) {
-        return verifyUserDao.getByPending(pending, page, PAGESIZE);
+        return verifyUserDao.getByPending(pending, page, PAGE_SIZE);
+    }
+
+    @Override
+    public Optional<Integer> getVerifyByPendingAmount(boolean pending) {
+        return verifyUserDao.getVerifyByPendingAmount(pending);
+    }
+
+    @Override
+    public Optional<Integer> getVerifyByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
+        return verifyUserDao.getVerifyByFrameworkAmount(frameworksIds,pending);
+    }
+
+    @Override
+    public Optional<Integer> getApplicantsByPendingAmount(boolean pending) {
+        return verifyUserDao.getApplicantsByPendingAmount(pending);
+    }
+
+    @Override
+    public Optional<Integer> getApplicantsByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
+        return verifyUserDao.getApplicantsByFrameworkAmount(frameworksIds,pending);
     }
 
     @Transactional
@@ -291,13 +311,13 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getApplicantsByPending(boolean pending, long page) {
-        return verifyUserDao.getApplicantsByPending(true, page, PAGESIZE);
+        return verifyUserDao.getApplicantsByPending(true, page, PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page) {
-        return verifyUserDao.getApplicantsByFrameworks(frameworksIds, page, PAGESIZE);
+        return verifyUserDao.getApplicantsByFrameworks(frameworksIds, page, PAGE_SIZE);
     }
 
     @Transactional

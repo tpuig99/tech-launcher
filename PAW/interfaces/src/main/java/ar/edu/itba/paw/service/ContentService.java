@@ -23,6 +23,8 @@ public interface ContentService {
 
     /*** Reports ***/
     List<ReportContent> getAllReports( long page);
+    Optional<Integer> getAllReportsAmount();
+    Optional<Integer> getReportsAmount(List<Long> frameworksIds);
     List<ReportContent> getReportsByFrameworks( List<Long> frameworksIds, long page);
     void addReport(long contentId,long userId,String description);
     void acceptReport(long contentId);

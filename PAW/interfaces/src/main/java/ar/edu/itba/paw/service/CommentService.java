@@ -25,6 +25,7 @@ public interface CommentService {
 
         /***Reports***/
     List<ReportComment> getAllReport(long page);
+    Optional<Integer> getAllReportsAmount();
     void addReport(long commentId,long userId,String description);
     void acceptReport(long commentId);
     void denyReport(long commentId);

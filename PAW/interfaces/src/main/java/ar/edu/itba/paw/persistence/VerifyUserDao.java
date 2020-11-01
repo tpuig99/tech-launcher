@@ -17,6 +17,10 @@ public interface VerifyUserDao {
     List<VerifyUser> getByPending(boolean pending, long page, long pageSize);
     List<VerifyUser> getApplicantsByPending(boolean pending, long page, long pageSize);
     List<VerifyUser> getApplicantsByFrameworks( List<Long> frameworksIds, long page, long pageSize );
+    Optional<Integer> getVerifyByPendingAmount(boolean pending);
+    Optional<Integer> getVerifyByFrameworkAmount(List<Long> frameworksIds,boolean pending);
+    Optional<Integer> getApplicantsByPendingAmount(boolean pending);
+    Optional<Integer> getApplicantsByFrameworkAmount(List<Long> frameworksIds,boolean pending);
     void delete(long verificationId);
     void deleteVerificationByUser(long userId);
     void verify(long verificationId);

@@ -43,6 +43,19 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
     }
 
     @Override
+    public Optional<Integer> getAllReportsAmount() {
+            TypedQuery<ReportContent> query = em.createQuery("from ReportContent", ReportContent.class);
+            return Optional.of(query.getResultList().size());
+    }
+
+    @Override
+    public Optional<Integer> getReportsAmount(List<Long> frameworksIds) {
+        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent rc where rc.content.framework.id in :frameworksIds", ReportContent.class);
+        query.setParameter("frameworksIds", frameworksIds);
+        return Optional.of(query.getResultList().size());
+    }
+
+    @Override
     public void add(long contentId, long userId, String description) {
         final ReportContent rc = new ReportContent(em.getReference(Content.class,contentId), em.getReference(User.class,userId), description);
         em.persist(rc);

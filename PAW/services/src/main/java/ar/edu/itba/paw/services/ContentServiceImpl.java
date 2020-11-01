@@ -81,6 +81,16 @@ public class ContentServiceImpl implements ContentService {
         return rc.getAll(page, PAGE_SIZE);
     }
 
+    @Override
+    public Optional<Integer> getAllReportsAmount() {
+        return rc.getAllReportsAmount();
+    }
+
+    @Override
+    public Optional<Integer> getReportsAmount(List<Long> frameworksIds) {
+        return rc.getReportsAmount(frameworksIds);
+    }
+
     @Transactional
     @Override
     public void addReport(long contentId, long userId, String description) {

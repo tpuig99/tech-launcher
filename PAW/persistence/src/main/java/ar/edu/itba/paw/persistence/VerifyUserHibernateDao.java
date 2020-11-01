@@ -89,6 +89,39 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     }
 
     @Override
+    public Optional<Integer> getVerifyByPendingAmount(boolean pending) {
+        final TypedQuery<VerifyUser> query;
+        if(!pending)
+            query = em.createQuery("from VerifyUser as vu where vu.pending = :pending", VerifyUser.class);
+        else
+            query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.comment is not null", VerifyUser.class);
+        query.setParameter("pending", pending);
+        return Optional.of(query.getResultList().size());
+    }
+
+    @Override
+    public Optional<Integer> getVerifyByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
+        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.pending = :pending", VerifyUser.class);
+        query.setParameter("frameworksIds", frameworksIds);
+        query.setParameter("pending", pending);
+        return Optional.of(query.getResultList().size());
+    }
+
+    @Override
+    public Optional<Integer> getApplicantsByPendingAmount(boolean pending) {
+        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.comment is null", VerifyUser.class);
+        query.setParameter("pending", pending);
+        return Optional.of(query.getResultList().size());
+    }
+
+    @Override
+    public Optional<Integer> getApplicantsByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
+        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.comment is null", VerifyUser.class);
+        query.setParameter("frameworksIds", frameworksIds);
+        return Optional.of(query.getResultList().size());
+    }
+
+    @Override
     public void delete(long verificationId) {
         em.remove(em.getReference(VerifyUser.class,verificationId));
     }

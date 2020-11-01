@@ -32,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private ReportCommentDao rc;
 
-    private long PAGESIZE = 5;
+    private long PAGE_SIZE = 5;
 
     @Transactional(readOnly = true)
     @Override
@@ -43,13 +43,13 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     @Override
     public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId, long page) {
-        return cmts.getCommentsWithoutReferenceByFramework(frameworkId, page, PAGESIZE);
+        return cmts.getCommentsWithoutReferenceByFramework(frameworkId, page, PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<Comment> getCommentsByUser(long userId, long page) {
-        return cmts.getCommentsByUser(userId, page, PAGESIZE);
+        return cmts.getCommentsByUser(userId, page, PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)
@@ -106,7 +106,12 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     @Override
     public List<ReportComment> getAllReport(long page) {
-        return rc.getAll(page, PAGESIZE);
+        return rc.getAll(page, PAGE_SIZE);
+    }
+
+    @Override
+    public Optional<Integer> getAllReportsAmount() {
+        return rc.getAllReportsAmount();
     }
 
     @Transactional

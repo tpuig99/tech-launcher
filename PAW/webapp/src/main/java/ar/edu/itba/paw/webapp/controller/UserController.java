@@ -40,7 +40,7 @@ public class UserController {
     MessageSource messageSource;
 
     private final long pageStart=1;
-    private final long PAGESIZE=5;
+    private final long PAGE_SIZE=5;
 
     private static final String MOD_VIEW = "/mod";
 
@@ -148,21 +148,26 @@ public class UserController {
                 List<VerifyUser> applicants = us.getApplicantsByPending(true, applicantsPage == null ? pageStart:applicantsPage);
                 List<ReportComment> reportedComments = commentService.getAllReport(rComPage == null ? pageStart:rComPage);
                 List<ReportContent> reportedContents = contentService.getAllReports(rConPage == null ? pageStart:rConPage);
-                mav.addObject("pageSize", PAGESIZE);
+                mav.addObject("pageSize", PAGE_SIZE);
 
                 mav.addObject("mods",mods);
+                mav.addObject("modsAmount",us.getVerifyByPendingAmount(false).get());
                 mav.addObject("modsPage", modsPage == null ? pageStart:modsPage);
 
                 mav.addObject("pendingToVerify", verify);
+                mav.addObject("verifyAmount",us.getVerifyByPendingAmount(true).get());
                 mav.addObject("verifyPage", verifyPage == null ? pageStart:verifyPage);
 
                 mav.addObject("pendingApplicants", applicants);
+                mav.addObject("applicantsAmount",us.getApplicantsByPendingAmount(true).get());
                 mav.addObject("applicantsPage", applicantsPage == null ? pageStart:applicantsPage);
 
                 mav.addObject("reportedComments", reportedComments);
+                mav.addObject("reportedCommentsAmount",commentService.getAllReportsAmount().get());
                 mav.addObject("rComPage", rComPage == null ? pageStart:rComPage);
 
                 mav.addObject("reportedContents", reportedContents );
+                mav.addObject("reportedContentAmount",contentService.getAllReportsAmount().get());
                 mav.addObject("rConPage", rConPage == null ? pageStart:rConPage);
 
                 return mav;
@@ -177,15 +182,18 @@ public class UserController {
                 List<VerifyUser> applicants = us.getApplicantsByFrameworks(frameworksIds, applicantsPage == null ? pageStart:applicantsPage);
                 List<ReportContent> reportContents = contentService.getReportsByFrameworks(frameworksIds, rConPage == null ? pageStart:rConPage);
 
-                mav.addObject("pageSize", PAGESIZE);
+                mav.addObject("pageSize", PAGE_SIZE);
 
                 mav.addObject("pendingToVerify",verify);
+                mav.addObject("verifyAmount",us.getVerifyByFrameworkAmount(frameworksIds,true).get());
                 mav.addObject("verifyPage", verifyPage == null ? pageStart:verifyPage);
 
                 mav.addObject("pendingApplicants", applicants);
+                mav.addObject("applicantsAmount",us.getApplicantsByFrameworkAmount(frameworksIds,true).get());
                 mav.addObject("applicantsPage", applicantsPage == null ? pageStart:applicantsPage);
 
                 mav.addObject("reportedContents", reportContents);
+                mav.addObject("reportedContentAmount",contentService.getReportsAmount(frameworksIds).get());
                 mav.addObject("rConPage", rConPage == null ? pageStart:rConPage);
                 return mav;
             }
