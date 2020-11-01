@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
 <html>
     <head>
         <title>
@@ -14,33 +13,34 @@
         <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/mod.css"/>"/>
     </head>
     <body>
-
         <jsp:include page="../components/navbar.jsp">
             <jsp:param name="connected" value="${user.authenticated}"/>
             <jsp:param name="username" value="${user.name}"/>
             <jsp:param name="isMod" value="${user_isMod}"/>
         </jsp:include>
-
         <div class="content-no-sidebar">
             <div class="page-title-big row"><spring:message code="moderate.moderation_panel"/></div>
 
             <!-- Mods managing -->
+            <%! public String tab = "";%>
             <div class="container">
-               <ul class="nav nav-tabs">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#1" data-toggle="tab"><spring:message code="moderate.promote"/></a>
+               <ul class="nav nav-tabs" id="mod-tab">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#promote" data-toggle="tab" role="tab" aria-controls="promote" aria-selected="true"><spring:message code="moderate.promote"/></a>
                     </li>
                    <c:if test="${isAdmin}">
-                    <li><a class="nav-link" href="#2" data-toggle="tab"><spring:message code="moderate.demote"/></a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#demote" data-toggle="tab" role="tab" aria-controls="demote" aria-selected="false" ><spring:message code="moderate.demote"/></a>
                     </li>
                    </c:if>
-                    <li><a class="nav-link" href="#3" data-toggle="tab"><spring:message code="moderate.see_reports"/></a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#reports" data-toggle="tab" role="tab" aria-controls="reports" aria-selected="false"><spring:message code="moderate.see_reports"/></a>
                     </li>
                 </ul>
 
                 <div class="tab-content">
                     <!-- PROMOTE -->
-                    <div class="tab-pane active" id="1">
+                    <div class="tab-pane active" id="promote">
                         <div class="add-margin"><h5><spring:message code="moderate.promote_description"/></h5></div>
                         <div class="row">
                             <div class="col-6">
@@ -84,7 +84,7 @@
                                     </c:otherwise>
                                 </c:choose>
                             </div>
-                            <c:if test="${not empty pendingToVerify || verifyPage != 1}">
+                                <c:if test="${not empty pendingToVerify || verifyPage != 1}">
                                 <!-- Pendings pagination -->
                                 <jsp:include page="../components/pagination.jsp">
                                     <jsp:param name="total" value="${verifyAmount}"/>
@@ -157,7 +157,7 @@
 
                     </div>
                     <!-- DEMOTE -->
-                    <div class="tab-pane" id="2">
+                    <div class="tab-pane" id="demote">
                         <div class="add-margin"><h5><spring:message code="moderate.demote_description"/></h5></div>
                         <div class="page-title"><spring:message code="moderator.title"/></div>
                         <div>
@@ -212,7 +212,7 @@
                         </div>
                     </div>
                     <!-- SEE REPORTS -->
-                    <div class="tab-pane" id="3">
+                    <div class="tab-pane" id="reports">
                         <div class="add-margin"><h5><spring:message code="moderate.see_reports_description"/></h5></div>
                         <!-- Reported Comments -->
                         <c:if test="${isAdmin}"><div class="row">
@@ -353,3 +353,16 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     </body>
 </html>
+<script>
+    $(document).ready(function() {
+        tab = "${selectTab}";
+        let value = '#mod-tab a[href="#'+tab+'"]';
+        $(value).tab('show');
+    });
+    $(function () {
+        $('.nav-link').click(function () {
+            tab = $(this).attr('href').replace("#","");
+        })
+    });
+
+</script>

@@ -25,6 +25,10 @@ import java.util.Optional;
 public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final String DEFAULT_PROMOTE_TAB = "promote";
+    private static final String DEFAULT_DEMOTE_TAB = "demote";
+    private static final String DEFAULT_REPORT_TAB = "reports";
+
 
     @Autowired
     UserService us;
@@ -71,7 +75,7 @@ public class UserController {
             us.deleteVerification(form.getRejectUserVerificationId());
         }
 
-        return modPage(null, null, null, null, null);
+        return modPage(DEFAULT_PROMOTE_TAB,null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/rejectPending"}, method = RequestMethod.POST )
@@ -81,7 +85,7 @@ public class UserController {
             us.deleteVerification(form.getRejectPendingUserVerificationId());
         }
 
-        return modPage(null, null, null, null, null);
+        return modPage(DEFAULT_PROMOTE_TAB,null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/accept"}, method = RequestMethod.POST)
@@ -92,7 +96,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
             }
-        return modPage(null, null, null, null, null);
+        return modPage(DEFAULT_PROMOTE_TAB,null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/acceptPending"}, method = RequestMethod.POST)
@@ -103,7 +107,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
         }
-        return modPage(null, null, null, null, null);
+        return modPage(DEFAULT_PROMOTE_TAB,null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/demote"}, method = RequestMethod.POST)
@@ -115,11 +119,12 @@ public class UserController {
         }
 
         LOGGER.error("User: Attempting to demote a non promoted user");
-        return modPage(null, null, null, null, null);
+        return modPage(DEFAULT_DEMOTE_TAB,null, null, null, null, null);
     }
 
     @RequestMapping("/mod")
-    public ModelAndView modPage(@RequestParam(value = "modsPage", required = false) final Long modsPage,
+    public ModelAndView modPage(@RequestParam(value = "tabs", defaultValue = DEFAULT_PROMOTE_TAB, required = false) final String tabs,
+                                @RequestParam(value = "modsPage", required = false) final Long modsPage,
                                 @RequestParam(value = "rComPage", required = false) final Long rComPage,
                                 @RequestParam(value = "applicantsPage", required = false) final Long applicantsPage,
                                 @RequestParam(value = "verifyPage", required = false) final Long verifyPage,
@@ -136,7 +141,7 @@ public class UserController {
         mav.addObject("rejectPendingUserForm", new RejectPendingUserForm());
         mav.addObject("promotePendingUserForm", new PromotePendingUserForm());
         mav.addObject("revokePromotionForm", new RevokePromotionForm());
-
+        mav.addObject("selectTab",tabs);
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( userOptional.isPresent()){
             User user = userOptional.get();
@@ -266,7 +271,7 @@ public class UserController {
                 if( commentOptional.isPresent() ){
                     commentService.acceptReport(form.getDeleteCommentId());
                     LOGGER.info("User: Comment {} was successfully deleted", form.getDeleteCommentId());
-                    return modPage(null, null, null, null, null);
+                    return modPage(DEFAULT_REPORT_TAB,null, null, null, null, null);
                 }
                 LOGGER.error("User: Comment {} was not found", form.getDeleteCommentId());
                 return ErrorController.redirectToErrorView();
@@ -287,7 +292,7 @@ public class UserController {
             if( user.isAdmin() ){
                 commentService.denyReport(form.getIgnoreCommentId());
                 LOGGER.info("User: Comment {} was removed from its report", form.getIgnoreCommentId());
-                return modPage(null, null, null, null, null);
+                return modPage(DEFAULT_REPORT_TAB,null, null, null, null, null);
             }
             LOGGER.error("User: User {} has not enough privileges to ignore a reported comment", user.getId());
             return ErrorController.redirectToErrorView();
@@ -307,7 +312,7 @@ public class UserController {
                 if( contentOptional.isPresent() ){
                     contentService.acceptReport(form.getDeleteContentId());
                     LOGGER.info("User: Content {} was successfully deleted", form.getDeleteContentId());
-                    return modPage(null, null, null, null, null);
+                    return modPage(DEFAULT_REPORT_TAB,null, null, null, null, null);
                 }
                 LOGGER.error("User: Content {} was not found", form.getDeleteContentId());
                 return ErrorController.redirectToErrorView();
@@ -330,7 +335,7 @@ public class UserController {
                 if( contentOptional.isPresent() ){
                     contentService.denyReport(form.getIgnoreContentId());
                     LOGGER.info("User: Content {} was removed from its report", form.getIgnoreContentId());
-                    return modPage(null, null, null, null, null);
+                    return modPage(DEFAULT_REPORT_TAB,null, null, null, null, null);
                 }
             }
             LOGGER.error("User: User {} has not enough privileges to ignore a reported content", user.getId());
