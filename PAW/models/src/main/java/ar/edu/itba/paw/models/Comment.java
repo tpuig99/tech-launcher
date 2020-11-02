@@ -31,16 +31,16 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "reference")
     private List<Comment> replies;
 
     /*this refers to the other relation mapped in CommentVote*/
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment",cascade = CascadeType.REMOVE)
     private List<CommentVote> commentVotes;
 
     /*this refers to the other relation mapped in ReportComment*/
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment",cascade = CascadeType.REMOVE)
     private List<ReportComment> reports;
 
     /*this refers to the other relation mapped in VerifyUser*/
