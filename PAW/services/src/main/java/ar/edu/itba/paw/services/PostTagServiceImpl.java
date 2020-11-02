@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostTagServiceImpl implements PostTagService {
@@ -20,7 +21,7 @@ public class PostTagServiceImpl implements PostTagService {
     }
 
     @Override
-    public PostTag insert(String tagName, long postId) {
+    public Optional<PostTag> insert(String tagName, long postId) {
         return postTagDao.insert(tagName, postId);
     }
 
