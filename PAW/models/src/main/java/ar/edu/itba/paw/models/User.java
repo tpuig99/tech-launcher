@@ -3,12 +3,6 @@ package ar.edu.itba.paw.models;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.swing.text.html.Option;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,10 +34,6 @@ public class User {
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] picture;
-    @Transient
-    String base64image = null;
-    @Transient
-    String contentType;
 
     /*this refers to the other relation mapped in Admin*/
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
@@ -163,39 +153,10 @@ public class User {
         this.picture = picture;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public String getBase64image() {
-        if(base64image==null)
-            calculateStringImage();
-        return base64image;
-    }
-
-    private void calculateStringImage() {
-        if(picture!=null) {
-            try {
-                contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(picture));
-            } catch (IOException e) {
-                contentType = "";
-            }
-
-            byte[] encodedByteArray = Base64.getEncoder().encode(picture);
-            base64image = new String(encodedByteArray, StandardCharsets.UTF_8);
-        }
-    }
-
-    public void setBase64image(String base64image) {
-        this.base64image = base64image;
-    }
     public boolean isAdmin() {
         return admin!=null;
     }
+
     public void setVerifications(List<VerifyUser> verifications) {
         //this.verifications.addAll(verifications);
         this.verifications = verifications;
