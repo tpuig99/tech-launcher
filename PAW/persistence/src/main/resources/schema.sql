@@ -130,3 +130,62 @@ CREATE TABLE IF NOT EXISTS content_report (
                               FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
                               UNIQUE(user_id,content_id)
 );
+
+CREATE TABLE IF NOT EXISTS posts
+(
+    post_id     SERIAL PRIMARY KEY,
+    description varchar      NOT NULL,
+    title       varchar(200) NOT NULL,
+    tstamp timestamp NOT NULL,
+    user_id     integer      NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES users ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS post_votes
+(
+    post_vote_id SERIAL PRIMARY KEY,
+    user_id      integer NOT NULL,
+    post_id      integer NOT NULL,
+    vote         integer NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES users ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS post_comments
+(
+    post_comment_id SERIAL PRIMARY KEY,
+    description     varchar(500) NOT NULL,
+    tstamp          timestamp    NOT NULL,
+    post_id         integer      NOT NULL,
+    user_id         integer      NOT NULL,
+    reference       integer,
+
+    FOREIGN KEY (user_id) REFERENCES users ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts ON DELETE CASCADE,
+    FOREIGN KEY (reference) REFERENCES post_comments ON DELETE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS post_comment_votes
+(
+    post_comment_vote_id SERIAL PRIMARY KEY,
+    user_id              integer NOT NULL,
+    post_comment_id      integer NOT NULL,
+    vote                 int,
+
+    FOREIGN KEY (post_comment_id) REFERENCES post_comments ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users ON DELETE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS post_tags
+(
+    tag_id  SERIAL PRIMARY KEY,
+    tag_name VARCHAR (50) NOT NULL,
+    post_id INTEGER NOT NULL,
+
+    FOREIGN KEY (post_id) REFERENCES posts ON DELETE CASCADE,
+    UNIQUE (post_id, tag_name)
+);
