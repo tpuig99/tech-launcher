@@ -4,6 +4,7 @@ import sun.security.util.math.intpoly.P256OrderField;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "post_comments")
@@ -32,6 +33,11 @@ public class PostComment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id",nullable = false)
     private Post post;
+
+    /*this refers to the other relation mapped in PostCommentVote*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "postComment")
+    private List<PostCommentVote> postCommentVotes;
+
 
     public PostComment() {
         //For Hibernate

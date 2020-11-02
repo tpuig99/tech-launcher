@@ -97,6 +97,10 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<PostComment> postComments;
 
+    /*this refers to the other relation mapped in PostCommentVote*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<PostCommentVote> postCommentVotes;
+
 
     public User() {
     }
