@@ -5,8 +5,9 @@
 <html>
 <head>
     <title>
+        <spring:message code="category.${category}" var="categoryFormatted"/>
         <spring:message code="tech.wref"
-                        arguments="${category_translation}"
+                        arguments="${categoryFormatted}"
                         htmlEscape="true"/>
     </title>
 
@@ -21,12 +22,17 @@
     <jsp:param name="username" value="${user.name}"/>
     <jsp:param name="isMod" value="${user_isMod}"/>
 </jsp:include>
-<jsp:include page="../components/sidebar.jsp"/>
+
+<div class="sidenav overflow-auto">
+    <c:forEach var="category" items="${categories_sidebar}">
+        <a href="<c:url value="/${category}"/>"><spring:message code="category.${category}"/></a>
+    </c:forEach>
+</div>
 
 <div class="content">
     <div class="page-title">
         <h2>
-            ${category_translation}
+            <spring:message code="category.${category}"/>
         </h2>
     </div>
     <div class="page-description">
@@ -38,14 +44,18 @@
                 <a href="<c:url value="/${framework.category}/${framework.id}"/>">
                     <div class="card-body">
                         <c:choose>
-                            <c:when test="${not empty framework.base64image}">
-                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                            <c:when test="${not empty framework.picture}" >
+                                <div class="max-logo d-flex align-items-center justify-content-center">
+                                    <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                </div>
                             </c:when>
                             <c:otherwise>
-                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                <div class="max-logo d-flex align-items-center justify-content-center">
+                                    <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                </div>
                             </c:otherwise>
                         </c:choose>
-                     </div>
+                    </div>
                     <div class="card-footer text-dark">${framework.name}</div>
                 </a>
             </div>

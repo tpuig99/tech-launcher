@@ -4,17 +4,8 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import java.util.Locale;
-import java.util.Properties;
 import java.util.UUID;
 
 
@@ -23,9 +14,6 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     @Autowired
     private UserService service;
-
-    @Autowired
-    MessageSource messageSource;
 
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {

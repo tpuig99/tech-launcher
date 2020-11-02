@@ -9,17 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class FrameworkServiceImpl implements FrameworkService {
-   @Autowired
+    @Autowired
     private FrameworkDao frameworkDao;
 
-   private final long PAGE_SIZE = 7;
-   private final long PAGE_SIZE_SEARCH = 24;
+    private final long PAGE_SIZE = 7;
+    private final long PAGE_SIZE_SEARCH = 24;
 
     @Transactional(readOnly = true)
     @Override
@@ -107,6 +108,24 @@ public class FrameworkServiceImpl implements FrameworkService {
         List<Framework> toReturn = getByCategory(framework.getCategory(), 1);
         toReturn.remove(framework);
         return toReturn.size() > 5 ? toReturn.subList(0,4) : toReturn;
+    }
+
+    @Override
+    public List<String> getAllCategories() {
+        List<String> frameworkCategories = new ArrayList<>();
+        for (FrameworkCategories frameworkCategory : FrameworkCategories.values()) {
+            frameworkCategories.add(frameworkCategory.name());
+        }
+        return frameworkCategories;
+    }
+
+    @Override
+    public List<String> getAllTypes() {
+        List<String> frameworkTypes = new ArrayList<>();
+        for (FrameworkType frameworkType : FrameworkType.values()) {
+            frameworkTypes.add(frameworkType.name());
+        }
+        return frameworkTypes;
     }
 
 }

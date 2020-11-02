@@ -26,19 +26,19 @@ public class UserProfileController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserProfileController.class);
 
     @Autowired
-    CommentService commentService;
+    private CommentService commentService;
 
     @Autowired
-    ContentService contentService;
+    private ContentService contentService;
 
     @Autowired
-    FrameworkVoteService voteService;
+    private FrameworkVoteService voteService;
 
     @Autowired
-    FrameworkService frameworkService;
+    private FrameworkService frameworkService;
 
     @Autowired
-    UserService us;
+    private UserService us;
 
     final private long PAGE_SIZE = 5;
     final private long FRAMEWORK_PAGE_SIZE = 7;
@@ -100,6 +100,11 @@ public class UserProfileController {
 
         LOGGER.error("User Profile: Requested user {} does not exist", username);
         return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path={"/users/{id}/image"}, method = RequestMethod.GET)
+    public @ResponseBody byte[] getImage(@PathVariable long id)  {
+        return us.findById(id).map(User::getPicture).orElse(null);
     }
 
     @RequestMapping(path = {"/users/{username}/upload"}, method = RequestMethod.POST)

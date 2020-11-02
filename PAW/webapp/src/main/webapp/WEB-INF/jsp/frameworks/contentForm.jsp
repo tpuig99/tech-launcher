@@ -20,7 +20,7 @@
 
     <div class="form-group">
         <div>
-        <form:label path="type"><spring:message code="tech.content.form.select_type"/></form:label>
+            <form:label path="type"><spring:message code="tech.content.form.select_type"/></form:label>
         </div>
         <div>
             <form:select path="type" class="form-control" name="newRating" id="newRating">

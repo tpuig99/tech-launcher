@@ -10,18 +10,18 @@ public class CommentVote {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_votes_vote_id_seq")
     @SequenceGenerator(sequenceName = "comment_votes_vote_id_seq", name = "comment_votes_vote_id_seq", allocationSize = 1)
     @Column(name = "vote_id")
-    long commentVoteId;
+    private long commentVoteId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
-    Comment comment;
+    private Comment comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column
-    int vote;
+    private int vote;
 
     public CommentVote(Comment comment, User user, int vote) {
 

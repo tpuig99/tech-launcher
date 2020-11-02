@@ -14,58 +14,58 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/register.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/form.css"/>"/>
 </head>
-    <body>
+<body>
 
-        <jsp:include page="../components/navbar.jsp">
-            <jsp:param name="connected" value="${user.authenticated}"/>
-            <jsp:param name="username" value="${user.name}"/>
-            <jsp:param name="isMod" value="${user_isMod}"/>
-        </jsp:include>
+<jsp:include page="../components/navbar.jsp">
+    <jsp:param name="connected" value="${user.authenticated}"/>
+    <jsp:param name="username" value="${user.name}"/>
+    <jsp:param name="isMod" value="${user_isMod}"/>
+</jsp:include>
 
-        <div class="content-no-sidebar">
-            <div class="page-title">
-                <spring:message code="register.title"/>
-            </div>
-            <c:if test="${not empty errorMessage}">
-                <c:out value="${errorMessage}"/>
-            </c:if>
-            <div class="page-description"></div>
+<div class="content-no-sidebar">
+    <div class="page-title">
+        <spring:message code="register.title"/>
+    </div>
+    <c:if test="${not empty errorMessage}">
+        <c:out value="${errorMessage}"/>
+    </c:if>
+    <div class="page-description"></div>
 
-            <c:url value="/create" var="postPath"/>
-            <form:form modelAttribute="registerForm" action="${postPath}" method="post">
-                <div class="form-group">
-                    <spring:message code="login.username.placeholder" var="user_placeholder" />
-                    <form:label path="username"><spring:message code="login.username"/></form:label>
-                    <form:input class="form-control" type="text" path="username" placeholder="${user_placeholder}"/>
-                    <form:errors path="username" cssClass="formError" element="p"/>
-                </div>
-                <div class="form-group">
-                    <spring:message code="login.password.placeholder" var="password_placeholder" />
-                    <form:label path="password"><spring:message code="login.password"/></form:label>
-                    <form:input class="form-control" type="password" path="password" placeholder="${password_placeholder}"/>
-                    <form:errors path="password" cssClass="formError" element="p"/>
-                </div>
-                <div class="form-group">
-                    <spring:message code="login.password.placeholder" var="password_placeholder" />
-                    <form:label path="repeatPassword"><spring:message code="login.password.repeat"/></form:label>
-                    <form:input class="form-control" type="password" path="repeatPassword"  placeholder="${password_placeholder}"/>
-                    <form:errors path="repeatPassword" cssClass="formError" element="p"/>
-                    <form:errors cssClass="formError" element="p"/>
-                </div>
-                <div class="form-group">
-                    <spring:message code="login.email.placeholder" var="email_placeholder" />
-                    <form:label path="email"><spring:message code="login.email"/></form:label>
-                    <form:input class="form-control" type="email" path="email" placeholder="${email_placeholder}"/>
-                    <form:errors path="email" cssClass="formError" element="p"/>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <input class="btn primary-button" type="submit" value="<spring:message code="button.sign_up"/>"/>
-                </div>
-            </form:form>
+    <c:url value="/create" var="postPath"/>
+    <form:form modelAttribute="registerForm" action="${postPath}" method="post">
+        <div class="form-group">
+            <spring:message code="login.username.placeholder" var="user_placeholder" />
+            <form:label path="username"><spring:message code="login.username"/></form:label>
+            <form:input class="form-control" type="text" path="username" placeholder="${user_placeholder}"/>
+            <form:errors path="username" cssClass="formError" element="p"/>
         </div>
+        <div class="form-group">
+            <spring:message code="login.password.placeholder" var="password_placeholder" />
+            <form:label path="password"><spring:message code="login.password"/></form:label>
+            <form:input class="form-control" type="password" path="password" placeholder="${password_placeholder}"/>
+            <form:errors path="password" cssClass="formError" element="p"/>
+        </div>
+        <div class="form-group">
+            <spring:message code="login.password.placeholder" var="password_placeholder" />
+            <form:label path="repeatPassword"><spring:message code="login.password.repeat"/></form:label>
+            <form:input class="form-control" type="password" path="repeatPassword"  placeholder="${password_placeholder}"/>
+            <form:errors path="repeatPassword" cssClass="formError" element="p"/>
+            <form:errors cssClass="formError" element="p"/>
+        </div>
+        <div class="form-group">
+            <spring:message code="login.email.placeholder" var="email_placeholder" />
+            <form:label path="email"><spring:message code="login.email"/></form:label>
+            <form:input class="form-control" type="email" path="email" placeholder="${email_placeholder}"/>
+            <form:errors path="email" cssClass="formError" element="p"/>
+        </div>
+        <div class="d-flex justify-content-center">
+            <input class="btn primary-button" type="submit" value="<spring:message code="button.sign_up"/>"/>
+        </div>
+    </form:form>
+</div>
 
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    </body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
 </html>

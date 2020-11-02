@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -31,6 +32,8 @@ public class HomeController {
         final ModelAndView mav = new ModelAndView("frameworks/home");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("hottestList", fs.getBestRatedFrameworks());
+        List<String> categoriesList = fs.getAllCategories();
+        mav.addObject("categories_sidebar", categoriesList);
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         user.ifPresent(value -> mav.addObject("interestsList", fs.getUserInterests(value.getId())));
         user.ifPresent(value -> mav.addObject("user_isMod", value.isVerify() || value.isAdmin()));

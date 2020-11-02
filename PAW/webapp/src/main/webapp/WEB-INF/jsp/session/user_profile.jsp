@@ -43,17 +43,23 @@
                             </c:if>
                         </div>
 
-                        <c:choose>
-                            <c:when test="${not empty profile.base64image}">
-                                <img src="data:${profile.contentType};base64,${profile.base64image}" alt="<spring:message code="image.profile"/>" class="rounded-circle img-slot" />
-                            </c:when>
-                            <c:otherwise>
-                                <img src="https://picsum.photos/536/354" alt="<spring:message code="image.profile.random"/>" class="rounded-circle img-slot">
-                            </c:otherwise>
-                        </c:choose>
+                        <div class="row justify-content-center">
+                            <c:choose>
+                                <c:when test="${not empty profile.picture}">
+                                    <div class="max-logo d-flex align-items-center justify-content-center">
+                                        <img src="<c:url value="/users/${profile.id}/image"/>" alt="<spring:message code="image.profile"/>" class="rounded-circle img-slot"/>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="max-logo d-flex align-items-center justify-content-center">
+                                        <img src="https://picsum.photos/536/354" alt="<spring:message code="image.profile.random"/>" class="rounded-circle img-slot" />
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
 
                         <div class="row justify-content-center">
-                        <h2><c:out value="${profile.username}"/></h2>
+                            <h2><c:out value="${profile.username}"/></h2>
                             <c:choose>
                                 <c:when test="${profile.admin}">
                                     <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color-admin" data-toggle="tooltip" title="<spring:message code="tooltip.admin"/>"></i>
@@ -75,12 +81,12 @@
                         </c:if>
                         <c:if test="${profile.verify}">
                             <p>
-                                    <strong><spring:message code="profile.moderator"/></strong>
-                            <c:forEach items="${verifiedList}" var="verifiedTech">
-                                <c:if test="${!verifiedTech.pending}">
-                                    <a class="tags" href="<c:url value="/${verifiedTech.category}/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
-                                </c:if>
-                            </c:forEach>
+                                <strong><spring:message code="profile.moderator"/></strong>
+                                <c:forEach items="${verifiedList}" var="verifiedTech">
+                                    <c:if test="${!verifiedTech.pending}">
+                                        <a class="tags" href="<c:url value="/${verifiedTech.category}/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                                    </c:if>
+                                </c:forEach>
                             </p>
                         </c:if>
 
@@ -166,11 +172,7 @@
                                 </div>
 
                                 <div class="col-6 text-left">
-                                    <c:choose>
-                                        <c:when test="${content.type.name() == 'course'}"><spring:message code="profile.content.course" /></c:when>
-                                        <c:when test="${content.type.name() == 'book'}"><spring:message code="profile.content.bibliography" /></c:when>
-                                        <c:when test="${content.type.name() == 'tutorial'}"><spring:message code="profile.content.tutorial" /></c:when>
-                                    </c:choose>
+                                    <spring:message code="profile.content.${content.type.name()}"/>
                                     <c:out value=" ${content.title}" default=""/>
                                 </div>
 
@@ -238,22 +240,26 @@
             </c:otherwise>
         </c:choose>
 
-    <!-- Frameworks -->
-    <c:if test="${not empty frameworks}">
-        <div class="page-title mb-4 ml-2 text-left">
-            <h2><spring:message code="profile.frameworks"/></h2>
-         </div>
+        <!-- Frameworks -->
+        <c:if test="${not empty frameworks}">
+            <div class="page-title mb-4 ml-2 text-left">
+                <h2><spring:message code="profile.frameworks"/></h2>
+            </div>
             <div class="container row equal justify-content-center">
                 <c:forEach var="framework" items="${frameworks}">
                     <div class="card mx-4 mb-4">
-                        <a href="<c:url value="/${framework.category.nameCat}/${framework.id}"/>">
+                        <a href="<c:url value="/${framework.category.name()}/${framework.id}"/>">
                             <div class="card-body">
                                 <c:choose>
-                                    <c:when test="${not empty framework.base64image}">
-                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    <c:when test="${not empty framework.picture}" >
+                                        <div class="max-logo d-flex align-items-center justify-content-center">
+                                            <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                        <div class="max-logo d-flex align-items-center justify-content-center">
+                                            <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -266,18 +272,18 @@
                     </div>
                 </c:forEach>
             </div>
-        <!-- Tech pagination -->
-        <jsp:include page="../components/pagination.jsp">
-            <jsp:param name="total" value="${frameworksCount}"/>
-            <jsp:param name="page" value="${frameworks_page}"/>
-            <jsp:param name="page_size" value="${frameworks_page_size}"/>
-            <jsp:param name="origin" value="profile_techs"/>
-            <jsp:param name="username" value="${username}"/>
-            <jsp:param name="comments_page" value="${comments_page}"/>
-            <jsp:param name="contents_page" value="${contents_page}"/>
-            <jsp:param name="votes_page" value="${votes_page}"/>
-            <jsp:param name="techs_page" value="${frameworks_page}"/>
-        </jsp:include>
+            <!-- Tech pagination -->
+            <jsp:include page="../components/pagination.jsp">
+                <jsp:param name="total" value="${frameworksCount}"/>
+                <jsp:param name="page" value="${frameworks_page}"/>
+                <jsp:param name="page_size" value="${frameworks_page_size}"/>
+                <jsp:param name="origin" value="profile_techs"/>
+                <jsp:param name="username" value="${username}"/>
+                <jsp:param name="comments_page" value="${comments_page}"/>
+                <jsp:param name="contents_page" value="${contents_page}"/>
+                <jsp:param name="votes_page" value="${votes_page}"/>
+                <jsp:param name="techs_page" value="${frameworks_page}"/>
+            </jsp:include>
         </c:if>
     </div>
 

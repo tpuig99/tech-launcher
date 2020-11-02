@@ -6,17 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.List;
 import java.util.Optional;
 
 class EmailExistingValidator implements ConstraintValidator<ExistingEmail, String> {
-   @Autowired
-    UserService us;
+    @Autowired
+    private UserService us;
 
     @Override
     public boolean isValid(String mail, ConstraintValidatorContext context){
         Optional<User> user = us.findByMail(mail);
-            return user.isPresent();
+        return user.isPresent();
     }
 
     @Override
