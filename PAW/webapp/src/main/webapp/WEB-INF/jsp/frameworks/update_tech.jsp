@@ -42,12 +42,12 @@
         </div>
 
         <div class="form-group">
-                <form:label path="category"><spring:message code="add_tech.category"/></form:label>
-                <form:select path="category" class="form-control" onfocus='this.size=5;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
-                    <c:forEach items="${categories}" var="cat">
-                        <form:option value="${cat}"><spring:message code="category.${cat}"/></form:option>
-                    </c:forEach>
-                </form:select>
+            <form:label path="category"><spring:message code="add_tech.category"/></form:label>
+            <form:select path="category" class="form-control" onfocus='this.size=5;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                <c:forEach items="${categories}" var="cat">
+                    <form:option value="${cat}"><spring:message code="category.${cat}"/></form:option>
+                </c:forEach>
+            </form:select>
             <form:errors path="category" cssClass="formError" element="p"/>
         </div>
 

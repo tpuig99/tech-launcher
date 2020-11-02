@@ -29,7 +29,7 @@ public class FrameworkMenuController {
 
 
     private final String START_PAGE = "1";
-    final private long PAGE_SIZE = 7;
+    private final long PAGE_SIZE = 7;
 
     @RequestMapping("/{category}")
     public ModelAndView frameworkMenuPaging(@PathVariable String category,

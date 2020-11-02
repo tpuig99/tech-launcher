@@ -23,7 +23,7 @@ public interface CommentService {
     Optional<Comment> vote(long commentId,long userId,int voteSign);
 
 
-        /***Reports***/
+    /***Reports***/
     List<ReportComment> getAllReport(long page);
     Optional<Integer> getAllReportsAmount();
     void addReport(long commentId,long userId,String description);

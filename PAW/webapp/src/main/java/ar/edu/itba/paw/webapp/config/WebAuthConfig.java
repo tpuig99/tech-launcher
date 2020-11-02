@@ -33,7 +33,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Value("classpath:key/key")
     private Resource key;
-    
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement()
@@ -52,7 +52,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(userDetailsService)
                 .key(ResourceReader.asString(key))
                 .tokenValiditySeconds((int) TimeUnit.DAYS.
-                                        toSeconds(30))
+                        toSeconds(30))
                 .and().logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login")

@@ -593,7 +593,7 @@
                                         <div class="mini-logo d-flex align-items-center justify-content-center">
                                             <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
                                         </div>
-                                     </c:otherwise>
+                                    </c:otherwise>
                                 </c:choose>
                             </div>
                             <div class="card-footer text-dark">${competitor.name}</div>
@@ -961,7 +961,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </div>
-</div>
 </div>
 
 

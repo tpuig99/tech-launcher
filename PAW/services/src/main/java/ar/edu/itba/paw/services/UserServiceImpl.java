@@ -39,18 +39,21 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 public class UserServiceImpl implements UserService {
     private final long PAGE_SIZE=5;
     private static final long USER_NOT_EXISTS = -1;
+
     @Autowired
     private UserDao userDao;
+
     @Autowired
     private VerificationTokenDao tokenDao;
+
     @Autowired
     private VerifyUserDao verifyUserDao;
 
     @Autowired
-    AuthenticationManager authManager;
+    private AuthenticationManager authManager;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -103,7 +106,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void delete(long userId) {
-         userDao.delete(userId);
+        userDao.delete(userId);
     }
 
     @Transactional
@@ -154,8 +157,8 @@ public class UserServiceImpl implements UserService {
         Optional<VerificationToken> verificationToken = user.getVerificationToken();
         verificationToken.ifPresent(value -> tokenDao.change(value, token));
         String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
-                         "\r\n" +
-                       appUrl + "/register/confirm?token=" + token;
+                "\r\n" +
+                appUrl + "/register/confirm?token=" + token;
         sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 
@@ -262,16 +265,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void passwordMailing(User user, String appUrl) {
 
-            String recipientAddress = user.getMail();
+        String recipientAddress = user.getMail();
 
-            String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
-            String confirmationUrl = "/recover/recovering_token?token=" + token;
+        String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
+        String confirmationUrl = "/recover/recovering_token?token=" + token;
 
-            String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
-            String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());
-            String message = inter_message+ "\r\n" + appUrl + confirmationUrl;
+        String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
+        String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());
+        String message = inter_message+ "\r\n" + appUrl + confirmationUrl;
 
-            sendEmail(recipientAddress,subject,message);
+        sendEmail(recipientAddress,subject,message);
     }
 
     @Transactional

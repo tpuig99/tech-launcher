@@ -31,7 +31,7 @@ public interface UserService {
 
     /** moderator **/
     VerifyUser createVerify(User user, Framework framework);
-   List<VerifyUser> getVerifyByFrameworks( List<Long> frameworksIds, boolean pending, long page );
+    List<VerifyUser> getVerifyByFrameworks( List<Long> frameworksIds, boolean pending, long page );
     List<VerifyUser> getAllVerifyByUser(long userId);
     Optional<VerifyUser> getVerifyById(long verificationId);
     List<VerifyUser> getVerifyByPending(boolean pending, long page);

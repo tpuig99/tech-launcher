@@ -16,5 +16,5 @@ public enum FrameworkCategories {
     Networking,
     OO,
     Platforms,
-    Security;
+    Security
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ContentValidator implements ConstraintValidator<ContentName, ContentForm>  {
     @Autowired
-    ContentService cs;
+    private ContentService cs;
 
 
     @Override

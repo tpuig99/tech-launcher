@@ -29,19 +29,20 @@ public class UserController {
     private static final String DEFAULT_DEMOTE_TAB = "demote";
     private static final String DEFAULT_REPORT_TAB = "reports";
 
+    @Autowired
+    private UserService us;
 
     @Autowired
-    UserService us;
-    @Autowired
-    FrameworkService fs;
+    private FrameworkService fs;
 
     @Autowired
-    CommentService commentService;
+    private CommentService commentService;
 
     @Autowired
-    ContentService contentService;
+    private ContentService contentService;
+
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     private final long pageStart=1;
     private final long PAGE_SIZE=5;
@@ -59,7 +60,7 @@ public class UserController {
             if(!vu.isPresent()){
                 Optional<Framework> framework = fs.findById(frameworkId);
                 if(framework.isPresent())
-                   us.createVerify(user.get(),framework.get());
+                    us.createVerify(user.get(),framework.get());
             }
 
         }
@@ -95,7 +96,7 @@ public class UserController {
             us.verify(form.getPromoteUserVerificationId());
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
-            }
+        }
         return modPage(DEFAULT_PROMOTE_TAB,null, null, null, null, null);
     }
 

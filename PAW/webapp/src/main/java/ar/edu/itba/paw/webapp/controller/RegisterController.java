@@ -40,10 +40,10 @@ public class RegisterController {
     private UserService us;
 
     @Autowired
-    ApplicationEventPublisher eventPublisher;
+    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
 
     @RequestMapping("/register")

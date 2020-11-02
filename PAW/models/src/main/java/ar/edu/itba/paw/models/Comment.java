@@ -78,8 +78,8 @@ public class Comment {
     }
 
     private void loadVotes() {
-        votesUp = Long.valueOf(0);
-        votesDown = Long.valueOf(0);
+        votesUp = 0L;
+        votesDown = 0L;
         for (CommentVote vote: commentVotes) {
             if(vote.isVoteUp())
                 votesUp++;

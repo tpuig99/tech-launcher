@@ -1,13 +1,14 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Content;
+import ar.edu.itba.paw.models.ReportContent;
+import ar.edu.itba.paw.models.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,8 +45,8 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
 
     @Override
     public Optional<Integer> getAllReportsAmount() {
-            TypedQuery<ReportContent> query = em.createQuery("from ReportContent", ReportContent.class);
-            return Optional.of(query.getResultList().size());
+        TypedQuery<ReportContent> query = em.createQuery("from ReportContent", ReportContent.class);
+        return Optional.of(query.getResultList().size());
     }
 
     @Override
@@ -68,7 +69,7 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
 
     @Override
     public void deleteByContent(long contentId) {
-                final TypedQuery<Long> query = em.createQuery("select rc.reportId from ReportContent rc where rc.content.contentId = :contentId", Long.class);
+        final TypedQuery<Long> query = em.createQuery("select rc.reportId from ReportContent rc where rc.content.contentId = :contentId", Long.class);
         query.setParameter("contentId", contentId);
         delete(query.getSingleResult());
     }

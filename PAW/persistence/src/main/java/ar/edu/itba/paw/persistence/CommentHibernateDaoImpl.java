@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class CommentHibernateDaoImpl implements CommentDao {
-     static private final Integer VOTES_DEFAULT = 0;
+    static private final Integer VOTES_DEFAULT = 0;
 
     @PersistenceContext
     private EntityManager em;

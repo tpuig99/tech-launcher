@@ -39,9 +39,8 @@ public class ExploreController {
     @Autowired
     private UserService us;
 
-
-    final long startPage = 1;
-    final long PAGE_SIZE = 24;
+    private final long startPage = 1;
+    private final long PAGE_SIZE = 24;
 
     private String getMessageWithoutArguments(String code) {
         return messageSource.getMessage(code, Collections.EMPTY_LIST.toArray(), LocaleContextHolder.getLocale());
@@ -161,7 +160,7 @@ public class ExploreController {
         List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, order,page == null ? startPage:page);
         Integer searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
         LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
-        
+
         mav.addObject("matchingFrameworks", frameworks);
         mav.addObject("page", page == null ? startPage:page);
         mav.addObject("page_size", PAGE_SIZE);

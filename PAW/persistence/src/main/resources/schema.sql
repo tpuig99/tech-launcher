@@ -26,7 +26,6 @@ CREATE TABLE IF NOT EXISTS frameworks (
                                           category varchar(50) NOT NULL,
                                           description varchar(500) NOT NULL,
                                           introduction varchar(5000) NOT NULL,
-                                          logo varchar(150),
                                           type varchar(100),
                                           date timestamp NOT NULL,
                                           author int NOT NULL default 1,
@@ -113,20 +112,20 @@ CREATE TABLE IF NOT EXISTS admins (
                                       FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS comment_report (
-                              report_id SERIAL PRIMARY KEY,
-                              user_id integer NOT NULL,
-                              comment_id integer NOT NULL,
-                              description varchar(500) NOT NULL,
-                              FOREIGN KEY(comment_id) REFERENCES comments ON DELETE CASCADE,
-                              FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
-                              UNIQUE(user_id,comment_id)
+                                              report_id SERIAL PRIMARY KEY,
+                                              user_id integer NOT NULL,
+                                              comment_id integer NOT NULL,
+                                              description varchar(500) NOT NULL,
+                                              FOREIGN KEY(comment_id) REFERENCES comments ON DELETE CASCADE,
+                                              FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
+                                              UNIQUE(user_id,comment_id)
 );
 CREATE TABLE IF NOT EXISTS content_report (
-                              report_id SERIAL PRIMARY KEY,
-                              user_id integer NOT NULL,
-                              content_id integer NOT NULL,
-                              description varchar(500) NOT NULL,
-                              FOREIGN KEY(content_id) REFERENCES content ON DELETE CASCADE,
-                              FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
-                              UNIQUE(user_id,content_id)
+                                              report_id SERIAL PRIMARY KEY,
+                                              user_id integer NOT NULL,
+                                              content_id integer NOT NULL,
+                                              description varchar(500) NOT NULL,
+                                              FOREIGN KEY(content_id) REFERENCES content ON DELETE CASCADE,
+                                              FOREIGN KEY(user_id) REFERENCES users ON DELETE CASCADE,
+                                              UNIQUE(user_id,content_id)
 );

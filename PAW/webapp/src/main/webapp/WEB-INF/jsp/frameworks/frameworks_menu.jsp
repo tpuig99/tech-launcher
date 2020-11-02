@@ -55,7 +55,7 @@
                                 </div>
                             </c:otherwise>
                         </c:choose>
-                     </div>
+                    </div>
                     <div class="card-footer text-dark">${framework.name}</div>
                 </a>
             </div>
