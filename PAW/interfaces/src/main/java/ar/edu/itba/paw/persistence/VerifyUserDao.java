@@ -10,15 +10,13 @@ import java.util.Optional;
 
 public interface VerifyUserDao {
     VerifyUser create(User user, Framework framework, Comment comment);
-    List<VerifyUser> getByFrameworks( List<Long> frameworksIds, boolean pending, long page, long pageSize );
-    List<VerifyUser> getAllByUser(long userId);
-    Optional<VerifyUser> getByFrameworkAndUser(long frameworkId, long userId);
+    List<VerifyUser> getVerifyForCommentByFrameworks(List<Long> frameworksIds, boolean pending, long page, long pageSize );
     Optional<VerifyUser> getById(long verificationId);
-    List<VerifyUser> getByPending(boolean pending, long page, long pageSize);
+    List<VerifyUser> getVerifyForCommentByPending(boolean pending, long page, long pageSize);
     List<VerifyUser> getApplicantsByPending(boolean pending, long page, long pageSize);
     List<VerifyUser> getApplicantsByFrameworks( List<Long> frameworksIds, long page, long pageSize );
-    Optional<Integer> getVerifyByPendingAmount(boolean pending);
-    Optional<Integer> getVerifyByFrameworkAmount(List<Long> frameworksIds,boolean pending);
+    Optional<Integer> getVerifyForCommentByPendingAmount(boolean pending);
+    Optional<Integer> getVerifyForCommentByFrameworkAmount(List<Long> frameworksIds, boolean pending);
     Optional<Integer> getApplicantsByPendingAmount(boolean pending);
     Optional<Integer> getApplicantsByFrameworkAmount(List<Long> frameworksIds,boolean pending);
     void delete(long verificationId);

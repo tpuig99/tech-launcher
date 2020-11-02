@@ -195,15 +195,8 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByFrameworks(List<Long> frameworksIds, boolean pending, long page) {
-        return verifyUserDao.getByFrameworks(frameworksIds, pending, page, PAGE_SIZE);
+        return verifyUserDao.getVerifyForCommentByFrameworks(frameworksIds, pending, page, PAGE_SIZE);
     }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<VerifyUser> getAllVerifyByUser(long userId) {
-        return verifyUserDao.getAllByUser(userId);
-    }
-
 
     @Transactional(readOnly = true)
     @Override
@@ -214,17 +207,17 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByPending(boolean pending, long page) {
-        return verifyUserDao.getByPending(pending, page, PAGE_SIZE);
+        return verifyUserDao.getVerifyForCommentByPending(pending, page, PAGE_SIZE);
     }
 
     @Override
     public Optional<Integer> getVerifyByPendingAmount(boolean pending) {
-        return verifyUserDao.getVerifyByPendingAmount(pending);
+        return verifyUserDao.getVerifyForCommentByPendingAmount(pending);
     }
 
     @Override
     public Optional<Integer> getVerifyByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
-        return verifyUserDao.getVerifyByFrameworkAmount(frameworksIds,pending);
+        return verifyUserDao.getVerifyForCommentByFrameworkAmount(frameworksIds,pending);
     }
 
     @Override
@@ -253,12 +246,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void verify(long verificationId) {
         verifyUserDao.verify(verificationId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId) {
-        return verifyUserDao.getByFrameworkAndUser(frameworkId,userId);
     }
 
     @Transactional

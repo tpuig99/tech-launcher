@@ -32,7 +32,6 @@ public interface UserService {
     /** moderator **/
     VerifyUser createVerify(User user, Framework framework);
     List<VerifyUser> getVerifyByFrameworks( List<Long> frameworksIds, boolean pending, long page );
-    List<VerifyUser> getAllVerifyByUser(long userId);
     Optional<VerifyUser> getVerifyById(long verificationId);
     List<VerifyUser> getVerifyByPending(boolean pending, long page);
     Optional<Integer> getVerifyByPendingAmount(boolean pending);
@@ -42,7 +41,6 @@ public interface UserService {
     void deleteVerification(long verificationId);
     void deleteVerificationByUser(long userId);
     void verify(long verificationId);
-    Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId);
     void passwordMailing(User user, String appUrl);
     void modMailing(User user,String frameworkName);
     List<VerifyUser> getApplicantsByPending( boolean pending, long page);

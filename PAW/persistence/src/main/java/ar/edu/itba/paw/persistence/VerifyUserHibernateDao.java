@@ -28,7 +28,7 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
 
 
     @Override
-    public List<VerifyUser> getByFrameworks(List<Long> frameworksIds, boolean pending, long page, long pageSize) {
+    public List<VerifyUser> getVerifyForCommentByFrameworks(List<Long> frameworksIds, boolean pending, long page, long pageSize) {
         final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.pending = :pending", VerifyUser.class);
         query.setParameter("frameworksIds", frameworksIds);
         query.setParameter("pending", pending);
@@ -38,27 +38,12 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     }
 
     @Override
-    public List<VerifyUser> getAllByUser(long userId) {
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.user.id = :userId", VerifyUser.class);
-        query.setParameter("userId", userId);
-        return query.getResultList();
-    }
-
-    @Override
-    public Optional<VerifyUser> getByFrameworkAndUser(long frameworkId, long userId) {
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id = :frameworkId and vu.user.id = :userId", VerifyUser.class);
-        query.setParameter("frameworkId", frameworkId);
-        query.setParameter("userId", userId);
-        return query.getResultList().stream().findFirst();
-    }
-
-    @Override
     public Optional<VerifyUser> getById(long verificationId) {
         return Optional.ofNullable(em.find(VerifyUser.class, verificationId));
     }
 
     @Override
-    public List<VerifyUser> getByPending(boolean pending, long page, long pageSize) {
+    public List<VerifyUser> getVerifyForCommentByPending(boolean pending, long page, long pageSize) {
         final TypedQuery<VerifyUser> query;
         if(!pending)
             query = em.createQuery("from VerifyUser as vu where vu.pending = :pending", VerifyUser.class);
@@ -89,7 +74,7 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     }
 
     @Override
-    public Optional<Integer> getVerifyByPendingAmount(boolean pending) {
+    public Optional<Integer> getVerifyForCommentByPendingAmount(boolean pending) {
         final TypedQuery<VerifyUser> query;
         if(!pending)
             query = em.createQuery("from VerifyUser as vu where vu.pending = :pending", VerifyUser.class);
@@ -100,7 +85,7 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     }
 
     @Override
-    public Optional<Integer> getVerifyByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
+    public Optional<Integer> getVerifyForCommentByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
         final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.pending = :pending", VerifyUser.class);
         query.setParameter("frameworksIds", frameworksIds);
         query.setParameter("pending", pending);
