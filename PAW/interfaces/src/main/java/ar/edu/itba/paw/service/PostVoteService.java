@@ -2,12 +2,13 @@ package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.models.PostVote;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PostVoteService {
 
     Optional<PostVote> getByPost(long postId);
-    Optional<PostVote> getAllByUser(long userId, long page);
+    List<PostVote> getAllByUser(long userId, long page);
 
     PostVote insert(long postId, long userId, int vote);
     void delete(long postVoteId);

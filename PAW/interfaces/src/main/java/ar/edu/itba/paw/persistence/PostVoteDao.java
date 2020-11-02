@@ -2,11 +2,12 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.PostVote;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PostVoteDao {
     Optional<PostVote> getByPost(long postId);
-    Optional<PostVote> getAllByUser(long userId, long page, long page_size);
+    List<PostVote> getAllByUser(long userId, long page, long pageSize);
 
     PostVote insert(long postId, long userId, int vote);
     void delete(long postVoteId);

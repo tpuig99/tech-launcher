@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.PipedOutputStream;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,7 @@ public class PostVoteServiceImpl implements PostVoteService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<PostVote> getAllByUser(long userId, long page) {
+    public List<PostVote> getAllByUser(long userId, long page) {
         return postVoteDao.getAllByUser(userId, page, PAGE_SIZE);
     }
 
