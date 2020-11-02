@@ -5,6 +5,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -45,7 +46,7 @@ public class User {
 
     /*this refers to the other relation mapped in VerifyUser*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
-    private List<VerifyUser> verifications;
+    private List<VerifyUser> applications;
 
     /*this refers to the other relation mapped in Comment*/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
@@ -157,17 +158,17 @@ public class User {
         return admin!=null;
     }
 
-    public void setVerifications(List<VerifyUser> verifications) {
+    public void setApplications(List<VerifyUser> verifications) {
         //this.verifications.addAll(verifications);
-        this.verifications = verifications;
+        this.applications = verifications;
     }
 
-    public List<VerifyUser> getVerifications() {
-        return verifications;
+    public List<VerifyUser> getApplications() {
+        return applications;
     }
 
     public boolean isVerifyForFramework(long frameworkId){
-        for (VerifyUser v: verifications) {
+        for (VerifyUser v: applications) {
             if(v.getFrameworkId()==frameworkId){
                 return !v.isPending();
             }
@@ -175,8 +176,11 @@ public class User {
         }
         return false;
     }
+    public List<VerifyUser> getVerifications(){
+        return applications.stream().filter((x)-> !x.isPending()).collect(Collectors.toList());
+    }
     public boolean hasAppliedToFramework(long frameworkId){
-        for (VerifyUser v: verifications) {
+        for (VerifyUser v: applications) {
             if(v.getFrameworkId()==frameworkId){
                 return true;
             }
@@ -185,7 +189,7 @@ public class User {
         return false;
     }
     public boolean isVerify() {
-        for (VerifyUser v: verifications) {
+        for (VerifyUser v: applications) {
             if(!v.isPending())
                 return true;
         }

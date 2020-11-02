@@ -56,8 +56,7 @@ public class UserController {
         String username = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<User> user = us.findByUsername(username);
         if(user.isPresent()){
-            Optional<VerifyUser> vu = us.getVerifyByFrameworkAndUser(frameworkId,user.get().getId());
-            if(!vu.isPresent()){
+            if(!user.get().hasAppliedToFramework(frameworkId)){
                 Optional<Framework> framework = fs.findById(frameworkId);
                 if(framework.isPresent())
                     us.createVerify(user.get(),framework.get());

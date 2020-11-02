@@ -113,6 +113,7 @@ public class FrameworkController {
                 mav.addObject("isEnable",user.isEnable());
                 mav.addObject("allowMod",user.isAllowMod());
                 mav.addObject("isOwner", framework.get().getAuthor().getUsername().equals(user.getUsername()));
+                mav.addObject("hasAppliedToFramework",user.hasAppliedToFramework(framework.get().getId()));
                 Optional<FrameworkVote> fv = user.getVoteForFramework(id);
 
                 if(fv.isPresent()){
@@ -219,7 +220,7 @@ public class FrameworkController {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
             if (user.isPresent()) {
-                final FrameworkVote frameworkVote = frameworkVoteService.insert(frameworkId, user.get().getId(), form.getRating());
+                final FrameworkVote frameworkVote = frameworkVoteService.insert(framework.get(), user.get().getId(), form.getRating());
                 LOGGER.info("Tech {}: User {} rated the Tech", frameworkId, user.get().getId());
                 return FrameworkController.redirectToFramework(frameworkId, frameworkVote.getCategory());
             }

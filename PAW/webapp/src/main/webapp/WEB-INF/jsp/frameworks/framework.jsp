@@ -143,7 +143,7 @@
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${user.name != 'anonymousUser' && book.userName!=user.name && !book.isReporter(user.name)}">
+                                    <c:when test="${user.name != 'anonymousUser' && book.userName!=user.name && !book.isReporter(user.name) && isEnable}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="getContentId(${book.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
@@ -188,7 +188,7 @@
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${user.name != 'anonymousUser' && user.name != course.userName && !course.isReporter(user.name)}">
+                                    <c:when test="${user.name != 'anonymousUser' && user.name != course.userName && !course.isReporter(user.name) && isEnable}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="getContentId(${course.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
@@ -232,7 +232,7 @@
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${user.name != 'anonymousUser' && user.name != tutorial.userName && !tutorial.isReporter(user.name)}">
+                                    <c:when test="${user.name != 'anonymousUser' && user.name != tutorial.userName && !tutorial.isReporter(user.name) && isEnable}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="getContentId(${tutorial.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
@@ -370,7 +370,7 @@
                                     <c:out value="${comment.description}" default=""/>
                                 </div>
 
-                                <c:if test="${user.name != 'anonymousUser' && user.name != comment.userName && !comment.isReporter(user.name) && !isAdmin && !isOwner}">
+                                <c:if test="${user.name != 'anonymousUser' && user.name != comment.userName && !comment.isReporter(user.name) && !isAdmin && !isOwner && isEnable}">
                                     <div class="col d-flex justify-content-end align-items-end">
                                         <button class="btn btn-link" onclick="getCommentId(${comment.commentId})" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
                                     </div>
@@ -443,7 +443,7 @@
                                                         <button class="btn btn-link" onclick="openDeleteCommentModal(${reply.commentId})"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                                                     </span>
                                                 </c:if>
-                                                <c:if test="${user.name != 'anonymousUser' && user.name != reply.userName && !reply.isReporter(user.name) && !isAdmin && !isOwner}">
+                                                <c:if test="${user.name != 'anonymousUser' && user.name != reply.userName && !reply.isReporter(user.name) && !isAdmin && !isOwner && isEnable}">
                                                     <div class="col d-flex justify-content-end align-items-end">
                                                         <button class="btn btn-link" onclick="getCommentId(${reply.commentId})" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
                                                     </div>
@@ -542,7 +542,7 @@
                 </div>
             </div>
             <c:choose>
-                <c:when test="${!hasAppliedToFramework && !isAdmin && user.name != 'anonymousUser' && allowMod && !isOwner}">
+                <c:when test="${!hasAppliedToFramework && !isAdmin && user.name != 'anonymousUser' && allowMod && !isOwner && isEnable}">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center">
                             <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>

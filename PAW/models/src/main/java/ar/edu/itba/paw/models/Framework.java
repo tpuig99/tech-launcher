@@ -280,4 +280,7 @@ public class Framework {
     public long getCommentsWithoutReferenceAmount(){
         return comments.stream().filter((x) -> x.getReference() == null).count();
     }
+    public Optional<FrameworkVote> getVoteOfUser(long userId){
+        return frameworkVotes.stream().filter((x)->x.getUserId()==userId).findFirst();
+    }
 }

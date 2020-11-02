@@ -76,7 +76,7 @@ public class UserProfileController {
             final Optional<Integer> votesCount = voteService.getAllCountByUser(userId);
             final Optional<Integer> frameworksCount = frameworkService.getByUserCount(userId);
 
-            mav.addObject("verifiedList", us.getAllVerifyByUser(userId));
+            mav.addObject("verifiedList", user.get().getVerifications());
             mav.addObject("contents", contentList);
             mav.addObject("contents_page", contentsPage);
             contentCount.ifPresent(value -> mav.addObject("contentCount", value));
