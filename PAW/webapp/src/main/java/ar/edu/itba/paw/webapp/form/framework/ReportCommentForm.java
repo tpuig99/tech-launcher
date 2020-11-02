@@ -10,9 +10,9 @@ public class ReportCommentForm {
     @NotEmpty
     @Size(min=4, max=500)
     private String reportCommentDescription;
-
+    @NotNull
     private long reportCommentId;
-
+    @NotNull
     private long reportCommentFrameworkId;
 
     public String getReportCommentDescription() {

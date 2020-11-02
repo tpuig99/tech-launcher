@@ -463,8 +463,8 @@
 
                                     <div>
 
-                                        <form:label path="replyContent"/>
-                                        <form:textarea path="replyContent" id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"/>
+                                        <form:label path="replyComment"/>
+                                        <form:textarea path="replyComment" id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"/>
                                     </div>
                                     <div>
                                         <button class="btn btn-primary btn-sm padding-top" type="submit"><spring:message code="button.submit"/></button>
@@ -508,8 +508,8 @@
                         <form:form modelAttribute="commentForm" action="${postPathComment}" method="post">
                             <form:label path="commentFrameworkId"><form:input  class="input-wrap" path="commentFrameworkId" type="hidden" value="${framework.id}"/></form:label>
 
-                            <form:label path="content"/>
-                            <form:textarea path="content" id="commentInput" class="form-control" aria-label="With textarea"/>
+                            <form:label path="comment"/>
+                            <form:textarea path="comment" id="commentInput" class="form-control" aria-label="With textarea"/>
 
                             <c:choose>
                                 <c:when test="${user.name != 'anonymousUser'}">

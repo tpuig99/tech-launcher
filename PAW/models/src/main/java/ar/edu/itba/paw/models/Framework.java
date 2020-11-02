@@ -47,19 +47,19 @@ public class Framework {
     /* Relationships */
 
     /* References other relation mapped in Comment */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework",cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
     /* References other relation mapped in Content */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework",cascade = CascadeType.REMOVE)
     private List<Content> contents;
 
     /* References other relation mapped in Framework Votes */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework",cascade = CascadeType.REMOVE)
     private List<FrameworkVote> frameworkVotes;
 
     /* References other relation mapped in Verify User */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework",cascade = CascadeType.REMOVE)
     private List<VerifyUser> verifyUsers;
 
     /* Transient attributes loaded on Post Load */

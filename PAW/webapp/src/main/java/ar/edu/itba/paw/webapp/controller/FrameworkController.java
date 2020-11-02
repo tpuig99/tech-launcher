@@ -141,7 +141,7 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Comment comment = commentService.insertComment(form.getCommentFrameworkId(), user.get().getId(), form.getContent(), form.getCommentId());
+            final Comment comment = commentService.insertComment(form.getCommentFrameworkId(), user.get().getId(), form.getComment(), form.getCommentId());
             LOGGER.info("Tech {}: User {} inserted a comment", form.getCommentFrameworkId(), user.get().getId());
             return FrameworkController.redirectToFramework(form.getCommentFrameworkId(), comment.getCategory());
         }
@@ -156,7 +156,7 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Comment comment = commentService.insertComment(form.getReplyFrameworkId(), user.get().getId(), form.getReplyContent(), form.getReplyCommentId());
+            final Comment comment = commentService.insertComment(form.getReplyFrameworkId(), user.get().getId(), form.getReplyComment(), form.getReplyCommentId());
             LOGGER.info("Tech {}: User {} replied comment {}", form.getReplyFrameworkId(), user.get().getId(), form.getReplyCommentId());
             return FrameworkController.redirectToFramework(form.getReplyFrameworkId(), comment.getCategory());
         }

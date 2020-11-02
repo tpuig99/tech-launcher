@@ -15,9 +15,10 @@ public class ContentForm {
     @NotNull
     @NotEmpty
     private String link;
-
+    @NotNull
+    @NotEmpty
     private String type;
-
+    @NotNull
     private long frameworkId;
 
     public String getTitle() {
