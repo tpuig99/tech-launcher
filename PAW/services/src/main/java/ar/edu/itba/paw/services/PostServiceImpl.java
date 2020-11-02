@@ -43,6 +43,7 @@ public class PostServiceImpl implements PostService {
         return postDao.insertPost(userId, title, description);
     }
 
+    @Transactional
     @Override
     public void deletePost(long postId) {
         postDao.deletePost(postId);
