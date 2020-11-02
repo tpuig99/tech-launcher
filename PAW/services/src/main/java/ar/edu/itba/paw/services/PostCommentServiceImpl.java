@@ -1,7 +1,8 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.PostComment;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.PostCommentDao;
+import ar.edu.itba.paw.persistence.PostCommentVoteDao;
 import ar.edu.itba.paw.service.PostCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Autowired
     PostCommentDao postCommentDao;
+
+    @Autowired
+    PostCommentVoteDao postCommentVoteDao;
 
     @Override
     public Optional<PostComment> findById(long postCommentId) {
@@ -34,5 +38,21 @@ public class PostCommentServiceImpl implements PostCommentService {
     public void deletePostComment(long postCommentId) {
         postCommentDao.deletePostComment(postCommentId);
 
+    }
+
+    @Override
+    public Optional<PostComment> vote(long postCommentId, long userId, int voteSign) {
+        Optional<PostCommentVote> vote = postCommentVoteDao.getByPostCommentAndUser(postCommentId, userId);
+        if (vote.isPresent()) {
+            if (vote.get().getVote() == voteSign)
+                postCommentVoteDao.delete(vote.get().getPostCommentVoteId());
+            else
+                postCommentVoteDao.update(vote.get().getPostCommentVoteId(), voteSign);
+        } else {
+            postCommentVoteDao.insert(postCommentId, userId, voteSign);
+        }
+        Optional<PostComment> postComment = findById(postCommentId);
+
+        return postComment;
     }
 }
