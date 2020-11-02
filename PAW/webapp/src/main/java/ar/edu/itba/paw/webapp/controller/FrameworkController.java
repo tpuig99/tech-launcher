@@ -128,6 +128,13 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
+    @RequestMapping(path={"/{category}/{id}/image"}, method = RequestMethod.GET)
+    public @ResponseBody byte[] getImage(@PathVariable long id,
+                                         @PathVariable String category) throws IOException {
+        Optional<Framework> framework = fs.findById(id);
+        return framework.map(Framework::getPicture).orElse(null);
+    }
+
     @RequestMapping(path={"/comment"}, method= RequestMethod.POST)
     public ModelAndView saveComment(@Valid @ModelAttribute("commentForm") final CommentForm form) {
 

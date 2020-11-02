@@ -102,6 +102,11 @@ public class UserProfileController {
         return ErrorController.redirectToErrorView();
     }
 
+    @RequestMapping(path={"/users/{id}/image"}, method = RequestMethod.GET)
+    public @ResponseBody byte[] getImage(@PathVariable long id)  {
+        return us.findById(id).map(User::getPicture).orElse(null);
+    }
+
     @RequestMapping(path = {"/users/{username}/upload"}, method = RequestMethod.POST)
     public ModelAndView uploadPicture(@RequestParam("picture") MultipartFile picture, @PathVariable String username) throws IOException {
         Optional<User> user = us.findByUsername(username);

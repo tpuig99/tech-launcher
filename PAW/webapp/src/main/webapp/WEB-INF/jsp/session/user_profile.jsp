@@ -43,14 +43,20 @@
                             </c:if>
                         </div>
 
+                        <div class="row justify-content-center">
                         <c:choose>
-                            <c:when test="${not empty profile.base64image}">
-                                <img src="data:${profile.contentType};base64,${profile.base64image}" alt="<spring:message code="image.profile"/>" class="rounded-circle img-slot" />
+                            <c:when test="${not empty profile.picture}">
+                                <div class="max-logo d-flex align-items-center justify-content-center">
+                                    <img src="<c:url value="/users/${profile.id}/image"/>" alt="<spring:message code="image.profile"/>" class="rounded-circle img-slot"/>
+                                </div>
                             </c:when>
                             <c:otherwise>
-                                <img src="https://picsum.photos/536/354" alt="<spring:message code="image.profile.random"/>" class="rounded-circle img-slot">
+                                <div class="max-logo d-flex align-items-center justify-content-center">
+                                    <img src="https://picsum.photos/536/354" alt="<spring:message code="image.profile.random"/>" class="rounded-circle img-slot" />
+                                </div>
                             </c:otherwise>
                         </c:choose>
+                        </div>
 
                         <div class="row justify-content-center">
                         <h2><c:out value="${profile.username}"/></h2>
@@ -245,11 +251,15 @@
                         <a href="<c:url value="/${framework.category.name()}/${framework.id}"/>">
                             <div class="card-body">
                                 <c:choose>
-                                    <c:when test="${not empty framework.base64image}">
-                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    <c:when test="${not empty framework.picture}" >
+                                        <div class="max-logo d-flex align-items-center justify-content-center">
+                                            <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                        <div class="max-logo d-flex align-items-center justify-content-center">
+                                            <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:otherwise>
                                 </c:choose>
                             </div>

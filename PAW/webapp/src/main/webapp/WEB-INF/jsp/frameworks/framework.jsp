@@ -40,11 +40,15 @@
             <div class="row">
                 <div class="col-2">
                     <c:choose>
-                        <c:when test="${not empty framework.base64image}">
-                            <div class="d-flex flex-wrap"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                        <c:when test="${not empty framework.picture}" >
+                            <div class="d-flex flex-wrap">
+                                <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                            </div>
                         </c:when>
                         <c:otherwise>
-                            <div class="d-flex flex-wrap"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                            <div class="d-flex flex-wrap">
+                                <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                            </div>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -580,12 +584,16 @@
                         <a href="<c:url value="/${competitor.category}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <c:choose>
-                                    <c:when test="${not empty competitor.base64image}">
-                                        <div class="mini-logo d-flex align-items-center justify-content-center"><img src="data:${competitor.contentType};base64,${competitor.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    <c:when test="${not empty competitor.picture}" >
+                                        <div class="mini-logo d-flex align-items-center justify-content-center">
+                                            <img src="<c:url value="/${competitor.category}/${competitor.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitor.logo}" alt="<spring:message code="tech.picture"/>"></div>
-                                    </c:otherwise>
+                                        <div class="mini-logo d-flex align-items-center justify-content-center">
+                                            <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
+                                     </c:otherwise>
                                 </c:choose>
                             </div>
                             <div class="card-footer text-dark">${competitor.name}</div>
