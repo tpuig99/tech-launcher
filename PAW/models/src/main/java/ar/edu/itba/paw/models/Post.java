@@ -28,15 +28,15 @@ public class Post {
     private User user;
 
     /*this refers to the other relation mapped in PostVote */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostVote> postVotes;
 
     /*this refers to the other relation mapped in PostComment */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostComment> postComments;
 
     /*this refers to the other relation mapped in PostTag */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostTag> postTags;
 
     public Post(){

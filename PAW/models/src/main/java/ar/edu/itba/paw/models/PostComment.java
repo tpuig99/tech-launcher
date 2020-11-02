@@ -35,7 +35,7 @@ public class PostComment {
     private Post post;
 
     /*this refers to the other relation mapped in PostCommentVote*/
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "postComment")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "postComment", cascade = CascadeType.REMOVE)
     private List<PostCommentVote> postCommentVotes;
 
 
