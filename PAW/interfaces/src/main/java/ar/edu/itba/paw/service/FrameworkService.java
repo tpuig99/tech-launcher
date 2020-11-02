@@ -26,4 +26,7 @@ public interface FrameworkService {
     Optional<Framework> update(long id,String name,FrameworkCategories category,String description,String introduction,FrameworkType type,byte[] picture);
     void delete(long id);
 
+    List<String> getAllCategories();
+
+    List<String> getAllTypes();
 }

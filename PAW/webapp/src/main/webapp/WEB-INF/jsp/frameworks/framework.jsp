@@ -27,7 +27,12 @@
         <jsp:param name="username" value="${user.name}"/>
         <jsp:param name="isMod" value="${user_isMod}"/>
     </jsp:include>
-    <jsp:include page="../components/sidebar.jsp"/>
+
+    <div class="sidenav overflow-auto">
+        <c:forEach var="category" items="${categories_sidebar}">
+            <a href="<c:url value="/${category}"/>"><spring:message code="category.${category}"/></a>
+        </c:forEach>
+    </div>
 
     <div class="content">
 
@@ -49,8 +54,8 @@
                             <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
                             <div><spring:message code="tech.author"/>:&nbsp;<a href="<c:url value="/users/${framework.author.username}"/>">${framework.author.username}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i></div>
                             <div><spring:message code="tech.date"/>:&nbsp;${framework.publishDate.toLocaleString()}</div>
-                            <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.category"/>"> ${category_translated}</span>
-                            <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.type"/>"> ${type_translated}</span>
+                            <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.category"/>"> <spring:message code="category.${framework.category.name()}"/></span>
+                            <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.type"/>"><spring:message code="type.${framework.type.name()}"/></span>
                         </div>
                         <div class="col d-flex align-items-center justify-content-center">
                             <span class="fa fa-star color-star"></span>
@@ -572,7 +577,7 @@
             <div class="container d-flex">
                 <c:forEach items="${competitors}" var="competitor">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="<c:url value="/${competitor.category.nameCat}/${competitor.id}"/>">
+                        <a href="<c:url value="/${competitor.category}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <c:choose>
                                     <c:when test="${not empty competitor.base64image}">

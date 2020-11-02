@@ -111,7 +111,7 @@ public class Comment {
     }
 
     public String getCategory() {
-        return framework.getCategory().getNameCat();
+        return framework.getCategory().name();
     }
 
     public FrameworkCategories getEnumCategory() {

@@ -166,11 +166,7 @@
                                 </div>
 
                                 <div class="col-6 text-left">
-                                    <c:choose>
-                                        <c:when test="${content.type.name() == 'course'}"><spring:message code="profile.content.course" /></c:when>
-                                        <c:when test="${content.type.name() == 'book'}"><spring:message code="profile.content.bibliography" /></c:when>
-                                        <c:when test="${content.type.name() == 'tutorial'}"><spring:message code="profile.content.tutorial" /></c:when>
-                                    </c:choose>
+                                    <spring:message code="profile.content.${content.type.name()}"/>
                                     <c:out value=" ${content.title}" default=""/>
                                 </div>
 
@@ -246,7 +242,7 @@
             <div class="container row equal justify-content-center">
                 <c:forEach var="framework" items="${frameworks}">
                     <div class="card mx-4 mb-4">
-                        <a href="<c:url value="/${framework.category.nameCat}/${framework.id}"/>">
+                        <a href="<c:url value="/${framework.category.name()}/${framework.id}"/>">
                             <div class="card-body">
                                 <c:choose>
                                     <c:when test="${not empty framework.base64image}">
