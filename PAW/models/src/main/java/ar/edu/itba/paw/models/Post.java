@@ -27,9 +27,13 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    /*this refers to the other relation mapped in PostVotes */
+    /*this refers to the other relation mapped in PostVote */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
     private List<PostVote> postVotes;
+
+    /*this refers to the other relation mapped in PostComment */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    private List<PostComment> postComments;
 
     public Post(){
         //For Hibernate

@@ -23,6 +23,10 @@ public class PostVote {
     @Column(name = "vote", nullable = false)
     private Integer vote;
 
+    public PostVote() {
+        //For Hibernate
+    }
+
     public long getPostVoteId() {
         return postVoteId;
     }
