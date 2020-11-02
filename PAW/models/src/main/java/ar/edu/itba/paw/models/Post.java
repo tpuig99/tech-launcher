@@ -2,6 +2,7 @@ package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -25,6 +26,10 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    /*this refers to the other relation mapped in PostVotes */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    private List<PostVote> postVotes;
 
     public Post(){
         //For Hibernate
