@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PostService {
     Optional<Post> findById(long postId);
-    List<Post> getAll();
+    List<Post> getAll(long page);
     List<Post> getPostsByUser(long userId, long page);
 
     Post insertPost(long userId, String title, String description);

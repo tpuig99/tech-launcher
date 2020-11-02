@@ -13,7 +13,8 @@ import java.util.Optional;
 @Service
 public class PostServiceImpl implements PostService {
 
-    private final long PAGE_SIZE = 5;
+    private final long PAGE_SIZE = 10;
+    private final long PAGE_SIZE_USER_PROFILE = 5;
 
     @Autowired
     private PostDao postDao;
@@ -24,16 +25,19 @@ public class PostServiceImpl implements PostService {
         return postDao.findById(postId);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<Post> getAll() {
-        return null;
+    public List<Post> getAll(long page) {
+        return postDao.getAll(page, PAGE_SIZE);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Post> getPostsByUser(long userId, long page) {
-        return postDao.getPostsByUser(userId, page, PAGE_SIZE);
+        return postDao.getPostsByUser(userId, page, PAGE_SIZE_USER_PROFILE);
     }
 
+    @Transactional
     @Override
     public Post insertPost( long userId, String title, String description) {
         return postDao.insertPost(userId, title, description);

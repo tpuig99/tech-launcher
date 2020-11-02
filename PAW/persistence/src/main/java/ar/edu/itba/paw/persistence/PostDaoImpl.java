@@ -28,9 +28,19 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public List<Post> getAll() {
-        final TypedQuery<Post> query = em.createQuery("select p from Post p", Post.class);
-        return query.getResultList();
+    public List<Post> getAll(long page, long pageSize) {
+
+        Query pagingQuery = em.createNativeQuery("SELECT post_id FROM posts LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Post> query = em.createQuery("from Post as p where p.postId in (:resultList)", Post.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return new ArrayList<>();
+        }
     }
 
     @Override
