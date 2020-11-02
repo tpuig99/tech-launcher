@@ -83,7 +83,7 @@ public class ReportContent {
         return content.getCategory();
     }
 
-    public String getCategoryAsString(){return content.getCategory().getNameCat();}
+    public String getCategoryAsString(){return content.getCategory().name();}
 
     public String getLink() {
         return content.getLink();

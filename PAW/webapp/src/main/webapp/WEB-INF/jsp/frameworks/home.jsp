@@ -20,7 +20,11 @@
     <jsp:param name="isMod" value="${user_isMod}"/>
 </jsp:include>
 
-<jsp:include page="../components/sidebar.jsp"/>
+<div class="sidenav overflow-auto">
+    <c:forEach var="category" items="${categories_sidebar}">
+        <a href="<c:url value="/${category}"/>"><spring:message code="category.${category}"/></a>
+    </c:forEach>
+</div>
 
 <div class="content">
     <div class="page-title">
@@ -49,7 +53,7 @@
         <div class="row equal">
             <c:forEach items="${hottestList}" var="framework">
                 <div class="card mx-4 mb-4">
-                    <a href="<c:url value="/${framework.category.nameCat}/${framework.id}"/>">
+                    <a href="<c:url value="/${framework.category}/${framework.id}"/>">
                         <div class="card-body">
                             <c:choose>
                                 <c:when test="${not empty framework.base64image}">
@@ -74,7 +78,7 @@
                     <div class="row equal">
                         <c:forEach items="${interestsList}" var="framework">
                             <div class="card mx-4 mb-4">
-                                <a href="<c:url value="/${framework.category.nameCat}/${framework.id}"/>">
+                                <a href="<c:url value="/${framework.category}/${framework.id}"/>">
                                     <div class="card-body">
                                         <c:choose>
                                             <c:when test="${not empty framework.base64image}">

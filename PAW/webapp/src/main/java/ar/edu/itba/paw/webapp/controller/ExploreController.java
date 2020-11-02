@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.FrameworkCategories;
 import ar.edu.itba.paw.models.FrameworkType;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.FrameworkService;
-import ar.edu.itba.paw.service.TranslationService;
 import ar.edu.itba.paw.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +26,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class FrameworkListController {
+public class ExploreController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FrameworkListController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExploreController.class);
 
     @Autowired
     private MessageSource messageSource;
@@ -40,11 +39,9 @@ public class FrameworkListController {
     @Autowired
     private UserService us;
 
-    @Autowired
-    private TranslationService ts;
 
     final long startPage = 1;
-    final long PAGESIZE = 24;
+    final long PAGE_SIZE = 24;
 
     private String getMessageWithoutArguments(String code) {
         return messageSource.getMessage(code, Collections.EMPTY_LIST.toArray(), LocaleContextHolder.getLocale());
@@ -63,37 +60,35 @@ public class FrameworkListController {
                                        @RequestParam(required = false) final Integer lastUpdate,
                                        @RequestParam(value = "page", required = false) final Long page){
 
-        final ModelAndView mav = new ModelAndView("frameworks/frameworks_list");
+        final ModelAndView mav = new ModelAndView("frameworks/explore");
         List<FrameworkCategories> categoriesList = new ArrayList<>();
         List<String> categoriesQuery = new ArrayList<>();
         List<FrameworkType> typesList = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
 
         LOGGER.info("Explore: Searching results for: {}", toSearch);
-        LOGGER.info("Explore: Searching categories among: {}", categoriesList);
-        LOGGER.info("Explore: Searching types among: {}", typesList);
+        LOGGER.info("Explore: Searching categories among: {}", categories);
+        LOGGER.info("Explore: Searching types among: {}", types);
         LOGGER.info("Explore: Searching stars between: {} and {}", starsLeft, starsRight);
         LOGGER.info("Explore: Using search only by name: {}", nameFlag);
         LOGGER.info("Explore: Searching by comment amount = {}", commentAmount);
 
         for( String c : categories){
-            String aux = c.replaceAll("%20", " ");
-            categoriesQuery.add(aux);
-            categoriesList.add(FrameworkCategories.getByName(aux));
+            categoriesQuery.add(c);
+            categoriesList.add(FrameworkCategories.valueOf(c));
         }
 
 
         for( String c : types){
-            String aux = c.replaceAll("%20", " ");
-            typesQuery.add(aux);
-            typesList.add(FrameworkType.getByName(aux));
+            typesQuery.add(c);
+            typesList.add(FrameworkType.valueOf(c));
         }
 
-        List<String> allCategories = FrameworkCategories.getAllCategories();
-        List<String> allTypes = FrameworkType.getAllTypes();
+        List<String> allCategories = fs.getAllCategories();
+        List<String> allTypes = fs.getAllTypes();
 
         if(allCategories.contains(toSearch)){
-            categoriesList.add(FrameworkCategories.getByName(toSearch));
+            categoriesList.add(FrameworkCategories.valueOf(toSearch));
             toSearch="";
         } else if(allTypes.contains(toSearch)){
             toSearch="";
@@ -169,13 +164,13 @@ public class FrameworkListController {
         
         mav.addObject("matchingFrameworks", frameworks);
         mav.addObject("page", page == null ? startPage:page);
-        mav.addObject("page_size", PAGESIZE);
+        mav.addObject("page_size", PAGE_SIZE);
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("categories", allCategories );
-        mav.addObject("categories_translated", ts.getAllCategories());
+        mav.addObject("categories", allCategories);
+//        mav.addObject("categories_translated", ts.getAllCategories());
         mav.addObject("frameworkNames",fs.getFrameworkNames());
         mav.addObject("types", allTypes);
-        mav.addObject("types_translated", ts.getAllTypes());
+//        mav.addObject("types_translated", ts.getAllTypes());
         mav.addObject("search_page", true);
         mav.addObject("searchResultsNumber", searchResultsNumber);
 

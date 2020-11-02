@@ -38,7 +38,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="check${category}">
                     <label class="form-check-label" for="check${category}">
-                        <c:out value="${categories_translated.get(category)}"/>
+                        <spring:message code="category.${category}"/>
                     </label>
                 </div>
             </c:forEach>
@@ -50,7 +50,7 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="check${category}">
                         <label class="form-check-label" for="check${category}">
-                            <c:out value="${categories_translated.get(category)}"/>
+                            <spring:message code="category.${category}"/>
                         </label>
                     </div>
                 </c:forEach>
@@ -65,7 +65,7 @@
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="check${type}">
                 <label class="form-check-label" for="check${type}">
-                    <c:out value="${types_translated.get(type)}"/>
+                    <spring:message code="type.${type}"/>
                 </label>
             </div>
         </c:forEach>
@@ -77,7 +77,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="check${type}">
                     <label class="form-check-label" for="check${type}">
-                        <c:out value="${types_translated.get(type)}"/>
+                        <spring:message code="type.${type}"/>
                     </label>
                 </div>
             </c:forEach>
@@ -213,12 +213,12 @@
                 </c:if>
                 <c:if test="${not empty categoriesQuery}">
                     <c:forEach items="${categoriesQuery}" var="categoryQuery">
-                        <span id="name${categoryQuery}" class="badge badge-pill secondary-badge"><c:out value="${categories_translated.get(categoryQuery)}"/></span>
+                        <span id="name${categoryQuery}" class="badge badge-pill secondary-badge"><spring:message code="category.${categoryQuery}"/></span>
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty typesQuery}">
                     <c:forEach items="${typesQuery}" var="typeQuery">
-                        <span id="name${typeQuery}" class="badge badge-pill secondary-badge"><c:out value="${types_translated.get(typeQuery)}"/></span>
+                        <span id="name${typeQuery}" class="badge badge-pill secondary-badge"><spring:message code="type.${typeQuery}"/></span>
                     </c:forEach>
                 </c:if>
                 <c:if test="${not empty starsQuery1}">
@@ -266,7 +266,7 @@
             <div class="row equal">
                 <c:forEach var="framework" items="${matchingFrameworks}" >
                     <div class="card mx-4 mb-4">
-                        <a href="<c:url value="/${framework.category.nameCat}/${framework.id}"/>">
+                        <a href="<c:url value="/${framework.category}/${framework.id}"/>">
                             <div class="card-body">
                                 <c:choose>
                                     <c:when test="${not empty framework.base64image}">

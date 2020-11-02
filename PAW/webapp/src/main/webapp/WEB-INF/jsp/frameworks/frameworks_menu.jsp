@@ -5,8 +5,9 @@
 <html>
 <head>
     <title>
+        <spring:message code="category.${category}" var="categoryFormatted"/>
         <spring:message code="tech.wref"
-                        arguments="${category_translation}"
+                        arguments="${categoryFormatted}"
                         htmlEscape="true"/>
     </title>
 
@@ -21,12 +22,17 @@
     <jsp:param name="username" value="${user.name}"/>
     <jsp:param name="isMod" value="${user_isMod}"/>
 </jsp:include>
-<jsp:include page="../components/sidebar.jsp"/>
+
+<div class="sidenav overflow-auto">
+    <c:forEach var="category" items="${categories_sidebar}">
+        <a href="<c:url value="/${category}"/>"><spring:message code="category.${category}"/></a>
+    </c:forEach>
+</div>
 
 <div class="content">
     <div class="page-title">
         <h2>
-            ${category_translation}
+            <spring:message code="category.${category}"/>
         </h2>
     </div>
     <div class="page-description">

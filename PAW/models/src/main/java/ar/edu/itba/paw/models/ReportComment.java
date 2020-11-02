@@ -72,7 +72,7 @@ public class ReportComment {
     public FrameworkCategories getCategory() {
         return comment.getFramework().getCategory();
     }
-    public String getCategoryAsString(){return comment.getFramework().getCategory().getNameCat();}
+    public String getCategoryAsString(){return comment.getFramework().getCategory().name();}
 
 
     public List<String> getReportsUserName(){
