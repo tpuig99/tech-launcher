@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.service;
 
+import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.Post;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface PostService {
 
     Post insertPost(long userId, String title, String description);
     void deletePost(long postId);
+
+    Optional<Post> vote(long postId, long userId, int voteSign);
 }

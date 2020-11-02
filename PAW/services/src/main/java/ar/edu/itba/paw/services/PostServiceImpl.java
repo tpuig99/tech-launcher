@@ -1,7 +1,8 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.Post;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.PostDao;
+import ar.edu.itba.paw.persistence.PostVoteDao;
 import ar.edu.itba.paw.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private PostDao postDao;
+
+    @Autowired
+    private PostVoteDao postVoteDao;
 
     @Transactional(readOnly = true)
     @Override
@@ -47,5 +51,23 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(long postId) {
         postDao.deletePost(postId);
+    }
+
+    @Override
+    public Optional<Post> vote(long postId, long userId, int voteSign) {
+
+        Optional<PostVote> vote = postVoteDao.getByPostAndUser(postId,userId);
+        if(vote.isPresent()){
+            if(vote.get().getVote()==voteSign)
+                postVoteDao.delete(vote.get().getPostVoteId());
+            else
+                postVoteDao.update(vote.get().getPostVoteId(),voteSign);
+        }else {
+            postVoteDao.insert(postId, userId, voteSign);
+        }
+
+        Optional<Post> post = findById(postId);
+
+        return post;
     }
 }

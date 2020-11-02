@@ -21,12 +21,12 @@ public class PostVoteDaoImpl implements PostVoteDao{
     @Override
     public Optional<PostVote> getByPost(long postId) {
         final TypedQuery<PostVote> query = em.createQuery("select pv from PostVote pv where pv.post.id= :postId", PostVote.class);
-        query.setParameter("postId", postId); 
+        query.setParameter("postId", postId);
         return query.getResultList().stream().findFirst();
     }
 
     @Override
-    public List<PostVote> getAllByUser(long userId, long page, long pageSize) {
+    public List<PostVote> getByUser(long userId, long page, long pageSize) {
         Query pagingQuery = em.createNativeQuery("SELECT post_vote_id FROM post_votes WHERE user_id = " + String.valueOf(userId)+ " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
         @SuppressWarnings("unchecked")
         List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
@@ -38,6 +38,14 @@ public class PostVoteDaoImpl implements PostVoteDao{
         }else{
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public Optional<PostVote> getByPostAndUser(long postId, long userId) {
+        final TypedQuery<PostVote> query = em.createQuery("select pv from PostVote pv where pv.post.id = :postId and pv.user.id = :userId", PostVote.class);
+        query.setParameter("postId", postId);
+        query.setParameter("userId", userId);
+        return query.getResultList().stream().findFirst();
     }
 
     @Override

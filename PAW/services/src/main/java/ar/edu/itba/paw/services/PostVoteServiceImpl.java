@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.FrameworkVote;
 import ar.edu.itba.paw.models.PostVote;
 import ar.edu.itba.paw.persistence.PostVoteDao;
 import ar.edu.itba.paw.service.PostVoteService;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.PipedOutputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +26,13 @@ public class PostVoteServiceImpl implements PostVoteService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<PostVote> getAllByUser(long userId, long page) {
-        return postVoteDao.getAllByUser(userId, page, PAGE_SIZE);
+    public List<PostVote> getByUser(long userId, long page) {
+        return postVoteDao.getByUser(userId, page, PAGE_SIZE);
+    }
+
+    @Override
+    public Optional<PostVote> getByPostAndUser(long postId, long userId) {
+        return postVoteDao.getByPostAndUser(postId,userId);
     }
 
     @Transactional
