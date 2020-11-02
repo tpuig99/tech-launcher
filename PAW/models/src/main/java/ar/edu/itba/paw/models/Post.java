@@ -35,6 +35,10 @@ public class Post {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
     private List<PostComment> postComments;
 
+    /*this refers to the other relation mapped in PostTag */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    private List<PostTag> postTags;
+
     public Post(){
         //For Hibernate
     }
