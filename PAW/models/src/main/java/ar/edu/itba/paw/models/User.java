@@ -85,6 +85,9 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<FrameworkVote> frameworkVotes;
 
+    /*this refers to the other relation mapped in Post*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Post> posts;
 
 
     public User() {

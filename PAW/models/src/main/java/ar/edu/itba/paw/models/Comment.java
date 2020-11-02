@@ -53,6 +53,7 @@ public class Comment {
     private Long votesDown;
 
     public Comment() {
+        //For Hibernate
     }
 
     public long getCommentId() {

@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS content_report (
 CREATE TABLE IF NOT EXISTS posts
 (
     post_id     SERIAL PRIMARY KEY,
-    description varchar      NOT NULL,
+    description varchar(5000)      NOT NULL,
     title       varchar(200) NOT NULL,
     tstamp timestamp NOT NULL,
     user_id     integer      NOT NULL,
