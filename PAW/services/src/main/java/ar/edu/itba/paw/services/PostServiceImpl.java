@@ -35,8 +35,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post insertPost(long postId, long userId, String title, String description) {
-        return postDao.insertPost(postId, userId, title, description);
+    public Post insertPost( long userId, String title, String description) {
+        return postDao.insertPost(userId, title, description);
     }
 
     @Override
