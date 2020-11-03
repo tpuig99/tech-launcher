@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -49,11 +48,21 @@ public class UserHibernateDao implements UserDao {
     }
 
     @Override
-    public void updateDescription(long userId, String description) {
-        User user = em.find(User.class,userId);
+    public void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture) {
+        User user = em.find(User.class, userId);
+        if (updatePicture) {
+            user.setPicture(picture);
+        }
         user.setDescription(description);
         em.merge(user);
     }
+
+//    @Override
+//    public void updateDescription(long userId, String description) {
+//        User user = em.find(User.class,userId);
+//        user.setDescription(description);
+//        em.merge(user);
+//    }
 
     @Override
     public void updatePicture(long id, byte[] picture) {

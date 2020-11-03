@@ -301,28 +301,12 @@
                     <span aria-hidden="true">&times;</span>
                 </div>
                 <div class="modal-body container">
-                    <!-- Change profile picture-->
-                    <c:url value="/users/${username}/upload" var="postPathUploadPhoto"/>
-                    <form id="updatePictureForm" class="border-bottom" action="${postPathUploadPhoto}"  method="post" enctype="multipart/form-data">
-                        <div class="mb-2"><spring:message code="profile.change_picture"/></div>
-                        <div class="d-flex justify-content-center mb-4">
-                            <input id="uploadPictureInput" name="picture" type="file" accept="image/*" />
-                        </div>
-                        <div class="d-flex justify-content-center mb-4">
-                            <input class="btn btn-primary" disabled id="updatePictureButton" type="submit" value="<spring:message code="button.change_picture"/>"/>
-                            <div class="btn btn-primary disabled" id="updatePictureLoading" hidden>
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                <spring:message code="button.loading"/>
-                            </div>
-                        </div>
-                    </form>
-                    <!-- Change description-->
+                    <!-- Change Picture and Description-->
                     <jsp:include page="profileForm.jsp">
                         <jsp:param name="username" value="${profile.username}" />
-                        <jsp:param name="description" value="${previousDescription}" />
                     </jsp:include>
 
-                    <!-- Change password -->
+                    <!-- Change Password -->
                     <div>
                         <span><a href="${pageContext.request.contextPath}/recover/change_password"><spring:message code="profile.change_password"/></a></span>
                     </div>
