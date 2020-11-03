@@ -16,7 +16,6 @@ public class PostVoteServiceImpl implements PostVoteService {
     @Autowired
     PostVoteDao postVoteDao;
 
-    private final long PAGE_SIZE = 10;
 
     @Transactional(readOnly = true)
     @Override
@@ -26,8 +25,8 @@ public class PostVoteServiceImpl implements PostVoteService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<PostVote> getByUser(long userId, long page) {
-        return postVoteDao.getByUser(userId, page, PAGE_SIZE);
+    public List<PostVote> getByUser(long userId, long page, long pageSize) {
+        return postVoteDao.getByUser(userId, page, pageSize);
     }
 
     @Override

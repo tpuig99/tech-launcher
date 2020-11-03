@@ -17,6 +17,7 @@ public class PostController {
     PostService ps;
 
     private final String START_PAGE = "1";
+    private final long POSTS_PAGE_SIZE = 10;
 
     @RequestMapping("/posts")
     public ModelAndView posts( @RequestParam(value = "page", required = false, defaultValue = START_PAGE) Long postsPage) {
@@ -24,7 +25,7 @@ public class PostController {
 
         final ModelAndView mav = new ModelAndView("posts/posts_list");
 
-        mav.addObject("posts", ps.getAll(postsPage) );
+        mav.addObject("posts", ps.getAll(postsPage, POSTS_PAGE_SIZE) );
 
 
         return mav;

@@ -14,7 +14,6 @@ import java.util.Optional;
 @Service
 public class PostServiceImpl implements PostService {
 
-    private final long PAGE_SIZE = 10;
     private final long PAGE_SIZE_USER_PROFILE = 5;
 
     @Autowired
@@ -31,14 +30,14 @@ public class PostServiceImpl implements PostService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Post> getAll(long page) {
-        return postDao.getAll(page, PAGE_SIZE);
+    public List<Post> getAll(long page, long pageSize) {
+        return postDao.getAll(page, pageSize);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Post> getPostsByUser(long userId, long page) {
-        return postDao.getPostsByUser(userId, page, PAGE_SIZE_USER_PROFILE);
+    public List<Post> getPostsByUser(long userId, long page, long pageSize) {
+        return postDao.getPostsByUser(userId, page, pageSize);
     }
 
     @Transactional

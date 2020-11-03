@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface PostVoteService {
 
     Optional<PostVote> getByPost(long postId);
-    List<PostVote> getByUser(long userId, long page);
+    List<PostVote> getByUser(long userId, long page, long pageSize);
     Optional<PostVote> getByPostAndUser(long postId, long userId);
 
     PostVote insert(long postId, long userId, int vote);
