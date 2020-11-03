@@ -39,6 +39,13 @@ public class Post {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostTag> postTags;
 
+    @Transient
+    private Long votesUp;
+
+    @Transient
+    private Long votesDown;
+
+
     public Post(){
         //For Hibernate
     }
@@ -96,5 +103,29 @@ public class Post {
     public List<PostTag> getPostTags() {
         return postTags;
     }
+
+    private void loadVotes() {
+        votesUp = Long.valueOf(0);
+        votesDown = Long.valueOf(0);
+        for (PostVote vote: postVotes) {
+            if(vote.isPositive())
+                votesUp++;
+            else
+                votesDown++;
+        }
+    }
+
+    public Long getVotesUp() {
+        if(votesUp == null)
+            loadVotes();
+        return votesUp;
+    }
+
+    public Long getVotesDown() {
+        if(votesDown == null)
+            loadVotes();
+        return votesDown;
+    }
+
 
 }

@@ -3,7 +3,7 @@
 
 <html>
 <head>
-    <title>Tech Launcher - Forum</title>
+    <title>Tech Launcher - Post</title>
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/posts.css"/>"/>
@@ -23,45 +23,34 @@
 
     <div class="content-no-sidebar">
 
-        <div class="title"><h1> Forum </h1></div>
-        <div class="d-flex flex-row-reverse">
-            <button class="btn btn-info d-flex justify-content-flex-end mt-2 mb-4"> ADD POST </button>
-        </div>
-        <c:forEach items="${posts}" var="post">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-1">
-                            <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-up"></i></button>
-                            <div>
-                                <h4>${post.votesUp - post.votesDown}</h4>
-                            </div>
-                            <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-down"></i></button>
-                        </div>
-                        <div class="col">
-
-                            <div class="row d-flex justify-content-flex-end secondary-color">
-                                    ${post.timestamp.toLocaleString()} By ${post.user.username}
-                            </div>
-                            <div class="row post-title">
-                                    ${post.title}
-                            </div>
-                            <div class="row">
-
-                                <c:forEach items="${post.postTags}" var="tag">
-                                <span class="badge badge-color ml-1">
-                                        ${tag.tagName}
-                                </span>
-                                </c:forEach>
-
-                            </div>
-                        </div>
+            <div class="row">
+                <div class="col-1">
+                    <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-up"></i></button>
+                    <div>
+                        <h4>${post.votesUp - post.votesDown}</h4>
                     </div>
+                    <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-down"></i></button>
+                </div>
+                <div class="col">
 
+                    <div class="row d-flex justify-content-flex-end secondary-color">
+                            ${post.timestamp.toLocaleString()} By ${post.user.username}
+                    </div>
+                    <div class="row post-title">
+                            ${post.title}
+                    </div>
+                    <div class="row">
+
+                        <c:forEach items="${post.postTags}" var="tag">
+                        <span class="badge badge-color ml-1">
+                                ${tag.tagName}
+                        </span>
+                        </c:forEach>
+
+                    </div>
                 </div>
             </div>
 
-        </c:forEach>
     </div>
 
 

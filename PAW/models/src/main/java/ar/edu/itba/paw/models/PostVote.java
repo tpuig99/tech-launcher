@@ -58,4 +58,8 @@ public class PostVote {
     public void setVote(Integer vote) {
         this.vote = vote;
     }
+
+    public boolean isPositive() {
+        return vote == 1;
+    }
 }
