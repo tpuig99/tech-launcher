@@ -78,7 +78,7 @@
                                     <strong><spring:message code="profile.moderator"/></strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
                                 <c:if test="${!verifiedTech.pending}">
-                                    <a class="tags" href="<c:url value="/${verifiedTech.category}/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                                    <a class="tags" href="<c:url value="/techs/${verifiedTech.category}/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
                                 </c:if>
                             </c:forEach>
                             </p>
@@ -120,7 +120,7 @@
                         <div class="card emphasis emph-comment row mb-2">
                             <div class="card-body row mt-1">
                                 <div class="col-3 secondary-font">
-                                    <a href="<c:url value="/${comment.category}/${comment.frameworkId}"/>">
+                                    <a href="<c:url value="/techs/${comment.category}/${comment.frameworkId}"/>">
                                         <c:out value="${comment.frameworkName}" default=""/>
                                     </a>
                                 </div>
@@ -160,7 +160,7 @@
                         <div class="card emphasis emph-content row mb-2">
                             <div class="card-body row mt-1">
                                 <div class="col-3 secondary-font">
-                                    <a href="<c:url value="/${content.category}/${content.frameworkId}"/>">
+                                    <a href="<c:url value="/techs/${content.category}/${content.frameworkId}"/>">
                                         <c:out value="${content.frameworkName}" default=""/>
                                     </a>
                                 </div>
@@ -203,7 +203,7 @@
                         <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
                             <div class="card-body row mt-1">
                                 <div class="col secondary-font">
-                                    <a href="<c:url value="/${vote.category}/${vote.frameworkId}"/>">
+                                    <a href="<c:url value="/techs/${vote.category}/${vote.frameworkId}"/>">
                                         <c:out value="${vote.frameworkName}" default=""/>
                                     </a>
                                 </div>
@@ -242,7 +242,7 @@
             <div class="container row equal justify-content-center">
                 <c:forEach var="framework" items="${frameworks}">
                     <div class="card mx-4 mb-4">
-                        <a href="<c:url value="/${framework.category.name()}/${framework.id}"/>">
+                        <a href="<c:url value="/techs/${framework.category.name()}/${framework.id}"/>">
                             <div class="card-body">
                                 <c:choose>
                                     <c:when test="${not empty framework.base64image}">

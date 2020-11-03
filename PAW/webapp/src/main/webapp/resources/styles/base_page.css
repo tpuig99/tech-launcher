@@ -66,6 +66,15 @@ nav a:hover {
     width: 80%;
 }
 
+.content-no-sidebar-left {
+    justify-content: center;
+    padding-top: 4em;
+    margin: auto;
+    padding-left: 4em;
+    padding-right: 4em;
+    width: 80%;
+}
+
 .page-title {
     font-size: 5em;
     border-bottom: 0.01em solid black;

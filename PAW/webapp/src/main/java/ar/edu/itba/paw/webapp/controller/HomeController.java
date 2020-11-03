@@ -24,10 +24,10 @@ public class HomeController {
 
     @RequestMapping("/")
     public ModelAndView home() {
-        return new ModelAndView("redirect:/" + "frameworks");
+        return new ModelAndView("redirect:/" + "techs");
     }
 
-    @RequestMapping("/frameworks")
+    @RequestMapping("/techs")
     public ModelAndView frameworksHome() {
         final ModelAndView mav = new ModelAndView("frameworks/home");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());

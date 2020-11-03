@@ -31,7 +31,7 @@ public class FrameworkMenuController {
     private final String START_PAGE = "1";
     final private long PAGE_SIZE = 7;
 
-    @RequestMapping("/{category}")
+    @RequestMapping("/techs/{category}")
     public ModelAndView frameworkMenuPaging(@PathVariable String category,
                                             @RequestParam(value = "frameworks_page", required = false, defaultValue = START_PAGE) Long frameworksPage) {
         final ModelAndView mav = new ModelAndView("frameworks/frameworks_menu");

@@ -66,7 +66,7 @@ public class FrameworkController {
         mav.addObject("deleteFrameworkForm", new DeleteFrameworkForm());
     }
 
-    @RequestMapping("/{category}/{id}")
+    @RequestMapping("/techs/{category}/{id}")
     public ModelAndView framework(@PathVariable long id,
                                   @PathVariable String category,
                                   @RequestParam(value = "books_page", required = false, defaultValue = START_PAGE) Long booksPage,

@@ -30,7 +30,7 @@
 
     <div class="sidenav overflow-auto">
         <c:forEach var="category" items="${categories_sidebar}">
-            <a href="<c:url value="/${category}"/>"><spring:message code="category.${category}"/></a>
+            <a href="<c:url value="/techs/${category}"/>"><spring:message code="category.${category}"/></a>
         </c:forEach>
     </div>
 
@@ -577,7 +577,7 @@
             <div class="container d-flex">
                 <c:forEach items="${competitors}" var="competitor">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="<c:url value="/${competitor.category}/${competitor.id}"/>">
+                        <a href="<c:url value="/techs/${competitor.category}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <c:choose>
                                     <c:when test="${not empty competitor.base64image}">

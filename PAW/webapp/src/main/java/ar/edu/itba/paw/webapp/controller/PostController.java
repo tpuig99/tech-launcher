@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.Post;
 import ar.edu.itba.paw.service.PostService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class PostController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
     PostService ps;
@@ -36,7 +42,11 @@ public class PostController {
 
         final ModelAndView mav = new ModelAndView("posts/post");
 
-        mav.addObject("post", ps.findById(id) );
+        Optional<Post> post = ps.findById(id);
+        if(post.isPresent()){
+            LOGGER.info("Post {}: Requested and found, retrieving data", id);
+            mav.addObject("post", post.get() );
+        }
 
         return mav;
     }

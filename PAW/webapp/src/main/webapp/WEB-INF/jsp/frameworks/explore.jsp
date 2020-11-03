@@ -266,7 +266,7 @@
             <div class="row equal">
                 <c:forEach var="framework" items="${matchingFrameworks}" >
                     <div class="card mx-4 mb-4">
-                        <a href="<c:url value="/${framework.category}/${framework.id}"/>">
+                        <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
                             <div class="card-body">
                                 <c:choose>
                                     <c:when test="${not empty framework.base64image}">

@@ -21,12 +21,11 @@
     </jsp:include>
 
 
-    <div class="content-no-sidebar">
-
-            <div class="row">
-                <div class="col-1">
+    <div class="content-no-sidebar-left">
+            <div class="row d-flex justify-content-flex-start">
+                <div class="col-1 mt-4">
                     <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-up"></i></button>
-                    <div>
+                    <div class="ml-3">
                         <h4>${post.votesUp - post.votesDown}</h4>
                     </div>
                     <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-down"></i></button>
@@ -37,7 +36,7 @@
                             ${post.timestamp.toLocaleString()} By ${post.user.username}
                     </div>
                     <div class="row post-title">
-                            ${post.title}
+                        <h2>${post.title}</h2>
                     </div>
                     <div class="row">
 
@@ -49,6 +48,9 @@
 
                     </div>
                 </div>
+            </div>
+            <div class="row mt-4">
+                ${post.description}
             </div>
 
     </div>
