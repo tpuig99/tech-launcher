@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Post;
 import ar.edu.itba.paw.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,11 +23,20 @@ public class PostController {
     @RequestMapping("/posts")
     public ModelAndView posts( @RequestParam(value = "page", required = false, defaultValue = START_PAGE) Long postsPage) {
 
-
         final ModelAndView mav = new ModelAndView("posts/posts_list");
 
         mav.addObject("posts", ps.getAll(postsPage, POSTS_PAGE_SIZE) );
 
+        return mav;
+    }
+
+
+    @RequestMapping("/posts/{id}")
+    public ModelAndView post(@PathVariable long id) {
+
+        final ModelAndView mav = new ModelAndView("posts/post");
+
+        mav.addObject("post", ps.findById(id) );
 
         return mav;
     }

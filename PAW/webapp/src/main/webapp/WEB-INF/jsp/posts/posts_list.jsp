@@ -25,7 +25,7 @@
 
         <div class="title"><h1> Forum </h1></div>
         <div class="d-flex flex-row-reverse">
-            <button class="btn btn-info d-flex justify-content-flex-end mt-2 mb-4"> ADD POST </button>
+            <button class="btn btn-info mt-2 mb-4"> ADD POST </button>
         </div>
         <c:forEach items="${posts}" var="post">
             <div class="card mb-3">
@@ -41,10 +41,12 @@
                         <div class="col">
 
                             <div class="row d-flex justify-content-flex-end secondary-color">
-                                    ${post.timestamp.toLocaleString()} By ${post.user.username}
+                                    ${post.timestamp.toLocaleString()}      By ${post.user.username}
                             </div>
                             <div class="row post-title">
+                                <a href="<c:url value='/posts/${post.postId}'/>">
                                     ${post.title}
+                                </a>
                             </div>
                             <div class="row">
 

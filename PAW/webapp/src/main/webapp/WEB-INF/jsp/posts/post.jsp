@@ -33,7 +33,7 @@
                 </div>
                 <div class="col">
 
-                    <div class="row d-flex justify-content-flex-end secondary-color">
+                    <div class="row d-flex flex-row-reverse secondary-color">
                             ${post.timestamp.toLocaleString()} By ${post.user.username}
                     </div>
                     <div class="row post-title">

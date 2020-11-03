@@ -81,7 +81,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //        ds.setUsername("postgres");
 //        ds.setPassword("uygwr2BX7");
 
-       
     }
 
     @Bean
