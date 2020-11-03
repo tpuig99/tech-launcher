@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.models;
 
-import sun.security.util.math.intpoly.P256OrderField;
 
 import javax.persistence.*;
 import java.util.Date;

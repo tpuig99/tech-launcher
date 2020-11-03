@@ -82,4 +82,19 @@ public class Post {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public List<PostVote> getPostVotes() {
+        return postVotes;
+    }
+
+
+    public List<PostComment> getPostComments() {
+        return postComments;
+    }
+
+
+    public List<PostTag> getPostTags() {
+        return postTags;
+    }
+
 }
