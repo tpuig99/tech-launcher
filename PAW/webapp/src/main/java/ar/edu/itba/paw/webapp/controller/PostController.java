@@ -6,16 +6,18 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
+import ar.edu.itba.paw.webapp.form.posts.DownVoteForm;
+import ar.edu.itba.paw.webapp.form.posts.UpVoteForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +37,12 @@ public class PostController {
 
     private final String START_PAGE = "1";
     private final long POSTS_PAGE_SIZE = 10;
+    private final int UP_VOTE_VALUE = 1;
+    private final int DOWN_VOTE_VALUE = -1;
+
+    public static ModelAndView redirectToPosts() {
+        return new ModelAndView("redirect:/posts");
+    }
 
     @RequestMapping("/posts")
     public ModelAndView posts( @RequestParam(value = "page", required = false, defaultValue = START_PAGE) Long postsPage) {
@@ -42,14 +50,16 @@ public class PostController {
         final ModelAndView mav = new ModelAndView("posts/posts_list");
         final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        List<String> categories = fs.getAllCategories();
-        mav.addObject("categories_sidebar", categories);
+        mav.addObject("categories_sidebar", fs.getAllCategories());
         mav.addObject("posts", ps.getAll(postsPage, POSTS_PAGE_SIZE) );
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        mav.addObject("downVoteForm", new DownVoteForm());
+        mav.addObject("upVoteForm", new UpVoteForm());
 
         if( optionalUser.isPresent()) {
             User user = optionalUser.get();
-            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("isEnable", user.isEnable());
         }
 
         return mav;
@@ -79,4 +89,27 @@ public class PostController {
         return mav;
     }
 
+    @RequestMapping( path = "/posts/upVote/", method = RequestMethod.POST)
+    public ModelAndView voteUp(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form){
+
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( user.isPresent() ){
+            ps.vote(form.getUpVotePostId(), user.get().getId(), UP_VOTE_VALUE);
+            return PostController.redirectToPosts();
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping( path = "/posts/downVote/", method = RequestMethod.POST)
+    public ModelAndView voteDown(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form){
+
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( user.isPresent() ){
+            ps.vote(form.getDownVotePostId(), user.get().getId(), DOWN_VOTE_VALUE);
+            return PostController.redirectToPosts();
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
 }

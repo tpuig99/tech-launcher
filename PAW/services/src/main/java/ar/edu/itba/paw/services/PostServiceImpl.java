@@ -52,6 +52,7 @@ public class PostServiceImpl implements PostService {
         postDao.deletePost(postId);
     }
 
+    @Transactional
     @Override
     public Optional<Post> vote(long postId, long userId, int voteSign) {
 

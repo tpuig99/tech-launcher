@@ -1,6 +1,8 @@
+<%@ page isELIgnored="false" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
 <head>
@@ -40,11 +42,54 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-1 net-votes">
-                                        <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-up"></i></button>
-                                        <div>
-                                            <h4>${post.votesUp - post.votesDown}</h4>
-                                        </div>
-                                        <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-down"></i></button>
+                                        <c:choose>
+                                            <c:when test="${user.name == 'anonymousUser'}">
+                                                <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                                                <div>
+                                                    <h4>${post.votesUp - post.votesDown}</h4>
+                                                </div>
+                                                <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-down" data-toggle="modal" data-target="#loginModal"></i></button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:choose>
+                                                    <c:when test="${!isEnable}">
+                                                        <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                        <div>
+                                                            <h4>${post.votesUp - post.votesDown}</h4>
+                                                        </div>
+                                                        <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:url value="/posts/upVote/" var="postPathUpVote"/>
+                                                        <form:form modelAttribute="upVoteForm" id="upVoteForm${post.postId}" action="${postPathUpVote}" method="post" class="mb-0">
+                                                            <form:label path="upVotePostId">
+                                                                <form:input id="upVotePostId${post.postId}" class="input-wrap" path="upVotePostId" type="hidden" value="${post.postId}"/>
+                                                            </form:label>
+                                                            <div class="net-votes">
+                                                                <button class="btn btn-link pt-0 pb-0" type="submit">
+                                                                    <i class="fa fa-2x fa-angle-up"></i>
+                                                                </button>
+                                                                <div>
+                                                                    <h4>${post.votesUp - post.votesDown}</h4>
+                                                                </div>
+                                                            </div>
+                                                        </form:form>
+                                                        <c:url value="/posts/downVote/" var="postPathDownVote"/>
+                                                        <form:form modelAttribute="downVoteForm" id="downVoteForm${post.postId}" action="${postPathDownVote}" method="post" class="mt-0">
+                                                            <form:label path="downVotePostId">
+                                                                <form:input path="downVotePostId" id="downVotePostId${post.postId}" class="input-wrap" type="hidden" value="${post.postId}"/>
+                                                            </form:label>
+                                                            <div class="net-votes">
+                                                                <button class="btn btn-link pt-0 pb-0" type="submit">
+                                                                    <i class="fa fa-2x fa-angle-down"></i>
+                                                                </button>
+                                                            </div>
+                                                        </form:form>
+
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                     <div class="col">
 
@@ -86,6 +131,56 @@
         </div>
 
     </div>
+
+
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel"><spring:message code="user.not_logged"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row d-flex justify-content-center align-items-center">
+                        <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <button type="button" class="btn btn-primary" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
+                    </div>
+                    <div class="row  justify-content-center align-items-center margin-top">
+                        <div><spring:message code="login.sign_up_question"/> <a href="<c:url value="/register"/>"><spring:message code="button.sign_up"/></a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmMailModal" tabindex="-1" role="dialog" aria-labelledby="confirmMailModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmMailModalLabel"><spring:message code="register.error.email_status"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row d-flex justify-content-center align-items-center">
+                        <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <div><spring:message code="register.error.confirm_email"/></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
 
     <script>
         function goToCat( catName ){
