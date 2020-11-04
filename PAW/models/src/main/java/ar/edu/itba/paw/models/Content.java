@@ -38,7 +38,7 @@ public class Content {
     private ContentTypes type;
 
     /*this refers to the other relation mapped in ReportComment*/
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "content")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "content",cascade = CascadeType.REMOVE)
     private List<ReportContent> reports;
 
     public Content(){

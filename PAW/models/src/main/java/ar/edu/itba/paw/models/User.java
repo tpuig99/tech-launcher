@@ -3,14 +3,9 @@ package ar.edu.itba.paw.models;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.swing.text.html.Option;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -40,41 +35,37 @@ public class User {
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] picture;
-    @Transient
-    String base64image = null;
-    @Transient
-    String contentType;
 
     /*this refers to the other relation mapped in Admin*/
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
     private Admin admin;
 
     /*this refers to the other relation mapped in VerificationToken*/
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
     private VerificationToken verificationToken;
 
     /*this refers to the other relation mapped in VerifyUser*/
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<VerifyUser> verifications;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
+    private List<VerifyUser> applications;
 
     /*this refers to the other relation mapped in Comment*/
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
     /* References other relation mapped in Content */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
     private List<Content> contents;
 
     /*this refers to the other relation mapped in CommentVote*/
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
     private List<CommentVote> commentVotes;
 
     /*this refers to the other relation mapped in ReportComment*/
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
     private List<ReportComment> commentsReported;
 
     /*this refers to the other relation mapped in ReportContent*/
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
     private List<ReportContent> contentsReported;
 
     /*this refers to the other relation mapped in Framework*/
@@ -82,7 +73,7 @@ public class User {
     private List<Framework> ownedFrameworks;
 
     /*this refers to the other relation mapped in FrameworkVotes */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
     private List<FrameworkVote> frameworkVotes;
 
     /*this refers to the other relation mapped in Post*/
@@ -178,50 +169,21 @@ public class User {
         this.picture = picture;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public String getBase64image() {
-        if(base64image==null)
-            calculateStringImage();
-        return base64image;
-    }
-
-    private void calculateStringImage() {
-        if(picture!=null) {
-            try {
-                contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(picture));
-            } catch (IOException e) {
-                contentType = "";
-            }
-
-            byte[] encodedByteArray = Base64.getEncoder().encode(picture);
-            base64image = new String(encodedByteArray, StandardCharsets.UTF_8);
-        }
-    }
-
-    public void setBase64image(String base64image) {
-        this.base64image = base64image;
-    }
     public boolean isAdmin() {
         return admin!=null;
     }
-    public void setVerifications(List<VerifyUser> verifications) {
+
+    public void setApplications(List<VerifyUser> verifications) {
         //this.verifications.addAll(verifications);
-        this.verifications = verifications;
+        this.applications = verifications;
     }
 
-    public List<VerifyUser> getVerifications() {
-        return verifications;
+    public List<VerifyUser> getApplications() {
+        return applications;
     }
 
     public boolean isVerifyForFramework(long frameworkId){
-        for (VerifyUser v: verifications) {
+        for (VerifyUser v: applications) {
             if(v.getFrameworkId()==frameworkId){
                 return !v.isPending();
             }
@@ -229,8 +191,11 @@ public class User {
         }
         return false;
     }
+    public List<VerifyUser> getVerifications(){
+        return applications.stream().filter((x)-> !x.isPending()).collect(Collectors.toList());
+    }
     public boolean hasAppliedToFramework(long frameworkId){
-        for (VerifyUser v: verifications) {
+        for (VerifyUser v: applications) {
             if(v.getFrameworkId()==frameworkId){
                 return true;
             }
@@ -239,7 +204,7 @@ public class User {
         return false;
     }
     public boolean isVerify() {
-        for (VerifyUser v: verifications) {
+        for (VerifyUser v: applications) {
             if(!v.isPending())
                 return true;
         }

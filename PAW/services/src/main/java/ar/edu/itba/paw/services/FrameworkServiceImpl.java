@@ -16,11 +16,11 @@ import java.util.Optional;
 
 @Service
 public class FrameworkServiceImpl implements FrameworkService {
-   @Autowired
+    @Autowired
     private FrameworkDao frameworkDao;
 
-   private final long PAGE_SIZE = 7;
-   private final long PAGE_SIZE_SEARCH = 24;
+    private final long PAGE_SIZE = 7;
+    private final long PAGE_SIZE_SEARCH = 24;
 
     @Transactional(readOnly = true)
     @Override

@@ -17,9 +17,10 @@ public interface UserService {
     User create(String username,String mail,String password) throws UserAlreadyExistException;
     void delete(long userId);
     boolean quitModdingFromTech(User user, long frameworkId);
-    void updateDescription(long userId, String description);
+    // void updateDescription(long userId, String description);
     void updatePassword(long userId,String password);
-    void updateModAllow(long userId, boolean allow);
+    int updateModAllow(long userId, boolean allow);
+    void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture);
 
     /** register **/
     void createVerificationToken(User user, String token,String appUrl);
@@ -27,12 +28,11 @@ public interface UserService {
     void saveRegisteredUser(User user);
     void generateNewVerificationToken(User user, String token, String appUrl);
     void internalLogin(String user, String pass, HttpServletRequest req);
-    void updatePicture(long userId, byte[] picture);
+    // void updatePicture(long userId, byte[] picture);
 
     /** moderator **/
     VerifyUser createVerify(User user, Framework framework);
-   List<VerifyUser> getVerifyByFrameworks( List<Long> frameworksIds, boolean pending, long page );
-    List<VerifyUser> getAllVerifyByUser(long userId);
+    List<VerifyUser> getVerifyByFrameworks( List<Long> frameworksIds, boolean pending, long page );
     Optional<VerifyUser> getVerifyById(long verificationId);
     List<VerifyUser> getVerifyByPending(boolean pending, long page);
     Optional<Integer> getVerifyByPendingAmount(boolean pending);
@@ -42,7 +42,6 @@ public interface UserService {
     void deleteVerification(long verificationId);
     void deleteVerificationByUser(long userId);
     void verify(long verificationId);
-    Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId);
     void passwordMailing(User user, String appUrl);
     void modMailing(User user,String frameworkName);
     List<VerifyUser> getApplicantsByPending( boolean pending, long page);

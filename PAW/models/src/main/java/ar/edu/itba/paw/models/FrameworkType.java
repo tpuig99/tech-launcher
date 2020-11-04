@@ -17,5 +17,5 @@ public enum FrameworkType {
     CSS_Modifier,
     API,
     Toolkit,
-    IDE;
+    IDE
 }

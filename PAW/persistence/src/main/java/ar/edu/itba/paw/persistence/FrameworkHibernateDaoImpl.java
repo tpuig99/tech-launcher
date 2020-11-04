@@ -30,7 +30,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         return query.getResultList();
     }
 
-    
+
     @Override
     public List<Framework> getByCategory(FrameworkCategories category, long page, long pageSize) {
         final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.category= :category order by f.id", Framework.class);
@@ -104,7 +104,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         }
 
         StringBuilder sb = new StringBuilder(" select f from Framework f left outer join f.frameworkVotes v on f.id = v.framework.id left outer join f.comments c on f.id = c.framework.id");
-    //TypedQuery<Framework> query2 = em.createQuery("select f from Framework f left outer join f.frameworkVotes v on f.id = v.framework.id left outer join f.comments c on f.id = c.framework.id", Framework.class);
+        //TypedQuery<Framework> query2 = em.createQuery("select f from Framework f left outer join f.frameworkVotes v on f.id = v.framework.id left outer join f.comments c on f.id = c.framework.id", Framework.class);
         if(toSearch!=null || categories!=null || types != null || lastUpdated!=null) {
             sb.append(" where ");
         }
@@ -121,7 +121,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
                 sb.append(" or lower(f.description) like :search ");
                 sb.append(" or lower(f.introduction) like :search ");
             }
-       }
+        }
 
         if (categories != null) {
             if(!sb.toString().substring(sb.length()-6).contains("where")){

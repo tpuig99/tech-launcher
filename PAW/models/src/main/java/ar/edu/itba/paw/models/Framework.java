@@ -3,10 +3,6 @@ package ar.edu.itba.paw.models;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Entity
@@ -35,9 +31,6 @@ public class Framework {
     @Enumerated(EnumType.STRING)
     private FrameworkType type;
 
-    @Column(name = "logo", length = 150)
-    private String logo;
-
     /* References other relation mapped in User */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author", nullable = false)
@@ -54,28 +47,22 @@ public class Framework {
     /* Relationships */
 
     /* References other relation mapped in Comment */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework",cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
     /* References other relation mapped in Content */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework",cascade = CascadeType.REMOVE)
     private List<Content> contents;
 
     /* References other relation mapped in Framework Votes */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework",cascade = CascadeType.REMOVE)
     private List<FrameworkVote> frameworkVotes;
 
     /* References other relation mapped in Verify User */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "framework",cascade = CascadeType.REMOVE)
     private List<VerifyUser> verifyUsers;
 
     /* Transient attributes loaded on Post Load */
-
-    @Transient
-    private String contentType;
-
-    @Transient
-    private String base64image;
 
     @Transient
     private double stars = 0;
@@ -103,13 +90,11 @@ public class Framework {
         return Objects.hash(id, name);
     }
 
-    public Framework(User author, String name, FrameworkCategories category, String description, String introduction,
-                     String logo, FrameworkType type, Date publishDate, byte[] picture) {
+    public Framework(User author, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, Date publishDate, byte[] picture) {
         this.name = name;
         this.category = category;
         this.description = description;
         this.introduction = introduction;
-        this.logo = logo;
         this.type = type;
         this.author = author;
         this.publishDate = publishDate;
@@ -122,16 +107,6 @@ public class Framework {
 
     @PostLoad
     public void postLoad() {
-        if(picture!=null) {
-            try {
-                contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(picture));
-            } catch (IOException e) {
-                contentType = "";
-            }
-
-            byte[] encodedByteArray = Base64.getEncoder().encode(picture);
-            base64image = new String(encodedByteArray, StandardCharsets.UTF_8);
-        }
         if(frameworkVotes != null && !frameworkVotes.isEmpty()) {
             double rating = 0;
             for (FrameworkVote vote : frameworkVotes) {
@@ -195,14 +170,6 @@ public class Framework {
         this.type = type;
     }
 
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
-
     public User getAuthor() {
         return author;
     }
@@ -249,22 +216,6 @@ public class Framework {
 
     public void setFrameworkVotes(List<FrameworkVote> frameworkVotes) {
         this.frameworkVotes = frameworkVotes;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public String getBase64image() {
-        return base64image;
-    }
-
-    public void setBase64image(String base64image) {
-        this.base64image = base64image;
     }
 
     public double getStars() {
@@ -328,5 +279,8 @@ public class Framework {
     }
     public long getCommentsWithoutReferenceAmount(){
         return comments.stream().filter((x) -> x.getReference() == null).count();
+    }
+    public Optional<FrameworkVote> getVoteOfUser(long userId){
+        return frameworkVotes.stream().filter((x)->x.getUserId()==userId).findFirst();
     }
 }

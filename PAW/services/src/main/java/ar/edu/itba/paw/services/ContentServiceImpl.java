@@ -15,10 +15,10 @@ import java.util.Optional;
 public class ContentServiceImpl implements ContentService {
 
     @Autowired
-    ContentDao content;
+    private ContentDao content;
 
     @Autowired
-    ReportContentDao rc;
+    private ReportContentDao rc;
 
     private final long PAGE_SIZE = 5;
 

@@ -40,11 +40,15 @@
             <div class="row">
                 <div class="col-2">
                     <c:choose>
-                        <c:when test="${not empty framework.base64image}">
-                            <div class="d-flex flex-wrap"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                        <c:when test="${not empty framework.picture}" >
+                            <div class="d-flex flex-wrap">
+                                <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                            </div>
                         </c:when>
                         <c:otherwise>
-                            <div class="d-flex flex-wrap"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                            <div class="d-flex flex-wrap">
+                                <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                            </div>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -139,7 +143,7 @@
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${user.name != 'anonymousUser' && book.userName!=user.name && !book.isReporter(user.name)}">
+                                    <c:when test="${user.name != 'anonymousUser' && book.userName!=user.name && !book.isReporter(user.name) && isEnable}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="getContentId(${book.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
@@ -184,7 +188,7 @@
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${user.name != 'anonymousUser' && user.name != course.userName && !course.isReporter(user.name)}">
+                                    <c:when test="${user.name != 'anonymousUser' && user.name != course.userName && !course.isReporter(user.name) && isEnable}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="getContentId(${course.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
@@ -228,7 +232,7 @@
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${user.name != 'anonymousUser' && user.name != tutorial.userName && !tutorial.isReporter(user.name)}">
+                                    <c:when test="${user.name != 'anonymousUser' && user.name != tutorial.userName && !tutorial.isReporter(user.name) && isEnable}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="getContentId(${tutorial.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
@@ -366,7 +370,7 @@
                                     <c:out value="${comment.description}" default=""/>
                                 </div>
 
-                                <c:if test="${user.name != 'anonymousUser' && user.name != comment.userName && !comment.isReporter(user.name) && !isAdmin && !isOwner}">
+                                <c:if test="${user.name != 'anonymousUser' && user.name != comment.userName && !comment.isReporter(user.name) && !isAdmin && !isOwner && isEnable}">
                                     <div class="col d-flex justify-content-end align-items-end">
                                         <button class="btn btn-link" onclick="getCommentId(${comment.commentId})" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
                                     </div>
@@ -439,7 +443,7 @@
                                                         <button class="btn btn-link" onclick="openDeleteCommentModal(${reply.commentId})"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                                                     </span>
                                                 </c:if>
-                                                <c:if test="${user.name != 'anonymousUser' && user.name != reply.userName && !reply.isReporter(user.name) && !isAdmin && !isOwner}">
+                                                <c:if test="${user.name != 'anonymousUser' && user.name != reply.userName && !reply.isReporter(user.name) && !isAdmin && !isOwner && isEnable}">
                                                     <div class="col d-flex justify-content-end align-items-end">
                                                         <button class="btn btn-link" onclick="getCommentId(${reply.commentId})" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
                                                     </div>
@@ -459,8 +463,8 @@
 
                                     <div>
 
-                                        <form:label path="replyContent"/>
-                                        <form:textarea path="replyContent" id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"/>
+                                        <form:label path="replyComment"/>
+                                        <form:textarea path="replyComment" id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"/>
                                     </div>
                                     <div>
                                         <button class="btn btn-primary btn-sm padding-top" type="submit"><spring:message code="button.submit"/></button>
@@ -504,8 +508,8 @@
                         <form:form modelAttribute="commentForm" action="${postPathComment}" method="post">
                             <form:label path="commentFrameworkId"><form:input  class="input-wrap" path="commentFrameworkId" type="hidden" value="${framework.id}"/></form:label>
 
-                            <form:label path="content"/>
-                            <form:textarea path="content" id="commentInput" class="form-control" aria-label="With textarea"/>
+                            <form:label path="comment"/>
+                            <form:textarea path="comment" id="commentInput" class="form-control" aria-label="With textarea"/>
 
                             <c:choose>
                                 <c:when test="${user.name != 'anonymousUser'}">
@@ -538,7 +542,7 @@
                 </div>
             </div>
             <c:choose>
-                <c:when test="${!hasAppliedToFramework && !isAdmin && user.name != 'anonymousUser' && allowMod && !isOwner}">
+                <c:when test="${!hasAppliedToFramework && !isAdmin && user.name != 'anonymousUser' && allowMod && !isOwner && isEnable}">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center">
                             <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>
@@ -580,11 +584,15 @@
                         <a href="<c:url value="/techs/${competitor.category}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <c:choose>
-                                    <c:when test="${not empty competitor.base64image}">
-                                        <div class="mini-logo d-flex align-items-center justify-content-center"><img src="data:${competitor.contentType};base64,${competitor.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    <c:when test="${not empty competitor.picture}" >
+                                        <div class="mini-logo d-flex align-items-center justify-content-center">
+                                            <img src="<c:url value="/${competitor.category}/${competitor.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitor.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                        <div class="mini-logo d-flex align-items-center justify-content-center">
+                                            <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -953,7 +961,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </div>
-</div>
 </div>
 
 

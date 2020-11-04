@@ -56,11 +56,15 @@
                     <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
                         <div class="card-body">
                             <c:choose>
-                                <c:when test="${not empty framework.base64image}">
-                                    <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                <c:when test="${not empty framework.picture}" >
+                                    <div class="max-logo d-flex align-items-center justify-content-center">
+                                        <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                    </div>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                    <div class="max-logo d-flex align-items-center justify-content-center">
+                                        <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                    </div>
                                 </c:otherwise>
                             </c:choose>
                         </div>
@@ -73,28 +77,33 @@
 
     <div>
         <c:if test="${user.name != 'anonymousUser'}">
-                <c:if test="${not empty interestsList}">
-                    <h4 class="title"><spring:message code="techs.tastes"/></h4>
-                    <div class="row equal">
-                        <c:forEach items="${interestsList}" var="framework">
-                            <div class="card mx-4 mb-4">
                                 <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
-                                    <div class="card-body">
-                                        <c:choose>
-                                            <c:when test="${not empty framework.base64image}">
-                                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </div>
-                                    <div class="card-footer text-dark">${framework.name}</div>
-                                </a>
-                            </div>
-                        </c:forEach>
-                    </div>
-                </c:if>
+            <c:if test="${not empty interestsList}">
+                <h4 class="title"><spring:message code="techs.tastes"/></h4>
+                <div class="row equal">
+                    <c:forEach items="${interestsList}" var="framework">
+                        <div class="card mx-4 mb-4">
+                            <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
+                                <div class="card-body">
+                                    <c:choose>
+                                        <c:when test="${not empty framework.picture}" >
+                                            <div class="max-logo d-flex align-items-center justify-content-center">
+                                                <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="max-logo d-flex align-items-center justify-content-center">
+                                                <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div class="card-footer text-dark">${framework.name}</div>
+                            </a>
+                        </div>
+                    </c:forEach>
+                </div>
+            </c:if>
         </c:if>
 
     </div>

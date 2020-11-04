@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.webapp.form.frameworks;
 
+import javax.validation.constraints.NotNull;
+
 public class DeleteCommentForm {
-
+    @NotNull
     private long commentDeleteFrameworkId;
-
+    @NotNull
     private Long commentDeleteId;
 
     public long getCommentDeleteFrameworkId() {

@@ -39,18 +39,23 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 public class UserServiceImpl implements UserService {
     private final long PAGE_SIZE=5;
     private static final long USER_NOT_EXISTS = -1;
+    private static final int DELETE_VERIFICATIONS = -1;
+    private static final int ALLOW_MOD = 1;
+
     @Autowired
     private UserDao userDao;
+
     @Autowired
     private VerificationTokenDao tokenDao;
+
     @Autowired
     private VerifyUserDao verifyUserDao;
 
     @Autowired
-    AuthenticationManager authManager;
+    private AuthenticationManager authManager;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -103,7 +108,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void delete(long userId) {
-         userDao.delete(userId);
+        userDao.delete(userId);
     }
 
     @Transactional
@@ -115,11 +120,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateModAllow(long userId, boolean allow) {
+    public int updateModAllow(long userId, boolean allow) {
         userDao.updateModAllow(userId, allow);
         if(!allow){
             deleteVerificationByUser(userId);
+            return DELETE_VERIFICATIONS;
         }
+        return ALLOW_MOD;
     }
 
     private Optional<User> update(long userId, String username, String mail, String password) {
@@ -154,8 +161,8 @@ public class UserServiceImpl implements UserService {
         Optional<VerificationToken> verificationToken = user.getVerificationToken();
         verificationToken.ifPresent(value -> tokenDao.change(value, token));
         String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
-                         "\r\n" +
-                       appUrl + "/register/confirm?token=" + token;
+                "\r\n" +
+                appUrl + "/register/confirm?token=" + token;
         sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 
@@ -171,15 +178,15 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-    @Transactional
-    @Override
-    public void updateDescription(long userId, String description) {
-        userDao.updateDescription(userId,description);
-    }
-
-    @Transactional
-    @Override
-    public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
+//    @Transactional
+//    @Override
+//    public void updateDescription(long userId, String description) {
+//        userDao.updateDescription(userId,description);
+//    }
+//
+//    @Transactional
+//    @Override
+//    public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
 
 
     @Transactional
@@ -192,15 +199,8 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByFrameworks(List<Long> frameworksIds, boolean pending, long page) {
-        return verifyUserDao.getByFrameworks(frameworksIds, pending, page, PAGE_SIZE);
+        return verifyUserDao.getVerifyForCommentByFrameworks(frameworksIds, pending, page, PAGE_SIZE);
     }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<VerifyUser> getAllVerifyByUser(long userId) {
-        return verifyUserDao.getAllByUser(userId);
-    }
-
 
     @Transactional(readOnly = true)
     @Override
@@ -211,17 +211,17 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByPending(boolean pending, long page) {
-        return verifyUserDao.getByPending(pending, page, PAGE_SIZE);
+        return verifyUserDao.getVerifyForCommentByPending(pending, page, PAGE_SIZE);
     }
 
     @Override
     public Optional<Integer> getVerifyByPendingAmount(boolean pending) {
-        return verifyUserDao.getVerifyByPendingAmount(pending);
+        return verifyUserDao.getVerifyForCommentByPendingAmount(pending);
     }
 
     @Override
     public Optional<Integer> getVerifyByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
-        return verifyUserDao.getVerifyByFrameworkAmount(frameworksIds,pending);
+        return verifyUserDao.getVerifyForCommentByFrameworkAmount(frameworksIds,pending);
     }
 
     @Override
@@ -252,26 +252,20 @@ public class UserServiceImpl implements UserService {
         verifyUserDao.verify(verificationId);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId) {
-        return verifyUserDao.getByFrameworkAndUser(frameworkId,userId);
-    }
-
     @Transactional
     @Override
     public void passwordMailing(User user, String appUrl) {
 
-            String recipientAddress = user.getMail();
+        String recipientAddress = user.getMail();
 
-            String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
-            String confirmationUrl = "/recover/recovering_token?token=" + token;
+        String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
+        String confirmationUrl = "/recover/recovering_token?token=" + token;
 
-            String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
-            String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());
-            String message = inter_message+ "\r\n" + appUrl + confirmationUrl;
+        String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
+        String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());
+        String message = inter_message+ "\r\n" + appUrl + confirmationUrl;
 
-            sendEmail(recipientAddress,subject,message);
+        sendEmail(recipientAddress,subject,message);
     }
 
     @Transactional
@@ -317,6 +311,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page) {
         return verifyUserDao.getApplicantsByFrameworks(frameworksIds, page, PAGE_SIZE);
+    }
+
+    @Transactional
+    @Override
+    public void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture) {
+        userDao.updateInformation(userId, description, picture, updatePicture);
     }
 
     @Transactional

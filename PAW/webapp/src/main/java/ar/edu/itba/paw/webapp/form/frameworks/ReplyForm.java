@@ -1,11 +1,13 @@
 package ar.edu.itba.paw.webapp.form.frameworks;
 
+import javax.validation.constraints.NotNull;
+
 public class ReplyForm {
-
+    @NotNull
     private long replyFrameworkId;
-
-    private String replyContent;
-
+    @NotNull
+    private String replyComment;
+    @NotNull
     private Long replyCommentId;
 
     public long getReplyFrameworkId() {
@@ -16,12 +18,12 @@ public class ReplyForm {
         this.replyFrameworkId = replyFrameworkId;
     }
 
-    public String getReplyContent() {
-        return replyContent;
+    public String getReplyComment() {
+        return replyComment;
     }
 
-    public void setReplyContent(String replyContent) {
-        this.replyContent = replyContent;
+    public void setReplyComment(String replyComment) {
+        this.replyComment = replyComment;
     }
 
     public Long getReplyCommentId() {

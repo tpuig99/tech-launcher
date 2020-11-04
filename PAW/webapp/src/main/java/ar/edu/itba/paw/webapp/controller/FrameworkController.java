@@ -113,6 +113,7 @@ public class FrameworkController {
                 mav.addObject("isEnable",user.isEnable());
                 mav.addObject("allowMod",user.isAllowMod());
                 mav.addObject("isOwner", framework.get().getAuthor().getUsername().equals(user.getUsername()));
+                mav.addObject("hasAppliedToFramework",user.hasAppliedToFramework(framework.get().getId()));
                 Optional<FrameworkVote> fv = user.getVoteForFramework(id);
 
                 if(fv.isPresent()){
@@ -128,13 +129,20 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
+    @RequestMapping(path={"/{category}/{id}/image"}, method = RequestMethod.GET)
+    public @ResponseBody byte[] getImage(@PathVariable long id,
+                                         @PathVariable String category) throws IOException {
+        Optional<Framework> framework = fs.findById(id);
+        return framework.map(Framework::getPicture).orElse(null);
+    }
+
     @RequestMapping(path={"/comment"}, method= RequestMethod.POST)
     public ModelAndView saveComment(@Valid @ModelAttribute("commentForm") final CommentForm form) {
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Comment comment = commentService.insertComment(form.getCommentFrameworkId(), user.get().getId(), form.getContent(), form.getCommentId());
+            final Comment comment = commentService.insertComment(form.getCommentFrameworkId(), user.get().getId(), form.getComment(), form.getCommentId());
             LOGGER.info("Tech {}: User {} inserted a comment", form.getCommentFrameworkId(), user.get().getId());
             return FrameworkController.redirectToFramework(form.getCommentFrameworkId(), comment.getCategory());
         }
@@ -149,7 +157,7 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Comment comment = commentService.insertComment(form.getReplyFrameworkId(), user.get().getId(), form.getReplyContent(), form.getReplyCommentId());
+            final Comment comment = commentService.insertComment(form.getReplyFrameworkId(), user.get().getId(), form.getReplyComment(), form.getReplyCommentId());
             LOGGER.info("Tech {}: User {} replied comment {}", form.getReplyFrameworkId(), user.get().getId(), form.getReplyCommentId());
             return FrameworkController.redirectToFramework(form.getReplyFrameworkId(), comment.getCategory());
         }
@@ -165,11 +173,11 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Optional<Comment> comment = commentService.vote(form.getCommentId(), user.get().getId(),1);
+            final Optional<CommentVote> commentVote = commentService.vote(form.getCommentId(), user.get().getId(),1);
 
-            if(comment.isPresent()){
+            if(commentVote.isPresent()){
                 LOGGER.info("Tech {}: User {} upvoted comment {}", form.getFrameworkId(), user.get().getId(), form.getCommentId());
-                return FrameworkController.redirectToFramework(comment.get().getFrameworkId(), comment.get().getCategory());
+                return FrameworkController.redirectToFramework(commentVote.get().getComment().getFrameworkId(), commentVote.get().getComment().getCategory());
             }
 
             LOGGER.error("Tech {}: A problem occurred while upvoting comment {}", form.getFrameworkId(), form.getCommentId());
@@ -186,11 +194,11 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Optional<Comment> comment = commentService.vote(form.getDownVoteCommentId(), user.get().getId(),-1);
+            final Optional<CommentVote> commentVote = commentService.vote(form.getDownVoteCommentId(), user.get().getId(),-1);
 
-            if(comment.isPresent()){
+            if(commentVote.isPresent()){
                 LOGGER.info("Tech {}: User {} downvoted comment {}", form.getDownVoteFrameworkId(), user.get().getId(), form.getDownVoteCommentId());
-                return FrameworkController.redirectToFramework(comment.get().getFrameworkId(), comment.get().getCategory());
+                return FrameworkController.redirectToFramework(commentVote.get().getComment().getFrameworkId(), commentVote.get().getComment().getCategory());
             }
 
             LOGGER.error("Tech {}: A problem occurred while downvoting comment {}", form.getDownVoteFrameworkId(), form.getDownVoteCommentId());
@@ -212,7 +220,7 @@ public class FrameworkController {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
             if (user.isPresent()) {
-                final FrameworkVote frameworkVote = frameworkVoteService.insert(frameworkId, user.get().getId(), form.getRating());
+                final FrameworkVote frameworkVote = frameworkVoteService.insert(framework.get(), user.get().getId(), form.getRating());
                 LOGGER.info("Tech {}: User {} rated the Tech", frameworkId, user.get().getId());
                 return FrameworkController.redirectToFramework(frameworkId, frameworkVote.getCategory());
             }

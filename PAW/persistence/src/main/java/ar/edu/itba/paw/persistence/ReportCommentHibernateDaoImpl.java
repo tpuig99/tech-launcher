@@ -1,24 +1,21 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.ReportComment;
+import ar.edu.itba.paw.models.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-public class ReportCommentHiberateDaoImpl implements ReportCommentDao{
+public class ReportCommentHibernateDaoImpl implements ReportCommentDao{
     @PersistenceContext
     private EntityManager em;
 
