@@ -173,11 +173,11 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Optional<Comment> comment = commentService.vote(form.getCommentId(), user.get().getId(),1);
+            final Optional<CommentVote> commentVote = commentService.vote(form.getCommentId(), user.get().getId(),1);
 
-            if(comment.isPresent()){
+            if(commentVote.isPresent()){
                 LOGGER.info("Tech {}: User {} upvoted comment {}", form.getFrameworkId(), user.get().getId(), form.getCommentId());
-                return FrameworkController.redirectToFramework(comment.get().getFrameworkId(), comment.get().getCategory());
+                return FrameworkController.redirectToFramework(commentVote.get().getComment().getFrameworkId(), commentVote.get().getComment().getCategory());
             }
 
             LOGGER.error("Tech {}: A problem occurred while upvoting comment {}", form.getFrameworkId(), form.getCommentId());
@@ -194,11 +194,11 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Optional<Comment> comment = commentService.vote(form.getDownVoteCommentId(), user.get().getId(),-1);
+            final Optional<CommentVote> commentVote = commentService.vote(form.getDownVoteCommentId(), user.get().getId(),-1);
 
-            if(comment.isPresent()){
+            if(commentVote.isPresent()){
                 LOGGER.info("Tech {}: User {} downvoted comment {}", form.getDownVoteFrameworkId(), user.get().getId(), form.getDownVoteCommentId());
-                return FrameworkController.redirectToFramework(comment.get().getFrameworkId(), comment.get().getCategory());
+                return FrameworkController.redirectToFramework(commentVote.get().getComment().getFrameworkId(), commentVote.get().getComment().getCategory());
             }
 
             LOGGER.error("Tech {}: A problem occurred while downvoting comment {}", form.getDownVoteFrameworkId(), form.getDownVoteCommentId());
