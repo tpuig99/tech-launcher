@@ -6,7 +6,7 @@
 
 <html>
 <head>
-    <title>Tech Launcher - Post</title>
+    <title><spring:message code="forum.question.title"/></title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
@@ -30,7 +30,7 @@
     </div>
 
     <div class="content">
-        <div class="title"><h1><spring:message code="forum.title"/></h1></div>
+        <div class="title"><h1>${post.title}</h1></div>
         <div class="post-cards">
             <div class="card mb-3 post-card-individual">
                 <div class="card-body">
@@ -38,20 +38,20 @@
                         <div class="col-1 net-votes">
                             <c:choose>
                                 <c:when test="${user.name == 'anonymousUser'}">
-                                    <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
                                     <div>
                                         <h4>${post.votesUp - post.votesDown}</h4>
                                     </div>
-                                    <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
+                                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
                                 </c:when>
                                 <c:otherwise>
                                     <c:choose>
                                         <c:when test="${!isEnable}">
-                                            <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                                             <div>
                                                 <h4>${post.votesUp - post.votesDown}</h4>
                                             </div>
-                                            <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                                         </c:when>
                                         <c:otherwise>
                                             <c:url value="/posts/${post.postId}/upVote/" var="postPathUpVote"/>
@@ -100,12 +100,6 @@
                             </c:choose>
                         </div>
                         <div class="col">
-
-                            <div class="row post-title">
-                                <a href="<c:url value='/posts/${post.postId}'/>">
-                                        ${post.title}
-                                </a>
-                            </div>
                             <div class="row post-description">
                                     ${post.description}
                             </div>
@@ -135,8 +129,58 @@
         </div>
     </div>
 
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel"><spring:message code="user.not_logged"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row d-flex justify-content-center align-items-center">
+                        <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <button type="button" class="btn btn-primary" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
+                    </div>
+                    <div class="row  justify-content-center align-items-center margin-top">
+                        <div><spring:message code="login.sign_up_question"/> <a href="<c:url value="/register"/>"><spring:message code="button.sign_up"/></a>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="modal fade" id="confirmMailModal" tabindex="-1" role="dialog" aria-labelledby="confirmMailModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmMailModalLabel"><spring:message code="register.error.email_status"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row d-flex justify-content-center align-items-center">
+                        <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <div><spring:message code="register.error.confirm_email"/></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goToCat( catName ){
+            window.location.href = "<c:url value="/"/>" + "posts/categories/" + catName;
+        }
+    </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
