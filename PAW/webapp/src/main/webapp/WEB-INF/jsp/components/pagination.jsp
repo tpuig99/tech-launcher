@@ -105,16 +105,16 @@
             window.location.href="<c:url value="/users/${param.username}?comments_page=${param.comments_page}&contents_page=${param.contents_page}&votes_page=${param.votes_page}&frameworks_page="/>"+goingPage;
         }
         else if(origin == 'tech_book'){
-            window.location.href="<c:url value="/${param.category}/${param.techs_id}?books_page="/>"+goingPage+"&courses_page=${param.courses_page}&tutorials_page=${param.tutorials_page}&comments_page=${param.comments_page}";
+            window.location.href="<c:url value="/techs/${param.category}/${param.techs_id}?books_page="/>"+goingPage+"&courses_page=${param.courses_page}&tutorials_page=${param.tutorials_page}&comments_page=${param.comments_page}";
         }
         else if(origin == 'tech_courses'){
-            window.location.href="<c:url value="/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page="/>"+goingPage+"&tutorials_page=${param.tutorials_page}&comments_page=${param.comments_page}";
+            window.location.href="<c:url value="/techs/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page="/>"+goingPage+"&tutorials_page=${param.tutorials_page}&comments_page=${param.comments_page}";
         }
         else if(origin == 'tech_tutorial'){
-            window.location.href="<c:url value="/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page=${param.courses_page}&tutorials_page="/>"+goingPage+"&comments_page=${param.comments_page}";
+            window.location.href="<c:url value="/techs/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page=${param.courses_page}&tutorials_page="/>"+goingPage+"&comments_page=${param.comments_page}";
         }
         else if(origin == 'tech_comments'){
-            window.location.href="<c:url value="/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page=${param.courses_page}&tutorials_page=${param.tutorials_page}&comments_page="/>"+goingPage;
+            window.location.href="<c:url value="/techs/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page=${param.courses_page}&tutorials_page=${param.tutorials_page}&comments_page="/>"+goingPage;
         }
         else if(origin == 'category_list'){
             window.location.href="<c:url value="/${param.category}?frameworks_page="/>"+goingPage;
