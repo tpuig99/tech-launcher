@@ -78,9 +78,22 @@ public class PostController {
         if(post.isPresent()){
             LOGGER.info("Post {}: Requested and found, retrieving data", id);
             mav.addObject("post", post.get() );
+            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+            mav.addObject("downVoteForm", new DownVoteForm());
+            mav.addObject("upVoteForm", new UpVoteForm());
+            mav.addObject("categories_sidebar", fs.getAllCategories());
+
+            final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            if( optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+                mav.addObject("isEnable", user.isEnable());
+
+                return mav;
+            }
         }
 
-        return mav;
+        return ErrorController.redirectToErrorView();
     }
 
     @RequestMapping("/posts/add_post")
@@ -104,8 +117,32 @@ public class PostController {
         return ErrorController.redirectToErrorView();
     }
 
+    @RequestMapping( path = "/posts/{id}/upVote/", method = RequestMethod.POST)
+    public ModelAndView voteUpPost(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, @PathVariable("id") long postId){
+
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( user.isPresent() && postId == form.getUpVotePostId()){
+            ps.vote(form.getUpVotePostId(), user.get().getId(), UP_VOTE_VALUE);
+            return post(form.getUpVotePostId());
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping( path = "/posts/{id}/downVote/", method = RequestMethod.POST)
+    public ModelAndView voteDown(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") long postId){
+
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( user.isPresent() && postId == form.getDownVotePostId()){
+            ps.vote(form.getDownVotePostId(), user.get().getId(), DOWN_VOTE_VALUE);
+            return post(form.getDownVotePostId());
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
     @RequestMapping( path = "/posts/downVote/", method = RequestMethod.POST)
-    public ModelAndView voteDown(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form){
+    public ModelAndView voteDownPost(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form){
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() ){

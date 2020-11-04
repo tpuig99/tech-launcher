@@ -1,15 +1,18 @@
+<%@ page isELIgnored="false" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
 <head>
     <title>Tech Launcher - Post</title>
 
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/posts.css"/>"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/posts.css"/>"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
@@ -20,38 +23,116 @@
         <jsp:param name="isMod" value="${user_isMod}"/>
     </jsp:include>
 
+    <div class="sidenav overflow-auto">
+        <c:forEach var="category" items="${categories_sidebar}">
+            <a href="<c:url value="/posts/category/${category}"/>"><spring:message code="category.${category}"/></a>
+        </c:forEach>
+    </div>
+
     <div class="content">
-            <div class="row d-flex justify-content-flex-start">
-                <div class="col-1 mt-4">
-                    <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-up"></i></button>
-                    <div class="ml-3">
-                        <h4>${post.votesUp - post.votesDown}</h4>
-                    </div>
-                    <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-down"></i></button>
-                </div>
-                <div class="col">
-
-                    <div class="row d-flex flex-row-reverse secondary-color">
-                            ${post.timestamp.toLocaleString()} By ${post.user.username}
-                    </div>
-                    <div class="row post-title">
-                        <h2>${post.title}</h2>
-                    </div>
+        <div class="title"><h1><spring:message code="forum.title"/></h1></div>
+        <div class="post-cards">
+            <div class="card mb-3 post-card-individual">
+                <div class="card-body">
                     <div class="row">
+                        <div class="col-1 net-votes">
+                            <c:choose>
+                                <c:when test="${user.name == 'anonymousUser'}">
+                                    <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                                    <div>
+                                        <h4>${post.votesUp - post.votesDown}</h4>
+                                    </div>
+                                    <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:choose>
+                                        <c:when test="${!isEnable}">
+                                            <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                            <div>
+                                                <h4>${post.votesUp - post.votesDown}</h4>
+                                            </div>
+                                            <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:url value="/posts/${post.postId}/upVote/" var="postPathUpVote"/>
+                                            <form:form modelAttribute="upVoteForm" id="upVoteForm${post.postId}" action="${postPathUpVote}" method="post" class="mb-0">
+                                                <form:label path="upVotePostId">
+                                                    <form:input id="upVotePostId${post.postId}" class="input-wrap" path="upVotePostId" type="hidden" value="${post.postId}"/>
+                                                </form:label>
+                                                <div class="net-votes">
+                                                    <button class="btn pt-0 pb-0" type="submit">
+                                                        <c:choose>
+                                                            <c:when test="${post.getUserAuthVote(user.name) > 0}">
+                                                                <i class="fa fa-2x fa-arrow-up votedUp"></i>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <i class="fa fa-2x fa-arrow-up"></i>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </button>
+                                                    <div>
+                                                        <h4>${post.votesUp - post.votesDown}</h4>
+                                                    </div>
+                                                </div>
+                                            </form:form>
+                                            <c:url value="/posts/${post.postId}/downVote/" var="postPathDownVote"/>
+                                            <form:form modelAttribute="downVoteForm" id="downVoteForm${post.postId}" action="${postPathDownVote}" method="post" class="mt-0">
+                                                <form:label path="downVotePostId">
+                                                    <form:input path="downVotePostId" id="downVotePostId${post.postId}" class="input-wrap" type="hidden" value="${post.postId}"/>
+                                                </form:label>
+                                                <div class="net-votes">
+                                                    <button class="btn pt-0 pb-0" type="submit">
+                                                        <c:choose>
+                                                            <c:when test="${post.getUserAuthVote(user.name) < 0}">
+                                                                <i class="fa fa-2x fa-arrow-down votedDown"></i>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <i class="fa fa-2x fa-arrow-down"></i>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </button>
+                                                </div>
+                                            </form:form>
 
-                        <c:forEach items="${post.postTags}" var="tag">
-                        <span class="badge badge-color ml-1">
-                                ${tag.tagName}
-                        </span>
-                        </c:forEach>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                        <div class="col">
 
+                            <div class="row post-title">
+                                <a href="<c:url value='/posts/${post.postId}'/>">
+                                        ${post.title}
+                                </a>
+                            </div>
+                            <div class="row post-description">
+                                    ${post.description}
+                            </div>
+                            <div class="row extra-info">
+                                <div class="col-9 tags">
+                                    <c:forEach items="${post.postTags}" var="tag">
+                                        <button  class="badge badge-color ml-1" onclick="goToCat('${tag.tagName}')">
+                                            <span>
+                                                    ${tag.tagName}
+                                            </span>
+                                        </button>
+                                    </c:forEach>
+                                </div>
+                                <div class="col">
+                                    <div class="row d-flex secondary-color text-right post-date">
+                                            ${post.timestamp.toLocaleString()}
+                                    </div>
+                                    <div class="row d-flex secondary-color text-right">
+                                        <a href="<c:out value="/users/${post.user.username}"/>">${post.user.username}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-4">
-                ${post.description}
-            </div>
-
+        </div>
     </div>
 
 

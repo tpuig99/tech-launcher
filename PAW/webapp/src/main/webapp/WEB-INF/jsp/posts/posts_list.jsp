@@ -121,7 +121,7 @@
                                                     ${post.title}
                                             </a>
                                         </div>
-                                        <div class="row post-description">
+                                        <div class="row posts-description">
                                             ${post.description}
                                         </div>
                                         <div class="row extra-info">

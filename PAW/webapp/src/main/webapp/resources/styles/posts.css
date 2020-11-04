@@ -53,7 +53,7 @@
     flex-direction: column;
 }
 
-.post-description {
+.posts-description {
     display: block;
     display: -webkit-box;
     height: 3em;
@@ -84,4 +84,8 @@
 
 .showing-results.data {
     float: right;
+}
+
+.post-card-individual {
+    width: 90%;
 }
