@@ -25,7 +25,7 @@
 
         <div class="title"><h1> Forum </h1></div>
         <div class="d-flex flex-row-reverse">
-            <button class="btn btn-info mt-2 mb-4"> ADD POST </button>
+            <button class="btn btn-info mt-2 mb-4" onclick="window.location.href = '<c:url value="/posts/add_post"/>'"> ADD POST </button>
         </div>
         <c:forEach items="${posts}" var="post">
             <div class="card mb-3">
@@ -65,8 +65,6 @@
 
         </c:forEach>
     </div>
-
-
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

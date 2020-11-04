@@ -51,4 +51,13 @@ public class PostController {
         return mav;
     }
 
+    @RequestMapping("/posts/add_post")
+    public ModelAndView addPost() {
+
+        final ModelAndView mav = new ModelAndView("posts/add_post");
+
+
+        return mav;
+    }
+
 }
