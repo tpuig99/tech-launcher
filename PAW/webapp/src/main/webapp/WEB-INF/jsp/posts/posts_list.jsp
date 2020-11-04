@@ -53,20 +53,20 @@
                                     <div class="col-1 net-votes">
                                         <c:choose>
                                             <c:when test="${user.name == 'anonymousUser'}">
-                                                <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                                                <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
                                                 <div>
                                                     <h4>${post.votesUp - post.votesDown}</h4>
                                                 </div>
-                                                <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
+                                                <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
                                             </c:when>
                                             <c:otherwise>
                                                 <c:choose>
                                                     <c:when test="${!isEnable}">
-                                                        <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                        <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                                                         <div>
                                                             <h4>${post.votesUp - post.votesDown}</h4>
                                                         </div>
-                                                        <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                        <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:url value="/posts/upVote/" var="postPathUpVote"/>
