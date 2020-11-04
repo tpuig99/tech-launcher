@@ -19,11 +19,10 @@
         <jsp:param name="isMod" value="${user_isMod}"/>
     </jsp:include>
 
-    <div> aca tiene que ir el form de add_post</div>
+
 
   <%--  <jsp:include page="add_post_form.jsp">
-
-    </jsp:include>--%>
+ aca tiene que ir el form de add_post
 
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
