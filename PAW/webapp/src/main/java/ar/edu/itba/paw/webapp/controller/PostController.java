@@ -36,7 +36,7 @@ public class PostController {
     private UserService us;
 
     private final String START_PAGE = "1";
-    private final long POSTS_PAGE_SIZE = 10;
+    private final long POSTS_PAGE_SIZE = 7;
     private final int UP_VOTE_VALUE = 1;
     private final int DOWN_VOTE_VALUE = -1;
 
@@ -52,6 +52,9 @@ public class PostController {
 
         mav.addObject("categories_sidebar", fs.getAllCategories());
         mav.addObject("posts", ps.getAll(postsPage, POSTS_PAGE_SIZE) );
+        mav.addObject("postsPage", postsPage);
+        mav.addObject("pageSize", POSTS_PAGE_SIZE);
+        mav.addObject("postsAmount", ps.getPostsAmount());
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("downVoteForm", new DownVoteForm());
         mav.addObject("upVoteForm", new UpVoteForm());

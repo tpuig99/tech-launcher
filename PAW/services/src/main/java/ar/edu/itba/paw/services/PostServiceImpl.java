@@ -70,4 +70,10 @@ public class PostServiceImpl implements PostService {
 
         return post;
     }
+
+    @Transactional
+    @Override
+    public int getPostsAmount() {
+        return postDao.getAmount();
+    }
 }

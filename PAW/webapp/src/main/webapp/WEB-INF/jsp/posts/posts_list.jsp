@@ -145,7 +145,13 @@
                 <c:otherwise><spring:message code="profile.empty.comments"/></c:otherwise>
             </c:choose>
         </div>
-
+        <jsp:include page="../components/pagination.jsp">
+            <jsp:param name="total" value="${postsAmount}"/>
+            <jsp:param name="page" value="${postsPage}"/>
+            <jsp:param name="page_size" value="${pageSize}"/>
+            <jsp:param name="origin" value="posts"/>
+            <jsp:param name="posts_page" value="${postsPage}"/>
+        </jsp:include>
     </div>
 
 
