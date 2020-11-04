@@ -1,5 +1,6 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
 <head>
@@ -21,29 +22,29 @@
 
 <div class="introduction">
     <img class="mb-2" src="../../resources/assets/logo.png" alt="Page logo">
-    <h1> Welcome to Tech Launcher </h1>
-    <h4> Starting a project is hard, we know it. That's why we created Tech Launcher. Here, you will be able to gather information from a large amount of technologies useful in the world of development.</h4>
+    <h1> <spring:message code="home.title"/> </h1>
+    <h4> <spring:message code="home.subtitle"/></h4>
 </div>
 
 <div class="card-deck mx-2 mb-4">
     <div class="card text-center">
-        <div class="card-header title-background-frameworks"><h3 class="card-title">Techs</h3></div>
+        <div class="card-header title-background-frameworks"><h3 class="card-title"><spring:message code="home.techs.title"/></h3></div>
         <div class="card-body">
-            <p class="card-text">Here you can se a wide number of technologies that you may be interested in </p>
+            <p class="card-text"><spring:message code="home.techs.description"/></p>
         </div>
         <div class="card-footer">
-            <a href="<c:url value="/techs" />" class="btn btn-homepage">Visit Techs</a>
+            <a href="<c:url value="/techs" />" class="btn btn-homepage"><spring:message code="home.techs.button"/></a>
         </div>
     </div>
 
 
     <div class="card text-center">
-        <div class="card-header title-background-forum"><h3 class="card-title">Forum</h3></div>
+        <div class="card-header title-background-forum"><h3 class="card-title"><spring:message code="forum.title"/></h3></div>
         <div class="card-body">
-            <p class="card-text">Do you have an specific question? In the Forum section you can ask questions to other users, or reply theirs</p>
+            <p class="card-text"><spring:message code="home.forum.description"/></p>
         </div>
         <div class="card-footer">
-            <a href="<c:url value="/posts" />" class="btn btn-homepage align-bottom">Visit Forum</a>
+            <a href="<c:url value="/posts" />" class="btn btn-homepage align-bottom"><spring:message code="home.forum.button"/></a>
         </div>
     </div>
 
