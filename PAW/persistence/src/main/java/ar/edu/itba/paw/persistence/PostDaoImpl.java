@@ -37,6 +37,8 @@ public class PostDaoImpl implements PostDao {
         if(!resultList.isEmpty()) {
             TypedQuery<Post> query = em.createQuery("from Post as p where p.postId in (:resultList)", Post.class);
             query.setParameter("resultList", resultList);
+            query.setMaxResults((int)pageSize);
+            query.setFirstResult((int) ((page-1)*pageSize));
             return query.getResultList();
         }else{
             return new ArrayList<>();
