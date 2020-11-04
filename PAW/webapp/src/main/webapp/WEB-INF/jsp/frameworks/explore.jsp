@@ -266,12 +266,12 @@
             <div class="row equal">
                 <c:forEach var="framework" items="${matchingFrameworks}" >
                     <div class="card mx-4 mb-4">
-                        <a href="<c:url value="/${framework.category}/${framework.id}"/>">
+                        <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
                             <div class="card-body">
                                 <c:choose>
                                     <c:when test="${not empty framework.picture}" >
                                         <div class="max-logo d-flex align-items-center justify-content-center">
-                                            <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                            <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
                                         </div>
                                     </c:when>
                                     <c:otherwise>

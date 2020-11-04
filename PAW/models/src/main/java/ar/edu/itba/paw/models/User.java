@@ -76,6 +76,21 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
     private List<FrameworkVote> frameworkVotes;
 
+    /*this refers to the other relation mapped in Post*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Post> posts;
+
+    /*this refers to the other relation mapped in PostVotes */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PostVote> postVotes;
+
+    /*this refers to the other relation mapped in PostComment*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PostComment> postComments;
+
+    /*this refers to the other relation mapped in PostCommentVote*/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PostCommentVote> postCommentVotes;
 
 
     public User() {

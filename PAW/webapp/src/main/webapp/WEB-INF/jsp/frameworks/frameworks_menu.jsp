@@ -25,7 +25,7 @@
 
 <div class="sidenav overflow-auto">
     <c:forEach var="category" items="${categories_sidebar}">
-        <a href="<c:url value="/${category}"/>"><spring:message code="category.${category}"/></a>
+        <a href="<c:url value="/techs/${category}"/>"><spring:message code="category.${category}"/></a>
     </c:forEach>
 </div>
 
@@ -41,7 +41,7 @@
     <div class="row equal">
         <c:forEach items="${frameworksList}" var="framework">
             <div class="card mx-4 mb-4">
-                <a href="<c:url value="/${framework.category}/${framework.id}"/>">
+                <a href="<c:url value="/techs/${category}/${framework.id}"/>">
                     <div class="card-body">
                         <c:choose>
                             <c:when test="${not empty framework.picture}" >

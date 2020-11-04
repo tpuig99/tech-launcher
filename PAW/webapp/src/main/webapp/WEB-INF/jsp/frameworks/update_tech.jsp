@@ -82,7 +82,7 @@
         </div>
 
         <div class="d-flex justify-content-center mt-4">
-            <a href="<c:url value="/${category}/${frameworkForm.frameworkId}"/>" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
+            <a href="<c:url value="/techs/${category}/${frameworkForm.frameworkId}"/>" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
             <input class="btn btn-primary ml-4" id="addTechButton" type="submit" value="<spring:message code="button.submit"/>"/>
             <div class="btn btn-primary disabled" id="addTechLoading" hidden>
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

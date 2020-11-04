@@ -1,0 +1,36 @@
+.secondary-color{
+    color:grey;
+}
+
+.badge-color {
+    color: white;
+    background-color: #b693f5;
+}
+
+.post-title {
+    font-size: 1.5em;
+}
+
+.icon-large{
+    background-size: 1em;
+}
+
+.fa-angle-up{
+    -webkit-text-stroke: 3px grey;
+    color: grey;
+}
+
+.fa-angle-down{
+    -webkit-text-stroke: 3px grey;
+    color: grey;
+}
+
+.fa-angle-up:hover{
+    -webkit-text-stroke: 3px black;
+    color: black;
+}
+
+.fa-angle-down:hover{
+    -webkit-text-stroke: 3px black;
+    color: black;
+}

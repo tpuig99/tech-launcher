@@ -22,7 +22,7 @@
 
 <div class="sidenav overflow-auto">
     <c:forEach var="category" items="${categories_sidebar}">
-        <a href="<c:url value="/${category}"/>"><spring:message code="category.${category}"/></a>
+        <a href="<c:url value="/techs/${category}"/>"><spring:message code="category.${category}"/></a>
     </c:forEach>
 </div>
 
@@ -53,7 +53,7 @@
         <div class="row equal">
             <c:forEach items="${hottestList}" var="framework">
                 <div class="card mx-4 mb-4">
-                    <a href="<c:url value="/${framework.category}/${framework.id}"/>">
+                    <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
                         <div class="card-body">
                             <c:choose>
                                 <c:when test="${not empty framework.picture}" >
@@ -77,17 +77,18 @@
 
     <div>
         <c:if test="${user.name != 'anonymousUser'}">
+                                <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
             <c:if test="${not empty interestsList}">
                 <h4 class="title"><spring:message code="techs.tastes"/></h4>
                 <div class="row equal">
                     <c:forEach items="${interestsList}" var="framework">
                         <div class="card mx-4 mb-4">
-                            <a href="<c:url value="/${framework.category}/${framework.id}"/>">
+                            <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
                                 <div class="card-body">
                                     <c:choose>
                                         <c:when test="${not empty framework.picture}" >
                                             <div class="max-logo d-flex align-items-center justify-content-center">
-                                                <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                                <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
                                             </div>
                                         </c:when>
                                         <c:otherwise>

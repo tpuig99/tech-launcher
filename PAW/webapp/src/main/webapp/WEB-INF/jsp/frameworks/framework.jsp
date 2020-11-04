@@ -30,7 +30,7 @@
 
     <div class="sidenav overflow-auto">
         <c:forEach var="category" items="${categories_sidebar}">
-            <a href="<c:url value="/${category}"/>"><spring:message code="category.${category}"/></a>
+            <a href="<c:url value="/techs/${category}"/>"><spring:message code="category.${category}"/></a>
         </c:forEach>
     </div>
 
@@ -42,7 +42,7 @@
                     <c:choose>
                         <c:when test="${not empty framework.picture}" >
                             <div class="d-flex flex-wrap">
-                                <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
                             </div>
                         </c:when>
                         <c:otherwise>
@@ -581,12 +581,12 @@
             <div class="container d-flex">
                 <c:forEach items="${competitors}" var="competitor">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="<c:url value="/${competitor.category}/${competitor.id}"/>">
+                        <a href="<c:url value="/techs/${competitor.category}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <c:choose>
                                     <c:when test="${not empty competitor.picture}" >
                                         <div class="mini-logo d-flex align-items-center justify-content-center">
-                                            <img src="<c:url value="/${competitor.category}/${competitor.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                            <img src="<c:url value="/techs/${competitor.category}/${competitor.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
                                         </div>
                                     </c:when>
                                     <c:otherwise>

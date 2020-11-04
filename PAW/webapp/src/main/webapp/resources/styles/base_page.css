@@ -59,11 +59,20 @@ nav a:hover {
     justify-content: center;
     text-align: center;
     vertical-align: center;
-    padding-top: 6.5em;
+    padding-top: 4em;
     margin: auto;
-    padding-left: 5em;
-    padding-right: 5em;
-    width: 60%;
+    padding-left: 4em;
+    padding-right: 4em;
+    width: 80%;
+}
+
+.content-no-sidebar-left {
+    justify-content: center;
+    padding-top: 4em;
+    margin: auto;
+    padding-left: 4em;
+    padding-right: 4em;
+    width: 80%;
 }
 
 .page-title {
@@ -146,4 +155,9 @@ img {
 .max-logo{
     width: 8em;
     height: 8em;
+}
+
+.primary-button{
+    color: white;
+    background-color: #48bfe3;
 }
