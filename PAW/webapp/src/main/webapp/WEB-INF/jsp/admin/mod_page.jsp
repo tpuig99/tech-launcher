@@ -55,7 +55,7 @@
                                             <div class="card-body row mt-1">
                                                 <div class="col-3 secondary-font"> <a href="<c:url value="/users/${pendingUser.userName}"/>"><c:out value="${pendingUser.userName}" default=""/></a>
                                                     <c:out value="/" default=""/>
-                                                    <a href="<c:url value="/${pendingUser.frameworkName}/${pendingUser.frameworkId}"/>"><c:out value="${pendingUser.frameworkName}" default=""/></a>
+                                                    <a href="<c:url value="/techs/${pendingUser.frameworkName}/${pendingUser.frameworkId}"/>"><c:out value="${pendingUser.frameworkName}" default=""/></a>
                                                 </div>
                                                 <div class="col-6 text-left"> <c:out value="${pendingUser.comment.description}" default=""/> </div>
                                                 <div class="col third-font text-right"> <c:out value="${pendingUser.comment.timestamp.toLocaleString()}" default=""/> </div>
@@ -111,7 +111,7 @@
                                             <div class="card-body mt-1">
                                                 <div class="secondary-font"> <a href="<c:url value="/users/${applicant.userName}"/>"><c:out value="${applicant.userName}" default=""/></a>
                                                     <c:out value="/" default=""/>
-                                                    <a href="<c:url value="/${applicant.frameworkName}/${applicant.frameworkId}"/>"><c:out value="${applicant.frameworkName}" default=""/></a>
+                                                    <a href="<c:url value="/techs/${applicant.frameworkName}/${applicant.frameworkId}"/>"><c:out value="${applicant.frameworkName}" default=""/></a>
                                                 </div>
                                             </div>
                                             <div class="card-footer row">
@@ -173,7 +173,7 @@
                                                     <div class="secondary-font">
                                                         <a href="<c:url value="/users/${moderator.userName}"/>"><c:out value="${moderator.userName}" default=""/></a>
                                                         <c:out value="/" default=""/>
-                                                        <a href="<c:url value="/${moderator.frameworkName}/${moderator.frameworkId}"/>"><c:out value="${moderator.frameworkName}" default=""/></a>
+                                                        <a href="<c:url value="/techs/${moderator.frameworkName}/${moderator.frameworkId}"/>"><c:out value="${moderator.frameworkName}" default=""/></a>
                                                     </div>
                                                 </div>
                                                 <div class="card-footer row mx-2 justify-content-center">
@@ -229,7 +229,7 @@
                                                 <div class="card-body my-auto">
                                                     <div class="border-bottom">
                                                         <p class="my-1"><spring:message code="moderate.report.comment.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedComment.userNameOwner}"/>"><c:out value="${reportedComment.userNameOwner}" default=""/></a></p>
-                                                        <p class="my-1"><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/${reportedComment.categoryAsString}/${reportedComment.frameworkId}"/>"><c:out value="${reportedComment.frameworkName}" default=""/></a></p>
+                                                        <p class="my-1"><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/techs/${reportedComment.categoryAsString}/${reportedComment.frameworkId}"/>"><c:out value="${reportedComment.frameworkName}" default=""/></a></p>
                                                         <p class="my-1"><spring:message code="moderate.comment.description"/>:&nbsp;<c:out value="${reportedComment.commentDescription}" default=""/></p>
                                                     </div>
                                                     <div class="mt-2">
@@ -292,7 +292,7 @@
                                         <div class="card-body my-auto">
                                             <div class="border-bottom">
                                                 <p class="my-1"><spring:message code="moderate.report.content.owner"/>:&nbsp;<a href="<c:url value="/users/${reportedContent.userNameOwner}"/>"><c:out value="${reportedContent.userNameOwner}" default=""/></a></p>
-                                                <p class="my-1"><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a></p>
+                                                <p class="my-1"><spring:message code="moderate.report.tech"/>:&nbsp;<a href="<c:url value="/techs/${reportedContent.categoryAsString}/${reportedContent.frameworkId}"/>"><c:out value="${reportedContent.frameworkName}" default=""/></a></p>
                                                 <p class="my-1"><spring:message code="moderate.content.description"/>:&nbsp;<a href="<c:url value="${reportedContent.link}"/>"><c:out value="${reportedContent.title}" default=""/></a></p>
                                             </div>
                                             <div class="mt-2">
