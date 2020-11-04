@@ -127,5 +127,12 @@ public class Post {
         return votesDown;
     }
 
+    public int getUserAuthVote(String username) {
+        for (PostVote vote: postVotes) {
+            if(vote.getUser().getUsername().equals(username))
+                return vote.getVote();
+        }
+        return 0;
+    }
 
 }

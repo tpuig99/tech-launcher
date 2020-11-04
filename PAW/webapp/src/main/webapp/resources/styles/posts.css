@@ -67,3 +67,11 @@
     margin-bottom: 0em;
     margin-top: 1em;
 }
+
+.votedUp {
+    color: #D7263D;
+}
+
+.votedDown {
+    color: #067BC2;
+}

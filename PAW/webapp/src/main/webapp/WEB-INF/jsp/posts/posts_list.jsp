@@ -8,11 +8,11 @@
 <head>
     <title>Tech Launcher - Forum</title>
 
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/posts.css"/>"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/posts.css"/>"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
@@ -44,20 +44,20 @@
                                     <div class="col-1 net-votes">
                                         <c:choose>
                                             <c:when test="${user.name == 'anonymousUser'}">
-                                                <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                                                <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
                                                 <div>
                                                     <h4>${post.votesUp - post.votesDown}</h4>
                                                 </div>
-                                                <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-down" data-toggle="modal" data-target="#loginModal"></i></button>
+                                                <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
                                             </c:when>
                                             <c:otherwise>
                                                 <c:choose>
                                                     <c:when test="${!isEnable}">
-                                                        <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                        <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                                                         <div>
                                                             <h4>${post.votesUp - post.votesDown}</h4>
                                                         </div>
-                                                        <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                        <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:url value="/posts/upVote/" var="postPathUpVote"/>
@@ -66,8 +66,15 @@
                                                                 <form:input id="upVotePostId${post.postId}" class="input-wrap" path="upVotePostId" type="hidden" value="${post.postId}"/>
                                                             </form:label>
                                                             <div class="net-votes">
-                                                                <button class="btn btn-link pt-0 pb-0" type="submit">
-                                                                    <i class="fa fa-2x fa-angle-up"></i>
+                                                                <button class="btn pt-0 pb-0" type="submit">
+                                                                    <c:choose>
+                                                                        <c:when test="${post.getUserAuthVote(user.name) > 0}">
+                                                                            <i class="fa fa-2x fa-arrow-up votedUp"></i>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <i class="fa fa-2x fa-arrow-up"></i>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </button>
                                                                 <div>
                                                                     <h4>${post.votesUp - post.votesDown}</h4>
@@ -80,8 +87,15 @@
                                                                 <form:input path="downVotePostId" id="downVotePostId${post.postId}" class="input-wrap" type="hidden" value="${post.postId}"/>
                                                             </form:label>
                                                             <div class="net-votes">
-                                                                <button class="btn btn-link pt-0 pb-0" type="submit">
-                                                                    <i class="fa fa-2x fa-angle-down"></i>
+                                                                <button class="btn pt-0 pb-0" type="submit">
+                                                                    <c:choose>
+                                                                        <c:when test="${post.getUserAuthVote(user.name) < 0}">
+                                                                            <i class="fa fa-2x fa-arrow-down votedDown"></i>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <i class="fa fa-2x fa-arrow-down"></i>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </button>
                                                             </div>
                                                         </form:form>
