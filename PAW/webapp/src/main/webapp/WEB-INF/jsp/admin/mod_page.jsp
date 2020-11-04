@@ -45,7 +45,7 @@
                 <div class="row">
                     <div class="col-6">
                         <!-- pending to verify by comments -->
-                        <div class="page-title"><spring:message code="moderator.pending"/></div>
+                        <div class="page-title"><spring:message code="moderator.pending"/> (${verifyAmount})</div>
                         <div class="page-description"></div>
                         <div class="d-flex flex-column justify-content-center">
                             <c:choose>
@@ -101,7 +101,7 @@
                     </div>
                     <div class="col">
                         <!-- pending applicants to verify -->
-                        <div class="page-title"><spring:message code="moderator.pendingApplicants"/></div>
+                        <div class="page-title"><spring:message code="moderator.pendingApplicants"/>  (${applicantsAmount})</div>
                         <div class="page-description"></div>
                         <div class="d-flex flex-wrap justify-content-center">
                             <c:choose>
@@ -159,7 +159,7 @@
             <!-- DEMOTE -->
             <div class="tab-pane" id="demote">
                 <div class="add-margin"><h5><spring:message code="moderate.demote_description"/></h5></div>
-                <div class="page-title"><spring:message code="moderator.title"/></div>
+                <div class="page-title"><spring:message code="moderator.title"/>  (${modsAmount})</div>
                 <div>
                     <c:if test="${isAdmin}">
                         <div class="page-description"></div>
@@ -218,7 +218,7 @@
                 <c:if test="${isAdmin}"><div class="row">
                 <div class="col-6"></c:if>
                     <c:if test="${isAdmin}">
-                        <div class="page-title"><spring:message code="moderate.comment.title"/></div>
+                        <div class="page-title"><spring:message code="moderate.comment.title"/>  (${reportedCommentsAmount})</div>
                         <div class="page-description"></div>
                         <div class="row justify-content-center">
                             <c:choose>
@@ -281,7 +281,7 @@
 
                 <c:if test="${isAdmin}"><div class="col"></c:if>
                 <!-- reported content -->
-                <div class="page-title"><spring:message code="moderate.content.title"/></div>
+                <div class="page-title"><spring:message code="moderate.content.title"/>  (${reportedContentAmount})</div>
                 <div class="page-description"></div>
                 <div class="row justify-content-center">
                     <c:choose>

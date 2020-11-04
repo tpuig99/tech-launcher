@@ -17,9 +17,10 @@ public interface UserService {
     User create(String username,String mail,String password) throws UserAlreadyExistException;
     void delete(long userId);
     boolean quitModdingFromTech(User user, long frameworkId);
-    void updateDescription(long userId, String description);
+    // void updateDescription(long userId, String description);
     void updatePassword(long userId,String password);
     int updateModAllow(long userId, boolean allow);
+    void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture);
 
     /** register **/
     void createVerificationToken(User user, String token,String appUrl);
@@ -27,7 +28,7 @@ public interface UserService {
     void saveRegisteredUser(User user);
     void generateNewVerificationToken(User user, String token, String appUrl);
     void internalLogin(String user, String pass, HttpServletRequest req);
-    void updatePicture(long userId, byte[] picture);
+    // void updatePicture(long userId, byte[] picture);
 
     /** moderator **/
     VerifyUser createVerify(User user, Framework framework);

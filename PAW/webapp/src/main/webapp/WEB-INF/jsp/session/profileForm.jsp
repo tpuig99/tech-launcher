@@ -11,13 +11,21 @@
 
 <c:url value="/users/${param.username}" var="path" />
 
-<form:form id="editProfileForm" modelAttribute="profileForm" action="${path}" method="post">
+<form:form id="editProfileForm" modelAttribute="profileForm" action="${path}" method="post" enctype="multipart/form-data">
+    <form:errors cssClass="formError" element="p"/>
+    <form:input type="hidden"  path="userId"/>
+    <div class="form-group">
+        <form:label path="picture"><spring:message code="profile.change_picture"/></form:label>
+        <div class="text-center">
+            <form:input path="picture" class="form-control" type="file" accept="image/*" />
+        </div>
+        <form:errors path="picture" element="p" cssClass="formError"/>
+    </div>
 
     <div class="form-group">
-        <div><form:label path="description"><spring:message code="user.description"/></form:label></div>
-        <div><form:input  path="description"  class="form-control" type="text" value="${param.description}"/></div>
+        <form:label path="description"><spring:message code="user.description"/></form:label>
+        <form:textarea path="description"  class="form-control" type="textarea" />
         <form:errors path="description" element="p" cssError="formError"/>
-
     </div>
 
     <div class="d-flex justify-content-center">

@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.User;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserDao {
@@ -16,7 +13,7 @@ public interface UserDao {
     void delete(long userId);
     Optional<User> update(long userId, String username, String mail, String password);
     void setEnable(long id);
-    void updateDescription(long userId,String description);
+    void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture);
 
     void updatePicture(long id, byte[] picture);
 

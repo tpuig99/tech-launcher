@@ -178,15 +178,15 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-    @Transactional
-    @Override
-    public void updateDescription(long userId, String description) {
-        userDao.updateDescription(userId,description);
-    }
-
-    @Transactional
-    @Override
-    public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
+//    @Transactional
+//    @Override
+//    public void updateDescription(long userId, String description) {
+//        userDao.updateDescription(userId,description);
+//    }
+//
+//    @Transactional
+//    @Override
+//    public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
 
 
     @Transactional
@@ -311,6 +311,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page) {
         return verifyUserDao.getApplicantsByFrameworks(frameworksIds, page, PAGE_SIZE);
+    }
+
+    @Transactional
+    @Override
+    public void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture) {
+        userDao.updateInformation(userId, description, picture, updatePicture);
     }
 
     @Transactional
