@@ -19,7 +19,7 @@ public class AdminController {
 
     @RequestMapping("/")
     public ModelAndView index() {
-        ModelAndView mav = new ModelAndView("admin/index");
+        ModelAndView mav = new ModelAndView("index");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

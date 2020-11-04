@@ -16,9 +16,19 @@
     </a>
 
     <div class="navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav">
             <li class="nav-item active">
                 <a class="nav-link" href="<c:url value="/search"/>"><spring:message code="explore.title"/></a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="<c:url value="/techs"/>"><spring:message code="home.techs.title"/></a>
+            </li>
+        </ul>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="<c:url value="/posts"/>"><spring:message code="forum.title"/></a>
             </li>
         </ul>
         <div>
