@@ -30,10 +30,10 @@
     </div>
 
     <div class="content">
-        <div class="title"><h1> Forum </h1></div>
+        <div class="title"><h1><!-- TODO: create spring message --> Forum </h1></div>
         <div class="post-cards">
             <div class="d-flex flex-row-reverse">
-                <button class="btn btn-info mt-2 mb-4" onclick="window.location.href = '<c:url value="/posts/add_post"/>'"> ADD POST </button>
+                <button class="btn btn-info mt-2 mb-4" onclick="window.location.href = '<c:url value="/posts/add_post"/>'"><!-- TODO: create spring message --> ADD POST </button>
             </div>
             <c:choose>
                 <c:when test="${not empty posts}">
@@ -118,9 +118,11 @@
                                         <div class="row extra-info">
                                             <div class="col-9 tags">
                                                 <c:forEach items="${post.postTags}" var="tag">
-                                                    <span class="badge badge-color ml-1" onclick="goToCat('${tag.tagName}')">
-                                                        ${tag.tagName}
-                                                    </span>
+                                                    <button  class="badge badge-color ml-1" onclick="goToCat('${tag.tagName}')">
+                                                        <span>
+                                                            ${tag.tagName}
+                                                        </span>
+                                                    </button>
                                                 </c:forEach>
                                             </div>
                                             <div class="col">

@@ -3,6 +3,7 @@
 }
 
 .badge-color {
+    border: none;
     color: white;
     background-color: #b693f5;
 }
