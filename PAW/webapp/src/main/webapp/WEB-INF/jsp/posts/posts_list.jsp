@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
 <head>
@@ -20,8 +21,13 @@
         <jsp:param name="isMod" value="${user_isMod}"/>
     </jsp:include>
 
+    <div class="sidenav overflow-auto">
+        <c:forEach var="category" items="${categories_sidebar}">
+            <a href="<c:url value="/posts/category/${category}"/>"><spring:message code="category.${category}"/></a>
+        </c:forEach>
+    </div>
 
-    <div class="content-no-sidebar">
+    <div class="content">
 
         <div class="title"><h1> Forum </h1></div>
         <div class="d-flex flex-row-reverse">
