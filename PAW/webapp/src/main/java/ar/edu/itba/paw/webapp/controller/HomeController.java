@@ -24,7 +24,9 @@ public class HomeController {
 
     @RequestMapping("/")
     public ModelAndView home() {
-        return new ModelAndView("redirect:/" + "techs");
+        final ModelAndView mav = new ModelAndView("index");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        return mav;
     }
 
     @RequestMapping("/techs")
