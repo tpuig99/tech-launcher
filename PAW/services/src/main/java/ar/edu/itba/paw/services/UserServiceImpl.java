@@ -39,6 +39,8 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 public class UserServiceImpl implements UserService {
     private final long PAGE_SIZE=5;
     private static final long USER_NOT_EXISTS = -1;
+    private static final int DELETE_VERIFICATIONS = -1;
+    private static final int ALLOW_MOD = 1;
 
     @Autowired
     private UserDao userDao;
@@ -118,11 +120,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateModAllow(long userId, boolean allow) {
+    public int updateModAllow(long userId, boolean allow) {
         userDao.updateModAllow(userId, allow);
         if(!allow){
             deleteVerificationByUser(userId);
+            return DELETE_VERIFICATIONS;
         }
+        return ALLOW_MOD;
     }
 
     private Optional<User> update(long userId, String username, String mail, String password) {

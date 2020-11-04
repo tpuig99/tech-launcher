@@ -19,7 +19,7 @@ public interface UserService {
     boolean quitModdingFromTech(User user, long frameworkId);
     // void updateDescription(long userId, String description);
     void updatePassword(long userId,String password);
-    void updateModAllow(long userId, boolean allow);
+    int updateModAllow(long userId, boolean allow);
     void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture);
 
     /** register **/

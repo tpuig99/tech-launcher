@@ -75,15 +75,17 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public Optional<Comment> vote(long commentId,long userId,int voteSign) {
+    public Optional<CommentVote> vote(long commentId,long userId,int voteSign) {
         Optional<CommentVote> vote = cmtVotes.getByCommentAndUser(commentId,userId);
         if(vote.isPresent()){
-            if(vote.get().getVote()==voteSign)
+            if(vote.get().getVote()==voteSign) {
                 cmtVotes.delete(vote.get().getCommentVoteId());
+                vote = Optional.empty();
+            }
             else
-                cmtVotes.update(vote.get().getCommentVoteId(),voteSign);
+                vote = cmtVotes.update(vote.get().getCommentVoteId(),voteSign);
         }else {
-            cmtVotes.insert(commentId, userId, voteSign);
+            vote = Optional.ofNullable(cmtVotes.insert(commentId, userId, voteSign));
         }
         Optional<Comment> comment = getById(commentId);
 
@@ -96,7 +98,7 @@ public class CommentServiceImpl implements CommentService {
                 }
             }
         }
-        return comment;
+        return vote;
     }
 
 

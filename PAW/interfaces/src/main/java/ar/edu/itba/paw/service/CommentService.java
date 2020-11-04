@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.CommentVote;
 import ar.edu.itba.paw.models.ReportComment;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface CommentService {
     Optional<Comment> changeComment(long commentId, String description);
 
     /***Votes methods***/
-    Optional<Comment> vote(long commentId,long userId,int voteSign);
+    Optional<CommentVote> vote(long commentId, long userId, int voteSign);
 
 
     /***Reports***/
