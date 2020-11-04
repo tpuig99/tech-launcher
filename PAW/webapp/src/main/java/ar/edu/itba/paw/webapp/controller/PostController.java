@@ -88,9 +88,8 @@ public class PostController {
                 User user = optionalUser.get();
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("isEnable", user.isEnable());
-
-                return mav;
             }
+            return mav;
         }
 
         return ErrorController.redirectToErrorView();
