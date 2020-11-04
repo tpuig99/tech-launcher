@@ -6,7 +6,7 @@
 
 <html>
 <head>
-    <title>Tech Launcher - Forum</title>
+    <title><!-- TODO: create spring message -->Tech Launcher - Forum</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
@@ -33,7 +33,24 @@
         <div class="title"><h1><!-- TODO: create spring message --> Forum </h1></div>
         <div class="post-cards">
             <div class="d-flex flex-row-reverse">
-                <button class="btn btn-info mt-2 mb-4" onclick="window.location.href = '<c:url value="/posts/add_post"/>'"><!-- TODO: create spring message --> ADD POST </button>
+                <button class="btn btn-info mt-2 mb-4" onclick="window.location.href = '<c:url value="/posts/add_post"/>'">
+                    <!-- TODO: create spring message --> ADD POST
+                </button>
+            </div>
+            <div class="row showing-results">
+                <div class="col-10"></div>
+                <div class="col showing-results data"><!-- TODO: create spring messages -->
+                    Showing results ${pageSize*(postsPage-1)+1}-
+                    <c:choose>
+                        <c:when test="${posts.size() < pageSize}">
+                            ${pageSize*(posts.size())}
+                        </c:when>
+                        <c:otherwise>
+                            ${pageSize*(postsPage)}
+                        </c:otherwise>
+                    </c:choose>
+                     out of ${postsAmount}
+                </div>
             </div>
             <c:choose>
                 <c:when test="${not empty posts}">

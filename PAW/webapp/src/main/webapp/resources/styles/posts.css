@@ -76,3 +76,12 @@
 .votedDown {
     color: #067BC2;
 }
+
+.showing-results {
+    width: 90%;
+    margin-bottom: 0.5em;
+}
+
+.showing-results.data {
+    float: right;
+}
