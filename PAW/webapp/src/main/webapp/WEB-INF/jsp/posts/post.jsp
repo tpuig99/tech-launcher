@@ -20,8 +20,7 @@
         <jsp:param name="isMod" value="${user_isMod}"/>
     </jsp:include>
 
-
-    <div class="content-no-sidebar-left">
+    <div class="content">
             <div class="row d-flex justify-content-flex-start">
                 <div class="col-1 mt-4">
                     <button class="btn btn-link pt-0 pb-0"><i class="fa fa-2x fa-angle-up"></i></button>

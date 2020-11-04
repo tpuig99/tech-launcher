@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.Post;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
 import org.slf4j.Logger;
@@ -27,6 +28,9 @@ public class PostController {
     PostService ps;
 
     @Autowired
+    FrameworkService fs;
+
+    @Autowired
     private UserService us;
 
     private final String START_PAGE = "1";
@@ -38,7 +42,8 @@ public class PostController {
         final ModelAndView mav = new ModelAndView("posts/posts_list");
         final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-
+        List<String> categories = fs.getAllCategories();
+        mav.addObject("categories_sidebar", categories);
         mav.addObject("posts", ps.getAll(postsPage, POSTS_PAGE_SIZE) );
 
         if( optionalUser.isPresent()) {
