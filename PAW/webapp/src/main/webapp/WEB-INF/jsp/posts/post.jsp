@@ -127,6 +127,112 @@
                 </div>
             </div>
         </div>
+
+        <div class="answers">
+            <div class="title"><h1>Answers</h1></div>
+            <c:choose>
+                <c:when test="${not empty post.postComments}">
+                    <c:forEach var="answer" items="${post.postComments}">
+                        <div class="post-cards">
+                            <div class="card mb-3 post-card-individual">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-1 net-votes">
+                                            <c:choose>
+                                                <c:when test="${user.name == 'anonymousUser'}">
+                                                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                                                    <div>
+                                                        <h4>0</h4>
+                                                    </div>
+                                                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:choose>
+                                                        <c:when test="${!isEnable}">
+                                                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                            <div>
+                                                                <h4>0</h4>
+                                                            </div>
+                                                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                            <div>
+                                                                <h4>0</h4>
+                                                            </div>
+                                                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                        <div class="col">
+                                            <div class="row post-description">
+                                                    ${answer.description}
+                                            </div>
+                                            <div class="row extra-info">
+                                                <div class="col-9 tags">
+                                                    <c:forEach items="${post.postTags}" var="tag">
+                                                    </c:forEach>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="row d-flex secondary-color text-right post-date">
+                                                            ${post.timestamp.toLocaleString()}
+                                                    </div>
+                                                    <div class="row d-flex secondary-color text-right">
+                                                        <a href="<c:out value="/users/${answer.user.username}"/>">${answer.user.username}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>LACA</c:otherwise>
+            </c:choose>
+        </div>
+
+        <div class="user-comment">
+            <div class="container">
+                <h4 class="title">Answer yourself!</h4>
+            </div>
+
+
+            <div class="container margin-left">
+                <div class="row">
+                    <h5><spring:message code="tech.interactions.leave_comment"/></h5>
+                    <div>
+                        <c:url value="/comment" var="postPathComment"/>
+                        <form:form modelAttribute="commentForm" action="${postPathComment}" method="post">
+                            <form:label path="commentFrameworkId"><form:input  class="input-wrap" path="commentFrameworkId" type="hidden" value="${post.postId}"/></form:label>
+
+                            <form:label path="comment"/>
+                            <form:textarea path="comment" id="commentInput" class="form-control" aria-label="With textarea" rows="5" cols="100"/>
+
+                            <c:choose>
+                                <c:when test="${user.name != 'anonymousUser'}">
+                                    <c:choose>
+                                        <c:when test="${!isEnable}">
+                                            <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="submit" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:when>
+                                <c:otherwise>
+                                    <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
+                                </c:otherwise>
+                            </c:choose>
+                        </form:form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">

@@ -89,3 +89,13 @@
 .post-card-individual {
     width: 90%;
 }
+
+.answers {
+    align-items: center;
+    width: 90%;
+}
+
+.user-comment {
+    align-items: center;
+    width: 90%;
+}

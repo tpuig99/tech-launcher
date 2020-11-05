@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.webapp.form.frameworks.CommentForm;
 import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
 import ar.edu.itba.paw.webapp.form.posts.DownVoteForm;
 import ar.edu.itba.paw.webapp.form.posts.UpVoteForm;
@@ -82,6 +83,7 @@ public class PostController {
             mav.addObject("downVoteForm", new DownVoteForm());
             mav.addObject("upVoteForm", new UpVoteForm());
             mav.addObject("categories_sidebar", fs.getAllCategories());
+            mav.addObject("commentForm", new CommentForm());
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()) {
