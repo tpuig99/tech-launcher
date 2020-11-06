@@ -10,6 +10,7 @@ import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.frameworks.CommentForm;
 import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
 import ar.edu.itba.paw.webapp.form.posts.DownVoteForm;
+import ar.edu.itba.paw.webapp.form.posts.PostCommentForm;
 import ar.edu.itba.paw.webapp.form.posts.UpVoteForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +95,7 @@ public class PostController {
             mav.addObject("commentForm", new CommentForm());
             mav.addObject("downVoteCommentForm", new DownVoteForm());
             mav.addObject("upVoteCommentForm", new UpVoteForm());
+            mav.addObject("postCommentForm", new PostCommentForm());
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()) {
@@ -187,6 +189,16 @@ public class PostController {
             return PostController.redirectToPosts();
         }
 
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping( path = "/posts/comment", method = RequestMethod.POST)
+    public ModelAndView commentPost(@Valid @ModelAttribute("postCommentForm") final PostCommentForm form ){
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( user.isPresent() ){
+            pcs.insertPostComment(form.getCommentPostId(), user.get().getId(), form.getComment(), null);
+            return redirectToPost(form.getCommentPostId());
+        }
         return ErrorController.redirectToErrorView();
     }
 }

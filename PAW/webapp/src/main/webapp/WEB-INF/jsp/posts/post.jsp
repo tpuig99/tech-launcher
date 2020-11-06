@@ -215,10 +215,7 @@
                                                     ${answer.description}
                                             </div>
                                             <div class="row extra-info">
-                                                <div class="col-9 tags">
-                                                    <c:forEach items="${post.postTags}" var="tag">
-                                                    </c:forEach>
-                                                </div>
+                                                <div class="col-9 tags"></div>
                                                 <div class="col">
                                                     <div class="row d-flex secondary-color text-right post-date">
                                                             ${post.timestamp.toLocaleString()}
@@ -236,23 +233,23 @@
 
                     </c:forEach>
                 </c:when>
-                <c:otherwise>LACA</c:otherwise>
+                <c:otherwise><!-- TODO: spring message -->LACA</c:otherwise>
             </c:choose>
         </div>
 
         <div class="user-comment">
             <div class="container">
-                <h4 class="title">Answer yourself!</h4>
+                <h4 class="title"><!-- TODO: spring message -->Answer yourself!</h4>
             </div>
 
 
             <div class="container margin-left">
                 <div class="row">
-                    <h5><spring:message code="tech.interactions.leave_comment"/></h5>
+                    <h5><!-- TODO: spring message --><spring:message code="tech.interactions.leave_comment"/></h5>
                     <div>
-                        <c:url value="/comment" var="postPathComment"/>
-                        <form:form modelAttribute="commentForm" action="${postPathComment}" method="post">
-                            <form:label path="commentFrameworkId"><form:input  class="input-wrap" path="commentFrameworkId" type="hidden" value="${post.postId}"/></form:label>
+                        <c:url value="/posts/comment" var="postPathComment"/>
+                        <form:form modelAttribute="postCommentForm" action="${postPathComment}" method="post">
+                            <form:label path="commentPostId"><form:input  class="input-wrap" path="commentPostId" type="hidden" value="${post.postId}"/></form:label>
 
                             <form:label path="comment"/>
                             <form:textarea path="comment" id="commentInput" class="form-control" aria-label="With textarea" rows="5" cols="100"/>
@@ -327,6 +324,26 @@
     </div>
 
     <script>
+        $(document).ready(function () {
+            $('#commentInput').on('keyup', function () {
+                if ($.trim($('#commentInput').val()).length < 1) {
+                    $("#commentButton").prop("disabled",true);
+                } else {
+                    $("#commentButton").prop("disabled",false);
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $('#commentInput').change(function () {
+                if ($.trim($('#commentInput').val()).length < 1) {
+                    $("#commentButton").prop("disabled",true);
+                } else {
+                    $("#commentButton").prop("disabled",false);
+                }
+            });
+        });
+
         function goToCat( catName ){
             window.location.href = "<c:url value="/"/>" + "posts/categories/" + catName;
         }
