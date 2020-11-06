@@ -9,6 +9,7 @@ import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.frameworks.CommentForm;
 import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
+import ar.edu.itba.paw.webapp.form.posts.AddPostForm;
 import ar.edu.itba.paw.webapp.form.posts.DownVoteForm;
 import ar.edu.itba.paw.webapp.form.posts.PostCommentForm;
 import ar.edu.itba.paw.webapp.form.posts.UpVoteForm;
@@ -110,12 +111,24 @@ public class PostController {
     }
 
     @RequestMapping("/posts/add_post")
-    public ModelAndView addPost() {
+    public ModelAndView addPostPage() {
 
         final ModelAndView mav = new ModelAndView("posts/add_post");
-
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        mav.addObject("addPostForm", new AddPostForm());
 
         return mav;
+    }
+
+    @RequestMapping("/posts/addPost/add")
+    public ModelAndView addPost(@Valid @ModelAttribute("addPostForm") final AddPostForm form ) {
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( user.isPresent() ){
+            ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
+            return redirectToPosts();
+        }
+
+        return ErrorController.redirectToErrorView();
     }
 
     @RequestMapping( path = "/posts/upVote/", method = RequestMethod.POST)
