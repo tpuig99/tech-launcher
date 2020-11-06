@@ -10,18 +10,18 @@ public class PostCommentVote {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "post_comment_votes_vote_id_seq")
     @SequenceGenerator(sequenceName = "post_comment_votes_vote_id_seq", name = "post_comment_votes_vote_id_seq", allocationSize = 1)
     @Column(name = "post_comment_vote_id")
-    long postCommentVoteId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private long postCommentVoteId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_comment_id", nullable = false)
     private PostComment postComment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column
-    int vote;
+    private int vote;
 
     public PostCommentVote() {
         //For Hibernate
@@ -57,5 +57,9 @@ public class PostCommentVote {
 
     public void setVote(int vote) {
         this.vote = vote;
+    }
+
+    public boolean isVoteUp(){
+        return vote > 0;
     }
 }

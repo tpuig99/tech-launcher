@@ -6,6 +6,7 @@ import ar.edu.itba.paw.persistence.PostCommentVoteDao;
 import ar.edu.itba.paw.service.PostCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,27 +20,32 @@ public class PostCommentServiceImpl implements PostCommentService {
     @Autowired
     PostCommentVoteDao postCommentVoteDao;
 
+    @Transactional(readOnly = true)
     @Override
-    public Optional<PostComment> findById(long postCommentId) {
+    public Optional<PostComment> getById(long postCommentId) {
         return postCommentDao.findById(postCommentId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<PostComment> getByPost(long postId) {
         return postCommentDao.getByPost(postId);
     }
 
+    @Transactional
     @Override
     public PostComment insertPostComment(long postId, long userId, String description, Long reference) {
         return postCommentDao.insertPostComment(postId, userId, description, reference);
     }
 
+    @Transactional
     @Override
     public void deletePostComment(long postCommentId) {
         postCommentDao.deletePostComment(postCommentId);
 
     }
 
+    @Transactional
     @Override
     public Optional<PostComment> vote(long postCommentId, long userId, int voteSign) {
         Optional<PostCommentVote> vote = postCommentVoteDao.getByPostCommentAndUser(postCommentId, userId);
@@ -51,7 +57,7 @@ public class PostCommentServiceImpl implements PostCommentService {
         } else {
             postCommentVoteDao.insert(postCommentId, userId, voteSign);
         }
-        Optional<PostComment> postComment = findById(postCommentId);
+        Optional<PostComment> postComment = getById(postCommentId);
 
         return postComment;
     }

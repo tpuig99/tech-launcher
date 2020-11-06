@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.Post;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.FrameworkService;
+import ar.edu.itba.paw.service.PostCommentService;
 import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.form.frameworks.CommentForm;
@@ -32,6 +33,9 @@ public class PostController {
 
     @Autowired
     FrameworkService fs;
+
+    @Autowired
+    PostCommentService pcs;
 
     @Autowired
     private UserService us;
@@ -84,6 +88,8 @@ public class PostController {
             mav.addObject("upVoteForm", new UpVoteForm());
             mav.addObject("categories_sidebar", fs.getAllCategories());
             mav.addObject("commentForm", new CommentForm());
+            mav.addObject("downVoteCommentForm", new DownVoteForm());
+            mav.addObject("upVoteCommentForm", new UpVoteForm());
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()) {
@@ -130,13 +136,39 @@ public class PostController {
         return ErrorController.redirectToErrorView();
     }
 
+    @RequestMapping( path = "/posts/{id}/upVoteComment/", method = RequestMethod.POST)
+    public ModelAndView voteUpComment(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, @PathVariable("id") long postId){
+
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( user.isPresent() && postId == form.getUpVoteCommentPostId()){
+            pcs.vote(form.getPostCommentUpVoteId(), user.get().getId(), UP_VOTE_VALUE);
+            return post(form.getUpVoteCommentPostId());
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+
+
     @RequestMapping( path = "/posts/{id}/downVote/", method = RequestMethod.POST)
     public ModelAndView voteDown(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") long postId){
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() && postId == form.getDownVotePostId()){
+        if( user.isPresent() && postId == form.getDownVoteCommentPostId()){
             ps.vote(form.getDownVotePostId(), user.get().getId(), DOWN_VOTE_VALUE);
             return post(form.getDownVotePostId());
+        }
+
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping( path = "/posts/{id}/downVoteComment/", method = RequestMethod.POST)
+    public ModelAndView voteDownComment(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") long postId){
+
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( user.isPresent() && postId == form.getDownVoteCommentPostId()){
+            pcs.vote(form.getPostCommentDownVoteId(), user.get().getId(), DOWN_VOTE_VALUE);
+            return post(form.getDownVoteCommentPostId());
         }
 
         return ErrorController.redirectToErrorView();
