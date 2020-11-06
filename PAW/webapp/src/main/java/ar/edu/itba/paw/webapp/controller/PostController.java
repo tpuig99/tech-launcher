@@ -45,8 +45,12 @@ public class PostController {
     private final int UP_VOTE_VALUE = 1;
     private final int DOWN_VOTE_VALUE = -1;
 
-    public static ModelAndView redirectToPosts() {
+    private static ModelAndView redirectToPosts() {
         return new ModelAndView("redirect:/posts");
+    }
+
+    private static ModelAndView redirectToPost( long postId) {
+        return new ModelAndView("redirect:/posts/" + postId);
     }
 
     @RequestMapping("/posts")
@@ -130,7 +134,7 @@ public class PostController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() && postId == form.getUpVotePostId()){
             ps.vote(form.getUpVotePostId(), user.get().getId(), UP_VOTE_VALUE);
-            return post(form.getUpVotePostId());
+            return redirectToPost(form.getUpVotePostId());
         }
 
         return ErrorController.redirectToErrorView();
@@ -142,7 +146,7 @@ public class PostController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() && postId == form.getUpVoteCommentPostId()){
             pcs.vote(form.getPostCommentUpVoteId(), user.get().getId(), UP_VOTE_VALUE);
-            return post(form.getUpVoteCommentPostId());
+            return redirectToPost(form.getUpVoteCommentPostId());
         }
 
         return ErrorController.redirectToErrorView();
@@ -156,7 +160,7 @@ public class PostController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() && postId == form.getDownVoteCommentPostId()){
             ps.vote(form.getDownVotePostId(), user.get().getId(), DOWN_VOTE_VALUE);
-            return post(form.getDownVotePostId());
+            return redirectToPost(form.getDownVotePostId());
         }
 
         return ErrorController.redirectToErrorView();
@@ -168,7 +172,7 @@ public class PostController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() && postId == form.getDownVoteCommentPostId()){
             pcs.vote(form.getPostCommentDownVoteId(), user.get().getId(), DOWN_VOTE_VALUE);
-            return post(form.getDownVoteCommentPostId());
+            return redirectToPost(form.getDownVoteCommentPostId());
         }
 
         return ErrorController.redirectToErrorView();
