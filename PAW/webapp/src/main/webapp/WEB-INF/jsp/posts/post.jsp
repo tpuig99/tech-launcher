@@ -218,7 +218,7 @@
                                                 <div class="col-9 tags"></div>
                                                 <div class="col">
                                                     <div class="row d-flex secondary-color text-right post-date">
-                                                            ${post.timestamp.toLocaleString()}
+                                                            ${answer.timestamp.toLocaleString()}
                                                     </div>
                                                     <div class="row d-flex secondary-color text-right">
                                                         <a href="<c:out value="/users/${answer.user.username}"/>">${answer.user.username}</a>
@@ -258,15 +258,15 @@
                                 <c:when test="${user.name != 'anonymousUser'}">
                                     <c:choose>
                                         <c:when test="${!isEnable}">
-                                            <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
+                                            <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><!-- TODO: spring message --><spring:message code="button.submit"/></button>
                                         </c:when>
                                         <c:otherwise>
-                                            <button type="submit" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                            <button type="submit" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end"><!-- TODO: spring message --><spring:message code="button.submit"/></button>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:when>
                                 <c:otherwise>
-                                    <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
+                                    <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><!-- TODO: spring message --><spring:message code="button.submit"/></button>
                                 </c:otherwise>
                             </c:choose>
                         </form:form>
