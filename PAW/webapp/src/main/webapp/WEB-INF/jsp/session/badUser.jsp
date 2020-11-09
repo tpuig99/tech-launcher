@@ -23,7 +23,7 @@
 
 <div class="content">
     <div class="page-description">${message}</div>
-    <button class="btn btn-primary" onclick="resendToken('${token}')"><spring:message code="button.resend"/></button>
+    <button class="btn btn-info" onclick="resendToken('${token}')"><spring:message code="button.resend"/></button>
 </div>
 
 

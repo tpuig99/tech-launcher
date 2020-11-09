@@ -178,7 +178,7 @@
                         <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
                     </div>
                     <div class="row justify-content-center align-items-center margin-top">
-                        <button type="button" class="btn btn-primary" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
+                        <button type="button" class="btn btn-info" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
                     </div>
                     <div class="row  justify-content-center align-items-center margin-top">
                         <div><spring:message code="login.sign_up_question"/> <a href="<c:url value="/register"/>"><spring:message code="button.sign_up"/></a>

@@ -21,7 +21,7 @@
 
 <div class="content">
     <div class="page-title">${title}</div>
-    <div class="page-description">${message}<button class="btn btn-primary" onclick="continueOn()"><spring:message code="button.continue"/></button></div>
+    <div class="page-description">${message}<button class="btn btn-info" onclick="continueOn()"><spring:message code="button.continue"/></button></div>
 </div>
 
 <script>

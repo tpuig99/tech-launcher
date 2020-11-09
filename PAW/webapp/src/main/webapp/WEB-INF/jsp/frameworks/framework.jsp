@@ -70,7 +70,7 @@
                             <c:if test="${isAdmin || isOwner}">
                                 <div class="mb-4">
                                     <a href="<c:url value="/update_tech?id=${framework.id}"/>" >
-                                        <button class="btn btn-primary btn-block text-nowrap" type="button">
+                                        <button class="btn btn-info btn-block text-nowrap" type="button">
                                             <i class="fa fa-edit fa-sm mr-1"></i>
                                             <spring:message code="button.edit_tech"/>
                                         </button>
@@ -102,19 +102,19 @@
                     <c:when test="${user.name != 'anonymousUser'}">
                         <c:choose>
                             <c:when test="${!isEnable}">
-                                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#confirmMailModal">
+                                <button class="btn btn-info" type="button" data-toggle="modal" data-target="#confirmMailModal">
                                     <spring:message code="tech.content.button"/>
                                 </button>
                             </c:when>
                             <c:otherwise>
-                                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addContentModal">
+                                <button class="btn btn-info" type="button" data-toggle="modal" data-target="#addContentModal">
                                     <spring:message code="tech.content.button"/>
                                 </button>
                             </c:otherwise>
                         </c:choose>
                     </c:when>
                     <c:otherwise>
-                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#loginModal">
+                        <button class="btn btn-info" type="button" data-toggle="modal" data-target="#loginModal">
                             <spring:message code="tech.content.button"/>
                         </button>
                     </c:otherwise>
@@ -467,7 +467,7 @@
                                         <form:textarea path="replyComment" id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"/>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary btn-sm padding-top" type="submit"><spring:message code="button.submit"/></button>
+                                        <button class="btn btn-info btn-sm padding-top" type="submit"><spring:message code="button.submit"/></button>
                                     </div>
                                 </form:form>
 
@@ -515,15 +515,15 @@
                                 <c:when test="${user.name != 'anonymousUser'}">
                                     <c:choose>
                                         <c:when test="${!isEnable}">
-                                            <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
+                                            <button type="button" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
                                         </c:when>
                                         <c:otherwise>
-                                            <button type="submit" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                            <button type="submit" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:when>
                                 <c:otherwise>
-                                    <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
+                                    <button type="button" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
                                 </c:otherwise>
                             </c:choose>
                         </form:form>
@@ -550,7 +550,7 @@
                                 <p class="card-text"><spring:message code="tech.apply.message"/></p>
                             </div>
                             <div class="card-footer">
-                                <button class="btn btn-primary" onclick="applyForMod()"><spring:message code="tech.apply.button"/></button>
+                                <button class="btn btn-info" onclick="applyForMod()"><spring:message code="tech.apply.button"/></button>
                             </div>
                         </div>
                     </div>
@@ -623,7 +623,7 @@
                             <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
                         </div>
                         <div class="row justify-content-center align-items-center margin-top">
-                            <button type="button" class="btn btn-primary" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
+                            <button type="button" class="btn btn-info" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
                         </div>
                         <div class="row  justify-content-center align-items-center margin-top">
                             <div><spring:message code="login.sign_up_question"/> <a href="<c:url value="/register"/>"><spring:message code="button.sign_up"/></a>
@@ -742,7 +742,7 @@
                             <div class="d-flex justify-content-center">
                                 <input class="btn btn-danger" type="submit" value="<spring:message code="button.submit"/>"/>
                             </div>
-                            <!-- <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">SUBMIT</button>-->
+                            <!-- <button type="submit" class="btn btn-info d-flex align-items-center justify-content-center">SUBMIT</button>-->
                         </form:form>
                     </div>
                 </div>
@@ -777,7 +777,7 @@
                             <div class="d-flex justify-content-center">
                                 <input class="btn btn-danger" type="submit" value="<spring:message code="button.submit"/>"/>
                             </div>
-                            <!-- <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">SUBMIT</button>-->
+                            <!-- <button type="submit" class="btn btn-info d-flex align-items-center justify-content-center">SUBMIT</button>-->
                         </form:form>
                     </div>
                 </div>
