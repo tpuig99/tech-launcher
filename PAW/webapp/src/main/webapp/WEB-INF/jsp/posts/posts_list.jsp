@@ -40,7 +40,7 @@
             <div class="row showing-results">
                 <div class="col-10"></div>
                 <div class="col showing-results data">
-                    ${pageSize*(postsPage-1)+1}-<c:choose><c:when test="${posts.size() < pageSize}">${pageSize*(posts.size())}</c:when><c:otherwise>${pageSize*(postsPage)}</c:otherwise></c:choose>
+                    ${pageSize*(postsPage-1)+1}-<c:choose><c:when test="${posts.size() < pageSize}">${pageSize*(postsPage-1)+ posts.size()}</c:when><c:otherwise>${pageSize*(postsPage)}</c:otherwise></c:choose>
                      <spring:message code="forum.showing_results"/> ${postsAmount}
                 </div>
             </div>
