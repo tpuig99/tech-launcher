@@ -29,8 +29,8 @@
     </div>
 
     <div class="d-flex justify-content-center">
-        <input class="btn btn-primary" id="editProfileButton" type="submit" value="<spring:message code="button.submit"/>"/>
-        <div class="btn btn-primary disabled" id="editProfileLoading" hidden>
+        <input class="btn btn-info" id="editProfileButton" type="submit" value="<spring:message code="button.submit"/>"/>
+        <div class="btn btn-info disabled" id="editProfileLoading" hidden>
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <spring:message code="button.loading"/>
         </div>

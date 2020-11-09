@@ -15,4 +15,5 @@ public interface PostService {
     void deletePost(long postId);
 
     Optional<Post> vote(long postId, long userId, int voteSign);
+    int getPostsAmount();
 }

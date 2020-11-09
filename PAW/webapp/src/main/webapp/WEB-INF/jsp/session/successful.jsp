@@ -21,7 +21,7 @@
 
 <div class="content">
     <div class="page-title">${title}</div>
-    <div class="page-description">${message}<button class="btn btn-primary" onclick="goHome()"><spring:message code="button.back_to_home"/></button></div>
+    <div class="page-description">${message}<button class="btn btn-info" onclick="goHome()"><spring:message code="button.back_to_home"/></button></div>
 </div>
 
 <script>

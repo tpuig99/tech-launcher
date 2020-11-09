@@ -52,6 +52,7 @@ public class PostServiceImpl implements PostService {
         postDao.deletePost(postId);
     }
 
+    @Transactional
     @Override
     public Optional<Post> vote(long postId, long userId, int voteSign) {
 
@@ -68,5 +69,11 @@ public class PostServiceImpl implements PostService {
         Optional<Post> post = findById(postId);
 
         return post;
+    }
+
+    @Transactional
+    @Override
+    public int getPostsAmount() {
+        return postDao.getAmount();
     }
 }

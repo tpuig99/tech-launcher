@@ -29,18 +29,10 @@ public class PostDaoImpl implements PostDao {
 
     @Override
     public List<Post> getAll(long page, long pageSize) {
-
-        Query pagingQuery = em.createNativeQuery("SELECT post_id FROM posts LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
-        @SuppressWarnings("unchecked")
-        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
-
-        if(!resultList.isEmpty()) {
-            TypedQuery<Post> query = em.createQuery("from Post as p where p.postId in (:resultList)", Post.class);
-            query.setParameter("resultList", resultList);
+            TypedQuery<Post> query = em.createQuery("from Post as p", Post.class);
+            query.setMaxResults((int)pageSize);
+            query.setFirstResult((int) ((page-1)*pageSize));
             return query.getResultList();
-        }else{
-            return new ArrayList<>();
-        }
     }
 
     @Override
@@ -75,5 +67,20 @@ public class PostDaoImpl implements PostDao {
     @Override
     public void deletePost(long postId) {
         em.remove(em.getReference(Post.class,postId));
+    }
+
+    @Override
+    public int getAmount() {
+        Query pagingQuery = em.createNativeQuery("SELECT post_id FROM posts");
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Post> query = em.createQuery("from Post as p where p.postId in (:resultList)", Post.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList().size();
+        }else{
+            return 0;
+        }
     }
 }

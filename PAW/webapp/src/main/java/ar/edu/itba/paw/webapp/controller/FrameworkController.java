@@ -49,7 +49,7 @@ public class FrameworkController {
     private final long PAGE_SIZE = 5;
 
     public static ModelAndView redirectToFramework(Long id, String category) {
-        return new ModelAndView("redirect:/" + category + "/" + id);
+        return new ModelAndView("redirect:/techs/" + category + "/" + id);
     }
 
     private void loadForms(ModelAndView mav) {

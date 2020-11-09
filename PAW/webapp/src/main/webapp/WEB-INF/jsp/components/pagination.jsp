@@ -134,6 +134,9 @@
         else if(origin == 'mod_report_content'){
             window.location.href="<c:url value="/mod?tabs="/>"+tab +"modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage="+goingPage;
         }
+        else if( origin === 'posts'){
+            window.location.href="<c:url value="/posts?page="/>" + goingPage;
+        }
 
     }
 

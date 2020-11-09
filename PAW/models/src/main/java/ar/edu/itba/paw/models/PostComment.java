@@ -37,6 +37,11 @@ public class PostComment {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "postComment", cascade = CascadeType.REMOVE)
     private List<PostCommentVote> postCommentVotes;
 
+    @Transient
+    private Long votesUp;
+    @Transient
+    private Long votesDown;
+
 
     public PostComment() {
         //For Hibernate
@@ -88,5 +93,51 @@ public class PostComment {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public List<PostCommentVote> getPostCommentVotes() {
+        return postCommentVotes;
+    }
+
+    public void setPostCommentVotes(List<PostCommentVote> postCommentVotes) {
+        this.postCommentVotes = postCommentVotes;
+    }
+
+    public Long getVotesUp() {
+        if(votesUp == null)
+            loadVotes();
+        return votesUp;
+    }
+
+    private void loadVotes() {
+        votesUp = 0L;
+        votesDown = 0L;
+        for (PostCommentVote vote: postCommentVotes) {
+            if(vote.isVoteUp())
+                votesUp++;
+            else
+                votesDown++;
+        }
+    }
+
+    public Long getVotesDown() {
+        if(votesDown == null)
+            loadVotes();
+        return votesDown;
+    }
+
+    public int getUserAuthVote(String username) {
+        for (PostCommentVote vote: postCommentVotes) {
+            if(vote.getUser().getUsername().equals(username))
+                return vote.getVote();
+        }
+        return 0;
+    }
+    public boolean hasUserAuthVote(String username){
+        for (PostCommentVote vote: postCommentVotes) {
+            if(vote.getUser().getUsername().equals(username))
+                return true;
+        }
+        return false;
     }
 }

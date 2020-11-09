@@ -37,7 +37,7 @@
                     <div>
                         <div class="row justify-content-end">
                             <c:if test="${profile.username == user.name}">
-                                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editProfileModal">
+                                <button class="btn btn-info" type="button" data-toggle="modal" data-target="#editProfileModal">
                                     <i class="far fa-edit fa-sm"></i>
                                 </button>
                             </c:if>

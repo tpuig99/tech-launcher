@@ -40,7 +40,7 @@
                 <h4 class="mx-2 my-auto"><spring:message code="techs.add_new"/></h4>
 
                 <a href="<c:url value="/add_tech"/>" >
-                    <button class="btn btn-primary" type="button">
+                    <button class="btn btn-info" type="button">
                         <i class="fa fa-plus fa-sm mr-1"></i>
                         <spring:message code="button.add_tech"/>
                     </button>
