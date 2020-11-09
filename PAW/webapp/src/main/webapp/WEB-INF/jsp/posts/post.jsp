@@ -31,107 +31,105 @@
 
     <!-- Question Section -->
     <div class="content">
-        <div class="title"><h1>${post.title}</h1></div>
+        <div class="ml-4 mr-1"><h1>${post.title}</h1></div>
         <div class="post-cards">
-            <div class="card mb-3 post-card-individual">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-1 net-votes">
+            <div class="row">
+                <div class=" ml-4 col-1 net-votes">
+                    <c:choose>
+                        <c:when test="${user.name == 'anonymousUser'}">
+                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                            <div>
+                                <h4>${post.votesUp - post.votesDown}</h4>
+                            </div>
+                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
+                        </c:when>
+                        <c:otherwise>
                             <c:choose>
-                                <c:when test="${user.name == 'anonymousUser'}">
-                                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                                <c:when test="${!isEnable}">
+                                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                                     <div>
                                         <h4>${post.votesUp - post.votesDown}</h4>
                                     </div>
-                                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
+                                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:choose>
-                                        <c:when test="${!isEnable}">
-                                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                    <c:url value="/posts/${post.postId}/upVote/" var="postPathUpVote"/>
+                                    <form:form modelAttribute="upVoteForm" id="upVoteForm${post.postId}" action="${postPathUpVote}" method="post" class="mb-0 mt-0">
+                                        <form:label path="upVotePostId">
+                                            <form:input id="upVotePostId${post.postId}" class="input-wrap" path="upVotePostId" type="hidden" value="${post.postId}"/>
+                                        </form:label>
+                                        <div class="net-votes">
+                                            <button class="btn pt-0 pb-0" type="submit">
+                                                <c:choose>
+                                                    <c:when test="${post.getUserAuthVote(user.name) > 0}">
+                                                        <i class="fa fa-2x fa-arrow-up votedUp"></i>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <i class="fa fa-2x fa-arrow-up"></i>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </button>
                                             <div>
                                                 <h4>${post.votesUp - post.votesDown}</h4>
                                             </div>
-                                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <c:url value="/posts/${post.postId}/upVote/" var="postPathUpVote"/>
-                                            <form:form modelAttribute="upVoteForm" id="upVoteForm${post.postId}" action="${postPathUpVote}" method="post" class="mb-0">
-                                                <form:label path="upVotePostId">
-                                                    <form:input id="upVotePostId${post.postId}" class="input-wrap" path="upVotePostId" type="hidden" value="${post.postId}"/>
-                                                </form:label>
-                                                <div class="net-votes">
-                                                    <button class="btn pt-0 pb-0" type="submit">
-                                                        <c:choose>
-                                                            <c:when test="${post.getUserAuthVote(user.name) > 0}">
-                                                                <i class="fa fa-2x fa-arrow-up votedUp"></i>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <i class="fa fa-2x fa-arrow-up"></i>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </button>
-                                                    <div>
-                                                        <h4>${post.votesUp - post.votesDown}</h4>
-                                                    </div>
-                                                </div>
-                                            </form:form>
-                                            <c:url value="/posts/${post.postId}/downVote/" var="postPathDownVote"/>
-                                            <form:form modelAttribute="downVoteForm" id="downVoteForm${post.postId}" action="${postPathDownVote}" method="post" class="mt-0">
-                                                <form:label path="downVotePostId">
-                                                    <form:input path="downVotePostId" id="downVotePostId${post.postId}" class="input-wrap" type="hidden" value="${post.postId}"/>
-                                                </form:label>
-                                                <div class="net-votes">
-                                                    <button class="btn pt-0 pb-0" type="submit">
-                                                        <c:choose>
-                                                            <c:when test="${post.getUserAuthVote(user.name) < 0}">
-                                                                <i class="fa fa-2x fa-arrow-down votedDown"></i>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <i class="fa fa-2x fa-arrow-down"></i>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </button>
-                                                </div>
-                                            </form:form>
+                                        </div>
+                                    </form:form>
+                                    <c:url value="/posts/${post.postId}/downVote/" var="postPathDownVote"/>
+                                    <form:form modelAttribute="downVoteForm" id="downVoteForm${post.postId}" action="${postPathDownVote}" method="post" class="mt-0">
+                                        <form:label path="downVotePostId">
+                                            <form:input path="downVotePostId" id="downVotePostId${post.postId}" class="input-wrap" type="hidden" value="${post.postId}"/>
+                                        </form:label>
+                                        <div class="net-votes">
+                                            <button class="btn pt-0 pb-0" type="submit">
+                                                <c:choose>
+                                                    <c:when test="${post.getUserAuthVote(user.name) < 0}">
+                                                        <i class="fa fa-2x fa-arrow-down votedDown"></i>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <i class="fa fa-2x fa-arrow-down"></i>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </button>
+                                        </div>
+                                    </form:form>
 
-                                        </c:otherwise>
-                                    </c:choose>
                                 </c:otherwise>
                             </c:choose>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="col">
+                    <div class="row post-description mr-2">
+                            ${post.description}
+                    </div>
+                    <div class="row extra-info">
+                        <div class="col-9 tags">
+                            <c:forEach items="${post.postTags}" var="tag">
+                                <button  class="badge badge-color ml-1" onclick="goToCat('${tag.tagName}')">
+                                    <span>
+                                            ${tag.tagName}
+                                    </span>
+                                </button>
+                            </c:forEach>
                         </div>
                         <div class="col">
-                            <div class="row post-description">
-                                    ${post.description}
+                            <div class="row d-flex secondary-color text-right post-date">
+                                    ${post.timestamp.toLocaleString()}
                             </div>
-                            <div class="row extra-info">
-                                <div class="col-9 tags">
-                                    <c:forEach items="${post.postTags}" var="tag">
-                                        <button  class="badge badge-color ml-1" onclick="goToCat('${tag.tagName}')">
-                                            <span>
-                                                    ${tag.tagName}
-                                            </span>
-                                        </button>
-                                    </c:forEach>
-                                </div>
-                                <div class="col">
-                                    <div class="row d-flex secondary-color text-right post-date">
-                                            ${post.timestamp.toLocaleString()}
-                                    </div>
-                                    <div class="row d-flex secondary-color text-right">
-                                        <a href="<c:out value="/users/${post.user.username}"/>">${post.user.username}</a>
-                                    </div>
-                                </div>
+                            <div class="row d-flex secondary-color text-right">
+                                <a href="<c:out value="/users/${post.user.username}"/>">${post.user.username}</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
         </div>
 
         <!-- Answers Section -->
         <div class="answers">
-            <div class="title"><h1>Answers</h1></div>
+            <div class="title"><h3>Answers</h3></div>
             <c:choose>
                 <c:when test="${not empty post.postComments}">
                     <c:forEach var="answer" items="${post.postComments}">
@@ -142,24 +140,24 @@
                                         <div class="col-1 net-votes">
                                             <c:choose>
                                                 <c:when test="${user.name == 'anonymousUser'}">
-                                                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                                                    <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
                                                     <div>
                                                         <h4>${answer.votesUp- answer.votesDown}</h4>
                                                     </div>
-                                                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
+                                                    <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:choose>
                                                         <c:when test="${!isEnable}">
-                                                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                            <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                                                             <div>
                                                                 <h4>${answer.votesUp - answer.votesDown}</h4>
                                                             </div>
-                                                            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                                                            <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <c:url value="/posts/${post.postId}/upVoteComment/" var="postPathUpVoteComment"/>
-                                                            <form:form modelAttribute="upVoteCommentForm" id="upVoteCommentForm${post.postId}CommentId${answer.postCommentId}" action="${postPathUpVoteComment}" method="post" class="mb-0">
+                                                            <form:form modelAttribute="upVoteCommentForm" id="upVoteCommentForm${post.postId}CommentId${answer.postCommentId}" action="${postPathUpVoteComment}" method="post" class="mb-0 mt-0">
                                                                 <form:label path="upVoteCommentPostId">
                                                                     <form:input id="upVoteCommentPostId${post.postId}CommentId${answer.postCommentId}" class="input-wrap" path="upVoteCommentPostId" type="hidden" value="${post.postId}"/>
                                                                 </form:label>
@@ -171,20 +169,21 @@
                                                                     <button class="btn pt-0 pb-0" type="submit">
                                                                         <c:choose>
                                                                             <c:when test="${answer.getUserAuthVote(user.name) > 0}">
-                                                                                <i class="fa fa-2x fa-arrow-up votedUp"></i>
+                                                                                <i class="fa fa-1x fa-arrow-up votedUp"></i>
                                                                             </c:when>
                                                                             <c:otherwise>
-                                                                                <i class="fa fa-2x fa-arrow-up"></i>
+                                                                                <i class="fa fa-1x fa-arrow-up"></i>
                                                                             </c:otherwise>
                                                                         </c:choose>
                                                                     </button>
                                                                     <div>
-                                                                        <h4>${answer.votesUp - answer.votesDown}</h4>
+                                                                        <h6>${answer.votesUp - answer.votesDown}</h6>
                                                                     </div>
                                                                 </div>
                                                             </form:form>
                                                             <c:url value="/posts/${post.postId}/downVoteComment/" var="postPathDownVoteComment"/>
-                                                            <form:form modelAttribute="downVoteCommentForm" id="downVoteCommentForm${post.postId}/${answer.postCommentId}" action="${postPathDownVoteComment}" method="post" class="mb-0">
+                                                            <div class="mt-0 pt-0">
+                                                            <form:form modelAttribute="downVoteCommentForm" id="downVoteCommentForm${post.postId}/${answer.postCommentId}" action="${postPathDownVoteComment}" method="post" class="mb-0 mt-0">
                                                                 <form:label path="downVoteCommentPostId">
                                                                     <form:input id="downVoteCommentPostId${post.postId}CommentId${answer.postCommentId}" class="input-wrap" path="downVoteCommentPostId" type="hidden" value="${post.postId}"/>
                                                                 </form:label>
@@ -196,22 +195,23 @@
                                                                     <button class="btn pt-0 pb-0" type="submit">
                                                                         <c:choose>
                                                                             <c:when test="${answer.getUserAuthVote(user.name) < 0}">
-                                                                                <i class="fa fa-2x fa-arrow-down votedDown"></i>
+                                                                                <i class="fa fa-1x fa-arrow-down votedDown"></i>
                                                                             </c:when>
                                                                             <c:otherwise>
-                                                                                <i class="fa fa-2x fa-arrow-down"></i>
+                                                                                <i class="fa fa-1x fa-arrow-down"></i>
                                                                             </c:otherwise>
                                                                         </c:choose>
                                                                     </button>
                                                                 </div>
                                                             </form:form>
+                                                            </div>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
                                         <div class="col">
-                                            <div class="row post-description">
+                                            <div class="row post-description d-flex align-items-center">
                                                     ${answer.description}
                                             </div>
                                             <div class="row extra-info">
@@ -258,15 +258,15 @@
                                 <c:when test="${user.name != 'anonymousUser'}">
                                     <c:choose>
                                         <c:when test="${!isEnable}">
-                                            <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><!-- TODO: spring message --><spring:message code="button.submit"/></button>
+                                            <button type="button" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><!-- TODO: spring message --><spring:message code="button.submit"/></button>
                                         </c:when>
                                         <c:otherwise>
-                                            <button type="submit" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end"><!-- TODO: spring message --><spring:message code="button.submit"/></button>
+                                            <button type="submit" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end"><!-- TODO: spring message --><spring:message code="button.submit"/></button>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:when>
                                 <c:otherwise>
-                                    <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><!-- TODO: spring message --><spring:message code="button.submit"/></button>
+                                    <button type="button" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><!-- TODO: spring message --><spring:message code="button.submit"/></button>
                                 </c:otherwise>
                             </c:choose>
                         </form:form>
@@ -290,7 +290,7 @@
                         <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
                     </div>
                     <div class="row justify-content-center align-items-center margin-top">
-                        <button type="button" class="btn btn-primary" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
+                        <button type="button" class="btn btn-info" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
                     </div>
                     <div class="row  justify-content-center align-items-center margin-top">
                         <div><spring:message code="login.sign_up_question"/> <a href="<c:url value="/register"/>"><spring:message code="button.sign_up"/></a>
