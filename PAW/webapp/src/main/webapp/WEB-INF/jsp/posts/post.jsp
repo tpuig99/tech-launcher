@@ -233,13 +233,13 @@
 
                     </c:forEach>
                 </c:when>
-                <c:otherwise><!-- TODO: spring message -->LACA</c:otherwise>
+                <c:otherwise><spring:message code="post.no_answers_yet"/></c:otherwise>
             </c:choose>
         </div>
 
         <div class="user-comment">
             <div class="container">
-                <h4 class="title"><!-- TODO: spring message -->Answer yourself!</h4>
+                <h4 class="title"><spring:message code="post.answer_yourself"/></h4>
             </div>
 
 
