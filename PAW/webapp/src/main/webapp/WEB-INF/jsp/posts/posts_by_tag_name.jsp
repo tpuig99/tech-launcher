@@ -23,7 +23,7 @@
         <jsp:param name="isMod" value="${user_isMod}"/>
     </jsp:include>
 
-    <div class="content-no-sidebar-left">
+    <div class="content">
         <div class="title"><h1><spring:message code="forum.title"/></h1></div>
         <div class="post-cards">
             <div class="d-flex flex-row-reverse">
@@ -32,7 +32,7 @@
                 </button>
             </div>
             <div class="row showing-results">
-                <div class="col-9"></div>
+                <div class="col-10"></div>
                 <div class="col showing-results data">
                     ${pageSize*(postsPage-1)+1}-<c:choose><c:when test="${posts.size() < pageSize}">${pageSize*(postsPage-1)+ posts.size()}</c:when><c:otherwise>${pageSize*(postsPage)}</c:otherwise></c:choose>
                      <spring:message code="forum.showing_results"/> ${postsAmount}
@@ -121,7 +121,7 @@
                                         <div class="row extra-info">
                                             <div class="col-9 tags">
                                                 <c:forEach items="${post.postTags}" var="tag">
-                                                    <button  class="badge badge-color ml-1" onclick="goToTag('${tag.tagName}')">
+                                                    <button  class="badge badge-color ml-1" onclick="goToCat('${tag.tagName}')">
                                                         <span>
                                                             ${tag.tagName}
                                                         </span>
@@ -208,8 +208,8 @@
     
 
     <script>
-        function goToTag( tagName ){
-            window.location.href = "<c:url value="/"/>" + "posts/tag/" + tagName;
+        function goToCat( catName ){
+            window.location.href = "<c:url value="/"/>" + "posts/categories/" + catName;
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

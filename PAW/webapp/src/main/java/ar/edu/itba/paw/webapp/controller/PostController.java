@@ -110,6 +110,30 @@ public class PostController {
         return ErrorController.redirectToErrorView();
     }
 
+    @RequestMapping("/posts/tag/{tagName}")
+    public ModelAndView postsByTagName(@PathVariable String tagName,  @RequestParam(value = "page", required = false, defaultValue = START_PAGE) Long postsPage) {
+
+        final ModelAndView mav = new ModelAndView("posts/posts_by_tag_name");
+
+        final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        mav.addObject("posts", ps.getByTagName( tagName,postsPage, POSTS_PAGE_SIZE) );
+        mav.addObject("postsPage", postsPage);
+        mav.addObject("pageSize", POSTS_PAGE_SIZE);
+        mav.addObject("postsAmount", ps.getPostsAmount());
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        mav.addObject("downVoteForm", new DownVoteForm());
+        mav.addObject("upVoteForm", new UpVoteForm());
+
+        if( optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("isEnable", user.isEnable());
+        }
+
+        return mav;
+    }
+
     @RequestMapping("/posts/add_post")
     public ModelAndView addPostPage() {
 

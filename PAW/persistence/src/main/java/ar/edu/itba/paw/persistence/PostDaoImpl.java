@@ -42,7 +42,22 @@ public class PostDaoImpl implements PostDao {
         List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
 
         if(!resultList.isEmpty()) {
-            TypedQuery<Post> query = em.createQuery("from Post as p where p.postId in (:resultList)", Post.class);
+            TypedQuery<Post> query = em.createQuery("select distinct p from Post as p where p.postId in (:resultList)", Post.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<Post> getByTagName(String tagName, long page, long pageSize) {
+        Query pagingQuery = em.createNativeQuery("SELECT DISTINCT p.post_id FROM posts p natural JOIN post_tags t  WHERE t.tag_name = " + String.valueOf(tagName)+ " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Post> query = em.createQuery("select p from Post as p inner join PostTag t on p.postId = t.post.postId where p.postId in (:resultList)", Post.class);
             query.setParameter("resultList", resultList);
             return query.getResultList();
         }else{
