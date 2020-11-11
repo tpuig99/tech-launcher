@@ -30,7 +30,7 @@
         <div class="page-description"></div>
 
         <c:url value="/posts/addPost/add" var="postPath"/>
-        <form:form modelAttribute="addPostForm" action="${postPath}" method="post" id="addTechForm" enctype="multipart/form-data">
+        <form:form modelAttribute="addPostForm" action="${postPath}" method="post" id="addPostForm" enctype="multipart/form-data">
             <form:errors cssClass="formError" element="p"/>
             <div class="form-group">
                 <spring:message code="add_tech.name.placeholder" var="techname_placeholder" />
@@ -45,11 +45,19 @@
                 <form:errors path="description" element="p" cssClass="formError"/>
             </div>
 
+            <!-- Tags Start -->
+            <div class="search-bar sidebar-title">
+                <form:label path="tag">Tags</form:label>
+                <form:input path="tag" id="searchInput" class="form-control mr-sm-2" type="text" aria-label="Search"/>
+                <form:errors path="tag" element="p" cssClass="formError"/>
+            </div>
+
+            <!-- Tags Finish -->
 
             <div class="d-flex justify-content-center mt-4">
                 <a href="<c:url value="/"/>" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
-                <input class="btn btn-info" id="addTechButton" type="submit" value="<spring:message code="button.submit"/>"/>
-                <div class="btn btn-info disabled" id="addTechLoading" hidden>
+                <input class="btn btn-info" id="addPostButton" type="submit" value="<spring:message code="button.submit"/>"/>
+                <div class="btn btn-info disabled" id="addPostLoading" hidden>
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     <spring:message code="button.loading"/>
                 </div>
@@ -58,11 +66,21 @@
     </div>
 
     <script>
+        let tags = [];
+        let tagsInDisplay = [];
+
         $(document).ready(function() {
-            $('#addTechForm').on('submit', function(){
-                $('#addTechButton').prop("hidden",true);
-                $('#addTechLoading').prop("hidden",false);
+            $('#addPostForm').on('submit', function(){
+                $('#addPostButton').prop("hidden",true);
+                $('#addPostLoading').prop("hidden",false);
             });
+            <c:forEach items="tags" var="tag">
+                tags.push("${tag}");
+            </c:forEach>
+
+            $('#searchInput').autocomplete({
+                source : tags,
+            })
         });
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

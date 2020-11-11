@@ -19,6 +19,10 @@ public class AddPostForm {
     @Size(max = 5000)
     String description;
 
+    @NotNull
+    @NotEmpty
+    String tag;
+
     public String getTitle() {
         return title;
     }
@@ -35,4 +39,11 @@ public class AddPostForm {
         this.description = description;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 }

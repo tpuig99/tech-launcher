@@ -3,10 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.Post;
 import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.service.FrameworkService;
-import ar.edu.itba.paw.service.PostCommentService;
-import ar.edu.itba.paw.service.PostService;
-import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.frameworks.CommentForm;
 import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
 import ar.edu.itba.paw.webapp.form.posts.AddPostForm;
@@ -36,6 +33,9 @@ public class PostController {
 
     @Autowired
     PostCommentService pcs;
+
+    @Autowired
+    PostTagService pts;
 
     @Autowired
     private UserService us;
@@ -136,6 +136,7 @@ public class PostController {
         final ModelAndView mav = new ModelAndView("posts/add_post");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("addPostForm", new AddPostForm());
+        mav.addObject("tags", pts.getAll() );
 
         return mav;
     }
@@ -144,7 +145,8 @@ public class PostController {
     public ModelAndView addPost(@Valid @ModelAttribute("addPostForm") final AddPostForm form ) {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() ){
-            ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
+            Post newPost = ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
+            pts.insert(form.getTag(), newPost.getPostId());
             return redirectToPosts();
         }
 

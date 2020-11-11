@@ -21,6 +21,11 @@ public class PostTagServiceImpl implements PostTagService {
     }
 
     @Override
+    public List<PostTag> getAll(){
+        return postTagDao.getAll();
+    }
+
+    @Override
     public Optional<PostTag> insert(String tagName, long postId) {
         return postTagDao.insert(tagName, postId);
     }
