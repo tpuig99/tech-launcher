@@ -1,61 +1,69 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "framework_votes")
 public class FrameworkVote {
+
+    /* Class modelling */
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "votes_vote_id_seq")
+    @SequenceGenerator(sequenceName = "votes_vote_id_seq", name = "votes_vote_id_seq", allocationSize = 1)
+    @Column(name = "vote_id")
     private long id;
-    private long frameworkId;
-    private long userId;
-    private int stars;
-    private String frameworkName;
-    private FrameworkCategories frameworkCategory;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    public String getFrameworkName() {
-        return frameworkName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "framework_id", nullable = false)
+    private Framework framework;
+
+    @Column(name = "stars", nullable = false)
+    private Integer stars;
+
+    /* Constructors */
+
+    public FrameworkVote() {
+        /* Empty constructor */
     }
 
-    public void setStars(int stars) {
+    public FrameworkVote(Framework framework, User user, Integer stars) {
+        this.framework = framework;
+        this.user = user;
         this.stars = stars;
     }
 
-    @Override
-    public String toString() {
-        return "Vote{" +
-                "voteId=" + id +
-                ", frameworkId=" + frameworkId +
-                ", userId=" + userId +
-                ", stars=" + stars +
-                '}';
-    }
+    /* Getters and Setters */
 
-    public FrameworkVote(long id, long frameworkId, long userId, int stars, String frameworkName, FrameworkCategories frameworkCategory) {
-        this.id = id;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.stars = stars;
-        this.frameworkName = frameworkName;
-        this.frameworkCategory = frameworkCategory;
-    }
+    public String getFrameworkName() { return framework.getName(); }
 
-    public long getVoteId() {
+    public int getStars() { return stars;   }
+
+    public void setStars(int stars) { this.stars = stars; }
+
+    public long getVoteId() { return id; }
+
+    public long getFrameworkId() { return framework.getId(); }
+
+    public long getUserId() { return user.getId(); }
+
+    public FrameworkCategories getFrameworkCategory() { return framework.getCategory(); }
+
+    public String getCategory(){ return framework.getCategory().name(); }
+
+    public long getId() {
         return id;
     }
 
-    public long getFrameworkId() {
-        return frameworkId;
+    public User getUser() {
+        return user;
     }
 
-    public long getUserId() {
-        return userId;
-    }
-
-    public int getStars() {
-        return stars;
-    }
-
-    public FrameworkCategories getFrameworkCategory() {
-        return frameworkCategory;
-    }
-    public String getCategory(){
-        return frameworkCategory.getNameCat();
+    public Framework getFramework() {
+        return framework;
     }
 }

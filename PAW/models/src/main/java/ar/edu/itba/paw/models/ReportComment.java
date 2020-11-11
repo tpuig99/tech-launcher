@@ -1,90 +1,113 @@
 package ar.edu.itba.paw.models;
 
-import java.sql.Timestamp;
-import java.util.*;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+@Entity
+@Table(name = "comment_report")
 public class ReportComment {
-    private long commentId;
-    private long frameworkId;
-    private long userId;
-    private String commentDescription;
-    private String reportDescription;
-    private Timestamp timestamp;
-    private Long reference;
-    private String frameworkName;
-    private String userNameOwner;
-    private Map<Long,String> userNameReporters;
-    private FrameworkCategories category;
 
-    public ReportComment(long commentId, long frameworkId, long userId, String commentDescription,String reportDescription, Timestamp timestamp, Long reference, String frameworkName, String userNameOwner,FrameworkCategories category) {
-        this.commentId = commentId;
-        this.frameworkId = frameworkId;
-        this.userId = userId;
-        this.commentDescription = commentDescription;
-        this.reportDescription = reportDescription;
-        this.timestamp = timestamp;
-        this.reference = reference;
-        this.frameworkName = frameworkName;
-        this.userNameOwner = userNameOwner;
-        this.userNameReporters = new HashMap<>();
-        this.category = category;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_report_report_id_seq")
+    @SequenceGenerator(sequenceName = "comment_report_report_id_seq", name = "comment_report_report_id_seq", allocationSize = 1)
+    @Column(name = "report_id")
+    private Long reportId;
+
+    @Column(name="description", nullable = false)
+    private String reportDescription;
+
+    //TODO user and comment should be UNIQUE(user_id,conmment_id), dont know how to do it
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id", nullable = false)
+    private Comment comment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public ReportComment() {
+
     }
 
     public long getCommentId() {
-        return commentId;
+        return comment.getCommentId();
     }
 
     public long getFrameworkId() {
-        return frameworkId;
+        return comment.getFrameworkId();
     }
 
     public long getUserId() {
-        return userId;
+        return user.getId();
     }
 
+    public String getUserReporterName(){ return user.getUsername();}
+
     public String getCommentDescription() {
-        return commentDescription;
+        return comment.getDescription();
     }
 
     public String getReportDescription() {
         return reportDescription;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public Date getTimestamp() {
+        return comment.getTimestamp();
     }
 
     public Long getReference() {
-        return reference;
+        return comment.getReference();
     }
 
     public String getFrameworkName() {
-        return frameworkName;
+        return comment.getFrameworkName();
     }
 
     public String getUserNameOwner() {
-        return userNameOwner;
-    }
-
-    public Map<Long,String> getUserNameReporters() {
-        return userNameReporters;
+        return comment.getUserName();
     }
 
     public FrameworkCategories getCategory() {
-        return category;
+        return comment.getFramework().getCategory();
     }
-    public String getCategoryAsString(){return category.getNameCat();}
-    public List<Long> getReportsIds(){
-        List<Long> list = new ArrayList<>();
-        list.addAll(userNameReporters.keySet());
-        return list;
-    }
+    public String getCategoryAsString(){return comment.getFramework().getCategory().name();}
+
+
     public List<String> getReportsUserName(){
         List<String> list = new ArrayList<>();
-        list.addAll(userNameReporters.values());
+        for (ReportComment rc:comment.getReports()) {
+            list.add(rc.getUserReporterName());
+        }
         return list;
     }
-    public void addUserReporter(long reportId,String userName){
-        userNameReporters.put(reportId,userName);
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setReportDescription(String reportDescription) {
+        this.reportDescription = reportDescription;
+    }
+
+    public Long getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(Long reportId) {
+        this.reportId = reportId;
     }
 }

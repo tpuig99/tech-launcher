@@ -1,11 +1,12 @@
 package ar.edu.itba.paw.webapp.form.frameworks;
 
+import javax.validation.constraints.NotNull;
+
 public class CommentForm {
-
+    @NotNull
     private long commentFrameworkId;
-
-    private String content;
-
+    @NotNull
+    private String comment;
     private Long commentId;
 
     public long getCommentFrameworkId() {
@@ -16,12 +17,12 @@ public class CommentForm {
         this.commentFrameworkId = commentFrameworkId;
     }
 
-    public String getContent() {
-        return content;
+    public String getComment() {
+        return comment;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Long getCommentId() {

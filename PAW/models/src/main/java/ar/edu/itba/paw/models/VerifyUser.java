@@ -1,65 +1,47 @@
 package ar.edu.itba.paw.models;
 
-public class VerifyUser {
-        private long verificationId;
-        private boolean isRequested;
-        private Comment comment;
-        private String userName;
-        private long userId;
-        private long frameworkId;
-        private String frameworkName;
-        private boolean pending;
-        private boolean admin;
-        private FrameworkCategories category;
+import javax.persistence.*;
 
-    public VerifyUser(long verificationId, Comment comment, boolean pending) {
-        this.verificationId = verificationId;
+@Entity
+@Table(name = "verify_users")
+public class VerifyUser {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verify_users_verification_id_seq")
+    @SequenceGenerator(sequenceName = "verify_users_verification_id_seq", name = "verify_users_verification_id_seq", allocationSize = 1)
+    @Column(name = "verification_id")
+    private Long verificationId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "framework_id",nullable = false)
+    private Framework framework;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",nullable = false)
+    private User user;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
+
+    @Column(nullable = false)
+    private boolean pending;
+
+    public VerifyUser() {
+    }
+
+    public VerifyUser(User user,Framework framework, Comment comment, boolean pending) {
+        this.framework = framework;
+        this.user = user;
         this.comment = comment;
         this.pending = pending;
-        isRequested = false;
-        userName=comment.getUserName();
-        userId=comment.getUserId();
-        frameworkId=comment.getFrameworkId();
-        frameworkName=comment.getFrameworkName();
-        admin=comment.isAdmin();
-        category=comment.getEnumCategory();
-    }
-
-    public VerifyUser(long verificationId, long userId,String userName, long frameworkId, String frameworkName, boolean pending) {
-        this.verificationId = verificationId;
-        this.userId = userId;
-        this.userName = userName;
-        this.frameworkId = frameworkId;
-        this.frameworkName = frameworkName;
-        this.pending = pending;
-        isRequested = true;
-    }
-
-    public VerifyUser(long verificationId, long userId,String userName, long frameworkId, String frameworkName, boolean pending, FrameworkCategories category) {
-        this.verificationId = verificationId;
-        this.userId = userId;
-        this.userName = userName;
-        this.frameworkId = frameworkId;
-        this.frameworkName = frameworkName;
-        this.pending = pending;
-        isRequested = true;
-        this.category = category;
     }
 
     public String getCategory() {
-        return category.getNameCat();
-    }
-
-    public void setCategory(FrameworkCategories category) {
-        this.category = category;
+        return framework.getCategory().name();
     }
 
     public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+        return user.isAdmin();
     }
 
     public long getVerificationId() {
@@ -67,7 +49,7 @@ public class VerifyUser {
     }
 
     public boolean isRequested() {
-        return isRequested;
+        return comment == null;
     }
 
     public boolean isPending() {
@@ -75,31 +57,51 @@ public class VerifyUser {
     }
 
     public Comment getComment() {
-            return comment;
-        }
-        public long getFrameworkId(){
-            if(!isRequested)
-                return comment.getFrameworkId();
-            return frameworkId;
-        }
-        public long getUserId(){
-            if(!isRequested)
-                return comment.getUserId();
-            return userId;
-        }
-        public String getCommentDescription(){
-            if(!isRequested)
-                return comment.getDescription();
-            return null;
-        }
-        public String getUserName(){
-            if(!isRequested)
-                return comment.getUserName();
-            return userName;
-        }
-        public String getFrameworkName(){
-            if(!isRequested)
-                return comment.getFrameworkName();
-            return frameworkName;
-        }
+        return comment;
+    }
+    public long getFrameworkId(){
+        return framework.getId();
+    }
+    public long getUserId(){
+        return user.getId();
+    }
+    public String getCommentDescription(){
+        if(comment!=null)
+            return comment.getDescription();
+        return null;
+    }
+    public String getUserName(){
+        return user.getUsername();
+    }
+    public String getFrameworkName(){
+        return framework.getName();
+    }
+
+    public void setVerificationId(Long verificationId) {
+        this.verificationId = verificationId;
+    }
+
+    public void setFramework(Framework framework) {
+        this.framework = framework;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
+    }
+
+    public Framework getFramework() {
+        return framework;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

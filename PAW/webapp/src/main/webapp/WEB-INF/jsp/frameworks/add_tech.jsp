@@ -39,48 +39,21 @@
         </div>
 
         <div class="form-group">
-                <form:label path="category"><spring:message code="add_tech.category"/></form:label>
-                <form:select path="category" class="form-control" onfocus='this.size=5;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
-                    <form:option value="Back-End Development"><spring:message code="category.back_end"/></form:option>
-                    <form:option value="Big Data"><spring:message code="category.big_data"/></form:option>
-                    <form:option value="Business"><spring:message code="category.business"/></form:option>
-                    <form:option value="Artificial Intelligence"><spring:message code="category.artificial_intelligence"/></form:option>
-                    <form:option value="Networking"><spring:message code="category.networking"/></form:option>
-                    <form:option value="Security"><spring:message code="category.security"/></form:option>
-                    <form:option value="Front-End Development"><spring:message code="category.front_end"/></form:option>
-                    <form:option value="Platforms"><spring:message code="category.platforms"/></form:option>
-                    <form:option value="Gaming"><spring:message code="category.gaming"/></form:option>
-                    <form:option value="Editors"><spring:message code="category.editors"/></form:option>
-                    <form:option value="Development Environment"><spring:message code="category.development"/></form:option>
-                    <form:option value="Databases"><spring:message code="category.databases"/></form:option>
-                    <form:option value="Media"><spring:message code="category.media"/></form:option>
-                    <form:option value="Functional Programming"><spring:message code="category.functional"/></form:option>
-                    <form:option value="Imperative Programming"><spring:message code="category.imperative"/></form:option>
-                    <form:option value="Object Oriented Programming"><spring:message code="category.object_oriented"/></form:option>
-                </form:select>
+            <form:label path="category"><spring:message code="add_tech.category"/></form:label>
+            <form:select path="category" class="form-control" onfocus='this.size=5;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                <c:forEach items="${categories}" var="cat">
+                    <form:option value="${cat}"><spring:message code="category.${cat}"/></form:option>
+                </c:forEach>
+            </form:select>
             <form:errors path="category" cssClass="formError" element="p"/>
         </div>
 
         <div class="form-group">
             <form:label path="type"><spring:message code="add_tech.type"/></form:label>
             <form:select path="type" class="form-control" onfocus='this.size=5;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
-                <form:option value="Online Platform"><spring:message code="type.online_platform"/></form:option>
-                <form:option value="Framework"><spring:message code="type.framework"/></form:option>
-                <form:option value="Service"><spring:message code="type.service"/></form:option>
-                <form:option value="Database System"><spring:message code="type.database_system"/></form:option>
-                <form:option value="Programming Language"><spring:message code="type.programming_language"/></form:option>
-                <form:option value="Operating System"><spring:message code="type.operating_system"/></form:option>
-                <form:option value="Runtime Platform"><spring:message code="type.runtime_platform"/></form:option>
-                <form:option value="Libraries"><spring:message code="type.libraries"/></form:option>
-                <form:option value="Engine"><spring:message code="type.engine"/></form:option>
-                <form:option value="Shell"><spring:message code="type.shell"/></form:option>
-                <form:option value="Terminal"><spring:message code="type.terminal"/></form:option>
-                <form:option value="Application"><spring:message code="type.application"/></form:option>
-                <form:option value="Text Editor"><spring:message code="type.text_editor"/></form:option>
-                <form:option value="CSS Modifier"><spring:message code="type.css_modifier"/></form:option>
-                <form:option value="API"><spring:message code="type.api"/></form:option>
-                <form:option value="Toolkit"><spring:message code="type.toolkit"/></form:option>
-                <form:option value="IDE"><spring:message code="type.ide"/></form:option>
+                <c:forEach items="${types}" var="typ">
+                    <form:option value="${typ}"><spring:message code="type.${typ}"/></form:option>
+                </c:forEach>
             </form:select>
             <form:errors path="type" cssClass="formError" element="p"/>
         </div>
@@ -107,8 +80,8 @@
 
         <div class="d-flex justify-content-center mt-4">
             <a href="<c:url value="/"/>" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
-            <input class="btn btn-primary" id="addTechButton" type="submit" value="<spring:message code="button.submit"/>"/>
-            <div class="btn btn-primary disabled" id="addTechLoading" hidden>
+            <input class="btn btn-info" id="addTechButton" type="submit" value="<spring:message code="button.submit"/>"/>
+            <div class="btn btn-info disabled" id="addTechLoading" hidden>
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <spring:message code="button.loading"/>
             </div>

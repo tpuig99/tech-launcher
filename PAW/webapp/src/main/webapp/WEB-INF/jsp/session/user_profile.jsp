@@ -37,23 +37,29 @@
                     <div>
                         <div class="row justify-content-end">
                             <c:if test="${profile.username == user.name}">
-                                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#editProfileModal">
+                                <button class="btn btn-info" type="button" data-toggle="modal" data-target="#editProfileModal">
                                     <i class="far fa-edit fa-sm"></i>
                                 </button>
                             </c:if>
                         </div>
 
-                        <c:choose>
-                            <c:when test="${not empty profile.base64image}">
-                                <img src="data:${profile.contentType};base64,${profile.base64image}" alt="<spring:message code="image.profile"/>" class="rounded-circle img-slot" />
-                            </c:when>
-                            <c:otherwise>
-                                <img src="https://picsum.photos/536/354" alt="<spring:message code="image.profile.random"/>" class="rounded-circle img-slot">
-                            </c:otherwise>
-                        </c:choose>
+                        <div class="row justify-content-center">
+                            <c:choose>
+                                <c:when test="${not empty profile.picture}">
+                                    <div class="max-logo d-flex align-items-center justify-content-center">
+                                        <img src="<c:url value="/users/${profile.id}/image"/>" alt="<spring:message code="image.profile"/>" class="rounded-circle img-slot"/>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="max-logo d-flex align-items-center justify-content-center">
+                                        <img src="https://picsum.photos/536/354" alt="<spring:message code="image.profile.random"/>" class="rounded-circle img-slot" />
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
 
                         <div class="row justify-content-center">
-                        <h2><c:out value="${profile.username}"/></h2>
+                            <h2><c:out value="${profile.username}"/></h2>
                             <c:choose>
                                 <c:when test="${profile.admin}">
                                     <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color-admin" data-toggle="tooltip" title="<spring:message code="tooltip.admin"/>"></i>
@@ -68,19 +74,17 @@
                             <p><strong><spring:message code="profile.description"/></strong> <c:out value="${profile.description}"/></p>
                         </c:if>
                         <c:if test="${user.name == profile.username && !isAdmin}">
-                            <div class="row allow-mod">
-                                <strong><spring:message code="profile.allow_mod"/></strong>
-                                <label class="switch align-items-end">
-                                    <input type="checkbox" id="enableMod" onclick="setModEnable()">
-                                    <span class="slider round"></span>
-                                </label>
+                            <div class="custom-control custom-checkbox mb-2">
+                                <input type="checkbox" class="custom-control-input" onclick="openStopBeingAModModal()" id="modCheckbox">
+                                <label class="custom-control-label" for="modCheckbox"><strong><spring:message code="button.moderate"/></strong></label>
                             </div>
                         </c:if>
                         <c:if test="${profile.verify}">
-                            <p><strong><spring:message code="profile.moderator"/></strong>
+                            <p>
+                                    <strong><spring:message code="profile.moderator"/></strong>
                             <c:forEach items="${verifiedList}" var="verifiedTech">
                                 <c:if test="${!verifiedTech.pending}">
-                                    <a class="tags" href="<c:url value="/${verifiedTech.category}/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
+                                    <a class="tags" href="<c:url value="/techs/${verifiedTech.category}/${verifiedTech.frameworkId}"/>">${verifiedTech.frameworkName}</a>
                                 </c:if>
                             </c:forEach>
                             </p>
@@ -122,7 +126,7 @@
                         <div class="card emphasis emph-comment row mb-2">
                             <div class="card-body row mt-1">
                                 <div class="col-3 secondary-font">
-                                    <a href="<c:url value="/${comment.category}/${comment.frameworkId}"/>">
+                                    <a href="<c:url value="/techs/${comment.category}/${comment.frameworkId}"/>">
                                         <c:out value="${comment.frameworkName}" default=""/>
                                     </a>
                                 </div>
@@ -131,34 +135,17 @@
                             </div>
                         </div>
                     </c:forEach>
-                    <ul class="pagination">
-                        <c:choose>
-                            <c:when test="${comments_page == 1}">
-                                <li class="page-item disabled">
-                            </c:when>
-                            <c:otherwise>
-                                <li class="page-item ">
-                            </c:otherwise>
-                        </c:choose>
-                            <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page-1}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
-                                <span aria-hidden="true">&lsaquo;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
-                        <c:choose>
-                            <c:when test="${comments_page*page_size >= commentsCount}">
-                                <li class="page-item disabled">
-                            </c:when>
-                            <c:otherwise>
-                                <li class="page-item">
-                            </c:otherwise>
-                        </c:choose>
-                                <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page+1}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
-                                    <span aria-hidden="true">&rsaquo;</span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </li>
-                    </ul>
+                    <!-- Comment pagination -->
+                    <jsp:include page="../components/pagination.jsp">
+                        <jsp:param name="total" value="${commentsCount}"/>
+                        <jsp:param name="page" value="${comments_page}"/>
+                        <jsp:param name="page_size" value="${page_size}"/>
+                        <jsp:param name="origin" value="profile_comment"/>
+                        <jsp:param name="username" value="${username}"/>
+                        <jsp:param name="techs_page" value="${frameworks_page}"/>
+                        <jsp:param name="contents_page" value="${contents_page}"/>
+                        <jsp:param name="votes_page" value="${votes_page}"/>
+                    </jsp:include>
                 </div>
             </c:when>
             <c:otherwise>
@@ -179,17 +166,13 @@
                         <div class="card emphasis emph-content row mb-2">
                             <div class="card-body row mt-1">
                                 <div class="col-3 secondary-font">
-                                    <a href="<c:url value="/${content.category}/${content.frameworkId}"/>">
+                                    <a href="<c:url value="/techs/${content.category}/${content.frameworkId}"/>">
                                         <c:out value="${content.frameworkName}" default=""/>
                                     </a>
                                 </div>
 
                                 <div class="col-6 text-left">
-                                    <c:choose>
-                                        <c:when test="${content.type.name() == 'course'}"><spring:message code="profile.content.course" /></c:when>
-                                        <c:when test="${content.type.name() == 'book'}"><spring:message code="profile.content.bibliography" /></c:when>
-                                        <c:when test="${content.type.name() == 'tutorial'}"><spring:message code="profile.content.tutorial" /></c:when>
-                                    </c:choose>
+                                    <spring:message code="profile.content.${content.type.name()}"/>
                                     <c:out value=" ${content.title}" default=""/>
                                 </div>
 
@@ -197,34 +180,17 @@
                             </div>
                         </div>
                     </c:forEach>
-                    <ul class="pagination">
-                        <c:choose>
-                        <c:when test="${contents_page == 1}">
-                        <li class="page-item disabled">
-                            </c:when>
-                            <c:otherwise>
-                        <li class="page-item ">
-                            </c:otherwise>
-                            </c:choose>
-                            <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page-1}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
-                                <span aria-hidden="true">&lsaquo;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
-                        <c:choose>
-                        <c:when test="${contents_page*page_size >= contentCount}">
-                        <li class="page-item disabled">
-                            </c:when>
-                            <c:otherwise>
-                        <li class="page-item">
-                            </c:otherwise>
-                            </c:choose>
-                            <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page + 1}&votes_page=${votes_page}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
-                                <span aria-hidden="true">&rsaquo;</span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </li>
-                    </ul>
+                    <!-- Content pagination -->
+                    <jsp:include page="../components/pagination.jsp">
+                        <jsp:param name="total" value="${contentCount}"/>
+                        <jsp:param name="page" value="${contents_page}"/>
+                        <jsp:param name="page_size" value="${page_size}"/>
+                        <jsp:param name="origin" value="profile_content"/>
+                        <jsp:param name="username" value="${username}"/>
+                        <jsp:param name="techs_page" value="${frameworks_page}"/>
+                        <jsp:param name="comments_page" value="${comments_page}"/>
+                        <jsp:param name="votes_page" value="${votes_page}"/>
+                    </jsp:include>
                 </div>
             </c:when>
             <c:otherwise>
@@ -243,7 +209,7 @@
                         <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
                             <div class="card-body row mt-1">
                                 <div class="col secondary-font">
-                                    <a href="<c:url value="/${vote.category}/${vote.frameworkId}"/>">
+                                    <a href="<c:url value="/techs/${vote.category}/${vote.frameworkId}"/>">
                                         <c:out value="${vote.frameworkName}" default=""/>
                                     </a>
                                 </div>
@@ -257,56 +223,43 @@
                         </div>
                     </c:forEach>
                 </div>
-                <ul class="pagination justify-content-center">
-                    <c:choose>
-                    <c:when test="${votes_page == 1}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item ">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page-1}&frameworks_page=${frameworks_page}"/>" aria-label="Previous">
-                            <span aria-hidden="true">&lsaquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <c:choose>
-                    <c:when test="${votes_page*page_size*2 >= votesCount}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page+1}&frameworks_page=${frameworks_page}"/>" aria-label="Next">
-                            <span aria-hidden="true">&rsaquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
+                <!-- Votes pagination -->
+                <jsp:include page="../components/pagination.jsp">
+                    <jsp:param name="total" value="${votesCount}"/>
+                    <jsp:param name="page" value="${votes_page}"/>
+                    <jsp:param name="page_size" value="${votes_page_size}"/>
+                    <jsp:param name="origin" value="profile_votes"/>
+                    <jsp:param name="username" value="${username}"/>
+                    <jsp:param name="techs_page" value="${frameworks_page}"/>
+                    <jsp:param name="comments_page" value="${comments_page}"/>
+                    <jsp:param name="contents_page" value="${contents_page}"/>
+                </jsp:include>
             </c:when>
             <c:otherwise>
                 <spring:message code="profile.empty.votes"/>
             </c:otherwise>
         </c:choose>
 
-    <!-- Frameworks -->
-    <c:if test="${not empty frameworks}">
-        <div class="page-title mb-4 ml-2 text-left">
-            <h2><spring:message code="profile.frameworks"/></h2>
-         </div>
+        <!-- Frameworks -->
+        <c:if test="${not empty frameworks}">
+            <div class="page-title mb-4 ml-2 text-left">
+                <h2><spring:message code="profile.frameworks"/></h2>
+            </div>
             <div class="container row equal justify-content-center">
                 <c:forEach var="framework" items="${frameworks}">
                     <div class="card mx-4 mb-4">
-                        <a href="<c:url value="/${framework.frameCategory}/${framework.id}"/>">
+                        <a href="<c:url value="/techs/${framework.category.name()}/${framework.id}"/>">
                             <div class="card-body">
                                 <c:choose>
-                                    <c:when test="${not empty framework.base64image}">
-                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    <c:when test="${not empty framework.picture}" >
+                                        <div class="max-logo d-flex align-items-center justify-content-center">
+                                            <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                        <div class="max-logo d-flex align-items-center justify-content-center">
+                                            <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -319,36 +272,22 @@
                     </div>
                 </c:forEach>
             </div>
-            <ul class="pagination justify-content-center">
-                <c:choose>
-                <c:when test="${frameworks_page == 1}">
-                <li class="page-item disabled">
-                    </c:when>
-                    <c:otherwise>
-                <li class="page-item ">
-                    </c:otherwise>
-                    </c:choose>
-                    <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
-                        <span aria-hidden="true">&lsaquo;</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-                <c:choose>
-                <c:when test="${frameworks_page*frameworks_page_size >= frameworksCount}">
-                <li class="page-item disabled">
-                    </c:when>
-                    <c:otherwise>
-                <li class="page-item">
-                    </c:otherwise>
-                    </c:choose>
-                    <a class="page-link" href="<c:url value="/users/${username}/pages?comments_page=${comments_page}&contents_page=${contents_page}&votes_page=${votes_page}&frameworks_page=${frameworks_page+1}"/>" aria-label="Next">
-                        <span aria-hidden="true">&rsaquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            </ul>
+            <!-- Tech pagination -->
+            <jsp:include page="../components/pagination.jsp">
+                <jsp:param name="total" value="${frameworksCount}"/>
+                <jsp:param name="page" value="${frameworks_page}"/>
+                <jsp:param name="page_size" value="${frameworks_page_size}"/>
+                <jsp:param name="origin" value="profile_techs"/>
+                <jsp:param name="username" value="${username}"/>
+                <jsp:param name="comments_page" value="${comments_page}"/>
+                <jsp:param name="contents_page" value="${contents_page}"/>
+                <jsp:param name="votes_page" value="${votes_page}"/>
+                <jsp:param name="techs_page" value="${frameworks_page}"/>
+            </jsp:include>
         </c:if>
     </div>
+
+    <!--Edit Profile Modal -->
 
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -362,24 +301,41 @@
                     <span aria-hidden="true">&times;</span>
                 </div>
                 <div class="modal-body container">
-                    <c:url value="/users/${username}/upload" var="postPathUploadPhoto"/>
-                    <form id="updatePictureForm" class="border-bottom" action="${postPathUploadPhoto}"  method="post" enctype="multipart/form-data">
-                        <div class="mb-2"><spring:message code="profile.change_picture"/></div>
-                        <div class="d-flex justify-content-center mb-4">
-                            <input id="uploadPictureInput" name="picture" type="file" accept="image/*" />
-                        </div>
-                        <div class="d-flex justify-content-center mb-4">
-                            <input class="btn btn-primary" disabled id="updatePictureButton" type="submit" value="<spring:message code="button.change_picture"/>"/>
-                            <div class="btn btn-primary disabled" id="updatePictureLoading" hidden>
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                <spring:message code="button.loading"/>
-                            </div>
-                        </div>
-                    </form>
+                    <!-- Change Picture and Description-->
                     <jsp:include page="profileForm.jsp">
                         <jsp:param name="username" value="${profile.username}" />
-                        <jsp:param name="description" value="${previousDescription}" />
                     </jsp:include>
+
+                    <!-- Change Password -->
+                    <div>
+                        <span><a href="${pageContext.request.contextPath}/recover/change_password"><spring:message code="profile.change_password"/></a></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stop being a mod Modal -->
+
+    <div class="modal fade" id="stopBeingAModModal" tabindex="-1" role="dialog" aria-labelledby="stopBeingAModModalLabel"  aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="stopBeingAModModalLabel"><spring:message code="profile.allow_mod"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" onclick="checkMod()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row padding-left justify-content-center align-items-center">
+                        <div><spring:message code="profile.are_you_sure_stop_mod"/></div>
+                        <div><spring:message code="profile.description_stop_mod"/></div>
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" onclick="checkMod()" aria-label="Close"><spring:message code="button.cancel"/></button>
+                        <button class="btn btn-danger ml-4" onclick="stopBeingAMod()"><spring:message code="button.stop_being_a_mod"/></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -402,13 +358,21 @@
     });
     </c:if>
 
-    function setModEnable(){
-        window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/' +  $('#enableMod').is(":checked")
+    $(document).on('focusout','#stopBeingAModModal', function () {
+        checkMod();
+    });
+
+    function stopBeingAMod(){
+        window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/false'
+    }
+
+    function enableBeingAMod(){
+        window.location.href = '<c:url value="/user/${username}/"/>' + 'enableMod/true'
     }
 
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
-        $("#enableMod").prop("checked", ${isAllowMod});
+        $("#modCheckbox").prop("checked", ${isAllowMod});
     });
 
     function editProfile(){
@@ -434,6 +398,19 @@
         });
     });
 
+    function openStopBeingAModModal(){
+        $('#modCheckbox').on('change', function() {
+            // From the other examples
+            if (this.checked) {
+                enableBeingAMod();
+            } else {
+                $('#stopBeingAModModal').modal('show');
+            }
+        });
+    }
+    function checkMod(){
+        $("#modCheckbox").prop("checked", ${isAllowMod});
+    }
 </script>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

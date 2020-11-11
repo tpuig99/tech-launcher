@@ -7,11 +7,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -24,8 +27,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
+
 @EnableTransactionManagement
 @EnableWebMvc
 @ComponentScan({ "ar.edu.itba.paw.webapp.controller","ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence","ar.edu.itba.paw.webapp.form"})
@@ -57,9 +63,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ds.setDriverClass(org.postgresql.Driver.class);
 
 //        Uncomment when using the Development BD (Ctrl + '/')
-//       ds.setUrl("jdbc:postgresql://ec2-52-22-216-69.compute-1.amazonaws.com:5432/d86l7934jmqblf");
-//       ds.setUsername("gbhbqhgxqihynh");
-//       ds.setPassword("959523c108bbcbbf94a86d25428acea2051845a79486cc83f71163d39ee834b9");
+     //  ds.setUrl("jdbc:postgresql://ec2-52-22-216-69.compute-1.amazonaws.com:5432/d86l7934jmqblf");
+      // ds.setUsername("gbhbqhgxqihynh");
+      // ds.setPassword("959523c108bbcbbf94a86d25428acea2051845a79486cc83f71163d39ee834b9");
 
 //        Uncomment when using the Local Forwarded Pampero (Ctrl + '/')
 //        ds.setUrl("jdbc:postgresql://localhost:5600/paw-2020b-1");
@@ -67,9 +73,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //        ds.setPassword("uygwr2BX7");
 
 //        Uncomment when deploying (Ctrl + '/')
-        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
-        ds.setUsername("paw-2020b-1");
-        ds.setPassword("uygwr2BX7");
+//        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
+//        ds.setUsername("paw-2020b-1");
+//        ds.setPassword("uygwr2BX7");
+
+//        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
+//        ds.setUsername("postgres");
+//        ds.setPassword("uygwr2BX7");
+
         return ds;
     }
 
@@ -101,10 +112,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         return new CommonsMultipartResolver();
     }
 
-    @Bean
+    /*@Bean
     public PlatformTransactionManager transactionManager(final DataSource ds) {
         return new DataSourceTransactionManager(ds);
-    }
+    }*/
 
     @Controller
     static class FaviconController {
@@ -113,6 +124,28 @@ public class WebConfig extends WebMvcConfigurerAdapter {
             return "forward:/resources/assets/favicon.ico";
         }
     }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        final LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+        factoryBean.setPackagesToScan("ar.edu.itba.paw.models");
+        factoryBean.setDataSource(dataSource());
+        final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        factoryBean.setJpaVendorAdapter(vendorAdapter);
+        final Properties properties = new Properties();
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
+        // Si ponen esto en prod, hay tabla!!!
+            properties.setProperty("hibernate.show_sql", "true");
+            properties.setProperty("format_sql", "true");
+        factoryBean.setJpaProperties(properties);
+        return factoryBean;
+    }
+    @Bean
+    public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
+        return new JpaTransactionManager(emf);
+    }
+
 }
 
 

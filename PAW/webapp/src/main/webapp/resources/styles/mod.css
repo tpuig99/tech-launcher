@@ -1,5 +1,15 @@
 .page-title {
+    font-size: 1.7em;
+}
+
+.page-title-big {
     font-size: 3em;
+    justify-content: center;
+}
+
+.add-margin {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
 }
 
 .card .btn {
@@ -22,7 +32,7 @@
     justify-content: center;
     text-align: center;
     vertical-align: center;
-    padding-top: 6.5em;
+    padding-top: 2.5em;
     padding-bottom: 2em;
     width: 100%;
 }

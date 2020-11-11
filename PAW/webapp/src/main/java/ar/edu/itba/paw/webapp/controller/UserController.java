@@ -25,22 +25,27 @@ import java.util.Optional;
 public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final String DEFAULT_PROMOTE_TAB = "promote";
+    private static final String DEFAULT_DEMOTE_TAB = "demote";
+    private static final String DEFAULT_REPORT_TAB = "reports";
 
     @Autowired
-    UserService us;
-    @Autowired
-    FrameworkService fs;
+    private UserService us;
 
     @Autowired
-    CommentService commentService;
+    private FrameworkService fs;
 
     @Autowired
-    ContentService contentService;
+    private CommentService commentService;
+
     @Autowired
-    MessageSource messageSource;
+    private ContentService contentService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     private final long pageStart=1;
-    private final long PAGESIZE=5;
+    private final long PAGE_SIZE=5;
 
     private static final String MOD_VIEW = "/mod";
 
@@ -51,9 +56,12 @@ public class UserController {
         String username = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<User> user = us.findByUsername(username);
         if(user.isPresent()){
-            Optional<VerifyUser> vu = us.getVerifyByFrameworkAndUser(frameworkId,user.get().getId());
-            if(!vu.isPresent())
-                us.createVerify(user.get().getId(),frameworkId);
+            if(!user.get().hasAppliedToFramework(frameworkId)){
+                Optional<Framework> framework = fs.findById(frameworkId);
+                if(framework.isPresent())
+                    us.createVerify(user.get(),framework.get());
+            }
+
         }
         String referer = request.getHeader("Referer");
 
@@ -67,7 +75,7 @@ public class UserController {
             us.deleteVerification(form.getRejectUserVerificationId());
         }
 
-        return modPage(null, null, null, null, null);
+        return modPage(DEFAULT_PROMOTE_TAB,null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/rejectPending"}, method = RequestMethod.POST )
@@ -77,7 +85,7 @@ public class UserController {
             us.deleteVerification(form.getRejectPendingUserVerificationId());
         }
 
-        return modPage(null, null, null, null, null);
+        return modPage(DEFAULT_PROMOTE_TAB,null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/accept"}, method = RequestMethod.POST)
@@ -87,8 +95,8 @@ public class UserController {
             us.verify(form.getPromoteUserVerificationId());
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
-            }
-        return modPage(null, null, null, null, null);
+        }
+        return modPage(DEFAULT_PROMOTE_TAB,null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/acceptPending"}, method = RequestMethod.POST)
@@ -99,7 +107,7 @@ public class UserController {
             Optional<User> user = us.findById(vu.get().getUserId());
             user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
         }
-        return modPage(null, null, null, null, null);
+        return modPage(DEFAULT_PROMOTE_TAB,null, null, null, null, null);
     }
 
     @RequestMapping(path = {"/demote"}, method = RequestMethod.POST)
@@ -111,11 +119,12 @@ public class UserController {
         }
 
         LOGGER.error("User: Attempting to demote a non promoted user");
-        return modPage(null, null, null, null, null);
+        return modPage(DEFAULT_DEMOTE_TAB,null, null, null, null, null);
     }
 
     @RequestMapping("/mod")
-    public ModelAndView modPage(@RequestParam(value = "modsPage", required = false) final Long modsPage,
+    public ModelAndView modPage(@RequestParam(value = "tabs", defaultValue = DEFAULT_PROMOTE_TAB, required = false) final String tabs,
+                                @RequestParam(value = "modsPage", required = false) final Long modsPage,
                                 @RequestParam(value = "rComPage", required = false) final Long rComPage,
                                 @RequestParam(value = "applicantsPage", required = false) final Long applicantsPage,
                                 @RequestParam(value = "verifyPage", required = false) final Long verifyPage,
@@ -132,7 +141,7 @@ public class UserController {
         mav.addObject("rejectPendingUserForm", new RejectPendingUserForm());
         mav.addObject("promotePendingUserForm", new PromotePendingUserForm());
         mav.addObject("revokePromotionForm", new RevokePromotionForm());
-
+        mav.addObject("selectTab",tabs);
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( userOptional.isPresent()){
             User user = userOptional.get();
@@ -144,21 +153,26 @@ public class UserController {
                 List<VerifyUser> applicants = us.getApplicantsByPending(true, applicantsPage == null ? pageStart:applicantsPage);
                 List<ReportComment> reportedComments = commentService.getAllReport(rComPage == null ? pageStart:rComPage);
                 List<ReportContent> reportedContents = contentService.getAllReports(rConPage == null ? pageStart:rConPage);
-                mav.addObject("pageSize", PAGESIZE);
+                mav.addObject("pageSize", PAGE_SIZE);
 
                 mav.addObject("mods",mods);
+                mav.addObject("modsAmount",us.getVerifyByPendingAmount(false).get());
                 mav.addObject("modsPage", modsPage == null ? pageStart:modsPage);
 
                 mav.addObject("pendingToVerify", verify);
+                mav.addObject("verifyAmount",us.getVerifyByPendingAmount(true).get());
                 mav.addObject("verifyPage", verifyPage == null ? pageStart:verifyPage);
 
                 mav.addObject("pendingApplicants", applicants);
+                mav.addObject("applicantsAmount",us.getApplicantsByPendingAmount(true).get());
                 mav.addObject("applicantsPage", applicantsPage == null ? pageStart:applicantsPage);
 
                 mav.addObject("reportedComments", reportedComments);
+                mav.addObject("reportedCommentsAmount",commentService.getAllReportsAmount().get());
                 mav.addObject("rComPage", rComPage == null ? pageStart:rComPage);
 
                 mav.addObject("reportedContents", reportedContents );
+                mav.addObject("reportedContentAmount",contentService.getAllReportsAmount().get());
                 mav.addObject("rConPage", rConPage == null ? pageStart:rConPage);
 
                 return mav;
@@ -173,15 +187,18 @@ public class UserController {
                 List<VerifyUser> applicants = us.getApplicantsByFrameworks(frameworksIds, applicantsPage == null ? pageStart:applicantsPage);
                 List<ReportContent> reportContents = contentService.getReportsByFrameworks(frameworksIds, rConPage == null ? pageStart:rConPage);
 
-                mav.addObject("pageSize", PAGESIZE);
+                mav.addObject("pageSize", PAGE_SIZE);
 
                 mav.addObject("pendingToVerify",verify);
+                mav.addObject("verifyAmount",us.getVerifyByFrameworkAmount(frameworksIds,true).get());
                 mav.addObject("verifyPage", verifyPage == null ? pageStart:verifyPage);
 
                 mav.addObject("pendingApplicants", applicants);
+                mav.addObject("applicantsAmount",us.getApplicantsByFrameworkAmount(frameworksIds,true).get());
                 mav.addObject("applicantsPage", applicantsPage == null ? pageStart:applicantsPage);
 
                 mav.addObject("reportedContents", reportContents);
+                mav.addObject("reportedContentAmount",contentService.getReportsAmount(frameworksIds).get());
                 mav.addObject("rConPage", rConPage == null ? pageStart:rConPage);
                 return mav;
             }
@@ -254,7 +271,7 @@ public class UserController {
                 if( commentOptional.isPresent() ){
                     commentService.acceptReport(form.getDeleteCommentId());
                     LOGGER.info("User: Comment {} was successfully deleted", form.getDeleteCommentId());
-                    return modPage(null, null, null, null, null);
+                    return modPage(DEFAULT_REPORT_TAB,null, null, null, null, null);
                 }
                 LOGGER.error("User: Comment {} was not found", form.getDeleteCommentId());
                 return ErrorController.redirectToErrorView();
@@ -275,7 +292,7 @@ public class UserController {
             if( user.isAdmin() ){
                 commentService.denyReport(form.getIgnoreCommentId());
                 LOGGER.info("User: Comment {} was removed from its report", form.getIgnoreCommentId());
-                return modPage(null, null, null, null, null);
+                return modPage(DEFAULT_REPORT_TAB,null, null, null, null, null);
             }
             LOGGER.error("User: User {} has not enough privileges to ignore a reported comment", user.getId());
             return ErrorController.redirectToErrorView();
@@ -290,12 +307,12 @@ public class UserController {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            if( user.isAdmin() ){
+            if( user.isAdmin() || user.isVerify()){
                 Optional<Content> contentOptional = contentService.getById(form.getDeleteContentId());
                 if( contentOptional.isPresent() ){
                     contentService.acceptReport(form.getDeleteContentId());
                     LOGGER.info("User: Content {} was successfully deleted", form.getDeleteContentId());
-                    return modPage(null, null, null, null, null);
+                    return modPage(DEFAULT_REPORT_TAB,null, null, null, null, null);
                 }
                 LOGGER.error("User: Content {} was not found", form.getDeleteContentId());
                 return ErrorController.redirectToErrorView();
@@ -313,12 +330,12 @@ public class UserController {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            if( user.isAdmin() ){
+            if( user.isAdmin() || user.isVerify()){
                 Optional<Content> contentOptional = contentService.getById(form.getIgnoreContentId());
                 if( contentOptional.isPresent() ){
                     contentService.denyReport(form.getIgnoreContentId());
                     LOGGER.info("User: Content {} was removed from its report", form.getIgnoreContentId());
-                    return modPage(null, null, null, null, null);
+                    return modPage(DEFAULT_REPORT_TAB,null, null, null, null, null);
                 }
             }
             LOGGER.error("User: User {} has not enough privileges to ignore a reported content", user.getId());

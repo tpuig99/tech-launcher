@@ -20,7 +20,7 @@
 
     <div class="form-group">
         <div>
-        <form:label path="type"><spring:message code="tech.content.form.select_type"/></form:label>
+            <form:label path="type"><spring:message code="tech.content.form.select_type"/></form:label>
         </div>
         <div>
             <form:select path="type" class="form-control" name="newRating" id="newRating">
@@ -44,8 +44,8 @@
     <!--<input type="file" id="fileElem" multiple accept="application/pdf" style="display:none" onchange="handleFiles(this.files)">
     <a href="javascript:selectFiles()">Select some files</a>-->
     <div class="d-flex justify-content-center">
-        <input class="btn btn-primary" id="contentFormButton" type="submit" value="<spring:message code="button.submit"/>"/>
-        <div class="btn btn-primary disabled" id="contentLoading" hidden>
+        <input class="btn btn-info" id="contentFormButton" type="submit" value="<spring:message code="button.submit"/>"/>
+        <div class="btn btn-info disabled" id="contentLoading" hidden>
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <spring:message code="button.loading"/>
         </div>

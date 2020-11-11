@@ -2,14 +2,12 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.ContentDao;
-import ar.edu.itba.paw.persistence.ContentVoteDao;
 import ar.edu.itba.paw.persistence.ReportContentDao;
 import ar.edu.itba.paw.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,15 +15,12 @@ import java.util.Optional;
 public class ContentServiceImpl implements ContentService {
 
     @Autowired
-    ContentDao content;
+    private ContentDao content;
 
     @Autowired
-    ContentVoteDao cv;
+    private ReportContentDao rc;
 
-    @Autowired
-    ReportContentDao rc;
-
-    private long PAGESIZE = 5;
+    private final long PAGE_SIZE = 5;
 
     @Transactional(readOnly = true)
     @Override
@@ -33,34 +28,23 @@ public class ContentServiceImpl implements ContentService {
         return content.getById(contentId);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<Content> getContentByFramework(long frameworkId) {
-        return content.getContentByFramework(frameworkId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Content> getContentByFrameworkAndUser(long frameworkId, long userId) {
-        return content.getContentByFrameworkAndUser(frameworkId, userId);
-    }
 
     @Transactional(readOnly = true)
     @Override
     public List<Content> getContentByUser(long userId, long page) {
-        return content.getContentByUser(userId, page, PAGESIZE );
+        return content.getContentByUser(userId, page, PAGE_SIZE );
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Integer> getContentCountByUser( long userId ){
+    public Optional<Long> getContentCountByUser( long userId ){
         return content.getContentCountByUser(userId);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page) {
-        return content.getContentByFrameworkAndType(frameworkId, type, page, PAGESIZE);
+        return content.getContentByFrameworkAndType(frameworkId, type, page, PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)
@@ -87,42 +71,20 @@ public class ContentServiceImpl implements ContentService {
         return content.changeContent(contentId, title, link, types);
     }
 
-    @Transactional
-    @Override
-    public void vote(long contentId, long userId,int voteSign) {
-        Optional<ContentVote> vote = cv.getByContentAndUser(contentId,userId);
-        if(vote.isPresent()){
-            if(vote.get().getVote() == voteSign)
-                cv.delete(vote.get().getContentVoteId());
-            else
-                cv.update(vote.get().getContentVoteId(),voteSign);
-        }else {
-            cv.insert(contentId, userId, voteSign);
-        }
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<ReportContent> getReporstById(long reportId) {
-        return rc.getById(reportId);
-    }
-
     @Transactional(readOnly = true)
     @Override
     public List<ReportContent> getAllReports(long page) {
-        return rc.getAll(page, PAGESIZE);
+        return rc.getAll(page, PAGE_SIZE);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public List<ReportContent> getReportsByFramework(long frameworkId) {
-        return rc.getByFramework(frameworkId);
+    public Optional<Integer> getAllReportsAmount() {
+        return rc.getAllReportsAmount();
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public Optional<ReportContent> getReportsByContent(long contentId) {
-        return rc.getByContent(contentId);
+    public Optional<Integer> getReportsAmount(List<Long> frameworksIds) {
+        return rc.getReportsAmount(frameworksIds);
     }
 
     @Transactional
@@ -152,6 +114,6 @@ public class ContentServiceImpl implements ContentService {
     @Transactional
     @Override
     public List<ReportContent> getReportsByFrameworks(List<Long> frameworksIds, long page) {
-        return rc.getByFrameworks(frameworksIds, page, PAGESIZE);
+        return rc.getByFrameworks(frameworksIds, page, PAGE_SIZE);
     }
 }

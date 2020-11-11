@@ -16,29 +16,29 @@ import java.util.Optional;
 
 @ControllerAdvice
 public class ErrorController {
-        @Autowired
-        private UserService us;
+    @Autowired
+    private UserService us;
 
-        private static final Logger LOGGER = LoggerFactory.getLogger(ErrorController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorController.class);
 
-        private static final String ERROR_VIEW = "/error";
+    private static final String ERROR_VIEW = "/error";
 
-        public static ModelAndView redirectToErrorView() { return new ModelAndView("redirect:" + ERROR_VIEW); }
+    public static ModelAndView redirectToErrorView() { return new ModelAndView("redirect:" + ERROR_VIEW); }
 
 
-        @ExceptionHandler(value = Exception.class)
-        public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) {
-            LOGGER.error("Arrived to Error Controller from Exception {}", e.getMessage());
-            ModelAndView mav = new ModelAndView("error");
-            mav.addObject("exception", e);
-            mav.addObject("url", req.getRequestURL());
-            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+    @ExceptionHandler(value = Exception.class)
+    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) {
+        LOGGER.error("Arrived to Error Controller from Exception {}", e.getMessage());
+        ModelAndView mav = new ModelAndView("error");
+        mav.addObject("exception", e);
+        mav.addObject("url", req.getRequestURL());
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
-            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            user.ifPresent(value -> mav.addObject("user_isMod", value.isVerify() || value.isAdmin()));
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        user.ifPresent(value -> mav.addObject("user_isMod", value.isVerify() || value.isAdmin()));
 
-            return mav;
-        }
+        return mav;
+    }
 
 
     @RequestMapping("/403")
