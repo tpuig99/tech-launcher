@@ -12,5 +12,6 @@ public interface PostTagService {
     Optional<PostTag> insert(String tagName, long postId);
     void delete(long tagId);
 
+    List<PostTag> getAll();
 
 }

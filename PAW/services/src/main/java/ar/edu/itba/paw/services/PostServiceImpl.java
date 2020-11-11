@@ -40,6 +40,11 @@ public class PostServiceImpl implements PostService {
         return postDao.getPostsByUser(userId, page, pageSize);
     }
 
+    @Override
+    public List<Post> getByTagName(String category, long page, long pageSize) {
+        return postDao.getByTagName(category,page, pageSize);
+    }
+
     @Transactional
     @Override
     public Post insertPost( long userId, String title, String description) {

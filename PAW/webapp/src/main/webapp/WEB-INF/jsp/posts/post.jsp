@@ -23,14 +23,9 @@
         <jsp:param name="isMod" value="${user_isMod}"/>
     </jsp:include>
 
-    <div class="sidenav overflow-auto">
-        <c:forEach var="category" items="${categories_sidebar}">
-            <a href="<c:url value="/posts/category/${category}"/>"><spring:message code="category.${category}"/></a>
-        </c:forEach>
-    </div>
 
     <!-- Question Section -->
-    <div class="content">
+    <div class="content-no-sidebar-left">
         <div class="ml-4 mr-1"><h1>${post.title}</h1></div>
         <div class="post-cards">
             <div class="row">
@@ -233,13 +228,13 @@
 
                     </c:forEach>
                 </c:when>
-                <c:otherwise><!-- TODO: spring message -->LACA</c:otherwise>
+                <c:otherwise><spring:message code="post.no_answers_yet"/></c:otherwise>
             </c:choose>
         </div>
 
         <div class="user-comment">
             <div class="container">
-                <h4 class="title"><!-- TODO: spring message -->Answer yourself!</h4>
+                <h4 class="title"><spring:message code="post.answer_yourself"/></h4>
             </div>
 
 
