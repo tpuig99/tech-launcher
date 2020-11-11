@@ -8,20 +8,24 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+@NotEmptyTags
 public class AddPostForm {
+
     @NotEmpty
     @Size(min = 3, max = 50)
     @Pattern(regexp = "[a-zA-Z0-9 -]+")
-    String title;
+    private String title;
 
-    @NotNull
     @NotEmpty
     @Size(max = 5000)
-    String description;
+    private String description;
 
-    @NotNull
-    @NotEmpty
-    String tag;
+    private List<String> names;
+
+    private List<String> categories;
+
+    private List<String> types;
+
 
     public String getTitle() {
         return title;
@@ -39,11 +43,27 @@ public class AddPostForm {
         this.description = description;
     }
 
-    public String getTag() {
-        return tag;
+    public List<String> getNames() {
+        return names;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setNames(List<String> names) {
+        this.names = names;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
+    public List<String> getTypes() {
+        return types;
+    }
+
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 }

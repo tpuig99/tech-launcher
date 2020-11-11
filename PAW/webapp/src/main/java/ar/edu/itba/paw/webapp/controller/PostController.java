@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.Post;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.frameworks.CommentForm;
 import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
@@ -15,10 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +30,8 @@ public class PostController {
     @Autowired
     PostService ps;
 
+    @Autowired
+    private FrameworkService fs;
 
     @Autowired
     PostCommentService pcs;
@@ -131,23 +133,45 @@ public class PostController {
     }
 
     @RequestMapping("/posts/add_post")
-    public ModelAndView addPostPage() {
+    public ModelAndView addPostPage(@ModelAttribute("addPostForm") final AddPostForm form) {
 
         final ModelAndView mav = new ModelAndView("posts/add_post");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("addPostForm", new AddPostForm());
-        mav.addObject("tags", pts.getAll() );
+
+        mav.addObject("categories", fs.getAllCategories());
+        mav.addObject("frameworkNames", fs.getFrameworkNames());
+        mav.addObject("types", fs.getAllTypes());
+
 
         return mav;
     }
 
-    @RequestMapping("/posts/addPost/add")
-    public ModelAndView addPost(@Valid @ModelAttribute("addPostForm") final AddPostForm form ) {
+    @RequestMapping(path= "/posts/addPost/add", method = RequestMethod.POST)
+    public ModelAndView addPost(@Valid @ModelAttribute("addPostForm") final AddPostForm form , final BindingResult errors) {
+
+        if(errors.hasErrors()){
+            return addPostPage(form);
+        }
+
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() ){
             Post newPost = ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
-            pts.insert(form.getTag(), newPost.getPostId());
-            return redirectToPosts();
+
+            for( String name : form.getNames()){
+                pts.insert(name, newPost.getPostId());
+            }
+
+            for( String c : form.getCategories()){
+                pts.insert(FrameworkCategories.valueOf(c).name(), newPost.getPostId());
+
+            }
+
+            for( String c : form.getTypes()){
+                pts.insert(FrameworkType.valueOf(c).name(), newPost.getPostId());
+            }
+
+
+            return redirectToPost(newPost.getPostId());
         }
 
         return ErrorController.redirectToErrorView();

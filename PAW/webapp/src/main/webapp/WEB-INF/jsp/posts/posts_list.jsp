@@ -121,7 +121,7 @@
                                         <div class="row extra-info">
                                             <div class="col-9 tags">
                                                 <c:forEach items="${post.postTags}" var="tag">
-                                                    <button  class="badge badge-color ml-1" onclick="goToTag('${tag.tagName}')">
+                                                    <button  class="badge badge-color ml-1"<%-- onclick="goToTag('${tag.tagName}')"--%>>
                                                         <span>
                                                             ${tag.tagName}
                                                         </span>
