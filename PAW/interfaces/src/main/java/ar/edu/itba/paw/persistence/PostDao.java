@@ -11,6 +11,7 @@ public interface PostDao {
     List<Post> getAll(long page, long pageSize);
     int getAmount();
     List<Post> getPostsByUser(long userId, long page, long pageSize);
+    List<Post> getByTagName(String tagName, long page, long pageSize);
 
     Post insertPost(long userId, String title, String description);
     void deletePost(long postId);

@@ -1,12 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.Post;
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.service.FrameworkService;
-import ar.edu.itba.paw.service.PostCommentService;
-import ar.edu.itba.paw.service.PostService;
-import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.frameworks.CommentForm;
 import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
 import ar.edu.itba.paw.webapp.form.posts.AddPostForm;
@@ -18,10 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,10 +31,13 @@ public class PostController {
     PostService ps;
 
     @Autowired
-    FrameworkService fs;
+    private FrameworkService fs;
 
     @Autowired
     PostCommentService pcs;
+
+    @Autowired
+    PostTagService pts;
 
     @Autowired
     private UserService us;
@@ -61,7 +61,6 @@ public class PostController {
         final ModelAndView mav = new ModelAndView("posts/posts_list");
         final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        mav.addObject("categories_sidebar", fs.getAllCategories());
         mav.addObject("posts", ps.getAll(postsPage, POSTS_PAGE_SIZE) );
         mav.addObject("postsPage", postsPage);
         mav.addObject("pageSize", POSTS_PAGE_SIZE);
@@ -81,7 +80,7 @@ public class PostController {
 
 
     @RequestMapping("/posts/{id}")
-    public ModelAndView post(@PathVariable long id) {
+    public ModelAndView post(@PathVariable long id, @ModelAttribute("postCommentForm") final PostCommentForm form ) {
 
         final ModelAndView mav = new ModelAndView("posts/post");
 
@@ -92,11 +91,9 @@ public class PostController {
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
             mav.addObject("downVoteForm", new DownVoteForm());
             mav.addObject("upVoteForm", new UpVoteForm());
-            mav.addObject("categories_sidebar", fs.getAllCategories());
             mav.addObject("commentForm", new CommentForm());
             mav.addObject("downVoteCommentForm", new DownVoteForm());
             mav.addObject("upVoteCommentForm", new UpVoteForm());
-            mav.addObject("postCommentForm", new PostCommentForm());
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()) {
@@ -110,22 +107,70 @@ public class PostController {
         return ErrorController.redirectToErrorView();
     }
 
-    @RequestMapping("/posts/add_post")
-    public ModelAndView addPostPage() {
+    @RequestMapping("/posts/tag/{tagName}")
+    public ModelAndView postsByTagName(@PathVariable String tagName,  @RequestParam(value = "page", required = false, defaultValue = START_PAGE) Long postsPage) {
 
-        final ModelAndView mav = new ModelAndView("posts/add_post");
+        final ModelAndView mav = new ModelAndView("posts/posts_by_tag_name");
+
+        final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        mav.addObject("posts", ps.getByTagName( tagName,postsPage, POSTS_PAGE_SIZE) );
+        mav.addObject("postsPage", postsPage);
+        mav.addObject("pageSize", POSTS_PAGE_SIZE);
+        mav.addObject("postsAmount", ps.getPostsAmount());
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("addPostForm", new AddPostForm());
+        mav.addObject("downVoteForm", new DownVoteForm());
+        mav.addObject("upVoteForm", new UpVoteForm());
+
+        if( optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("isEnable", user.isEnable());
+        }
 
         return mav;
     }
 
-    @RequestMapping("/posts/addPost/add")
-    public ModelAndView addPost(@Valid @ModelAttribute("addPostForm") final AddPostForm form ) {
+    @RequestMapping("/posts/add_post")
+    public ModelAndView addPostPage(@ModelAttribute("addPostForm") final AddPostForm form) {
+
+        final ModelAndView mav = new ModelAndView("posts/add_post");
+        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+
+        mav.addObject("categories", fs.getAllCategories());
+        mav.addObject("frameworkNames", fs.getFrameworkNames());
+        mav.addObject("types", fs.getAllTypes());
+
+
+        return mav;
+    }
+
+    @RequestMapping(path= "/posts/addPost/add", method = RequestMethod.POST)
+    public ModelAndView addPost(@Valid @ModelAttribute("addPostForm") final AddPostForm form , final BindingResult errors) {
+
+        if(errors.hasErrors()){
+            return addPostPage(form);
+        }
+
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() ){
-            ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
-            return redirectToPosts();
+            Post newPost = ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
+
+            for( String name : form.getNames()){
+                pts.insert(name, newPost.getPostId());
+            }
+
+            for( String c : form.getCategories()){
+                pts.insert(FrameworkCategories.valueOf(c).name(), newPost.getPostId());
+
+            }
+
+            for( String c : form.getTypes()){
+                pts.insert(FrameworkType.valueOf(c).name(), newPost.getPostId());
+            }
+
+
+            return redirectToPost(newPost.getPostId());
         }
 
         return ErrorController.redirectToErrorView();
@@ -173,7 +218,7 @@ public class PostController {
     public ModelAndView voteDown(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") long postId){
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() && postId == form.getDownVoteCommentPostId()){
+        if( user.isPresent() && postId == form.getDownVotePostId()){
             ps.vote(form.getDownVotePostId(), user.get().getId(), DOWN_VOTE_VALUE);
             return redirectToPost(form.getDownVotePostId());
         }
@@ -205,8 +250,13 @@ public class PostController {
         return ErrorController.redirectToErrorView();
     }
 
-    @RequestMapping( path = "/posts/comment", method = RequestMethod.POST)
-    public ModelAndView commentPost(@Valid @ModelAttribute("postCommentForm") final PostCommentForm form ){
+    @RequestMapping( path = "/posts/comment", method = RequestMethod.POST )
+    public ModelAndView commentPost(@Valid @ModelAttribute("postCommentForm") final PostCommentForm form , final BindingResult errors){
+
+        if(errors.hasErrors()){
+            return  post(form.getCommentPostId(), form);
+        }
+
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() ){
             pcs.insertPostComment(form.getCommentPostId(), user.get().getId(), form.getComment(), null);

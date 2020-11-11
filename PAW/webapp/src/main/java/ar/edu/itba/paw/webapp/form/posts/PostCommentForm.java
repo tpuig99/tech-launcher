@@ -1,12 +1,17 @@
 package ar.edu.itba.paw.webapp.form.posts;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class PostCommentForm {
+
     @NotNull
     private long commentPostId;
+
     @NotNull
+    @Size(min=1, max=500)
     private String comment;
+
     private Long commentId;
 
     public long getCommentPostId() {
