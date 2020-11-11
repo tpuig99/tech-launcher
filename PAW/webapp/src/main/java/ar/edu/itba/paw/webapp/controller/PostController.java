@@ -219,7 +219,7 @@ public class PostController {
     public ModelAndView voteDown(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") long postId){
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() && postId == form.getDownVoteCommentPostId()){
+        if( user.isPresent() && postId == form.getDownVotePostId()){
             ps.vote(form.getDownVotePostId(), user.get().getId(), DOWN_VOTE_VALUE);
             return redirectToPost(form.getDownVotePostId());
         }
