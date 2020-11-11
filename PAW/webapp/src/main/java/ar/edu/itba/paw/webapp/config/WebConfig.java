@@ -64,7 +64,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 //        Uncomment when using the Development BD (Ctrl + '/')
       ds.setUrl("jdbc:postgresql://ec2-52-22-216-69.compute-1.amazonaws.com:5432/d86l7934jmqblf");
-       ds.setUsername("gbhbqhgxqihynh");
+      ds.setUsername("gbhbqhgxqihynh");
       ds.setPassword("959523c108bbcbbf94a86d25428acea2051845a79486cc83f71163d39ee834b9");
 
 //        Uncomment when using the Local Forwarded Pampero (Ctrl + '/')
@@ -80,6 +80,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
 //        ds.setUsername("postgres");
 //        ds.setPassword("uygwr2BX7");
+
 
 
         return ds;

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/form.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/posts.css"/>"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -240,10 +241,12 @@
 
             <div class="container margin-left">
                 <div class="row">
-                    <h5><!-- TODO: spring message --><spring:message code="tech.interactions.leave_comment"/></h5>
+                    <h5><spring:message code="tech.interactions.leave_comment"/></h5>
+
                     <div>
                         <c:url value="/posts/comment" var="postPathComment"/>
                         <form:form modelAttribute="postCommentForm" action="${postPathComment}" method="post">
+                            <form:errors path="comment" element="p" cssClass="formError"/>
                             <form:label path="commentPostId"><form:input  class="input-wrap" path="commentPostId" type="hidden" value="${post.postId}"/></form:label>
 
                             <form:label path="comment"/>

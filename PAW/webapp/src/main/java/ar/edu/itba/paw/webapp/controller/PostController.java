@@ -80,7 +80,7 @@ public class PostController {
 
 
     @RequestMapping("/posts/{id}")
-    public ModelAndView post(@PathVariable long id) {
+    public ModelAndView post(@PathVariable long id, @ModelAttribute("postCommentForm") final PostCommentForm form ) {
 
         final ModelAndView mav = new ModelAndView("posts/post");
 
@@ -94,7 +94,6 @@ public class PostController {
             mav.addObject("commentForm", new CommentForm());
             mav.addObject("downVoteCommentForm", new DownVoteForm());
             mav.addObject("upVoteCommentForm", new UpVoteForm());
-            mav.addObject("postCommentForm", new PostCommentForm());
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()) {
@@ -251,8 +250,13 @@ public class PostController {
         return ErrorController.redirectToErrorView();
     }
 
-    @RequestMapping( path = "/posts/comment", method = RequestMethod.POST)
-    public ModelAndView commentPost(@Valid @ModelAttribute("postCommentForm") final PostCommentForm form ){
+    @RequestMapping( path = "/posts/comment", method = RequestMethod.POST )
+    public ModelAndView commentPost(@Valid @ModelAttribute("postCommentForm") final PostCommentForm form , final BindingResult errors){
+
+        if(errors.hasErrors()){
+            return  post(form.getCommentPostId(), form);
+        }
+
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() ){
             pcs.insertPostComment(form.getCommentPostId(), user.get().getId(), form.getComment(), null);
