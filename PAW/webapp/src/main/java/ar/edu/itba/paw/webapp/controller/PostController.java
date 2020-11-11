@@ -33,8 +33,6 @@ public class PostController {
     @Autowired
     PostService ps;
 
-    @Autowired
-    FrameworkService fs;
 
     @Autowired
     PostCommentService pcs;
@@ -61,7 +59,6 @@ public class PostController {
         final ModelAndView mav = new ModelAndView("posts/posts_list");
         final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        mav.addObject("categories_sidebar", fs.getAllCategories());
         mav.addObject("posts", ps.getAll(postsPage, POSTS_PAGE_SIZE) );
         mav.addObject("postsPage", postsPage);
         mav.addObject("pageSize", POSTS_PAGE_SIZE);
@@ -92,7 +89,6 @@ public class PostController {
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
             mav.addObject("downVoteForm", new DownVoteForm());
             mav.addObject("upVoteForm", new UpVoteForm());
-            mav.addObject("categories_sidebar", fs.getAllCategories());
             mav.addObject("commentForm", new CommentForm());
             mav.addObject("downVoteCommentForm", new DownVoteForm());
             mav.addObject("upVoteCommentForm", new UpVoteForm());
