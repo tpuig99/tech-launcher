@@ -58,7 +58,7 @@
                             <c:choose>
                                 <c:when test="${not empty framework.picture}" >
                                     <div class="max-logo d-flex align-items-center justify-content-center">
-                                        <img src="<c:url value="/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                        <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
                                     </div>
                                 </c:when>
                                 <c:otherwise>

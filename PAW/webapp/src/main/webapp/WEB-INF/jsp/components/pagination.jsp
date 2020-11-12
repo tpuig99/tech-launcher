@@ -117,7 +117,7 @@
             window.location.href="<c:url value="/techs/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page=${param.courses_page}&tutorials_page=${param.tutorials_page}&comments_page="/>"+goingPage;
         }
         else if(origin == 'category_list'){
-            window.location.href="<c:url value="/${param.category}?frameworks_page="/>"+goingPage;
+            window.location.href="<c:url value="/techs/${param.category}?frameworks_page="/>"+goingPage;
         }
         else if(origin == 'mod_mod'){
             window.location.href="<c:url value="/mod?tabs="/>"+tab+"&modsPage="+goingPage+"&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}";

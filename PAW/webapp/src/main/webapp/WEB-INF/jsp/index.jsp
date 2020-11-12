@@ -21,7 +21,7 @@
 </jsp:include>
 
 <div class="introduction">
-    <img class="mb-2" src="../../resources/assets/logo.png" alt="Page logo">
+    <img class="mb-2" src="<c:url value="/resources/assets/logo.png"/>" alt="Page logo">
     <h1> <spring:message code="home.title"/> </h1>
     <h4> <spring:message code="home.subtitle"/></h4>
 </div>

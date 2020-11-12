@@ -27,10 +27,19 @@
         <div class="title"><h1><spring:message code="forum.title"/></h1></div>
         <div class="post-cards">
             <div class="d-flex flex-row-reverse">
-                <button class="btn btn-info mt-2 mb-4" onclick="window.location.href = '<c:url value="/posts/add_post"/>'">
-                    <spring:message code="forum.add_post"/>
-                </button>
-            </div>
+                <c:choose>
+                    <c:when test="${user.name == 'anonymousUser'}">
+                        <button class="btn btn-info mt-2 mb-4" data-toggle="modal" data-target="#loginModal"">
+                            <spring:message code="forum.add_post"/>
+                        </button>
+                    </c:when>
+                    <c:otherwise>
+                        <button class="btn btn-info mt-2 mb-4" onclick="window.location.href = '<c:url value="/posts/add_post"/>'">
+                            <spring:message code="forum.add_post"/>
+                        </button>
+                    </c:otherwise>
+                </c:choose>
+                            </div>
             <div class="row showing-results">
                 <div class="col-9"></div>
                 <div class="col showing-results data">
@@ -133,7 +142,7 @@
                                                         ${post.timestamp.toLocaleString()}
                                                 </div>
                                                 <div class="row d-flex secondary-color text-right">
-                                                    <a href="<c:out value="/users/${post.user.username}"/>">${post.user.username}</a>
+                                                    <a href="<c:url value="/users/${post.user.username}"/>">${post.user.username}</a>
                                                 </div>
                                             </div>
                                         </div>

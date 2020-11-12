@@ -12,8 +12,7 @@ import java.util.List;
 public class AddPostForm {
 
     @NotEmpty
-    @Size(min = 3, max = 50)
-    @Pattern(regexp = "[a-zA-Z0-9 -]+")
+    @Size(min = 3, max = 200)
     private String title;
 
     @NotEmpty

@@ -15,8 +15,10 @@ class NotEmptyTagsValidator implements ConstraintValidator<NotEmptyTags, Object>
     public boolean isValid(Object obj, ConstraintValidatorContext context){
 
        AddPostForm postForm = (AddPostForm) obj;
-
-       return (postForm.getCategories() != null && !postForm.getCategories().isEmpty()) || (postForm.getTypes() != null && !postForm.getTypes().isEmpty()) || (postForm.getNames() != null && !postForm.getNames().isEmpty());
+       boolean categories = (postForm.getCategories() != null && !postForm.getCategories().isEmpty());
+       boolean types = (postForm.getTypes() != null && !postForm.getTypes().isEmpty());
+       boolean names = (postForm.getNames() != null && !postForm.getNames().isEmpty());
+       return  categories || types || names ;
 
     }
 }

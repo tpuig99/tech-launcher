@@ -12,8 +12,8 @@ import javax.validation.constraints.Size;
 public class FrameworkForm {
     @NotNull
     @NotEmpty
-    @Size(min = 3, max = 50)
-    @Pattern(regexp = "[a-zA-Z0-9 -]+")
+    @Size(min = 1, max = 50)
+    @Pattern(regexp = "[a-zA-Z0-9 -+#*]+")
     private String frameworkName;
 
     @NotNull

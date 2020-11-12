@@ -159,16 +159,17 @@ public class PostController {
             for( String name : form.getNames()){
                 pts.insert(name, newPost.getPostId());
             }
+            if(form.getCategories()!=null) {
+                for (String c : form.getCategories()) {
+                    pts.insert(FrameworkCategories.valueOf(c).name(), newPost.getPostId());
 
-            for( String c : form.getCategories()){
-                pts.insert(FrameworkCategories.valueOf(c).name(), newPost.getPostId());
-
+                }
             }
-
-            for( String c : form.getTypes()){
-                pts.insert(FrameworkType.valueOf(c).name(), newPost.getPostId());
+            if(form.getTypes()!=null) {
+                for (String c : form.getTypes()) {
+                    pts.insert(FrameworkType.valueOf(c).name(), newPost.getPostId());
+                }
             }
-
 
             return redirectToPost(newPost.getPostId());
         }

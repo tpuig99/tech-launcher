@@ -29,7 +29,7 @@
     <div class="content-no-sidebar-left">
         <div class="ml-4 mr-1"><h1>${post.title}</h1></div>
         <div class="post-cards">
-            <div class="row">
+            <div class="row post-data">
                 <div class=" ml-4 col-1 net-votes">
                     <c:choose>
                         <c:when test="${user.name == 'anonymousUser'}">
@@ -101,7 +101,7 @@
                     <div class="row extra-info">
                         <div class="col-9 tags">
                             <c:forEach items="${post.postTags}" var="tag">
-                                <button  class="badge badge-color ml-1" onclick="goToCat('${tag.tagName}')">
+                                <button  class="badge badge-color ml-1">
                                     <span>
                                             ${tag.tagName}
                                     </span>
@@ -113,7 +113,7 @@
                                     ${post.timestamp.toLocaleString()}
                             </div>
                             <div class="row d-flex secondary-color text-right">
-                                <a href="<c:out value="/users/${post.user.username}"/>">${post.user.username}</a>
+                                <a href="<c:url value="/users/${post.user.username}"/>">${post.user.username}</a>
                             </div>
                         </div>
                     </div>
@@ -217,7 +217,7 @@
                                                             ${answer.timestamp.toLocaleString()}
                                                     </div>
                                                     <div class="row d-flex secondary-color text-right">
-                                                        <a href="<c:out value="/users/${answer.user.username}"/>">${answer.user.username}</a>
+                                                        <a href="<c:url value="/users/${answer.user.username}"/>">${answer.user.username}</a>
                                                     </div>
                                                 </div>
                                             </div>
