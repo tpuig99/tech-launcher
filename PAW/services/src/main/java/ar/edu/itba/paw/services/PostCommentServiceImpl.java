@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Service
 public class PostCommentServiceImpl implements PostCommentService {
+    int PAGE_SIZE = 5;
 
     @Autowired
     PostCommentDao postCommentDao;
@@ -28,8 +29,8 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<PostComment> getByPost(long postId) {
-        return postCommentDao.getByPost(postId);
+    public List<PostComment> getByPost(long postId, long page) {
+        return postCommentDao.getByPost(postId, page, PAGE_SIZE);
     }
 
     @Transactional

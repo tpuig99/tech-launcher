@@ -23,9 +23,11 @@ public class PostCommentDaoImpl implements PostCommentDao{
     }
 
     @Override
-    public List<PostComment> getByPost(long postId) {
+    public List<PostComment> getByPost(long postId, long page, long pageSize) {
         final TypedQuery<PostComment> query = em.createQuery("from PostComment as pc where pc.post.id = :postId", PostComment.class);
         query.setParameter("postId", postId);
+        query.setFirstResult((int) (pageSize*(page-1)));
+        query.setMaxResults((int) pageSize);
         return query.getResultList();
     }
 

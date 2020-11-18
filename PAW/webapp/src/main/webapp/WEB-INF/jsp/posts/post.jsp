@@ -130,7 +130,7 @@
             <div class="title"><h3>Answers</h3></div>
             <c:choose>
                 <c:when test="${not empty post.postComments}">
-                    <c:forEach var="answer" items="${post.postComments}">
+                    <c:forEach var="answer" items="${answers}">
                         <div class="post-cards">
                             <div class="card mb-3 post-card-answer">
                                 <div class="card-body">
@@ -242,7 +242,15 @@
                 <c:otherwise><spring:message code="post.no_answers_yet"/></c:otherwise>
             </c:choose>
         </div>
-
+        <!-- Answers pagination -->
+        <jsp:include page="../components/pagination.jsp">
+            <jsp:param name="total" value="${post.answersAmount}"/>
+            <jsp:param name="page" value="${page}"/>
+            <jsp:param name="page_size" value="${page_size}"/>
+            <jsp:param name="origin" value='post_comment'/>
+            <jsp:param name="post_id" value='${post.postId}'/>
+            <jsp:param name="comments_page" value="${page}"/>
+        </jsp:include>
 
         <div class="answers">
             <div class="title">
