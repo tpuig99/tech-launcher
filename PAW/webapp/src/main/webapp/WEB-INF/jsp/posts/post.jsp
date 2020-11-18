@@ -95,7 +95,7 @@
                     </c:choose>
                 </div>
                 <div class="col">
-                    <div class="row post-description mr-2">
+                    <div class="row post-description mr-2 description-text">
                             ${post.description}
                     </div>
                     <div class="row extra-info">
@@ -216,7 +216,7 @@
                                             </c:choose>
                                         </div>
                                         <div class="col">
-                                            <div class="row post-description d-flex align-items-center answer-text">
+                                            <div class="row post-description d-flex align-items-center description-text">
                                                     ${answer.description}
                                             </div>
                                             <div class="row extra-info">
