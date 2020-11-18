@@ -91,6 +91,10 @@
     width: 90%;
 }
 
+.post-card-answer {
+    width: 100%;
+}
+
 .answers {
     align-items: center;
     width: 90%;
@@ -108,4 +112,8 @@
 .description-text {
     word-break: break-word;
     display: inline-block;
+}
+
+.hidden-no-space {
+    display: none;
 }
