@@ -132,7 +132,16 @@
                         <div class="post-cards">
                             <div class="card mb-3 post-card-individual">
                                 <div class="card-body">
+                                    <!-- Delete comment -->
+                                    <c:if test="${isAdmin || isOwner || answer.user.username == user.name}">
+                                        <div class="row">
+                                            <span class="col d-flex justify-content-end align-items-end">
+                                                <button class="btn btn-link" onclick="openDeleteCommentModal(${answer.postCommentId})"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
+                                            </span>
+                                        </div>
+                                    </c:if>
                                     <div class="row">
+                                        <!-- Up Vote - Down Vote section -->
                                         <div class="col-1 net-votes">
                                             <c:choose>
                                                 <c:when test="${user.name == 'anonymousUser'}">
@@ -274,6 +283,34 @@
         </div>
     </div>
 
+    <!-- Modals -->
+    <div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCommentModalLabel"><spring:message code="tech.comment.delete"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row  justify-content-center align-items-center margin-top">
+                        <div><spring:message code="tech.comment.delete.message"/></div>
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <c:url value="/posts/${post.postId}/comment/delete" var="postPathDeleteCommment"/>
+                        <form:form modelAttribute="deletePostCommentForm" action="${postPathDeleteCommment}" method="post">
+                            <form:label path="commentDeletePostId"><form:input  class="input-wrap" path="commentDeletePostId" type="hidden" value="${post.postId}"/></form:label>
+                            <form:label path="commentDeleteId"><form:input  class="input-wrap" path="commentDeleteId" type="hidden" id="commentIdDeleteInput"/></form:label>
+                            <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                            <button type="submit" class="btn btn-danger ml-4"><spring:message code="button.delete"/></button>
+                        </form:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -341,6 +378,12 @@
                 }
             });
         });
+
+        function openDeleteCommentModal(commentId){
+            $('#commentIdDeleteInput').val(commentId);
+
+            $('#deleteCommentModal').modal('show');
+        }
 
         function goToCat( catName ){
             window.location.href = "<c:url value="/"/>" + "posts/categories/" + catName;

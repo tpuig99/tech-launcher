@@ -4,10 +4,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.frameworks.CommentForm;
 import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
-import ar.edu.itba.paw.webapp.form.posts.AddPostForm;
-import ar.edu.itba.paw.webapp.form.posts.DownVoteForm;
-import ar.edu.itba.paw.webapp.form.posts.PostCommentForm;
-import ar.edu.itba.paw.webapp.form.posts.UpVoteForm;
+import ar.edu.itba.paw.webapp.form.posts.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +77,7 @@ public class PostController {
 
 
     @RequestMapping("/posts/{id}")
-    public ModelAndView post(@PathVariable long id, @ModelAttribute("postCommentForm") final PostCommentForm form ) {
+    public ModelAndView post(@PathVariable long id, @ModelAttribute("postCommentForm") final PostCommentForm form, @ModelAttribute("deletePostCommentForm") final DeletePostCommentForm deletePostCommentForm) {
 
         final ModelAndView mav = new ModelAndView("posts/post");
 
@@ -91,13 +88,14 @@ public class PostController {
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
             mav.addObject("downVoteForm", new DownVoteForm());
             mav.addObject("upVoteForm", new UpVoteForm());
-            mav.addObject("commentForm", new CommentForm());
             mav.addObject("downVoteCommentForm", new DownVoteForm());
             mav.addObject("upVoteCommentForm", new UpVoteForm());
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()) {
                 User user = optionalUser.get();
+                mav.addObject("isAdmin", user.isAdmin());
+                mav.addObject("isOwner", post.get().getUser().getId().equals(user.getId()) );
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("isEnable", user.isEnable());
             }
@@ -255,13 +253,27 @@ public class PostController {
     public ModelAndView commentPost(@Valid @ModelAttribute("postCommentForm") final PostCommentForm form , final BindingResult errors){
 
         if(errors.hasErrors()){
-            return  post(form.getCommentPostId(), form);
+            return  post(form.getCommentPostId(), form, null);
         }
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() ){
             pcs.insertPostComment(form.getCommentPostId(), user.get().getId(), form.getComment(), null);
             return redirectToPost(form.getCommentPostId());
+        }
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(path = "/posts/{postId}/comment/delete", method = RequestMethod.POST)
+    public ModelAndView deletePostComment(@PathVariable final long postId, @Valid @ModelAttribute("deletePostCommentForm") final DeletePostCommentForm form , final BindingResult errors){
+        if( errors.hasErrors() ){
+            return post(form.getCommentDeletePostId(), null, form);
+        }
+
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( user.isPresent() && postId == form.getCommentDeletePostId()){
+            pcs.deletePostComment(form.getCommentDeleteId());
+            return redirectToPost(form.getCommentDeletePostId());
         }
         return ErrorController.redirectToErrorView();
     }
