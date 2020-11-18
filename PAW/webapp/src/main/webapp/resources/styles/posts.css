@@ -104,3 +104,8 @@
 .post-data{
     width: 100%;
 }
+
+.answer-text {
+    word-break: break-word;
+    display: inline-block;
+}
