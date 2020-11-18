@@ -130,8 +130,11 @@ public class PostController {
     }
 
     @RequestMapping("/posts/add_post")
-    public ModelAndView addPostPage(@ModelAttribute("addPostForm") final AddPostForm form) {
+    public ModelAndView addPostPage(@ModelAttribute("addPostForm") final AddPostForm form, final BindingResult errors) {
 
+        if(errors.hasErrors()){
+            return addPostPage(form, errors);
+        }
         final ModelAndView mav = new ModelAndView("posts/add_post");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
@@ -147,7 +150,7 @@ public class PostController {
     public ModelAndView addPost(@Valid @ModelAttribute("addPostForm") final AddPostForm form , final BindingResult errors) {
 
         if(errors.hasErrors()){
-            return addPostPage(form);
+            return addPostPage(form, errors);
         }
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -176,8 +179,10 @@ public class PostController {
     }
 
     @RequestMapping( path = "/posts/upVote/", method = RequestMethod.POST)
-    public ModelAndView voteUp(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form){
-
+    public ModelAndView voteUp(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, final BindingResult errors){
+        if(errors.hasErrors()){
+            return  post(form.getUpVotePostId(), null, null);
+        }
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() ){
             ps.vote(form.getUpVotePostId(), user.get().getId(), UP_VOTE_VALUE);
@@ -188,8 +193,10 @@ public class PostController {
     }
 
     @RequestMapping( path = "/posts/{id}/upVote/", method = RequestMethod.POST)
-    public ModelAndView voteUpPost(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, @PathVariable("id") long postId){
-
+    public ModelAndView voteUpPost(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, @PathVariable("id") long postId, final BindingResult errors ){
+        if(errors.hasErrors()){
+            return  post(form.getUpVotePostId(), null, null);
+        }
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() && postId == form.getUpVotePostId()){
             ps.vote(form.getUpVotePostId(), user.get().getId(), UP_VOTE_VALUE);
@@ -200,8 +207,10 @@ public class PostController {
     }
 
     @RequestMapping( path = "/posts/{id}/upVoteComment/", method = RequestMethod.POST)
-    public ModelAndView voteUpComment(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, @PathVariable("id") long postId){
-
+    public ModelAndView voteUpComment(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, @PathVariable("id") long postId, final BindingResult errors ){
+        if(errors.hasErrors()){
+            return  post(form.getUpVotePostId(), null, null);
+        }
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() && postId == form.getUpVoteCommentPostId()){
             pcs.vote(form.getPostCommentUpVoteId(), user.get().getId(), UP_VOTE_VALUE);
@@ -214,8 +223,10 @@ public class PostController {
 
 
     @RequestMapping( path = "/posts/{id}/downVote/", method = RequestMethod.POST)
-    public ModelAndView voteDown(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") long postId){
-
+    public ModelAndView voteDown(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") final long postId, final BindingResult errors){
+        if(errors.hasErrors()){
+            return  post(form.getDownVotePostId(), null, null);
+        }
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() && postId == form.getDownVotePostId()){
             ps.vote(form.getDownVotePostId(), user.get().getId(), DOWN_VOTE_VALUE);
@@ -226,8 +237,10 @@ public class PostController {
     }
 
     @RequestMapping( path = "/posts/{id}/downVoteComment/", method = RequestMethod.POST)
-    public ModelAndView voteDownComment(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") long postId){
-
+    public ModelAndView voteDownComment(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") long postId, final BindingResult errors){
+        if(errors.hasErrors()){
+            return  post(form.getDownVotePostId(), null, null);
+        }
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() && postId == form.getDownVoteCommentPostId()){
             pcs.vote(form.getPostCommentDownVoteId(), user.get().getId(), DOWN_VOTE_VALUE);
@@ -238,7 +251,11 @@ public class PostController {
     }
 
     @RequestMapping( path = "/posts/downVote/", method = RequestMethod.POST)
-    public ModelAndView voteDownPost(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form){
+    public ModelAndView voteDownPost(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form, final BindingResult errors){
+
+        if(errors.hasErrors()){
+            return  post(form.getDownVotePostId(), null, null);
+        }
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() ){
@@ -250,7 +267,7 @@ public class PostController {
     }
 
     @RequestMapping( path = "/posts/comment", method = RequestMethod.POST )
-    public ModelAndView commentPost(@Valid @ModelAttribute("postCommentForm") final PostCommentForm form , final BindingResult errors){
+    public ModelAndView commentPost(@Valid @ModelAttribute("postCommentForm") final PostCommentForm form, final BindingResult errors){
 
         if(errors.hasErrors()){
             return  post(form.getCommentPostId(), form, null);
