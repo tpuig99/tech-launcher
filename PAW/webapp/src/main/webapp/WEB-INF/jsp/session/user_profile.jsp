@@ -52,7 +52,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <div class="max-logo d-flex align-items-center justify-content-center">
-                                        <img src="https://picsum.photos/536/354" alt="<spring:message code="image.profile.random"/>" class="rounded-circle img-slot" />
+                                        <img src="<c:url value="/resources/assets/user_picture_default.jpg"/>" alt="<spring:message code="image.profile.random"/>" class="rounded-circle img-slot" />
                                     </div>
                                 </c:otherwise>
                             </c:choose>
@@ -93,21 +93,27 @@
                     </div>
                 </div>
                 <div class="row mx-2 justify-content-center">
-                    <div class="col-3 emphasis">
+                    <div class="col emphasis">
                         <h2><strong><c:out value="${contentCount}"/></strong></h2>
                         <p><small><spring:message code="profile.uploaded_contents"/></small></p>
                     </div>
-                    <div class="col-3 emphasis">
+                    <div class="col emphasis">
                         <h2><strong><c:out value="${commentsCount}"/></strong></h2>
                         <p><small><spring:message code="profile.comments"/></small></p>
                     </div>
-                    <div class="col-3 emphasis">
+                    <div class="col emphasis">
                         <h2><strong><c:out value="${votesCount}"/> </strong></h2>
                         <p><small><spring:message code="profile.votes_given"/></small></p>
                     </div>
-                    <div class="col-3 emphasis">
+
+                    <div class="col emphasis">
                         <h2><strong><c:out value="${frameworksCount}"/> </strong></h2>
                         <p><small><spring:message code="profile.frameworks"/></small></p>
+                    </div>
+
+                    <div class="col emphasis">
+                        <h2><strong><c:out value="${postsCount}"/> </strong></h2>
+                        <p><small><spring:message code="profile.posts"/></small></p>
                     </div>
                 </div>
 
@@ -258,7 +264,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <div class="max-logo d-flex align-items-center justify-content-center">
-                                            <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                            <img src="<c:url value="/resources/assets/tech_picture_default.png"/>" alt="<spring:message code="tech.picture"/>"/>
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
@@ -285,7 +291,54 @@
                 <jsp:param name="techs_page" value="${frameworks_page}"/>
             </jsp:include>
         </c:if>
+
+        <!-- Posts -->
+        <div class="page-title mb-4 ml-2 text-left">
+            <h2><spring:message code="profile.posts"/></h2>
+        </div>
+        <c:choose>
+            <c:when test="${not empty posts}">
+                <div class="container d-flex justify-content-center">
+                    <c:forEach var="post" items="${posts}">
+
+                     <div class="card emphasis emph-post row mb-2">
+                         <div class="card-body row mt-1">
+                             <div class="col-3 secondary-font">
+                                 <a href="<c:url value="/posts/${post.postId}/" />">
+                                     <c:out value="${post.title}" default=""/>
+                                 </a>
+                             </div>
+                             <div class="col-6 text-left">
+                                 <c:out value=" ${post.description}" default=""/>
+                             </div>
+                             <div class="col third-font text-right">
+                                 <c:out value="${post.timestamp.toLocaleString()}" default=""/>
+                             </div>
+                         </div>
+                     </div>
+                    </c:forEach>
+
+                    <!-- Content pagination -->
+                    <jsp:include page="../components/pagination.jsp">
+                        <jsp:param name="total" value="${postsCount}"/>
+                        <jsp:param name="page" value="${posts_page}"/>
+                        <jsp:param name="page_size" value="${page_size}"/>
+                        <jsp:param name="origin" value="profile_posts"/>
+                        <jsp:param name="username" value="${username}"/>
+                        <jsp:param name="techs_page" value="${frameworks_page}"/>
+                        <jsp:param name="comments_page" value="${comments_page}"/>
+                        <jsp:param name="votes_page" value="${votes_page}"/>
+                        <jsp:param name="posts_page" value="${posts_page}" />
+                    </jsp:include>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <spring:message code="profile.empty.contents"/>
+            </c:otherwise>
+        </c:choose>
+
     </div>
+</div>
 
     <!--Edit Profile Modal -->
 
