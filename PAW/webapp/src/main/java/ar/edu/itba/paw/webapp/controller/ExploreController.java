@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.FrameworkCategories;
 import ar.edu.itba.paw.models.FrameworkType;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.FrameworkService;
+import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,12 @@ public class ExploreController {
     @Autowired
     private UserService us;
 
-    private final long startPage = 1;
-    private final long PAGE_SIZE = 24;
+    @Autowired
+    private PostService ps;
+
+    private final long START_PAGE = 1;
+    private final long TECHS_PAGE_SIZE = 24;
+    private final long POSTS_PAGE_SIZE = 5;
 
     private String getMessageWithoutArguments(String code) {
         return messageSource.getMessage(code, Collections.EMPTY_LIST.toArray(), LocaleContextHolder.getLocale());
@@ -57,7 +62,8 @@ public class ExploreController {
                                        @RequestParam(required = false) final Integer commentAmount,
                                        @RequestParam(required = false) final Integer lastComment,
                                        @RequestParam(required = false) final Integer lastUpdate,
-                                       @RequestParam(value = "page", required = false) final Long page){
+                                       @RequestParam(value = "page", required = false) final Long page,
+                                       @RequestParam(value = "postsPage", required = false) final Long postsPage){
 
         final ModelAndView mav = new ModelAndView("frameworks/explore");
         List<FrameworkCategories> categoriesList = new ArrayList<>();
@@ -76,7 +82,6 @@ public class ExploreController {
             categoriesQuery.add(c);
             categoriesList.add(FrameworkCategories.valueOf(c));
         }
-
 
         for( String c : types){
             typesQuery.add(c);
@@ -157,13 +162,16 @@ public class ExploreController {
         if(dateUpdate!=null){
             tsUpdated=Timestamp.valueOf(dateUpdate.atStartOfDay());
         }
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, order,page == null ? startPage:page);
+
+       /* --------------------- TECHS --------------------- */
+
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, order,page == null ? START_PAGE :page);
         Integer searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
         LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
 
         mav.addObject("matchingFrameworks", frameworks);
-        mav.addObject("page", page == null ? startPage:page);
-        mav.addObject("page_size", PAGE_SIZE);
+        mav.addObject("page", page == null ? START_PAGE :page);
+        mav.addObject("page_size", TECHS_PAGE_SIZE);
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("categories", allCategories);
 //        mav.addObject("categories_translated", ts.getAllCategories());
@@ -173,7 +181,7 @@ public class ExploreController {
         mav.addObject("search_page", true);
         mav.addObject("searchResultsNumber", searchResultsNumber);
 
-        //Search Results For:
+        //Search Results For TECHS :
         mav.addObject("techNameQuery", toSearch );
         mav.addObject("categoriesQuery", categoriesQuery );
         mav.addObject("typesQuery", typesQuery );
@@ -185,6 +193,19 @@ public class ExploreController {
         mav.addObject("dateCommentTranslation", dateCommentTranslation);
         mav.addObject("dateUpdate",lastUpdate);
         mav.addObject("dateUpdateTranslation", dateUpdateTranslation);
+
+
+        /* --------------------- POSTS --------------------- */
+
+        mav.addObject("posts", ps.getAll(postsPage == null ? 1 : postsPage, POSTS_PAGE_SIZE) );
+        mav.addObject("postsPage", postsPage);
+        mav.addObject("postsPageSize", POSTS_PAGE_SIZE);
+        mav.addObject("postsAmount", ps.getPostsAmount());
+
+
+
+
+        /* -------------------------------------------------- */
 
         if (order != null) {
             mav.addObject("sortValue", Math.abs(order));

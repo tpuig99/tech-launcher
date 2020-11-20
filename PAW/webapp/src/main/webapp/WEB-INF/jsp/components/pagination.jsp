@@ -136,8 +136,12 @@
         }
         else if( origin === 'posts'){
             window.location.href="<c:url value="/posts?page="/>" + goingPage;
-        } else if( origin === 'post_comment'){
+        }
+        else if( origin === 'post_comment'){
             window.location.href="<c:url value="/posts/${param.post_id}?page="/>" + goingPage;
+        }
+        else if( origin === 'search_posts'){
+            window.location.href="<c:url value="/search?postsPage="/>" + goingPage;
         }
 
     }

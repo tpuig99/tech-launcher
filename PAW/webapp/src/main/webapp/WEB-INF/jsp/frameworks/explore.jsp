@@ -3,6 +3,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
 <head>
@@ -12,6 +13,7 @@
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/search.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/posts.css"/>"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.css" rel="stylesheet"/>
@@ -259,10 +261,10 @@
 
     <ul class="nav nav-tabs" id="mod-tab">
         <li class="nav-item">
-            <a class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="promote" aria-selected="true">TECHS</a>
+            <a class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="techs" aria-selected="true">TECHS</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#posts" data-toggle="tab" role="tab" aria-controls="reports" aria-selected="false">POSTS</a>
+            <a class="nav-link" href="#posts" data-toggle="tab" role="tab" aria-controls="posts" aria-selected="false">POSTS</a>
         </li>
     </ul>
 
@@ -329,8 +331,58 @@
             </c:choose>
         </div>
         <!-- Matching Posts -->
-        <div class="tab-pane active" id="posts">
-            <div> posts </div>
+        <div class="tab-pane" id="posts">
+            <div>
+                <c:choose>
+                    <c:when test="${not empty posts}">
+                        <c:forEach items="${posts}" var="post">
+                            <div class="card mb-3 post-card">
+                                <div class="card-body">
+                                    <div class="row search-post-title ml-1">
+                                        <a href="<c:url value='/posts/${post.postId}'/>">
+                                                ${post.title}
+                                        </a>
+                                    </div>
+                                    <div class="row search-post-description ml-1">
+                                            ${post.description}
+                                    </div>
+                                    <div class="row extra-info">
+                                        <div class="col-9">
+                                            <c:forEach items="${post.postTags}" var="tag">
+                                                <button  class="badge badge-color ml-1"<%-- onclick="goToTag('${tag.tagName}')"--%>>
+                                                <span>
+                                                        ${tag.tagName}
+                                                </span>
+                                                </button>
+                                            </c:forEach>
+                                        </div>
+                                        <div class="col">
+                                            <div class="row d-flex secondary-color text-right post-date small-font">
+                                                 ${post.timestamp.toLocaleString()}
+                                            </div>
+                                            <div class="row d-flex secondary-color text-right small-font">
+                                                <a href="<c:url value="/users/${post.user.username}"/>">${post.user.username}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </c:forEach>
+
+                        <!-- Posts Pagination -->
+                        <jsp:include page="../components/pagination.jsp">
+                            <jsp:param name="total" value="${postsAmount}"/>
+                            <jsp:param name="page" value="${postsPage}"/>
+                            <jsp:param name="page_size" value="${postsPageSize}"/>
+                            <jsp:param name="origin" value="search_posts"/>
+                            <jsp:param name="posts_page" value="${postsPage}"/>
+                        </jsp:include>
+                    </c:when>
+                    <c:otherwise><spring:message code="profile.empty.comments"/></c:otherwise>
+                </c:choose>
+
+            </div>
         </div>
 
 
