@@ -14,10 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,12 +26,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Optional;
 
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Controller
 public class RegisterController {
@@ -46,13 +40,11 @@ public class RegisterController {
     private UserService us;
 
     @Autowired
-    ApplicationEventPublisher eventPublisher;
+    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
 
-    @Autowired
-    AuthenticationManager authManager;
 
     @RequestMapping("/register")
     public ModelAndView index(@ModelAttribute("registerForm") final UserForm form) {
@@ -76,7 +68,7 @@ public class RegisterController {
             String appUrl = request.getRequestURL().toString();
             appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl, false));
-            internalLogin(form.getUsername(), form.getPassword(),request);
+            us.internalLogin(form.getUsername(), form.getPassword(),request);
             LOGGER.info("Register: User '{}' registered successfully with id {}", registered.getUsername(),registered.getId());
 
         } catch (UserAlreadyExistException uaeEx) {
@@ -92,11 +84,11 @@ public class RegisterController {
             return mav;
         }
 
-        return new ModelAndView("redirect:/register/success/1");
+        return new ModelAndView("redirect:/register/success/pending_validation");
     }
 
-    @RequestMapping("/register/success/1")
-    public ModelAndView success1() {
+    @RequestMapping("/register/success/pending_validation")
+    public ModelAndView pendingValidation() {
         ModelAndView mav = new ModelAndView("session/successful");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("message", messageSource.getMessage("register.success.email.sent", new Object[]{}, LocaleContextHolder.getLocale()));
@@ -104,8 +96,8 @@ public class RegisterController {
         return mav;
     }
 
-    @RequestMapping("/register/success/2")
-    public ModelAndView success2() {
+    @RequestMapping("/register/success/email_validated")
+    public ModelAndView validatedAccount() {
         ModelAndView mav = new ModelAndView("session/successful");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("message", messageSource.getMessage("register.success.account.validated", new Object[]{}, LocaleContextHolder.getLocale()));
@@ -113,8 +105,8 @@ public class RegisterController {
         return mav;
     }
 
-    @RequestMapping("/register/success/3")
-    public ModelAndView success3() {
+    @RequestMapping("/register/email_resent")
+    public ModelAndView emailResent() {
         ModelAndView mav = new ModelAndView("session/successful");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("message", messageSource.getMessage("register.success.email.resent", new Object[]{}, LocaleContextHolder.getLocale()));
@@ -122,7 +114,7 @@ public class RegisterController {
         return mav;
     }
 
-    @RequestMapping(value = "/registrationConfirm", method = {RequestMethod.GET})
+    @RequestMapping(value = "/register/confirm", method = {RequestMethod.GET})
     public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
         Optional<VerificationToken> verificationToken = us.getVerificationToken(token);
         LOGGER.info("Register: Confirming registration");
@@ -132,10 +124,10 @@ public class RegisterController {
             if (user.isPresent()) {
                 if (user.get().isEnable()) {
                     LOGGER.info("Register: User {} was already enabled", user.get().getId());
-                    return "redirect:/register/success/2";
+                    return "redirect:/register/success/email_validated";
                 }
                 Calendar cal = Calendar.getInstance();
-                if ((verificationToken.get().getexpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
+                if ((verificationToken.get().getExpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
                     LOGGER.error("Register: Verification token for user {} expired", user.get().getId());
                     model.addAttribute("message", messageSource.getMessage("register.error.link_expired", new Object[]{}, LocaleContextHolder.getLocale()));
                     model.addAttribute("expired", true);
@@ -146,7 +138,7 @@ public class RegisterController {
                 user.get().setEnable(true);
                 us.saveRegisteredUser(user.get());
                 LOGGER.info("Register: User {} is now verified", user.get().getId());
-                return "redirect:/register/success/2";
+                return "redirect:/register/success/email_validated";
             }
 
             LOGGER.error("Register: User {} does not exist", verificationToken.get().getUserId());
@@ -158,20 +150,20 @@ public class RegisterController {
         return "session/badUser";
     }
 
-    @RequestMapping(value = "/register/resendRegistrationToken", method = RequestMethod.GET)
+    @RequestMapping(value = "/register/resend_registration_token", method = RequestMethod.GET)
     public String resendRegistrationToken(
             HttpServletRequest request, @RequestParam("token") String existingToken) {
 
         Optional<VerificationToken> verificationToken = us.getVerificationToken(existingToken);
 
         if (verificationToken.isPresent()) {
-            Optional<User> registered = us.findById((int) verificationToken.get().getUserId());
+            Optional<User> registered = Optional.ofNullable(verificationToken.get().getUser());
             String appUrl = request.getRequestURL().toString();
             appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
             if (registered.isPresent()) {
                 eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered.get(), request.getLocale(), appUrl, true));
                 LOGGER.info("Register: Resending verification token for user {}", registered.get().getId());
-                return "redirect:/register/success/3";
+                return "redirect:/register/email_resent";
             }
 
             LOGGER.error("Register: User {} does not exist", verificationToken.get().getUserId());
@@ -182,7 +174,7 @@ public class RegisterController {
         return "redirect:/error";
     }
 
-    @RequestMapping("/chgpassword")
+    @RequestMapping("/recover/change_password")
     public ModelAndView passwordChange(@ModelAttribute("passwordForm") final PasswordForm form, @RequestParam(value = "id", required = false) Long userId) {
         ModelAndView mav = new ModelAndView("session/passwordForm");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
@@ -200,8 +192,8 @@ public class RegisterController {
         return mav;
     }
 
-    @RequestMapping(value = "/updpassword", method = {RequestMethod.POST})
-    public ModelAndView updpassword(@Valid @ModelAttribute("passwordForm") final PasswordForm form, final BindingResult errors, HttpServletRequest request) {
+    @RequestMapping(value = "/recover/update_password", method = {RequestMethod.POST})
+    public ModelAndView updatePassword(@Valid @ModelAttribute("passwordForm") final PasswordForm form, final BindingResult errors, HttpServletRequest request) {
         if (errors.hasErrors()) {
             LOGGER.info("Register: Password Form for updating has errors");
             return passwordChange(form, form.getUserId());
@@ -213,7 +205,7 @@ public class RegisterController {
             Optional<User> optionalUser = us.findById(form.getUserId());
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
-                internalLogin(user.getUsername(), form.getPassword(), request);
+                us.internalLogin(user.getUsername(), form.getPassword(), request);
             }
         }
         ModelAndView mav = new ModelAndView("/session/successful_cngPassw");
@@ -223,18 +215,8 @@ public class RegisterController {
         return mav;
     }
 
-    private void internalLogin(String user, String pass, HttpServletRequest req) {
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user, pass);
-        Authentication auth = authManager.authenticate(authReq);
-
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(auth);
-        HttpSession session = req.getSession(true);
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-    }
-
-    @RequestMapping(value = "/forgetpassword")
-    public ModelAndView forgetPassword(@ModelAttribute("ForgetPassForm") final ForgetPassForm form) {
+    @RequestMapping(value = "/recover/forgot_password")
+    public ModelAndView forgotPassword(@ModelAttribute("ForgetPassForm") final ForgetPassForm form) {
         ModelAndView mav = new ModelAndView("session/recoveryPassForm");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
@@ -244,18 +226,18 @@ public class RegisterController {
         return mav;
     }
 
-    @RequestMapping(value = "/recoveringToken")
-    public ModelAndView recoverToken(@RequestParam("token") String token) {
+    @RequestMapping(value = "/recover/recovering_token")
+    public ModelAndView recoveringToken(@RequestParam("token") String token) {
         String[] strings = token.split("-a_d-ss-");
         Long userId = Long.valueOf(strings[strings.length - 1]);
-        return new ModelAndView("redirect:/chgpassword?id=" + userId);
+        return new ModelAndView("redirect:/recover/change_password?id=" + userId);
     }
 
-    @RequestMapping(value = "/recoverpassword", method = RequestMethod.POST)
+    @RequestMapping(value = "/recover/recover_password", method = RequestMethod.POST)
     public ModelAndView recoverPassword(@Valid @ModelAttribute("ForgetPassForm") final ForgetPassForm form, final BindingResult errors, HttpServletRequest request) {
         if (errors.hasErrors()) {
             LOGGER.info("Register: Password Form for recovery has errors");
-            return forgetPassword(form);
+            return forgotPassword(form);
         }
         Optional<User> optionalUser = us.findByMail(form.getEmail());
         if (!optionalUser.isPresent()) {

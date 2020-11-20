@@ -1,6 +1,8 @@
 package ar.edu.itba.paw;
 
+import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.CommentVote;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.CommentDao;
 import ar.edu.itba.paw.persistence.CommentVoteDao;
 import ar.edu.itba.paw.services.CommentServiceImpl;
@@ -13,8 +15,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Optional;
 
+import static junit.framework.Assert.*;
+import static org.postgresql.shaded.com.ongres.scram.common.ScramAttributes.USERNAME;
+
 @RunWith(MockitoJUnitRunner.class)
 public class CommentServiceTest {
+    private final long VOTE_ID=1;
     private final long USER_ID=1;
     private final long COMMENT_ID=1;
     private final int VOTE_UP=1;
@@ -34,85 +40,146 @@ public class CommentServiceTest {
     @Test
     public void testVoteUp() {
         // Arrange
+        CommentVote commentVote = new CommentVote();
+        Comment comment = new Comment();
+        comment.setCommentId(COMMENT_ID);
+        User user = new User();
+        user.setId(USER_ID);
+        commentVote.setComment(comment);
+        commentVote.setUser(user);
+        commentVote.setVote(VOTE_UP);
+        commentVote.setCommentVoteId(VOTE_ID);
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.empty());
-
+        Mockito.when(commentVoteDao.insert(COMMENT_ID,USER_ID,VOTE_UP)).thenReturn(commentVote);
         // Act
-        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_UP);
+        Optional<CommentVote> answer = commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_UP);
 
         // Assert
-        Mockito.verify(commentVoteDao,Mockito.times(1)).insert(COMMENT_ID,USER_ID,VOTE_UP);
-        Mockito.verify(commentVoteDao,Mockito.never()).delete(Mockito.anyInt());
-        Mockito.verify(commentVoteDao,Mockito.never()).update(Mockito.anyInt(),Mockito.anyInt());
+        assertTrue(answer.isPresent());
+        assertEquals(USER_ID,answer.get().getUserId());
+        assertEquals(COMMENT_ID,answer.get().getCommentId());
+        assertEquals(VOTE_UP,answer.get().getVote());
     }
 
     @Test
     public void testVoteDown() {
         // Arrange
+        CommentVote commentVote = new CommentVote();
+        Comment comment = new Comment();
+        comment.setCommentId(COMMENT_ID);
+        User user = new User();
+        user.setId(USER_ID);
+        commentVote.setComment(comment);
+        commentVote.setUser(user);
+        commentVote.setVote(VOTE_DOWN);
+        commentVote.setCommentVoteId(VOTE_ID);
         Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.empty());
-
+        Mockito.when(commentVoteDao.insert(COMMENT_ID,USER_ID,VOTE_DOWN)).thenReturn(commentVote);
         // Act
-        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_DOWN);
+        Optional<CommentVote> answer = commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_DOWN);
 
         // Assert
-        Mockito.verify(commentVoteDao,Mockito.times(1)).insert(COMMENT_ID,USER_ID,VOTE_DOWN);
-        Mockito.verify(commentVoteDao,Mockito.never()).delete(Mockito.anyInt());
-        Mockito.verify(commentVoteDao,Mockito.never()).update(Mockito.anyInt(),Mockito.anyInt());
+        assertTrue(answer.isPresent());
+        assertEquals(USER_ID,answer.get().getUserId());
+        assertEquals(COMMENT_ID,answer.get().getCommentId());
+        assertEquals(VOTE_DOWN,answer.get().getVote());
     }
 
     @Test
     public void testVoteUpTwice() {
         // Arrange
-        Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_UP)));
+        CommentVote commentVote = new CommentVote();
+        Comment comment = new Comment();
+        comment.setCommentId(COMMENT_ID);
+        User user = new User();
+        user.setId(USER_ID);
+        commentVote.setComment(comment);
+        commentVote.setUser(user);
+        commentVote.setVote(VOTE_UP);
+        Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(commentVote));
 
         // Act
-        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_UP);
+        Optional<CommentVote> answer = commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_UP);
 
         // Assert
-        Mockito.verify(commentVoteDao,Mockito.times(1)).delete(COMMENT_ID);
-        Mockito.verify(commentVoteDao,Mockito.never()).insert(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt());
-        Mockito.verify(commentVoteDao,Mockito.never()).update(Mockito.anyInt(),Mockito.anyInt());
+        assertFalse(answer.isPresent());
     }
 
     @Test
     public void testVoteDownTwice() {
-        // Arrange
-        Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_DOWN)));
+        CommentVote commentVote = new CommentVote();
+        Comment comment = new Comment();
+        comment.setCommentId(COMMENT_ID);
+        User user = new User();
+        user.setId(USER_ID);
+        commentVote.setComment(comment);
+        commentVote.setUser(user);
+        commentVote.setVote(VOTE_DOWN);
+        commentVote.setCommentVoteId(VOTE_ID);
+        Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(commentVote));
 
         // Act
-        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_DOWN);
+        Optional<CommentVote> answer = commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_DOWN);
 
         // Assert
-        Mockito.verify(commentVoteDao,Mockito.times(1)).delete(COMMENT_ID);
-        Mockito.verify(commentVoteDao,Mockito.never()).insert(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt());
-        Mockito.verify(commentVoteDao,Mockito.never()).update(Mockito.anyInt(),Mockito.anyInt());
+        assertFalse(answer.isPresent());
     }
 
     @Test
     public void testVoteUpOnVotedDown() {
         // Arrange
-        Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_DOWN)));
-
+        CommentVote commentVote = new CommentVote();
+        Comment comment = new Comment();
+        comment.setCommentId(COMMENT_ID);
+        User user = new User();
+        user.setId(USER_ID);
+        commentVote.setComment(comment);
+        commentVote.setUser(user);
+        commentVote.setVote(VOTE_DOWN);
+        commentVote.setCommentVoteId(VOTE_ID);
+        Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(commentVote));
+        CommentVote commentVote2 = new CommentVote();
+        commentVote2.setComment(comment);
+        commentVote2.setUser(user);
+        commentVote2.setVote(VOTE_UP);
+        commentVote2.setCommentVoteId(VOTE_ID);
+        Mockito.when(commentVoteDao.update(VOTE_ID,VOTE_UP)).thenReturn(Optional.of(commentVote2));
         // Act
-        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_UP);
+        Optional<CommentVote> answer = commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_UP);
 
         // Assert
-        Mockito.verify(commentVoteDao,Mockito.times(1)).update(COMMENT_ID, VOTE_UP);
-        Mockito.verify(commentVoteDao,Mockito.never()).insert(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt());
-        Mockito.verify(commentVoteDao,Mockito.never()).delete(Mockito.anyInt());
+        assertTrue(answer.isPresent());
+        assertEquals(USER_ID,answer.get().getUserId());
+        assertEquals(COMMENT_ID,answer.get().getCommentId());
+        assertEquals(VOTE_UP,answer.get().getVote());
     }
 
     @Test
     public void testVoteDownOnVotedUp() {
         // Arrange
-        Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(new CommentVote(COMMENT_VOTE_MOCK_ID, COMMENT_ID, USER_ID, VOTE_UP)));
-
+        CommentVote commentVote = new CommentVote();
+        Comment comment = new Comment();
+        comment.setCommentId(COMMENT_ID);
+        User user = new User();
+        user.setId(USER_ID);
+        commentVote.setComment(comment);
+        commentVote.setUser(user);
+        commentVote.setVote(VOTE_UP);
+        commentVote.setCommentVoteId(VOTE_ID);
+        Mockito.when(commentVoteDao.getByCommentAndUser(COMMENT_ID, USER_ID)).thenReturn(Optional.of(commentVote));
+        CommentVote commentVote2 = new CommentVote();
+        commentVote2.setComment(comment);
+        commentVote2.setUser(user);
+        commentVote2.setVote(VOTE_DOWN);
+        commentVote2.setCommentVoteId(VOTE_ID);
+        Mockito.when(commentVoteDao.update(VOTE_ID,VOTE_DOWN)).thenReturn(Optional.of(commentVote2));
         // Act
-        commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_DOWN);
+        Optional<CommentVote> answer = commentServiceImplMock.vote(COMMENT_ID, USER_ID,VOTE_DOWN);
 
         // Assert
-        Mockito.verify(commentVoteDao,Mockito.times(1)).update(COMMENT_ID, VOTE_DOWN);
-        Mockito.verify(commentVoteDao,Mockito.never()).insert(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt());
-        Mockito.verify(commentVoteDao,Mockito.never()).delete(Mockito.anyInt());
+        assertTrue(answer.isPresent());
+        assertEquals(USER_ID,answer.get().getUserId());
+        assertEquals(COMMENT_ID,answer.get().getCommentId());
+        assertEquals(VOTE_DOWN,answer.get().getVote());
     }
-
 }

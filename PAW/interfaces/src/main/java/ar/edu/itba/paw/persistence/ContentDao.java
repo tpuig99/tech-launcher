@@ -2,20 +2,16 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.ContentTypes;
-import ar.edu.itba.paw.models.ReportContent;
 
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
 public interface ContentDao {
     /***Getters***/
     Optional<Content> getById(long contentId);
-    List<Content> getContentByFramework(long frameworkId);
-    List<Content> getContentByFrameworkAndUser(long frameworkId, long userId);
-    List<Content> getContentByFrameworkAndType(long userId, ContentTypes type, long page, long pageSize);
+    List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page, long pageSize);
     List<Content> getContentByUser(long userId, long page, long pagesize);
-    Optional<Integer> getContentCountByUser(long userId);
+    Optional<Long> getContentCountByUser(long userId);
     List<Content> getContentByFrameworkAndTypeAndTitle(long frameworkId, ContentTypes type, String title);
 
     /***Content Methods***/

@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.form.framework.ContentForm;
 import ar.edu.itba.paw.webapp.form.framework.*;
 import ar.edu.itba.paw.webapp.form.frameworks.*;
 import org.slf4j.Logger;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -45,16 +43,13 @@ public class FrameworkController {
     private UserService us;
 
     @Autowired
-    private TranslationService ts;
-
-    @Autowired
     private MessageSource messageSource;
 
-    private final long startPage = 1;
-    private final long pageSize = 5;
+    private final String START_PAGE = "1";
+    private final long PAGE_SIZE = 5;
 
     public static ModelAndView redirectToFramework(Long id, String category) {
-        return new ModelAndView("redirect:/" + category + "/" + id);
+        return new ModelAndView("redirect:/techs/" + category + "/" + id);
     }
 
     private void loadForms(ModelAndView mav) {
@@ -71,8 +66,14 @@ public class FrameworkController {
         mav.addObject("deleteFrameworkForm", new DeleteFrameworkForm());
     }
 
-    @RequestMapping("/{category}/{id}")
-    public ModelAndView framework(@PathVariable long id, @PathVariable String category) {
+    @RequestMapping("/techs/{category}/{id}")
+    public ModelAndView framework(@PathVariable long id,
+                                  @PathVariable String category,
+                                  @RequestParam(value = "books_page", required = false, defaultValue = START_PAGE) Long booksPage,
+                                  @RequestParam(value = "courses_page", required = false, defaultValue = START_PAGE) Long coursesPage,
+                                  @RequestParam(value = "tutorials_page", required = false, defaultValue = START_PAGE) Long tutorialsPage,
+                                  @RequestParam(value = "comments_page", required = false, defaultValue = START_PAGE) Long commentsPage) {
+
         final ModelAndView mav = new ModelAndView("frameworks/framework");
         Optional<Framework> framework = fs.findById(id);
 
@@ -80,47 +81,46 @@ public class FrameworkController {
 
         if (framework.isPresent()) {
             LOGGER.info("Tech {}: Requested and found, retrieving data", id);
-            Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
             mav.addObject("framework", framework.get());
-            mav.addObject("category_translated", ts.getCategory(framework.get().getCategory()));
-            mav.addObject("type_translated", ts.getType(framework.get().getType()));
+//            mav.addObject("category_translated", ts.getCategory(framework.get().getCategory().name()));
+//            mav.addObject("type_translated", ts.getType(framework.get().getType().name()));
 
-            mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book, startPage));
-            mav.addObject("books_page", startPage);
-            mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course, startPage));
-            mav.addObject("courses_page", startPage);
-            mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial, startPage));
-            mav.addObject("tutorials_page", startPage);
-            mav.addObject("page_size", pageSize);
+            mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book, booksPage));
+            mav.addObject("books_page", booksPage);
+            mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course, coursesPage));
+            mav.addObject("courses_page", coursesPage);
+            mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial, tutorialsPage));
+            mav.addObject("tutorials_page", tutorialsPage);
+            mav.addObject("page_size", PAGE_SIZE);
             mav.addObject("category", category);
             mav.addObject("competitors", fs.getCompetitors(framework.get()));
             mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-            mav.addObject("comments_page", startPage);
+            mav.addObject("comments_page", commentsPage);
 
-            mav.addObject("replies", replies);
 
-            Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+            List<Comment> comments = commentService.getCommentsWithoutReferenceByFramework(id, commentsPage);
+            mav.addObject("comments",comments);
+            mav.addObject("categories_sidebar", fs.getAllCategories());
+
             if( optionalUser.isPresent()){
                 User user = optionalUser.get();
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,user.getId(), startPage);
-                mav.addObject("comments",comments);
+
                 mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
                 mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
-                mav.addObject("hasAppliedToFramework",user.hasAppliedToFramework(id));
                 mav.addObject("isAdmin",user.isAdmin());
                 mav.addObject("isEnable",user.isEnable());
                 mav.addObject("allowMod",user.isAllowMod());
-                mav.addObject("isOwner", framework.get().getAuthor().equals(user.getUsername()));
-                Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
+                mav.addObject("isOwner", framework.get().getAuthor().getUsername().equals(user.getUsername()));
+                mav.addObject("hasAppliedToFramework",user.hasAppliedToFramework(framework.get().getId()));
+                Optional<FrameworkVote> fv = user.getVoteForFramework(id);
+
                 if(fv.isPresent()){
                     mav.addObject("stars",fv.get().getStars());
                 }else{
                     mav.addObject("stars",0);
                 }
-            }
-            else{
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,null, startPage);
-                mav.addObject("comments",comments);
             }
 
             return mav;
@@ -129,61 +129,11 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
-    @RequestMapping("/{category}/{id}/pages")
-    public ModelAndView framework(@PathVariable long id, @PathVariable String category, @RequestParam(value = "books_page", required = false) final long booksPage, @RequestParam(value = "courses_page", required = false) final long coursesPage, @RequestParam(value = "tutorials_page", required = false) final long tutorialsPage, @RequestParam(value = "comments_page", required = false) final long commentsPage) {
-        final ModelAndView mav = new ModelAndView("frameworks/framework");
+    @RequestMapping(path={"/techs/{category}/{id}/image"}, method = RequestMethod.GET)
+    public @ResponseBody byte[] getImage(@PathVariable long id,
+                                         @PathVariable String category) throws IOException {
         Optional<Framework> framework = fs.findById(id);
-
-        loadForms(mav);
-
-        if (framework.isPresent()) {
-            LOGGER.info("Tech {}: Requested and found, retrieving data", id);
-            Map<Long, List<Comment>> replies = commentService.getRepliesByFramework(id);
-            mav.addObject("framework", framework.get());
-            mav.addObject("category_translated", ts.getCategory(framework.get().getCategory()));
-            mav.addObject("type_translated", ts.getType(framework.get().getType()));
-
-            mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book, booksPage));
-            mav.addObject("books_page", booksPage);
-            mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course, coursesPage));
-            mav.addObject("courses_page", coursesPage);
-            mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial, tutorialsPage));
-            mav.addObject("tutorials_page", tutorialsPage);
-            mav.addObject("page_size", pageSize);
-            mav.addObject("category", category);
-            mav.addObject("competitors", fs.getCompetitors(framework.get()));
-            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-            mav.addObject("comments_page", commentsPage);
-
-            mav.addObject("replies", replies);
-
-            final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-            if( optionalUser.isPresent()){
-                User user = optionalUser.get();
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,user.getId(), commentsPage);
-                mav.addObject("comments",comments);
-                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-                mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
-                mav.addObject("isAdmin",user.isAdmin());
-                mav.addObject("isEnable",user.isEnable());
-                mav.addObject("allowMod",user.isAllowMod());
-                mav.addObject("isOwner", framework.get().getAuthor().equals(user.getUsername()));
-                Optional<FrameworkVote> fv = frameworkVoteService.getByFrameworkAndUser(id,user.getId());
-                if(fv.isPresent()){
-                    mav.addObject("stars",fv.get().getStars());
-                }else{
-                    mav.addObject("stars",0);
-                }
-            }
-            else{
-                List<Comment> comments = commentService.getCommentsWithoutReferenceByFrameworkWithUser(id,null, commentsPage);
-                mav.addObject("comments",comments);
-            }
-            return mav;
-        }
-        LOGGER.error("Tech {}: Requested and not found", id);
-        return ErrorController.redirectToErrorView();
+        return framework.map(Framework::getPicture).orElse(null);
     }
 
     @RequestMapping(path={"/comment"}, method= RequestMethod.POST)
@@ -192,7 +142,7 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Comment comment = commentService.insertComment(form.getCommentFrameworkId(), user.get().getId(), form.getContent(), form.getCommentId());
+            final Comment comment = commentService.insertComment(form.getCommentFrameworkId(), user.get().getId(), form.getComment(), form.getCommentId());
             LOGGER.info("Tech {}: User {} inserted a comment", form.getCommentFrameworkId(), user.get().getId());
             return FrameworkController.redirectToFramework(form.getCommentFrameworkId(), comment.getCategory());
         }
@@ -207,7 +157,7 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Comment comment = commentService.insertComment(form.getReplyFrameworkId(), user.get().getId(), form.getReplyContent(), form.getReplyCommentId());
+            final Comment comment = commentService.insertComment(form.getReplyFrameworkId(), user.get().getId(), form.getReplyComment(), form.getReplyCommentId());
             LOGGER.info("Tech {}: User {} replied comment {}", form.getReplyFrameworkId(), user.get().getId(), form.getReplyCommentId());
             return FrameworkController.redirectToFramework(form.getReplyFrameworkId(), comment.getCategory());
         }
@@ -223,11 +173,11 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Optional<Comment> comment = commentService.vote(form.getCommentId(), user.get().getId(),1);
+            final Optional<CommentVote> commentVote = commentService.vote(form.getCommentId(), user.get().getId(),1);
 
-            if(comment.isPresent()){
+            if(commentVote.isPresent()){
                 LOGGER.info("Tech {}: User {} upvoted comment {}", form.getFrameworkId(), user.get().getId(), form.getCommentId());
-                return FrameworkController.redirectToFramework(comment.get().getFrameworkId(), comment.get().getCategory());
+                return FrameworkController.redirectToFramework(commentVote.get().getComment().getFrameworkId(), commentVote.get().getComment().getCategory());
             }
 
             LOGGER.error("Tech {}: A problem occurred while upvoting comment {}", form.getFrameworkId(), form.getCommentId());
@@ -244,11 +194,11 @@ public class FrameworkController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (user.isPresent()) {
-            final Optional<Comment> comment = commentService.vote(form.getDownVoteCommentId(), user.get().getId(),-1);
+            final Optional<CommentVote> commentVote = commentService.vote(form.getDownVoteCommentId(), user.get().getId(),-1);
 
-            if(comment.isPresent()){
+            if(commentVote.isPresent()){
                 LOGGER.info("Tech {}: User {} downvoted comment {}", form.getDownVoteFrameworkId(), user.get().getId(), form.getDownVoteCommentId());
-                return FrameworkController.redirectToFramework(comment.get().getFrameworkId(), comment.get().getCategory());
+                return FrameworkController.redirectToFramework(commentVote.get().getComment().getFrameworkId(), commentVote.get().getComment().getCategory());
             }
 
             LOGGER.error("Tech {}: A problem occurred while downvoting comment {}", form.getDownVoteFrameworkId(), form.getDownVoteCommentId());
@@ -270,7 +220,7 @@ public class FrameworkController {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
             if (user.isPresent()) {
-                final FrameworkVote frameworkVote = frameworkVoteService.insert(frameworkId, user.get().getId(), form.getRating());
+                final FrameworkVote frameworkVote = frameworkVoteService.insert(framework.get(), user.get().getId(), form.getRating());
                 LOGGER.info("Tech {}: User {} rated the Tech", frameworkId, user.get().getId());
                 return FrameworkController.redirectToFramework(frameworkId, frameworkVote.getCategory());
             }
@@ -311,7 +261,7 @@ public class FrameworkController {
         if (framework.isPresent()) {
             if(errors.hasErrors()){
                 LOGGER.info("Tech {}: Content Form has errors", frameworkId);
-                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory());
+                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory().name(), null, null, null, null);
 
                 loadForms(framework1);
                 framework1.addObject("contentFormError", true);
@@ -336,7 +286,7 @@ public class FrameworkController {
                 contentService.insertContent(frameworkId, user.get().getId(), form.getTitle(), pathToContent, type);
 
                 LOGGER.info("Tech {}: User {} inserted new content", frameworkId, user.get().getId());
-                return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory());
+                return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory().name());
             }
 
             LOGGER.error("Tech {}: Unauthorized user tried to insert content", frameworkId);
@@ -357,7 +307,7 @@ public class FrameworkController {
             if (user.isPresent()) {
                 contentService.deleteContent(form.getDeleteContentId());
                 LOGGER.info("Tech {}: User {} deleted content {}", form.getDeleteContentFrameworkId(), user.get().getId(), form.getDeleteContentId());
-                return FrameworkController.redirectToFramework(form.getDeleteContentFrameworkId(), framework.get().getCategory());
+                return FrameworkController.redirectToFramework(form.getDeleteContentFrameworkId(), framework.get().getCategory().name());
             }
             LOGGER.error("Tech {}: Unauthorized user tried to delete content", form.getDeleteContentFrameworkId());
             return ErrorController.redirectToErrorView();
@@ -377,7 +327,7 @@ public class FrameworkController {
             if (user.isPresent()) {
                 contentService.addReport(form.getId(), user.get().getId(), form.getDescription());
                 LOGGER.info("Tech {}: User {} reported content {}", form.getReportFrameworkId(), user.get().getId(), form.getId());
-                return FrameworkController.redirectToFramework(form.getReportFrameworkId(), framework.get().getCategory());
+                return FrameworkController.redirectToFramework(form.getReportFrameworkId(), framework.get().getCategory().name());
             }
 
             LOGGER.error("Tech {}: Unauthorized user tried to report content", form.getReportFrameworkId());
@@ -440,7 +390,7 @@ public class FrameworkController {
             if(user.isPresent()) {
                 commentService.addReport(form.getReportCommentId(), user.get().getId(),form.getReportCommentDescription());
                 LOGGER.info("Tech {}: User {} reported comment {}", form.getReportCommentFrameworkId(), user.get().getId(), form.getReportCommentId());
-                return FrameworkController.redirectToFramework(form.getReportCommentFrameworkId(), framework.get().getCategory());
+                return FrameworkController.redirectToFramework(form.getReportCommentFrameworkId(), framework.get().getCategory().name());
             }
 
             LOGGER.error("Tech {}: Unauthorized user tried to report comment", form.getReportCommentFrameworkId());
@@ -464,6 +414,7 @@ public class FrameworkController {
         LOGGER.error("Report {}: Unauthorized user tried to accept comment report", reportId);
         return ErrorController.redirectToErrorView();
     }
+
     @RequestMapping(path={"/report/comment/deny"}, method = RequestMethod.PUT)
     public ModelAndView denyReportComment(@RequestParam("id")long reportId){
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -477,6 +428,7 @@ public class FrameworkController {
         LOGGER.error("Report {}: Unauthorized user tried to deny comment report", reportId);
         return ErrorController.redirectToErrorView();
     }
+
     @RequestMapping(path={"/comment/report/cancel"}, method = RequestMethod.PUT)
     public ModelAndView cancelReportComment(@RequestParam("id")long reportId) {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -498,14 +450,8 @@ public class FrameworkController {
 
         if (framework.isPresent()) {
             if (user.isPresent()) {
-                int deleted = commentService.deleteComment(form.getCommentDeleteId());
-                if( deleted < 1) {
-                    LOGGER.error("Tech {}: User {} tried to delete comment {} and was not able to", form.getCommentDeleteFrameworkId(), user.get().getId(), form.getCommentDeleteId());
-                    return ErrorController.redirectToErrorView();
-                }
-
-                LOGGER.info("Tech {}: User {} deleted comment {} and {} references", form.getCommentDeleteFrameworkId(), user.get().getId(), form.getCommentDeleteId(), deleted - 1);
-                return FrameworkController.redirectToFramework(form.getCommentDeleteFrameworkId(), framework.get().getCategory());
+                commentService.deleteComment(form.getCommentDeleteId());
+                return FrameworkController.redirectToFramework(form.getCommentDeleteFrameworkId(), framework.get().getCategory().name());
             }
 
             LOGGER.error("Tech {}: Unauthorized user tried to delete comment", form.getCommentDeleteFrameworkId());
@@ -520,6 +466,8 @@ public class FrameworkController {
     public ModelAndView addTech(@ModelAttribute("frameworkForm") final FrameworkForm form) {
         ModelAndView mav = new ModelAndView("frameworks/add_tech");
 
+        mav.addObject("categories", fs.getAllCategories());
+        mav.addObject("types", fs.getAllTypes());
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
@@ -543,15 +491,15 @@ public class FrameworkController {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if( user.isPresent()){
-            FrameworkType type = FrameworkType.getByName(form.getType());
-            FrameworkCategories category = FrameworkCategories.getByName(form.getCategory());
+            FrameworkType type = FrameworkType.valueOf(form.getType());
+            FrameworkCategories category = FrameworkCategories.valueOf(form.getCategory());
             byte[] picture = form.getPicture().getBytes();
 
             Optional<Framework> framework = fs.create(form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,user.get().getId(), picture);
 
             if (framework.isPresent()) {
                 LOGGER.info("Techs: User {} added a new Tech with id: {}", user.get().getId(), framework.get().getId());
-                return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
+                return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory().name());
             }
 
             LOGGER.error("Techs: A problem occurred while creating the new Tech");
@@ -569,17 +517,19 @@ public class FrameworkController {
 
         if (framework.isPresent()) {
             if (user.isPresent()) {
-                if (framework.get().getAuthor().equals(user.get().getUsername()) || user.get().isAdmin()) {
-                    form.setCategory(framework.get().getFrameCategory().getNameCat());
+                if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
+                    form.setCategory(framework.get().getCategory().name());
                     form.setDescription(framework.get().getDescription());
                     if(form.getFrameworkName() == null)
                         form.setFrameworkName(framework.get().getName());
                     form.setIntroduction(framework.get().getIntroduction());
                     form.setFrameworkId(frameworkId);
-                    form.setType(framework.get().getType());
+                    form.setType(framework.get().getType().name());
 
                     ModelAndView mav = new ModelAndView("frameworks/update_tech");
 
+                    mav.addObject("categories", fs.getAllCategories());
+                    mav.addObject("types", fs.getAllTypes());
                     mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
                     mav.addObject("category",framework.get().getCategory());
                     mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
@@ -612,15 +562,15 @@ public class FrameworkController {
 
         if(framework.isPresent()) {
             if (user.isPresent()) {
-                if (framework.get().getAuthor().equals(user.get().getUsername()) || user.get().isAdmin()) {
-                    FrameworkType type = FrameworkType.getByName(form.getType());
-                    FrameworkCategories category = FrameworkCategories.getByName(form.getCategory());
+                if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
+                    FrameworkType type = FrameworkType.valueOf(form.getType());
+                    FrameworkCategories category = FrameworkCategories.valueOf(form.getCategory());
                     byte[] picture = form.getPicture().getBytes();
                     final Optional<Framework> updatedFramework = fs.update(form.getFrameworkId(),form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,picture);
 
                     if (updatedFramework.isPresent()) {
                         LOGGER.info("Tech {}: User {} updated the Tech", form.getFrameworkId(), user.get().getId());
-                        return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory());
+                        return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory().name());
                     }
 
                     LOGGER.error("Tech {}: A problem occurred while updating the Tech", form.getFrameworkId());
@@ -646,7 +596,7 @@ public class FrameworkController {
 
         if(framework.isPresent()) {
             if (user.isPresent()) {
-                if (framework.get().getAuthor().equals(user.get().getUsername()) || user.get().isAdmin()) {
+                if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
                     fs.delete(form.getFrameworkIdx());
 
                     LOGGER.info("Techs: Tech {} deleted successfully", form.getFrameworkIdx());

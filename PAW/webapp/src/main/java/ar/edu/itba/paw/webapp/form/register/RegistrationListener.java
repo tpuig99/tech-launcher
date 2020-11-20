@@ -4,17 +4,8 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import java.util.Locale;
-import java.util.Properties;
 import java.util.UUID;
 
 
@@ -23,9 +14,6 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     @Autowired
     private UserService service;
-
-    @Autowired
-    MessageSource messageSource;
 
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
@@ -36,37 +24,9 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
         if(!event.isResend()){
-            service.createVerificationToken(user, token);
+            service.createVerificationToken(user, token,event.getAppUrl());
         }else{
-            service.generateNewVerificationToken(user,token);
+            service.generateNewVerificationToken(user,token,event.getAppUrl());
         }
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true");
-        prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-        mailSender.setJavaMailProperties(prop);
-        Session session = Session.getInstance(prop, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("confirmemailonly", "pawserver");
-            }
-        });
-        mailSender.setSession(session);
-        String recipientAddress = user.getMail();
-        String subject = messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale());
-
-        String confirmationUrl
-                = event.getAppUrl() + "/registrationConfirm.html?token=" + token;
-        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale());
-
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setFrom("confirmemailonly@gmail.com");
-        email.setTo(recipientAddress);
-        email.setSubject(subject);
-        email.setText(message + "\r\n" + confirmationUrl);
-        mailSender.send(email);
     }
 }

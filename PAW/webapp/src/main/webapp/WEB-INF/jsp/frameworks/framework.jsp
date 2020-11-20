@@ -27,7 +27,12 @@
         <jsp:param name="username" value="${user.name}"/>
         <jsp:param name="isMod" value="${user_isMod}"/>
     </jsp:include>
-    <jsp:include page="../components/sidebar.jsp"/>
+
+    <div class="sidenav overflow-auto">
+        <c:forEach var="category" items="${categories_sidebar}">
+            <a href="<c:url value="/techs/${category}"/>"><spring:message code="category.${category}"/></a>
+        </c:forEach>
+    </div>
 
     <div class="content">
 
@@ -35,11 +40,15 @@
             <div class="row">
                 <div class="col-2">
                     <c:choose>
-                        <c:when test="${not empty framework.base64image}">
-                            <div class="d-flex flex-wrap"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                        <c:when test="${not empty framework.picture}" >
+                            <div class="d-flex flex-wrap">
+                                <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                            </div>
                         </c:when>
                         <c:otherwise>
-                            <div class="d-flex flex-wrap"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                            <div class="d-flex flex-wrap">
+                                <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                            </div>
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -47,10 +56,10 @@
                     <div class="row">
                         <div class="col">
                             <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
-                            <div><spring:message code="tech.author"/>:&nbsp;<a href="<c:url value="/users/${framework.author}"/>">${framework.author}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i></div>
-                            <div><spring:message code="tech.date"/>:&nbsp;${framework.publish_date.toLocaleString()}</div>
-                            <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.category"/>"> ${category_translated}</span>
-                            <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.type"/>"> ${type_translated}</span>
+                            <div><spring:message code="tech.author"/>:&nbsp;<a href="<c:url value="/users/${framework.author.username}"/>">${framework.author.username}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i></div>
+                            <div><spring:message code="tech.date"/>:&nbsp;${framework.publishDate.toLocaleString()}</div>
+                            <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.category"/>"> <spring:message code="category.${framework.category.name()}"/></span>
+                            <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.type"/>"><spring:message code="type.${framework.type.name()}"/></span>
                         </div>
                         <div class="col d-flex align-items-center justify-content-center">
                             <span class="fa fa-star color-star"></span>
@@ -61,7 +70,7 @@
                             <c:if test="${isAdmin || isOwner}">
                                 <div class="mb-4">
                                     <a href="<c:url value="/update_tech?id=${framework.id}"/>" >
-                                        <button class="btn btn-primary btn-block text-nowrap" type="button">
+                                        <button class="btn btn-info btn-block text-nowrap" type="button">
                                             <i class="fa fa-edit fa-sm mr-1"></i>
                                             <spring:message code="button.edit_tech"/>
                                         </button>
@@ -93,19 +102,19 @@
                     <c:when test="${user.name != 'anonymousUser'}">
                         <c:choose>
                             <c:when test="${!isEnable}">
-                                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#confirmMailModal">
+                                <button class="btn btn-info" type="button" data-toggle="modal" data-target="#confirmMailModal">
                                     <spring:message code="tech.content.button"/>
                                 </button>
                             </c:when>
                             <c:otherwise>
-                                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addContentModal">
+                                <button class="btn btn-info" type="button" data-toggle="modal" data-target="#addContentModal">
                                     <spring:message code="tech.content.button"/>
                                 </button>
                             </c:otherwise>
                         </c:choose>
                     </c:when>
                     <c:otherwise>
-                        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#loginModal">
+                        <button class="btn btn-info" type="button" data-toggle="modal" data-target="#loginModal">
                             <spring:message code="tech.content.button"/>
                         </button>
                     </c:otherwise>
@@ -134,7 +143,7 @@
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${book.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${user.name != 'anonymousUser' && book.userName!=user.name && !book.isReporter(user.name)}">
+                                    <c:when test="${user.name != 'anonymousUser' && book.userName!=user.name && !book.isReporter(user.name) && isEnable}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="getContentId(${book.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
@@ -144,34 +153,19 @@
                         </li>
                     </c:forEach>
                 </ul>
-                <ul class="pagination justify-content-center">
-                    <c:choose>
-                    <c:when test="${books_page == 1}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item ">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page-1}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Previous">
-                            <span aria-hidden="true">&lsaquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <c:choose>
-                    <c:when test="${books.size() < page_size}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page+1}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Next">
-                            <span aria-hidden="true">&rsaquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
+                <!-- Book pagination -->
+                <jsp:include page="../components/pagination.jsp">
+                    <jsp:param name="total" value="${framework.booksAmount}"/>
+                    <jsp:param name="page" value="${books_page}"/>
+                    <jsp:param name="page_size" value="${page_size}"/>
+                    <jsp:param name="origin" value="tech_book"/>
+                    <jsp:param name="category" value="${framework.category}"/>
+                    <jsp:param name="techs_id" value="${framework.id}"/>
+                    <jsp:param name="books_page" value="${books_page}"/>
+                    <jsp:param name="courses_page" value="${courses_page}"/>
+                    <jsp:param name="tutorials_page" value="${tutorials_page}"/>
+                    <jsp:param name="comments_page" value="${comments_page}"/>
+                </jsp:include>
             </div>
         </c:if>
 
@@ -194,7 +188,7 @@
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${course.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${user.name != 'anonymousUser' && user.name != course.userName && !course.isReporter(user.name)}">
+                                    <c:when test="${user.name != 'anonymousUser' && user.name != course.userName && !course.isReporter(user.name) && isEnable}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="getContentId(${course.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
@@ -204,34 +198,19 @@
                         </li>
                     </c:forEach>
                 </ul>
-                <ul class="pagination justify-content-center">
-                    <c:choose>
-                    <c:when test="${courses_page == 1}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item ">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page-1}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Previous">
-                            <span aria-hidden="true">&lsaquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <c:choose>
-                    <c:when test="${courses.size() < page_size}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page+1}&tutorials_page=${tutorials_page}&comments_page=${comments_page}"/>" aria-label="Next">
-                            <span aria-hidden="true">&rsaquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
+                <!-- Courses pagination -->
+                <jsp:include page="../components/pagination.jsp">
+                    <jsp:param name="total" value="${framework.coursesAmount}"/>
+                    <jsp:param name="page" value="${courses_page}"/>
+                    <jsp:param name="page_size" value="${page_size}"/>
+                    <jsp:param name="origin" value="tech_courses"/>
+                    <jsp:param name="category" value="${framework.category}"/>
+                    <jsp:param name="techs_id" value="${framework.id}"/>
+                    <jsp:param name="books_page" value="${books_page}"/>
+                    <jsp:param name="courses_page" value="${courses_page}"/>
+                    <jsp:param name="tutorials_page" value="${tutorials_page}"/>
+                    <jsp:param name="comments_page" value="${comments_page}"/>
+                </jsp:include>
             </div>
         </c:if>
 
@@ -253,7 +232,7 @@
                                             <button class="btn btn-link" onclick="openDeleteContentModal(${tutorial.contentId})" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${user.name != 'anonymousUser' && user.name != tutorial.userName && !tutorial.isReporter(user.name)}">
+                                    <c:when test="${user.name != 'anonymousUser' && user.name != tutorial.userName && !tutorial.isReporter(user.name) && isEnable}">
                                         <div class="col d-flex justify-content-end align-items-end">
                                             <button class="btn btn-link" onclick="getContentId(${tutorial.contentId})" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                                         </div>
@@ -263,34 +242,19 @@
                         </li>
                     </c:forEach>
                 </ul>
-                <ul class="pagination justify-content-center">
-                    <c:choose>
-                    <c:when test="${tutorials_page == 1}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item ">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page-1}&comments_page=${comments_page}"/>" aria-label="Previous">
-                            <span aria-hidden="true">&lsaquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    <c:choose>
-                    <c:when test="${tutorials.size() < page_size}">
-                    <li class="page-item disabled">
-                        </c:when>
-                        <c:otherwise>
-                    <li class="page-item">
-                        </c:otherwise>
-                        </c:choose>
-                        <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page+1}&comments_page=${comments_page}"/>" aria-label="Next">
-                            <span aria-hidden="true">&rsaquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
+                <!-- Tutorial pagination -->
+                <jsp:include page="../components/pagination.jsp">
+                    <jsp:param name="total" value="${framework.tutorialsAmount}"/>
+                    <jsp:param name="page" value="${tutorials_page}"/>
+                    <jsp:param name="page_size" value="${page_size}"/>
+                    <jsp:param name="origin" value="tech_tutorial"/>
+                    <jsp:param name="category" value="${framework.category}"/>
+                    <jsp:param name="techs_id" value="${framework.id}"/>
+                    <jsp:param name="books_page" value="${books_page}"/>
+                    <jsp:param name="courses_page" value="${courses_page}"/>
+                    <jsp:param name="tutorials_page" value="${tutorials_page}"/>
+                    <jsp:param name="comments_page" value="${comments_page}"/>
+                </jsp:include>
             </div>
         </c:if>
 
@@ -322,7 +286,7 @@
 
                                                     <button class="btn upVote btn-link" type="submit">
                                                         <c:choose>
-                                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote > 0}">
+                                                            <c:when test="${comment.getUserAuthVote(user.name) > 0}">
                                                                 <i class="fa fa-arrow-up arrow votedUp"> ${comment.votesUp}</i>
                                                             </c:when>
                                                             <c:otherwise>
@@ -359,7 +323,7 @@
 
                                                     <button class=" btn upVote btn-link" type="submit">
                                                         <c:choose>
-                                                            <c:when test="${comment.hasUserAuthVote() && comment.userAuthVote < 0}">
+                                                            <c:when test="${comment.getUserAuthVote(user.name) < 0}">
                                                                 <i class="fa fa-arrow-down arrow votedDown"> ${comment.votesDown}</i>
                                                             </c:when>
                                                             <c:otherwise>
@@ -384,13 +348,13 @@
                                 <div class="col secondary-font">
                                     <a href="<c:url value='/users/${comment.userName}'/>">
                                         <c:choose>
-                                            <c:when test="${comment.userName == framework.author}">
+                                            <c:when test="${comment.userName == framework.author.username}">
                                                 <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i>
                                             </c:when>
-                                            <c:when test="${comment.admin}">
+                                            <c:when test="${comment.user.admin}">
                                                 <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-admin" data-toggle="tooltip" title="<spring:message code="tooltip.admin"/>"></i>
                                             </c:when>
-                                            <c:when test="${comment.verify}">
+                                            <c:when test="${comment.user.isVerifyForFramework(framework.id)}">
                                                 <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="<spring:message code="tooltip.moderator"/>"></i>
                                             </c:when>
                                         </c:choose>
@@ -406,7 +370,7 @@
                                     <c:out value="${comment.description}" default=""/>
                                 </div>
 
-                                <c:if test="${user.name != 'anonymousUser' && user.name != comment.userName && !comment.isReporter(user.name) && !isAdmin && !isOwner}">
+                                <c:if test="${user.name != 'anonymousUser' && user.name != comment.userName && !comment.isReporter(user.name) && !isAdmin && !isOwner && isEnable}">
                                     <div class="col d-flex justify-content-end align-items-end">
                                         <button class="btn btn-link" onclick="getCommentId(${comment.commentId})" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
                                     </div>
@@ -450,11 +414,11 @@
                             </div>
 
                             <div  class="collapse multi-collapse" id="See${comment.commentId}">
-                                <c:if test="${empty replies.get(comment.commentId)}">
+                                <c:if test="${empty comment.replies}">
                                     <div><spring:message code="tech.comment.no_replies_yet"/></div>
                                 </c:if>
-                                <c:if test="${not empty replies.get(comment.commentId)}">
-                                    <c:forEach var="reply" items="${replies.get(comment.commentId)}" varStatus="loop">
+                                <c:if test="${not empty comment.replies}">
+                                    <c:forEach var="reply" items="${comment.replies}" varStatus="loop">
                                         <div class="row margin-left">
                                             <div class="row d-flex align-items-center ">
                                                 <div class="vertical-divider margin-left">
@@ -479,7 +443,7 @@
                                                         <button class="btn btn-link" onclick="openDeleteCommentModal(${reply.commentId})"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                                                     </span>
                                                 </c:if>
-                                                <c:if test="${user.name != 'anonymousUser' && user.name != reply.userName && !reply.isReporter(user.name) && !isAdmin && !isOwner}">
+                                                <c:if test="${user.name != 'anonymousUser' && user.name != reply.userName && !reply.isReporter(user.name) && !isAdmin && !isOwner && isEnable}">
                                                     <div class="col d-flex justify-content-end align-items-end">
                                                         <button class="btn btn-link" onclick="getCommentId(${reply.commentId})" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
                                                     </div>
@@ -499,11 +463,11 @@
 
                                     <div>
 
-                                        <form:label path="replyContent"/>
-                                        <form:textarea path="replyContent" id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"/>
+                                        <form:label path="replyComment"/>
+                                        <form:textarea path="replyComment" id="${comment.commentId}ReplyInput" class="form-control" aria-label="CommentReply"/>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary btn-sm padding-top" type="submit"><spring:message code="button.submit"/></button>
+                                        <button class="btn btn-info btn-sm padding-top" type="submit"><spring:message code="button.submit"/></button>
                                     </div>
                                 </form:form>
 
@@ -514,35 +478,19 @@
                 </c:forEach>
 
             </div>
-            <ul class="pagination justify-content-center">
-                <c:choose>
-                <c:when test="${comments_page == 1}">
-                <li class="page-item disabled">
-                    </c:when>
-                    <c:otherwise>
-                <li class="page-item ">
-                    </c:otherwise>
-                    </c:choose>
-                    <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page-1}"/>" aria-label="Previous">
-                        <span aria-hidden="true">&lsaquo;</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-                <c:choose>
-                <c:when test="${comments.size() < page_size}">
-                <li class="page-item disabled">
-                    </c:when>
-                    <c:otherwise>
-                <li class="page-item">
-                    </c:otherwise>
-                    </c:choose>
-                    <a class="page-link" href="<c:url value="/${framework.category}/${framework.id}/pages?books_page=${books_page}&courses_page=${courses_page}&tutorials_page=${tutorials_page}&comments_page=${comments_page+1}"/>" aria-label="Next">
-                        <span aria-hidden="true">&rsaquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            </ul>
-
+            <!-- Comment pagination -->
+            <jsp:include page="../components/pagination.jsp">
+                <jsp:param name="total" value="${framework.commentsWithoutReferenceAmount}"/>
+                <jsp:param name="page" value="${comments_page}"/>
+                <jsp:param name="page_size" value="${page_size}"/>
+                <jsp:param name="origin" value="tech_comments"/>
+                <jsp:param name="category" value="${framework.category}"/>
+                <jsp:param name="techs_id" value="${framework.id}"/>
+                <jsp:param name="books_page" value="${books_page}"/>
+                <jsp:param name="courses_page" value="${courses_page}"/>
+                <jsp:param name="tutorials_page" value="${tutorials_page}"/>
+                <jsp:param name="comments_page" value="${comments_page}"/>
+            </jsp:include>
         </c:if>
 
         <!-- User Interaction -->
@@ -560,22 +508,22 @@
                         <form:form modelAttribute="commentForm" action="${postPathComment}" method="post">
                             <form:label path="commentFrameworkId"><form:input  class="input-wrap" path="commentFrameworkId" type="hidden" value="${framework.id}"/></form:label>
 
-                            <form:label path="content"/>
-                            <form:textarea path="content" id="commentInput" class="form-control" aria-label="With textarea"/>
+                            <form:label path="comment"/>
+                            <form:textarea path="comment" id="commentInput" class="form-control" aria-label="With textarea"/>
 
                             <c:choose>
                                 <c:when test="${user.name != 'anonymousUser'}">
                                     <c:choose>
                                         <c:when test="${!isEnable}">
-                                            <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
+                                            <button type="button" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal"><spring:message code="button.submit"/></button>
                                         </c:when>
                                         <c:otherwise>
-                                            <button type="submit" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
+                                            <button type="submit" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end"><spring:message code="button.submit"/></button>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:when>
                                 <c:otherwise>
-                                    <button type="button" id="commentButton" disabled class="btn btn-primary margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
+                                    <button type="button" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><spring:message code="button.submit"/></button>
                                 </c:otherwise>
                             </c:choose>
                         </form:form>
@@ -594,7 +542,7 @@
                 </div>
             </div>
             <c:choose>
-                <c:when test="${!hasAppliedToFramework && !isAdmin && user.name != 'anonymousUser' && allowMod && !isOwner}">
+                <c:when test="${!hasAppliedToFramework && !isAdmin && user.name != 'anonymousUser' && allowMod && !isOwner && isEnable}">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center">
                             <div class="card-header subtitle"><h5><spring:message code="tech.apply.title"/></h5></div>
@@ -602,7 +550,7 @@
                                 <p class="card-text"><spring:message code="tech.apply.message"/></p>
                             </div>
                             <div class="card-footer">
-                                <button class="btn btn-primary" onclick="applyForMod()"><spring:message code="tech.apply.button"/></button>
+                                <button class="btn btn-info" onclick="applyForMod()"><spring:message code="tech.apply.button"/></button>
                             </div>
                         </div>
                     </div>
@@ -633,14 +581,18 @@
             <div class="container d-flex">
                 <c:forEach items="${competitors}" var="competitor">
                     <div class="card mini-card mx-3 mb-4">
-                        <a href="<c:url value="/${competitor.frameCategory}/${competitor.id}"/>">
+                        <a href="<c:url value="/techs/${competitor.category}/${competitor.id}"/>">
                             <div class="card-body d-flex align-items-center justify-content-center">
                                 <c:choose>
-                                    <c:when test="${not empty competitor.base64image}">
-                                        <div class="mini-logo d-flex align-items-center justify-content-center"><img src="data:${competitor.contentType};base64,${competitor.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                                    <c:when test="${not empty competitor.picture}" >
+                                        <div class="mini-logo d-flex align-items-center justify-content-center">
+                                            <img src="<c:url value="/techs/${competitor.category}/${competitor.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="mini-logo d-flex align-items-center justify-content-center"><img src="${competitor.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                        <div class="mini-logo d-flex align-items-center justify-content-center">
+                                            <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                        </div>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -671,7 +623,7 @@
                             <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
                         </div>
                         <div class="row justify-content-center align-items-center margin-top">
-                            <button type="button" class="btn btn-primary" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
+                            <button type="button" class="btn btn-info" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>
                         </div>
                         <div class="row  justify-content-center align-items-center margin-top">
                             <div><spring:message code="login.sign_up_question"/> <a href="<c:url value="/register"/>"><spring:message code="button.sign_up"/></a>
@@ -790,7 +742,7 @@
                             <div class="d-flex justify-content-center">
                                 <input class="btn btn-danger" type="submit" value="<spring:message code="button.submit"/>"/>
                             </div>
-                            <!-- <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">SUBMIT</button>-->
+                            <!-- <button type="submit" class="btn btn-info d-flex align-items-center justify-content-center">SUBMIT</button>-->
                         </form:form>
                     </div>
                 </div>
@@ -825,7 +777,7 @@
                             <div class="d-flex justify-content-center">
                                 <input class="btn btn-danger" type="submit" value="<spring:message code="button.submit"/>"/>
                             </div>
-                            <!-- <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">SUBMIT</button>-->
+                            <!-- <button type="submit" class="btn btn-info d-flex align-items-center justify-content-center">SUBMIT</button>-->
                         </form:form>
                     </div>
                 </div>
@@ -1009,7 +961,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </div>
-</div>
 </div>
 
 

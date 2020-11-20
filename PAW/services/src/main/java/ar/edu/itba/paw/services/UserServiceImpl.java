@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.models.VerifyUser;
@@ -12,8 +10,15 @@ import ar.edu.itba.paw.persistence.VerifyUserDao;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,22 +26,36 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.UUID;
+
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final long PAGESIZE=6;
+    private final long PAGE_SIZE=5;
     private static final long USER_NOT_EXISTS = -1;
-    @Qualifier("userDaoImpl")
+    private static final int DELETE_VERIFICATIONS = -1;
+    private static final int ALLOW_MOD = 1;
+
     @Autowired
     private UserDao userDao;
+
     @Autowired
     private VerificationTokenDao tokenDao;
+
     @Autowired
     private VerifyUserDao verifyUserDao;
 
     @Autowired
-    MessageSource messageSource;
+    private AuthenticationManager authManager;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -88,8 +107,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public int delete(long userId) {
-        return userDao.delete(userId);
+    public void delete(long userId) {
+        userDao.delete(userId);
     }
 
     @Transactional
@@ -101,11 +120,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateModAllow(long userId, boolean allow) {
+    public int updateModAllow(long userId, boolean allow) {
         userDao.updateModAllow(userId, allow);
         if(!allow){
             deleteVerificationByUser(userId);
+            return DELETE_VERIFICATIONS;
         }
+        return ALLOW_MOD;
     }
 
     private Optional<User> update(long userId, String username, String mail, String password) {
@@ -114,11 +135,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void createVerificationToken(User user, String token) {
-        Optional<VerificationToken> verificationToken = tokenDao.getByUser(user.getId());
-        verificationToken.ifPresent(value -> tokenDao.change(value.getTokenId(), token));
+    public void createVerificationToken(User user, String token,String appUrl) {
         tokenDao.insert(user.getId(),token);
+        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
+                "\r\n" +
+                appUrl + "/register/confirm?token=" + token;
+        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
+
     @Transactional(readOnly = true)
     @Override
     public Optional<VerificationToken> getVerificationToken(String token) {
@@ -133,9 +157,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void generateNewVerificationToken(User user, String token) {
-        Optional<VerificationToken> verificationToken = tokenDao.getByUser(user.getId());
-        verificationToken.ifPresent(value -> tokenDao.change(value.getTokenId(), token));
+    public void generateNewVerificationToken(User user, String token,String appUrl) {
+        Optional<VerificationToken> verificationToken = user.getVerificationToken();
+        verificationToken.ifPresent(value -> tokenDao.change(value, token));
+        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
+                "\r\n" +
+                appUrl + "/register/confirm?token=" + token;
+        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 
     @Transactional
@@ -150,55 +178,28 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-    @Transactional
-    @Override
-    public void updateDescription(long userId, String description) {
-        userDao.updateDescription(userId,description);
-    }
+//    @Transactional
+//    @Override
+//    public void updateDescription(long userId, String description) {
+//        userDao.updateDescription(userId,description);
+//    }
+//
+//    @Transactional
+//    @Override
+//    public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
+
 
     @Transactional
     @Override
-    public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
-
-    @Transactional
-    @Override
-    public VerifyUser createVerify(long userId, long frameworkId, long commentId) {
-        return verifyUserDao.create(userId,frameworkId,commentId);
+    public VerifyUser createVerify(User user, Framework framework) {
+        return verifyUserDao.create(user,framework,null);
     }
 
-    @Transactional
-    @Override
-    public VerifyUser createVerify(long userId, long frameworkId) {
-        return verifyUserDao.create(userId,frameworkId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<VerifyUser> getVerifyByUser(long userId, boolean pending) {
-        return verifyUserDao.getByUser(userId,pending);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<VerifyUser> getVerifyByFramework(long frameworkId, boolean pending) {
-        return verifyUserDao.getByFramework(frameworkId,pending);
-    }
 
     @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByFrameworks(List<Long> frameworksIds, boolean pending, long page) {
-        return verifyUserDao.getByFrameworks(frameworksIds, pending, page, PAGESIZE);
-    }
-
-    @Override
-    public List<VerifyUser> getAllVerifyByUser(long userId) {
-        return verifyUserDao.getAllByUser(userId);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<VerifyUser> getAllVerifyByFramework(long frameworkId) {
-        return verifyUserDao.getAllByFramework(frameworkId);
+        return verifyUserDao.getVerifyForCommentByFrameworks(frameworksIds, pending, page, PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)
@@ -210,7 +211,27 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getVerifyByPending(boolean pending, long page) {
-        return verifyUserDao.getByPending(pending, page, PAGESIZE);
+        return verifyUserDao.getVerifyForCommentByPending(pending, page, PAGE_SIZE);
+    }
+
+    @Override
+    public Optional<Integer> getVerifyByPendingAmount(boolean pending) {
+        return verifyUserDao.getVerifyForCommentByPendingAmount(pending);
+    }
+
+    @Override
+    public Optional<Integer> getVerifyByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
+        return verifyUserDao.getVerifyForCommentByFrameworkAmount(frameworksIds,pending);
+    }
+
+    @Override
+    public Optional<Integer> getApplicantsByPendingAmount(boolean pending) {
+        return verifyUserDao.getApplicantsByPendingAmount(pending);
+    }
+
+    @Override
+    public Optional<Integer> getApplicantsByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
+        return verifyUserDao.getApplicantsByFrameworkAmount(frameworksIds,pending);
     }
 
     @Transactional
@@ -231,26 +252,20 @@ public class UserServiceImpl implements UserService {
         verifyUserDao.verify(verificationId);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<VerifyUser> getVerifyByFrameworkAndUser(long frameworkId, long userId) {
-        return verifyUserDao.getByFrameworkAndUser(frameworkId,userId);
-    }
-
     @Transactional
     @Override
     public void passwordMailing(User user, String appUrl) {
 
-            String recipientAddress = user.getMail();
+        String recipientAddress = user.getMail();
 
-            String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
-            String confirmationUrl = "/recoveringToken?token=" + token;
+        String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
+        String confirmationUrl = "/recover/recovering_token?token=" + token;
 
-            String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
-            String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());
-            String message = inter_message+ "\r\n" + appUrl + confirmationUrl;
+        String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
+        String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());
+        String message = inter_message+ "\r\n" + appUrl + confirmationUrl;
 
-            sendEmail(recipientAddress,subject,message);
+        sendEmail(recipientAddress,subject,message);
     }
 
     @Transactional
@@ -286,13 +301,32 @@ public class UserServiceImpl implements UserService {
         mailSender.send(email);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getApplicantsByPending(boolean pending, long page) {
-        return verifyUserDao.getApplicantsByPending(true, page, PAGESIZE);
+        return verifyUserDao.getApplicantsByPending(true, page, PAGE_SIZE);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page) {
-        return verifyUserDao.getApplicantsByFrameworks(frameworksIds, page, PAGESIZE);
+        return verifyUserDao.getApplicantsByFrameworks(frameworksIds, page, PAGE_SIZE);
+    }
+
+    @Transactional
+    @Override
+    public void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture) {
+        userDao.updateInformation(userId, description, picture, updatePicture);
+    }
+
+    @Transactional
+    public void internalLogin(String user, String pass, HttpServletRequest req) {
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user, pass);
+        Authentication auth = authManager.authenticate(authReq);
+
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+        HttpSession session = req.getSession(true);
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 }

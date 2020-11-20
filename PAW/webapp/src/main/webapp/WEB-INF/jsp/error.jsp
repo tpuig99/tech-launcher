@@ -15,31 +15,31 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body class="error-background">
-        <jsp:include page="components/navbar.jsp">
-            <jsp:param name="connected" value="${user}"/>
-            <jsp:param name="username" value="${user.name}"/>
-            <jsp:param name="isMod" value="${user_isMod}"/>
-        </jsp:include>
+<jsp:include page="components/navbar.jsp">
+    <jsp:param name="connected" value="${user}"/>
+    <jsp:param name="username" value="${user.name}"/>
+    <jsp:param name="isMod" value="${user_isMod}"/>
+</jsp:include>
 
-        <div>
-            <div class="content-no-sidebar">
-                <div class="mx-auto d-flex"></div>
+<div>
+    <div class="content-no-sidebar">
+        <div class="mx-auto d-flex"></div>
+        <div class="mx-auto">
+            <div class="d-flex flex-column justify-content-center mx-4 mb-4 mt-4">
                 <div class="mx-auto">
-                    <div class="d-flex flex-column justify-content-center mx-4 mb-4 mt-4">
-                        <div class="mx-auto">
-                            <img src="<c:url value="/resources/assets/error_image.png"/>" class="d-block align-top" alt="Error image">
-                        </div>
-                        <div class="mx-auto mt-4">
-                            <h4><spring:message code="error.description"/></h4></div>
-                        <div class="mx-auto mt-4">
-                            <a class="btn primary-button" href="<c:url value="/"/>" role="button"><spring:message code="button.back_to_home"/></a>
-                        </div>
-                    </div>
+                    <img src="<c:url value="/resources/assets/error_image.png"/>" class="d-block align-top" alt="Error image">
+                </div>
+                <div class="mx-auto mt-4">
+                    <h4><spring:message code="error.description"/></h4></div>
+                <div class="mx-auto mt-4">
+                    <a class="btn primary-button" href="<c:url value="/"/>" role="button"><spring:message code="button.back_to_home"/></a>
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>

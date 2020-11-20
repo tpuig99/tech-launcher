@@ -14,7 +14,7 @@ class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, O
             UserForm user = (UserForm) obj;
             return user.getPassword().equals(user.getRepeatPassword());
         }
-            PasswordForm user = (PasswordForm) obj;
-            return user.getPassword().equals(user.getRepeatPassword());
+        PasswordForm user = (PasswordForm) obj;
+        return user.getPassword().equals(user.getRepeatPassword());
     }
 }

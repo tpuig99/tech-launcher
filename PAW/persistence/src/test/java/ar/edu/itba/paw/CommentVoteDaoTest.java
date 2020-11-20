@@ -130,28 +130,10 @@ public class CommentVoteDaoTest {
         final int voteId = jdbcInsert.executeAndReturnKey(args).intValue();
 
         // Act
-        final int returnValue = commentVoteDao.delete(voteId);
+        commentVoteDao.delete(voteId);
 
         // Asserts
-        assertEquals(1, returnValue);
-        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comment_votes","vote_id ="+ returnValue));
-    }
-
-
-    @Test
-    public void testGetByComment() {
-        // Arrange
-        for (int i = 0; i < SIZE; i++) {
-            final Map<String,Object> args = getArgumentsMap(COMMENT_ID, USER_ID+i, VOTE_UP);
-            jdbcInsert.executeAndReturnKey(args);
-        }
-
-        // Act
-        final List<CommentVote> returnValue = commentVoteDao.getByComment(COMMENT_ID);
-
-        // Assert
-        Assert.assertFalse(returnValue.isEmpty());
-        Assert.assertEquals(SIZE, returnValue.size());
+        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comment_votes","vote_id ="+ voteId));
     }
 
     @Test

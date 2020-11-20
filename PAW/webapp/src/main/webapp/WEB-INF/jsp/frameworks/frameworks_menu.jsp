@@ -5,8 +5,9 @@
 <html>
 <head>
     <title>
+        <spring:message code="category.${category}" var="categoryFormatted"/>
         <spring:message code="tech.wref"
-                        arguments="${category_translation}"
+                        arguments="${categoryFormatted}"
                         htmlEscape="true"/>
     </title>
 
@@ -21,12 +22,17 @@
     <jsp:param name="username" value="${user.name}"/>
     <jsp:param name="isMod" value="${user_isMod}"/>
 </jsp:include>
-<jsp:include page="../components/sidebar.jsp"/>
+
+<div class="sidenav overflow-auto">
+    <c:forEach var="category" items="${categories_sidebar}">
+        <a href="<c:url value="/techs/${category}"/>"><spring:message code="category.${category}"/></a>
+    </c:forEach>
+</div>
 
 <div class="content">
     <div class="page-title">
         <h2>
-            ${category_translation}
+            <spring:message code="category.${category}"/>
         </h2>
     </div>
     <div class="page-description">
@@ -35,50 +41,34 @@
     <div class="row equal">
         <c:forEach items="${frameworksList}" var="framework">
             <div class="card mx-4 mb-4">
-                <a href="<c:url value="/${framework.category}/${framework.id}"/>">
+                <a href="<c:url value="/techs/${category}/${framework.id}"/>">
                     <div class="card-body">
                         <c:choose>
-                            <c:when test="${not empty framework.base64image}">
-                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="data:${framework.contentType};base64,${framework.base64image}" alt="<spring:message code="tech.picture"/>"/></div>
+                            <c:when test="${not empty framework.picture}" >
+                                <div class="max-logo d-flex align-items-center justify-content-center">
+                                    <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                </div>
                             </c:when>
                             <c:otherwise>
-                                <div class="max-logo d-flex align-items-center justify-content-center"><img src="${framework.logo}" alt="<spring:message code="tech.picture"/>"></div>
+                                <div class="max-logo d-flex align-items-center justify-content-center">
+                                    <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                </div>
                             </c:otherwise>
                         </c:choose>
-                     </div>
+                    </div>
                     <div class="card-footer text-dark">${framework.name}</div>
                 </a>
             </div>
         </c:forEach>
     </div>
-    <ul class="pagination justify-content-center">
-        <c:choose>
-        <c:when test="${frameworks_page == 1}">
-        <li class="page-item disabled">
-            </c:when>
-            <c:otherwise>
-        <li class="page-item ">
-            </c:otherwise>
-            </c:choose>
-            <a class="page-link" href="<c:url value="/${category}/pages?frameworks_page=${frameworks_page-1}"/>" aria-label="Previous">
-                <span aria-hidden="true">&lsaquo;</span>
-                <span class="sr-only">Previous</span>
-            </a>
-        </li>
-        <c:choose>
-        <c:when test="${frameworksList.size() < page_size}">
-        <li class="page-item disabled">
-            </c:when>
-            <c:otherwise>
-        <li class="page-item">
-            </c:otherwise>
-            </c:choose>
-            <a class="page-link" href="<c:url value="/${category}/pages?frameworks_page=${frameworks_page+1}"/>" aria-label="Next">
-                <span aria-hidden="true">&rsaquo;</span>
-                <span class="sr-only">Next</span>
-            </a>
-        </li>
-    </ul>
+    <!-- List pagination -->
+    <jsp:include page="../components/pagination.jsp">
+        <jsp:param name="total" value="${framework_amount}"/>
+        <jsp:param name="page" value="${frameworks_page}"/>
+        <jsp:param name="page_size" value="${page_size}"/>
+        <jsp:param name="origin" value="category_list"/>
+        <jsp:param name="category" value="${category}"/>
+    </jsp:include>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

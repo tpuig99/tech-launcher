@@ -3,7 +3,7 @@ nav {
 }
 
 .navbar{
-    z-index:1;
+    z-index:4;
     box-shadow: 0 1em 0.5em -0.5em rgba(0,0,0,.2);
 }
 
@@ -59,11 +59,20 @@ nav a:hover {
     justify-content: center;
     text-align: center;
     vertical-align: center;
-    padding-top: 6.5em;
+    padding-top: 4em;
     margin: auto;
-    padding-left: 5em;
-    padding-right: 5em;
-    width: 60%;
+    padding-left: 4em;
+    padding-right: 4em;
+    width: 80%;
+}
+
+.content-no-sidebar-left {
+    justify-content: center;
+    padding-top: 4em;
+    margin: auto;
+    padding-left: 4em;
+    padding-right: 4em;
+    width: 90%;
 }
 
 .page-title {
@@ -112,7 +121,7 @@ nav a:hover {
 
 .primary-button{
     background-color: #48bfe3;
-     color: white;
+    color: white;
 }
 
 .fab-button{
@@ -146,4 +155,9 @@ img {
 .max-logo{
     width: 8em;
     height: 8em;
+}
+
+.primary-button{
+    color: white;
+    background-color: #48bfe3;
 }
