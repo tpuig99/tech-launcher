@@ -63,7 +63,8 @@ public class ExploreController {
                                        @RequestParam(required = false) final Integer lastComment,
                                        @RequestParam(required = false) final Integer lastUpdate,
                                        @RequestParam(value = "page", required = false) final Long page,
-                                       @RequestParam(value = "postsPage", required = false) final Long postsPage){
+                                       @RequestParam(value = "postsPage", required = false) final Long postsPage,
+                                       @RequestParam(required = false) final boolean isPost){
 
         final ModelAndView mav = new ModelAndView("frameworks/explore");
         List<FrameworkCategories> categoriesList = new ArrayList<>();
@@ -201,9 +202,7 @@ public class ExploreController {
         mav.addObject("postsPage", postsPage);
         mav.addObject("postsPageSize", POSTS_PAGE_SIZE);
         mav.addObject("postsAmount", ps.getPostsAmount());
-
-
-
+        mav.addObject("isPost", isPost);
 
         /* -------------------------------------------------- */
 

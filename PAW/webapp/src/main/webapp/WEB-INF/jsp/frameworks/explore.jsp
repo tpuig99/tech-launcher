@@ -133,30 +133,33 @@
          </span>
 
         <!--Filter By Rating-->
-        <div class="subtitle sidebar-title"><h4><spring:message code="explore.rating"/></h4></div>
+        <div id="techRating">
+            <div class="subtitle sidebar-title"><h4><spring:message code="explore.rating"/></h4></div>
 
-        <span><spring:message code="explore.from"/></span>
-        <span>
-            <select id="stars-dropdown-1">
-                <option value="0" <c:if test="${starsQuery1 == 0}"> selected </c:if>>0</option>
-                <option value="1"<c:if test="${starsQuery1 == 1}"> selected </c:if>>1</option>
-                <option value="2"<c:if test="${starsQuery1 == 2}"> selected </c:if>>2</option>
-                <option value="3"<c:if test="${starsQuery1 == 3}"> selected </c:if>>3</option>
-                <option value="4"<c:if test="${starsQuery1 == 4}"> selected </c:if>>4</option>
-                <option value="5"<c:if test="${starsQuery1 == 5}"> selected </c:if>>5</option>
-            </select>
-         </span>
-        <span><spring:message code="explore.to_5_stars"/></span>
-        <span>
-            <select id="stars-dropdown-2">
-                <option value="0" <c:if test="${starsQuery2 == 0}"> selected </c:if>>0</option>
-                <option value="1"<c:if test="${starsQuery2 == 1}"> selected </c:if>>1</option>
-                <option value="2"<c:if test="${starsQuery2 == 2}"> selected </c:if>>2</option>
-                <option value="3"<c:if test="${starsQuery2 == 3}"> selected </c:if>>3</option>
-                <option value="4"<c:if test="${starsQuery2 == 4}"> selected </c:if>>4</option>
-                <option value="5"<c:if test="${starsQuery2 == 5 || starsQuery2==null}"> selected </c:if>>5</option>
-            </select>
-        </span>
+            <span><spring:message code="explore.from"/></span>
+            <span>
+                <select id="stars-dropdown-1">
+                    <option value="0" <c:if test="${starsQuery1 == 0}"> selected </c:if>>0</option>
+                    <option value="1"<c:if test="${starsQuery1 == 1}"> selected </c:if>>1</option>
+                    <option value="2"<c:if test="${starsQuery1 == 2}"> selected </c:if>>2</option>
+                    <option value="3"<c:if test="${starsQuery1 == 3}"> selected </c:if>>3</option>
+                    <option value="4"<c:if test="${starsQuery1 == 4}"> selected </c:if>>4</option>
+                    <option value="5"<c:if test="${starsQuery1 == 5}"> selected </c:if>>5</option>
+                </select>
+             </span>
+            <span><spring:message code="explore.to_5_stars"/></span>
+            <span>
+                <select id="stars-dropdown-2">
+                    <option value="0" <c:if test="${starsQuery2 == 0}"> selected </c:if>>0</option>
+                    <option value="1"<c:if test="${starsQuery2 == 1}"> selected </c:if>>1</option>
+                    <option value="2"<c:if test="${starsQuery2 == 2}"> selected </c:if>>2</option>
+                    <option value="3"<c:if test="${starsQuery2 == 3}"> selected </c:if>>3</option>
+                    <option value="4"<c:if test="${starsQuery2 == 4}"> selected </c:if>>4</option>
+                    <option value="5"<c:if test="${starsQuery2 == 5 || starsQuery2==null}"> selected </c:if>>5</option>
+                </select>
+            </span>
+        </div>
+
     </div>
 
     <!-- Search Bar -->
@@ -261,10 +264,10 @@
 
     <ul class="nav nav-tabs" id="mod-tab">
         <li class="nav-item">
-            <a class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="techs" aria-selected="true">TECHS</a>
+            <a onclick="showTechRating()" class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="techs" aria-selected="true"><spring:message code="explore.techs"/></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#posts" data-toggle="tab" role="tab" aria-controls="posts" aria-selected="false">POSTS</a>
+            <a onclick="hideTechRating()" class="nav-link" href="#posts" data-toggle="tab" role="tab" aria-controls="posts" aria-selected="false"><spring:message code="explore.posts"/></a>
         </li>
     </ul>
 
@@ -395,6 +398,16 @@
 
     $(document).ready(function() {
 
+        let searchTab = "techs";
+        <c:if test="${isPost}">
+        searchTab = "posts";
+        hideTechRating();
+        </c:if>
+        let value = '#mod-tab a[href="#'+searchTab+'"]';
+        $(value).tab('show');
+
+        //TECHS
+
         let tags = [];
         <c:forEach items="${categories}" var="category">
         tags.push('<spring:message code="category.${category}"/>');
@@ -418,7 +431,21 @@
         document.getElementById("check${type}").checked = true;
         </c:forEach>
         document.getElementById("searchOnlyByName").checked = ${nameFlagQuery};
+
+
+        //POSTS
+
     });
+
+    function hideTechRating(){
+        document.getElementById("techRating").style.display = "none";
+    }
+
+    function showTechRating(){
+        document.getElementById("techRating").style.display = "block";
+    }
+
+
 
     function isEmpty( input ){
         for (let i = 0; i < input.length; i++) {
@@ -521,43 +548,6 @@
         document.getElementById("showMore"+element).style.display = "block";
         document.getElementById("showLess"+element).style.display = "none";
     }
-    <%--function moveToPage(goingPage){--%>
-    <%--    console.log(${page} ${searchResultsNumber} ${page_size});--%>
-    <%--    let url = "<c:url value="/search?toSearch="/>" ;--%>
-    <%--    <c:if test="${not empty techNameQuery}">--%>
-    <%--    url = url + ${techNameQuery};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty categoriesQuery}">--%>
-    <%--    url = url + '&categories=' + ${categoriesQuery};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty typesQuery}">--%>
-    <%--    url = url + '&types=' + ${typesQuery};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty starsQuery1}">--%>
-    <%--    url = url + '&starsLeft=' + ${starsQuery1};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty starsQuery2}">--%>
-    <%--    url = url + '&starsRight=' + ${starsQuery2};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty nameFlagQuery}">--%>
-    <%--    url = url + '&nameFlag=' + ${nameFlagQuery};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty commentAmount}">--%>
-    <%--    url = url +'&commentAmount=' + ${commentAmount};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty dateComment}">--%>
-    <%--    url = url +'&lastComment=' + ${dateComment};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty dateUpdate}">--%>
-    <%--    url = url +'&lastUpdate=' + ${dateUpdate};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty orderValue}">--%>
-    <%--    url = url +'&order=' + ${orderValue};--%>
-    <%--    </c:if>--%>
-    <%--    url = url +'&page='+goingPage;--%>
-    <%--    window.location.href = url;--%>
-
-    <%--}--%>
 
 
     function getCheckedTypes(){
