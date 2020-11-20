@@ -28,8 +28,8 @@
 
 <div class="content-search">
     <div class="sidebar-search">
-        <div class="d-flex flex-row-reverse">
-            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="explore.filter"/></button>
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-width my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="explore.filter"/></button>
         </div>
 
         <!-- Filter By Categories -->
@@ -255,63 +255,87 @@
     </div>
 
     <div class="page-description"></div>
-    <!-- Display Matching Techs -->
-    <c:choose>
-        <c:when test="${matchingFrameworks.size() == 0 }">
-            <div>
-                <spring:message code="explore.not_found"/>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <div class="row equal">
-                <c:forEach var="framework" items="${matchingFrameworks}" >
-                    <div class="card mx-4 mb-4">
-                        <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
-                            <div class="card-body">
-                                <c:choose>
-                                    <c:when test="${not empty framework.picture}" >
-                                        <div class="max-logo d-flex align-items-center justify-content-center">
-                                            <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
-                                        </div>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="max-logo d-flex align-items-center justify-content-center">
-                                            <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>" />
-                                        </div>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                            <div class="card-footer text-dark">
-                                <span>${framework.name} | </span>
-                                <span class="fa fa-star fa-sm"></span>
-                                <span>${framework.starsFormated}</span>
-                            </div>
-                        </a>
+    <!-- TECHS / POSTS Tabs  -->
+
+    <ul class="nav nav-tabs" id="mod-tab">
+        <li class="nav-item">
+            <a class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="promote" aria-selected="true">TECHS</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#posts" data-toggle="tab" role="tab" aria-controls="reports" aria-selected="false">POSTS</a>
+        </li>
+    </ul>
+
+
+    <div class="tab-content mt-4">
+        <!-- Matching Techs -->
+        <div class="tab-pane active" id="techs">
+
+            <c:choose>
+                <c:when test="${matchingFrameworks.size() == 0 }">
+                    <div>
+                        <spring:message code="explore.not_found"/>
                     </div>
-                </c:forEach>
-            </div>
-            <!-- Paginación -->
-            <jsp:include page="../components/pagination.jsp">
-                <jsp:param name="total" value="${searchResultsNumber}"/>
-                <jsp:param name="page" value="${page}"/>
-                <jsp:param name="page_size" value="${page_size}"/>
-                <jsp:param name="origin" value="search"/>
-                <jsp:param name="toSearch" value="${techNameQuery}"/>
-                <jsp:param name="categories" value="${categoriesQuery}"/>
-                <jsp:param name="types" value="${typesQuery}"/>
-                <jsp:param name="star1" value="${starsQuery1}"/>
-                <jsp:param name="star2" value="${starsQuery2}"/>
-                <jsp:param name="nameFlag" value="${nameFlagQuery}"/>
-                <jsp:param name="order" value="${orderValue}"/>
-                <jsp:param name="commentAmount" value="${commentAmount}"/>
-                <jsp:param name="commentDate" value="${dateComment}"/>
-                <jsp:param name="updateDate" value="${dateUpdate}"/>
+                </c:when>
+                <c:otherwise>
+                    <div class="row equal">
+                        <c:forEach var="framework" items="${matchingFrameworks}" >
+                            <div class="card mx-4 mb-4">
+                                <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
+                                    <div class="card-body">
+                                        <c:choose>
+                                            <c:when test="${not empty framework.picture}" >
+                                                <div class="max-logo d-flex align-items-center justify-content-center">
+                                                    <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                                </div>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <div class="max-logo d-flex align-items-center justify-content-center">
+                                                    <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>" />
+                                                </div>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <div class="card-footer text-dark">
+                                        <span>${framework.name} | </span>
+                                        <span class="fa fa-star fa-sm"></span>
+                                        <span>${framework.starsFormated}</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </c:forEach>
+                    </div>
+                    <!-- Paginación -->
+                    <jsp:include page="../components/pagination.jsp">
+                        <jsp:param name="total" value="${searchResultsNumber}"/>
+                        <jsp:param name="page" value="${page}"/>
+                        <jsp:param name="page_size" value="${page_size}"/>
+                        <jsp:param name="origin" value="search"/>
+                        <jsp:param name="toSearch" value="${techNameQuery}"/>
+                        <jsp:param name="categories" value="${categoriesQuery}"/>
+                        <jsp:param name="types" value="${typesQuery}"/>
+                        <jsp:param name="star1" value="${starsQuery1}"/>
+                        <jsp:param name="star2" value="${starsQuery2}"/>
+                        <jsp:param name="nameFlag" value="${nameFlagQuery}"/>
+                        <jsp:param name="order" value="${orderValue}"/>
+                        <jsp:param name="commentAmount" value="${commentAmount}"/>
+                        <jsp:param name="commentDate" value="${dateComment}"/>
+                        <jsp:param name="updateDate" value="${dateUpdate}"/>
 
 
-            </jsp:include>
+                    </jsp:include>
 
-        </c:otherwise>
-    </c:choose>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <!-- Matching Posts -->
+        <div class="tab-pane active" id="posts">
+            <div> posts </div>
+        </div>
+
+
+    </div>
+
 </div>
 
 <script>
