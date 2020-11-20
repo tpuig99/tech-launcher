@@ -22,5 +22,5 @@ public interface VerifyUserDao {
     void delete(long verificationId);
     void deleteVerificationByUser(long userId);
     void verify(long verificationId);
-
+    List<VerifyUser> getVerifyByPendingAndFramework( boolean pending, List<Long> frameworkIds, long page, long pageSize);
 }

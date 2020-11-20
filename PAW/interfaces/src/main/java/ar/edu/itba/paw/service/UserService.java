@@ -46,4 +46,5 @@ public interface UserService {
     void modMailing(User user,String frameworkName);
     List<VerifyUser> getApplicantsByPending( boolean pending, long page);
     List<VerifyUser> getApplicantsByFrameworks( List<Long> frameworksIds, long page);
+    List<VerifyUser> getVerifyByPendingAndFrameworks( boolean pending, List<Long> frameworkIds, long page );
 }

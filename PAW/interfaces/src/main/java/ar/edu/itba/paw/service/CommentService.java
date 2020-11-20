@@ -31,4 +31,5 @@ public interface CommentService {
     void acceptReport(long commentId);
     void denyReport(long commentId);
     void deleteReport(long reportId);
+    List<ReportComment> getReportsByFrameworks( List<Long> frameworksIds, long page);
 }

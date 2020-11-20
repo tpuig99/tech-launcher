@@ -13,5 +13,5 @@ public interface ReportCommentDao {
     void insert(long commentId, long userId, String description);
     void delete(long reportId);
     void deleteReportByComment(long commentId);
-
+    List<ReportComment> getByFrameworks( List<Long> frameworksIds, long page, long pageSize);
 }

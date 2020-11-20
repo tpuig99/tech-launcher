@@ -329,4 +329,9 @@ public class UserServiceImpl implements UserService {
         HttpSession session = req.getSession(true);
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
+
+    @Override
+    public List<VerifyUser> getVerifyByPendingAndFrameworks( boolean pending, List<Long> frameworkIds, long page ){
+        return verifyUserDao.getVerifyByPendingAndFramework( pending, frameworkIds, page, PAGE_SIZE);
+    }
 }

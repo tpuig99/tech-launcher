@@ -129,7 +129,7 @@
         <div class="answers">
             <div class="title"><h3>Answers</h3></div>
             <c:choose>
-                <c:when test="${not empty post.postComments}">
+                <c:when test="${not empty answers}">
                     <c:forEach var="answer" items="${answers}">
                         <div class="post-cards">
                             <div class="card mb-3 post-card-answer">
