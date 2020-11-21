@@ -36,8 +36,14 @@ public class PostServiceImpl implements PostService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Post> getPostsByUser(long userId, long page, long pageSize) {
-        return postDao.getPostsByUser(userId, page, pageSize);
+    public List<Post> getPostsByUser(long userId, long page) {
+        return postDao.getPostsByUser(userId, page, PAGE_SIZE_USER_PROFILE);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<Integer> getPostsCountByUser( long userId ){
+        return postDao.getPostsCountByUser(userId);
     }
 
     @Override

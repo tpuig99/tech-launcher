@@ -92,50 +92,55 @@
             url = url +'&page='+goingPage;
             window.location.href = url;
         }
-        else if(origin == 'profile_comment'){
-            window.location.href="<c:url value="/users/${param.username}?comments_page="/>"+goingPage+"&contents_page=${param.contents_page}&votes_page=${param.votes_page}&frameworks_page=${param.techs_page} ";
+        else if(origin === 'profile_comment'){
+            window.location.href="<c:url value="/users/${param.username}?comments_page="/>"+goingPage+"&contents_page=${param.contents_page}&votes_page=${param.votes_page}&frameworks_page=${param.techs_page}&posts_page=${param.posts_page} ";
         }
-        else if(origin == 'profile_content'){
-            window.location.href="<c:url value="/users/${param.username}?comments_page=${param.comments_page}&contents_page="/>"+goingPage+"&votes_page=${param.votes_page}&frameworks_page=${param.techs_page} ";
+        else if(origin === 'profile_content'){
+            window.location.href="<c:url value="/users/${param.username}?comments_page=${param.comments_page}&contents_page="/>"+goingPage+"&votes_page=${param.votes_page}&frameworks_page=${param.techs_page}&posts_page=${param.posts_page} ";
         }
-        else if(origin == 'profile_votes'){
-            window.location.href="<c:url value="/users/${param.username}?comments_page=${param.comments_page}&contents_page=${param.contents_page}&votes_page="/>"+goingPage+"&frameworks_page=${param.techs_page} ";
+        else if(origin === 'profile_votes'){
+            window.location.href="<c:url value="/users/${param.username}?comments_page=${param.comments_page}&contents_page=${param.contents_page}&votes_page="/>"+goingPage+"&frameworks_page=${param.techs_page}&posts_page=${param.posts_page} ";
         }
-        else if(origin == 'profile_techs'){
-            window.location.href="<c:url value="/users/${param.username}?comments_page=${param.comments_page}&contents_page=${param.contents_page}&votes_page=${param.votes_page}&frameworks_page="/>"+goingPage;
+        else if(origin === 'profile_techs'){
+            window.location.href="<c:url value="/users/${param.username}?comments_page=${param.comments_page}&contents_page=${param.contents_page}&votes_page=${param.votes_page}&frameworks_page="/>"+goingPage+"&posts_page=${param.posts_page}";
         }
-        else if(origin == 'tech_book'){
+        else if(origin === 'profile_posts'){
+            window.location.href="<c:url value="/users/${param.username}?comments_page=${param.comments_page}&contents_page=${param.contents_page}&votes_page=${param.votes_page}&frameworks_page=${param.techs_page}&posts_page="/>"+goingPage;
+        }
+        else if(origin === 'tech_book'){
             window.location.href="<c:url value="/techs/${param.category}/${param.techs_id}?books_page="/>"+goingPage+"&courses_page=${param.courses_page}&tutorials_page=${param.tutorials_page}&comments_page=${param.comments_page}";
         }
-        else if(origin == 'tech_courses'){
+        else if(origin === 'tech_courses'){
             window.location.href="<c:url value="/techs/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page="/>"+goingPage+"&tutorials_page=${param.tutorials_page}&comments_page=${param.comments_page}";
         }
-        else if(origin == 'tech_tutorial'){
+        else if(origin === 'tech_tutorial'){
             window.location.href="<c:url value="/techs/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page=${param.courses_page}&tutorials_page="/>"+goingPage+"&comments_page=${param.comments_page}";
         }
-        else if(origin == 'tech_comments'){
+        else if(origin === 'tech_comments'){
             window.location.href="<c:url value="/techs/${param.category}/${param.techs_id}?books_page=${param.books_page}&courses_page=${param.courses_page}&tutorials_page=${param.tutorials_page}&comments_page="/>"+goingPage;
         }
-        else if(origin == 'category_list'){
+        else if(origin === 'category_list'){
             window.location.href="<c:url value="/techs/${param.category}?frameworks_page="/>"+goingPage;
         }
-        else if(origin == 'mod_mod'){
+        else if(origin === 'mod_mod'){
             window.location.href="<c:url value="/mod?tabs="/>"+tab+"&modsPage="+goingPage+"&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}";
         }
-        else if(origin == 'mod_report_comment'){
+        else if(origin === 'mod_report_comment'){
             window.location.href="<c:url value="/mod?tabs="/>"+tab+"&modsPage=${param.modsPage}&rComPage="+goingPage+"&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}";
         }
-        else if(origin == 'mod_applicants'){
+        else if(origin === 'mod_applicants'){
             window.location.href = "<c:url value="/mod?tabs="/>"+tab +"&modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=+"+goingPage+"&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}";
         }
-        else if(origin == 'mod_verify'){
+        else if(origin === 'mod_verify'){
             window.location.href="<c:url value="/mod?tabs="/>"+tab +"&modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage="+goingPage+"&rConPage=${param.rConPage}";
         }
-        else if(origin == 'mod_report_content'){
+        else if(origin === 'mod_report_content'){
             window.location.href="<c:url value="/mod?tabs="/>"+tab +"modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage="+goingPage;
         }
         else if( origin === 'posts'){
             window.location.href="<c:url value="/posts?page="/>" + goingPage;
+        } else if( origin === 'post_comment'){
+            window.location.href="<c:url value="/posts/${param.post_id}?page="/>" + goingPage;
         }
 
     }

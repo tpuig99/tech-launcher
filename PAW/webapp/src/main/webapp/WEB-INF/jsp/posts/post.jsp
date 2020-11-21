@@ -27,9 +27,10 @@
 
     <!-- Question Section -->
     <div class="content-no-sidebar-left">
-        <div class="ml-4 mr-1"><h1>${post.title}</h1></div>
+        <div class="ml-4 mr-1"><h1><c:out value="${post.title}"/></h1></div>
         <div class="post-cards">
             <div class="row post-data">
+                <!-- Up Vote - Down Vote section -->
                 <div class=" ml-4 col-1 net-votes">
                     <c:choose>
                         <c:when test="${user.name == 'anonymousUser'}">
@@ -94,16 +95,17 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
-                <div class="col">
-                    <div class="row post-description mr-2">
-                            ${post.description}
+                <div class="col-10">
+                    <div class="row post-description mr-2 description-text">
+                            <c:out value="${post.description}" />
                     </div>
                     <div class="row extra-info">
+                        <!-- Tags section -->
                         <div class="col-9 tags">
                             <c:forEach items="${post.postTags}" var="tag">
                                 <button  class="badge badge-color ml-1">
                                     <span>
-                                            ${tag.tagName}
+                                            <c:out value="${tag.tagName}"/>
                                     </span>
                                 </button>
                             </c:forEach>
@@ -128,11 +130,20 @@
             <div class="title"><h3>Answers</h3></div>
             <c:choose>
                 <c:when test="${not empty post.postComments}">
-                    <c:forEach var="answer" items="${post.postComments}">
+                    <c:forEach var="answer" items="${answers}">
                         <div class="post-cards">
-                            <div class="card mb-3 post-card-individual">
+                            <div class="card mb-3 post-card-answer">
                                 <div class="card-body">
+                                    <!-- Delete comment -->
+                                    <c:if test="${isAdmin || isOwner || answer.user.username == user.name}">
+                                        <div class="row">
+                                            <span class="col d-flex justify-content-end align-items-end">
+                                                <button class="btn btn-link" onclick="openDeleteCommentModal(${answer.postCommentId})"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
+                                            </span>
+                                        </div>
+                                    </c:if>
                                     <div class="row">
+                                        <!-- Up Vote - Down Vote section -->
                                         <div class="col-1 net-votes">
                                             <c:choose>
                                                 <c:when test="${user.name == 'anonymousUser'}">
@@ -153,15 +164,15 @@
                                                         </c:when>
                                                         <c:otherwise>
                                                             <c:url value="/posts/${post.postId}/upVoteComment/" var="postPathUpVoteComment"/>
-                                                            <form:form modelAttribute="upVoteCommentForm" id="upVoteCommentForm${post.postId}CommentId${answer.postCommentId}" action="${postPathUpVoteComment}" method="post" class="mb-0 mt-0">
+                                                            <form:form modelAttribute="upVoteCommentForm" id="upVoteCommentForm${post.postId}CommentId${answer.postCommentId}" action="${postPathUpVoteComment}" method="post" class="mb-0 mt-0 pt-0">
                                                                 <form:label path="upVoteCommentPostId">
-                                                                    <form:input id="upVoteCommentPostId${post.postId}CommentId${answer.postCommentId}" class="input-wrap" path="upVoteCommentPostId" type="hidden" value="${post.postId}"/>
+                                                                    <form:input id="upVoteCommentPostId${post.postId}CommentId${answer.postCommentId}" class="input-wrap hidden-no-space" path="upVoteCommentPostId" value="${post.postId}"/>
                                                                 </form:label>
                                                                 <form:label path="postCommentUpVoteId">
-                                                                    <form:input id="postCommentId${answer.postCommentId}UpVote" class="input-wrap" path="postCommentUpVoteId" type="hidden" value="${answer.postCommentId}"/>
+                                                                    <form:input id="postCommentId${answer.postCommentId}UpVote" class="input-wrap hidden-no-space" path="postCommentUpVoteId" value="${answer.postCommentId}"/>
                                                                 </form:label>
 
-                                                                <div class="net-votes">
+                                                                <div class="net-votes pt-0 mt-0 mb-0 pb-0">
                                                                     <button class="btn pt-0 pb-0" type="submit">
                                                                         <c:choose>
                                                                             <c:when test="${answer.getUserAuthVote(user.name) > 0}">
@@ -173,18 +184,15 @@
                                                                         </c:choose>
                                                                     </button>
                                                                     <div>
-                                                                        <h6>${answer.votesUp - answer.votesDown}</h6>
+                                                                        <div>${answer.votesUp - answer.votesDown}</div>
                                                                     </div>
                                                                 </div>
                                                             </form:form>
+
                                                             <c:url value="/posts/${post.postId}/downVoteComment/" var="postPathDownVoteComment"/>
-                                                            <div class="mt-0 pt-0">
                                                             <form:form modelAttribute="downVoteCommentForm" id="downVoteCommentForm${post.postId}/${answer.postCommentId}" action="${postPathDownVoteComment}" method="post" class="mb-0 mt-0">
                                                                 <form:label path="downVoteCommentPostId">
-                                                                    <form:input id="downVoteCommentPostId${post.postId}CommentId${answer.postCommentId}" class="input-wrap" path="downVoteCommentPostId" type="hidden" value="${post.postId}"/>
-                                                                </form:label>
-                                                                <form:label path="postCommentDownVoteId">
-                                                                    <form:input id="postCommentId${answer.postCommentId}DownVote" class="input-wrap" path="postCommentDownVoteId" type="hidden" value="${answer.postCommentId}"/>
+                                                                    <form:input id="downVoteCommentPostId${post.postId}CommentId${answer.postCommentId}" class="input-wrap hidden-no-space" path="downVoteCommentPostId" value="${post.postId}"/>
                                                                 </form:label>
 
                                                                 <div class="net-votes">
@@ -199,15 +207,17 @@
                                                                         </c:choose>
                                                                     </button>
                                                                 </div>
+                                                                <form:label path="postCommentDownVoteId">
+                                                                    <form:input id="postCommentId${answer.postCommentId}DownVote" class="input-wrap hidden-no-space" path="postCommentDownVoteId" value="${answer.postCommentId}"/>
+                                                                </form:label>
                                                             </form:form>
-                                                            </div>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>
-                                        <div class="col">
-                                            <div class="row post-description d-flex align-items-center">
+                                        <div class="col-10">
+                                            <div class="row post-description align-items-center description-text">
                                                     ${answer.description}
                                             </div>
                                             <div class="row extra-info">
@@ -232,17 +242,24 @@
                 <c:otherwise><spring:message code="post.no_answers_yet"/></c:otherwise>
             </c:choose>
         </div>
+        <!-- Answers pagination -->
+        <jsp:include page="../components/pagination.jsp">
+            <jsp:param name="total" value="${post.answersAmount}"/>
+            <jsp:param name="page" value="${page}"/>
+            <jsp:param name="page_size" value="${page_size}"/>
+            <jsp:param name="origin" value='post_comment'/>
+            <jsp:param name="post_id" value='${post.postId}'/>
+            <jsp:param name="comments_page" value="${page}"/>
+        </jsp:include>
 
-        <div class="user-comment">
-            <div class="container">
-                <h4 class="title"><spring:message code="post.answer_yourself"/></h4>
+        <div class="answers">
+            <div class="title">
+                <h4><spring:message code="post.answer_yourself"/></h4>
             </div>
 
-
+            <!-- Leave a comment -->
             <div class="container margin-left">
-                <div class="row">
-                    <h5><spring:message code="tech.interactions.leave_comment"/></h5>
-
+                <div class="row comment-yourself">
                     <div>
                         <c:url value="/posts/comment" var="postPathComment"/>
                         <form:form modelAttribute="postCommentForm" action="${postPathComment}" method="post">
@@ -267,6 +284,34 @@
                                     <button type="button" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal"><!-- TODO: spring message --><spring:message code="button.submit"/></button>
                                 </c:otherwise>
                             </c:choose>
+                        </form:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCommentModalLabel"><spring:message code="tech.comment.delete"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row  justify-content-center align-items-center margin-top">
+                        <div><spring:message code="tech.comment.delete.message"/></div>
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <c:url value="/posts/${post.postId}/comment/delete" var="postPathDeleteCommment"/>
+                        <form:form modelAttribute="deletePostCommentForm" action="${postPathDeleteCommment}" method="post">
+                            <form:label path="commentDeletePostId"><form:input  class="input-wrap" path="commentDeletePostId" type="hidden" value="${post.postId}"/></form:label>
+                            <form:label path="commentDeleteId"><form:input  class="input-wrap" path="commentDeleteId" type="hidden" id="commentIdDeleteInput"/></form:label>
+                            <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                            <button type="submit" class="btn btn-danger ml-4"><spring:message code="button.delete"/></button>
                         </form:form>
                     </div>
                 </div>
@@ -344,6 +389,12 @@
                 }
             });
         });
+
+        function openDeleteCommentModal(commentId){
+            $('#commentIdDeleteInput').val(commentId);
+
+            $('#deleteCommentModal').modal('show');
+        }
 
         function goToCat( catName ){
             window.location.href = "<c:url value="/"/>" + "posts/categories/" + catName;

@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface PostCommentService {
 
     Optional<PostComment> getById(long postCommentId);
-    List<PostComment> getByPost(long postId);
+    List<PostComment> getByPost(long postId, long page);
 
     PostComment insertPostComment(long postId, long userId, String description, Long reference);
     void deletePostComment(long postCommentId);

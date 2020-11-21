@@ -135,4 +135,7 @@ public class Post {
         return 0;
     }
 
+    public long getAnswersAmount(){
+        return postComments.stream().filter((x) -> x.getReference() == null).count();
+    }
 }
