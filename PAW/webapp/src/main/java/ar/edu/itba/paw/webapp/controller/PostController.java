@@ -25,16 +25,16 @@ public class PostController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
-    PostService ps;
+    private PostService ps;
 
     @Autowired
     private FrameworkService fs;
 
     @Autowired
-    PostCommentService pcs;
+    private PostCommentService pcs;
 
     @Autowired
-    PostTagService pts;
+    private PostTagService pts;
 
     @Autowired
     private UserService us;
