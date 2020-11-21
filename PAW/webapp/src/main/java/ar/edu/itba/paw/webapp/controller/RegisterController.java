@@ -150,6 +150,14 @@ public class RegisterController {
         return "session/badUser";
     }
 
+    @RequestMapping(value = "/register/resend_token", method = RequestMethod.GET)
+    public String resendRegistrationToken(HttpServletRequest request){
+        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(user.isPresent()){
+           return resendRegistrationToken(request,user.get().getVerificationToken().get().getToken());
+        }
+        return "redirect:/error";
+    }
     @RequestMapping(value = "/register/resend_registration_token", method = RequestMethod.GET)
     public String resendRegistrationToken(
             HttpServletRequest request, @RequestParam("token") String existingToken) {

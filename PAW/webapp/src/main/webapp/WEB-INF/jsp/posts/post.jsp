@@ -316,6 +316,9 @@
                     <div class="row justify-content-center align-items-center margin-top">
                         <div><spring:message code="register.error.confirm_email"/></div>
                     </div>
+                    <div class="row  justify-content-center align-items-center margin-top">
+                        <div><a href="<c:url value="/register/resend_token"/>"><spring:message code="button.resend"/></a></div>
+                    </div>
                 </div>
             </div>
         </div>
