@@ -77,7 +77,6 @@
 
     <div>
         <c:if test="${user.name != 'anonymousUser'}">
-                                <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
             <c:if test="${not empty interestsList}">
                 <h4 class="title"><spring:message code="techs.tastes"/></h4>
                 <div class="row equal">

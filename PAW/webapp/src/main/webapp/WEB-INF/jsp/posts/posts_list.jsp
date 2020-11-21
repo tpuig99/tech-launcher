@@ -121,18 +121,18 @@
 
                                         <div class="row post-title">
                                             <a href="<c:url value='/posts/${post.postId}'/>">
-                                                    ${post.title}
+                                                    <c:out value="${post.title}"/>
                                             </a>
                                         </div>
                                         <div class="row posts-description">
-                                            ${post.description}
+                                            <c:out value="${post.description}"/>
                                         </div>
                                         <div class="row extra-info">
                                             <div class="col-9 tags">
                                                 <c:forEach items="${post.postTags}" var="tag">
                                                     <button  class="badge badge-color ml-1"<%-- onclick="goToTag('${tag.tagName}')"--%>>
                                                         <span>
-                                                            ${tag.tagName}
+                                                            <c:out value="${tag.tagName}"/>
                                                         </span>
                                                     </button>
                                                 </c:forEach>

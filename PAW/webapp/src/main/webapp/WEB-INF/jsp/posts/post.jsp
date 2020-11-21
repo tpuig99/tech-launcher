@@ -27,7 +27,7 @@
 
     <!-- Question Section -->
     <div class="content-no-sidebar-left">
-        <div class="ml-4 mr-1"><h1>${post.title}</h1></div>
+        <div class="ml-4 mr-1"><h1><c:out value="${post.title}"/></h1></div>
         <div class="post-cards">
             <div class="row post-data">
                 <!-- Up Vote - Down Vote section -->
@@ -97,7 +97,7 @@
                 </div>
                 <div class="col-10">
                     <div class="row post-description mr-2 description-text">
-                            ${post.description}
+                            <c:out value="${post.description}" />
                     </div>
                     <div class="row extra-info">
                         <!-- Tags section -->
@@ -105,7 +105,7 @@
                             <c:forEach items="${post.postTags}" var="tag">
                                 <button  class="badge badge-color ml-1">
                                     <span>
-                                            ${tag.tagName}
+                                            <c:out value="${tag.tagName}"/>
                                     </span>
                                 </button>
                             </c:forEach>
