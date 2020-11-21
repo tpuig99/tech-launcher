@@ -95,8 +95,8 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
-                <div class="col-10">
-                    <div class="row post-description mr-2 description-text">
+                <div class="col-9">
+                    <div class="row post-description description-text">
                             <c:out value="${post.description}" />
                     </div>
                     <div class="row extra-info">
