@@ -334,4 +334,9 @@ public class UserServiceImpl implements UserService {
     public List<VerifyUser> getVerifyByPendingAndFrameworks( boolean pending, List<Long> frameworkIds, long page ){
         return verifyUserDao.getVerifyByPendingAndFramework( pending, frameworkIds, page, PAGE_SIZE);
     }
+
+    @Override
+    public Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds){
+        return verifyUserDao.getVerifyByPendingAndFrameworksAmount( pending, frameworkIds);
+    }
 }

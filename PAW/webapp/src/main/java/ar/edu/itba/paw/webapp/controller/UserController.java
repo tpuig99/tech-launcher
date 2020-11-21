@@ -199,7 +199,7 @@ public class UserController {
                 mav.addObject("pageSize", PAGE_SIZE);
 
                 mav.addObject("mods", mods);
-                mav.addObject("modsAmount", us.getVerifyByPendingAmount(false).get()); // TODO: getVerifyByPendingAndFrameworkAmount
+                mav.addObject("modsAmount", us.getVerifyByPendingAndFrameworksAmount(false, frameworksIdsForReportedComments)); // TODO: getVerifyByPendingAndFrameworkAmount
                 mav.addObject("modsPage", modsPage == null ? pageStart : modsPage);
 
                 mav.addObject("pendingToVerify",verify);
@@ -211,7 +211,7 @@ public class UserController {
                 mav.addObject("applicantsPage", applicantsPage == null ? pageStart:applicantsPage);
 
                 mav.addObject("reportedComments", reportedComments);
-                mav.addObject("reportedCommentsAmount", commentService.getAllReportsAmount().get()); // TODO: getVerifyByPendingAndFrameworkAmount
+                mav.addObject("reportedCommentsAmount", commentService.getReportsAmountByFrameworks(frameworksIdsForReportedComments)); // TODO: getVerifyByPendingAndFrameworkAmount
                 mav.addObject("rComPage", rComPage == null ? pageStart : rComPage);
 
                 mav.addObject("reportedContents", reportContents);

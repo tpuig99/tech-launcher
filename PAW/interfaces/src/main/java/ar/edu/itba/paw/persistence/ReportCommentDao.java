@@ -14,4 +14,6 @@ public interface ReportCommentDao {
     void delete(long reportId);
     void deleteReportByComment(long commentId);
     List<ReportComment> getByFrameworks( List<Long> frameworksIds, long page, long pageSize);
+
+    Integer getReportsAmountByFrameworks(List<Long> frameworksIds);
 }

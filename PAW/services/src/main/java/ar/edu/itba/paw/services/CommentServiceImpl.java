@@ -142,4 +142,9 @@ public class CommentServiceImpl implements CommentService {
         return rc.getByFrameworks( frameworksIds, page, PAGE_SIZE);
     }
 
+    @Override
+    public Integer getReportsAmountByFrameworks(List<Long> frameworksIds){
+        return  rc.getReportsAmountByFrameworks( frameworksIds );
+    }
+
 }

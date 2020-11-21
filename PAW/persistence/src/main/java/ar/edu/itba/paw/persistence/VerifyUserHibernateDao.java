@@ -97,7 +97,7 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
 
     @Override
     public Optional<Integer> getVerifyForCommentByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.pending = :pending", VerifyUser.class);
+        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in (:frameworksIds) and vu.pending = :pending", VerifyUser.class);
         query.setParameter("frameworksIds", frameworksIds);
         query.setParameter("pending", pending);
         return Optional.of(query.getResultList().size());
@@ -134,5 +134,17 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
         VerifyUser verifyUser = em.find(VerifyUser.class,verificationId);
         verifyUser.setPending(false);
         em.merge(verifyUser);
+    }
+
+    @Override
+    public Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds){
+        final TypedQuery<VerifyUser> query;
+        if(!pending)
+            query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.framework.id in (:frameworksIds)", VerifyUser.class);
+        else
+            query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.comment is not null and vu.framework.id in (:frameworksIds)", VerifyUser.class);
+        query.setParameter("pending", pending);
+        query.setParameter("frameworksIds", frameworkIds);
+        return query.getResultList().size();
     }
 }

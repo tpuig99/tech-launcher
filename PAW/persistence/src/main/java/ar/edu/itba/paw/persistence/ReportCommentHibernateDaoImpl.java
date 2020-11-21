@@ -65,19 +65,17 @@ public class ReportCommentHibernateDaoImpl implements ReportCommentDao{
 
     @Override
     public List<ReportComment> getByFrameworks( List<Long> frameworksIds, long page, long pageSize){
-        /* TODO: Change query to be more effective */
-        final TypedQuery<Comment> commentsQuery = em.createQuery("FROM Comment as c WHERE c.framework.id in (:frameworksIds)", Comment.class );
-        commentsQuery.setParameter("frameworksIds", frameworksIds);
-        List<Comment> comments = commentsQuery.getResultList();
-        List<Long> commentsIds = new LinkedList<>();
-        comments.forEach(comment -> {
-            commentsIds.add(comment.getCommentId());
-        });
-
-        final TypedQuery<ReportComment> query = em.createQuery("from ReportComment as rc WHERE rc.comment.commentId in (:commentsIds)", ReportComment.class);
-        query.setParameter("commentsIds", commentsIds);
+        final TypedQuery<ReportComment> query = em.createQuery("from ReportComment as rc WHERE rc.comment.framework.id in (:frameworksIds)", ReportComment.class);
+        query.setParameter("frameworksIds", frameworksIds);
         query.setMaxResults((int)pageSize);
         query.setFirstResult((int) ((page-1)*pageSize));
         return  query.getResultList();
+    }
+
+    @Override
+    public Integer getReportsAmountByFrameworks( List<Long> frameworksIds ){
+        final TypedQuery<ReportComment> query = em.createQuery("from ReportComment  as rc WHERE rc.comment.framework.id in (:frameworksIds)", ReportComment.class);
+        query.setParameter("frameworksIds", frameworksIds);
+        return query.getResultList().size();
     }
 }
