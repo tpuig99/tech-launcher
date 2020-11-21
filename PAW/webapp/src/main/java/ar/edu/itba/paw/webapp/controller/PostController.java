@@ -1,9 +1,10 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.FrameworkCategories;
+import ar.edu.itba.paw.models.FrameworkType;
+import ar.edu.itba.paw.models.Post;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.form.frameworks.CommentForm;
-import ar.edu.itba.paw.webapp.form.frameworks.VoteForm;
 import ar.edu.itba.paw.webapp.form.posts.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -25,16 +24,16 @@ public class PostController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
-    PostService ps;
+    private PostService ps;
 
     @Autowired
     private FrameworkService fs;
 
     @Autowired
-    PostCommentService pcs;
+    private PostCommentService pcs;
 
     @Autowired
-    PostTagService pts;
+    private PostTagService pts;
 
     @Autowired
     private UserService us;
@@ -66,9 +65,11 @@ public class PostController {
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("downVoteForm", new DownVoteForm());
         mav.addObject("upVoteForm", new UpVoteForm());
+        mav.addObject("deletePostForm", new DeletePostForm());
 
         if( optionalUser.isPresent()) {
             User user = optionalUser.get();
+            mav.addObject("isAdmin", user.isAdmin());
             mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
             mav.addObject("isEnable", user.isEnable());
         }
@@ -91,6 +92,7 @@ public class PostController {
             mav.addObject("upVoteForm", new UpVoteForm());
             mav.addObject("downVoteCommentForm", new DownVoteForm());
             mav.addObject("upVoteCommentForm", new UpVoteForm());
+            mav.addObject("deletePostForm", new DeletePostForm());
             mav.addObject("answers", pcs.getByPost(id, commentsPage));
             mav.addObject("page", commentsPage);
             mav.addObject("page_size", COMMENTS_PAGE_SIZE);
@@ -179,6 +181,110 @@ public class PostController {
             return redirectToPost(newPost.getPostId());
         }
 
+        return ErrorController.redirectToErrorView();
+    }
+
+//    @RequestMapping(value = "/update_tech",  method = { RequestMethod.GET})
+//    public ModelAndView updateTech(@ModelAttribute("frameworkForm") final FrameworkForm form, @RequestParam("id") final long frameworkId) {
+//        final Optional<Framework> framework = fs.findById(frameworkId);
+//        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//
+//        if (framework.isPresent()) {
+//            if (user.isPresent()) {
+//                if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
+//                    form.setCategory(framework.get().getCategory().name());
+//                    form.setDescription(framework.get().getDescription());
+//                    if(form.getFrameworkName() == null)
+//                        form.setFrameworkName(framework.get().getName());
+//                    form.setIntroduction(framework.get().getIntroduction());
+//                    form.setFrameworkId(frameworkId);
+//                    form.setType(framework.get().getType().name());
+//
+//                    ModelAndView mav = new ModelAndView("frameworks/update_tech");
+//
+//                    mav.addObject("categories", fs.getAllCategories());
+//                    mav.addObject("types", fs.getAllTypes());
+//                    mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+//                    mav.addObject("category",framework.get().getCategory());
+//                    mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
+//
+//                    LOGGER.info("Tech {}: User {} accessed the page for updating the Tech", form.getFrameworkId(), user.get().getId());
+//                    return mav;
+//                }
+//
+//                LOGGER.error("Tech {}: User without enough privileges attempted to access page for updating", form.getFrameworkId());
+//                return ErrorController.redirectToErrorView();
+//            }
+//
+//            LOGGER.error("Tech {}: Unauthorized user attempted to access page for updating", form.getFrameworkId());
+//            return ErrorController.redirectToErrorView();
+//        }
+//
+//        LOGGER.error("Tech {}: Requested for getting update page and not found", form.getFrameworkId());
+//        return ErrorController.redirectToErrorView();
+//    }
+//
+//    @RequestMapping(value = "/update_tech", method = { RequestMethod.POST })
+//    public ModelAndView updateTech(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) throws IOException {
+//        if (errors.hasErrors()) {
+//            LOGGER.info("Tech {}: Update Form has errors", form.getFrameworkId());
+//            return updateTech(form,form.getFrameworkId());
+//        }
+//
+//        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//        final Optional<Framework> framework = fs.findById(form.getFrameworkId());
+//
+//        if(framework.isPresent()) {
+//            if (user.isPresent()) {
+//                if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
+//                    FrameworkType type = FrameworkType.valueOf(form.getType());
+//                    FrameworkCategories category = FrameworkCategories.valueOf(form.getCategory());
+//                    byte[] picture = form.getPicture().getBytes();
+//                    final Optional<Framework> updatedFramework = fs.update(form.getFrameworkId(),form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,picture);
+//
+//                    if (updatedFramework.isPresent()) {
+//                        LOGGER.info("Tech {}: User {} updated the Tech", form.getFrameworkId(), user.get().getId());
+//                        return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory().name());
+//                    }
+//
+//                    LOGGER.error("Tech {}: A problem occurred while updating the Tech", form.getFrameworkId());
+//                    return ErrorController.redirectToErrorView();
+//                }
+//
+//                LOGGER.error("Tech {}: User without enough privileges attempted to update tech", form.getFrameworkId());
+//                return ErrorController.redirectToErrorView();
+//            }
+//
+//            LOGGER.error("Tech {}: Unauthorized user tried to update Tech", form.getFrameworkId());
+//            return ErrorController.redirectToErrorView();
+//        }
+//
+//        LOGGER.error("Tech {}: Requested for updating tech and not found", form.getFrameworkId());
+//        return ErrorController.redirectToErrorView();
+//    }
+
+    @RequestMapping(path={"/posts/delete_post"}, method = RequestMethod.POST)
+    public ModelAndView deleteFramework(@Valid @ModelAttribute("deletePostForm") final DeletePostForm form){
+        Optional<Post> post = ps.findById(form.getPostIdx());
+        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if(post.isPresent()) {
+            if (user.isPresent()) {
+                if (post.get().getUser().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
+                    ps.deletePost(form.getPostIdx());
+                    LOGGER.info("Posts: Post {} deleted successfully", form.getPostIdx());
+                    return new ModelAndView("redirect:/" + "posts");
+                }
+
+                LOGGER.error("Post {}: User without enough privileges attempted to delete the Post", form.getPostIdx());
+                return ErrorController.redirectToErrorView();
+            }
+
+            LOGGER.error("Post {}: Unauthorized user tried to delete the Post", form.getPostIdx());
+            return ErrorController.redirectToErrorView();
+        }
+
+        LOGGER.error("Post {}: Requested for deleting Post and not found", form.getPostIdx());
         return ErrorController.redirectToErrorView();
     }
 
