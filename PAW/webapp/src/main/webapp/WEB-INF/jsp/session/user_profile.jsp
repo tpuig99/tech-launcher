@@ -333,7 +333,7 @@
                 </div>
             </c:when>
             <c:otherwise>
-                <spring:message code="profile.empty.contents"/>
+                <spring:message code="profile.empty.posts"/>
             </c:otherwise>
         </c:choose>
 
