@@ -165,11 +165,11 @@
                                                         <c:otherwise>
                                                             <c:url value="/posts/${post.postId}/upVoteComment/" var="postPathUpVoteComment"/>
                                                             <form:form modelAttribute="upVoteCommentForm" id="upVoteCommentForm${post.postId}CommentId${answer.postCommentId}" action="${postPathUpVoteComment}" method="post" class="mb-0 mt-0 pt-0">
-                                                                <form:label path="upVoteCommentPostId">
-                                                                    <form:input id="upVoteCommentPostId${post.postId}CommentId${answer.postCommentId}" class="input-wrap hidden-no-space" path="upVoteCommentPostId" value="${post.postId}"/>
+                                                                <form:label path="upVoteCommentPostId" class="hidden-no-space">
+                                                                    <form:input id="upVoteCommentPostId${post.postId}CommentId${answer.postCommentId}" class="hidden-no-space" path="upVoteCommentPostId" value="${post.postId}"/>
                                                                 </form:label>
-                                                                <form:label path="postCommentUpVoteId">
-                                                                    <form:input id="postCommentId${answer.postCommentId}UpVote" class="input-wrap hidden-no-space" path="postCommentUpVoteId" value="${answer.postCommentId}"/>
+                                                                <form:label path="postCommentUpVoteId" class="hidden-no-space">
+                                                                    <form:input id="postCommentId${answer.postCommentId}UpVote" class="hidden-no-space" path="postCommentUpVoteId" value="${answer.postCommentId}"/>
                                                                 </form:label>
 
                                                                 <div class="net-votes pt-0 mt-0 mb-0 pb-0">
