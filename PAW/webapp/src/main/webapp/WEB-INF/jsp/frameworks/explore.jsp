@@ -168,12 +168,14 @@
             <input id="searchInput" class="form-control mr-sm-2" type="text" value="${techNameQuery}" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
             <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="search()"><spring:message code="search.title"/></button>
         </form>
-        <div class="form-check">
+        <div class="form-check" id="searchByNameCheckbox">
             <input class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
             <label class="form-check-label" for="searchOnlyByName">
                 <spring:message code="explore.search_only_by_name"/>
             </label>
         </div>
+
+        <!-- Sort -->
         <div class="d-flex flex-row justify-content-end">
             <div class="mx-2">
                 <label class="subtitle" for="sortSelect"><spring:message code="explore.sort_by"/></label>
@@ -265,10 +267,10 @@
 
     <ul class="nav nav-tabs" id="mod-tab">
         <li class="nav-item">
-            <a onclick="showTechRating()" class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="techs" aria-selected="true"><spring:message code="explore.techs"/></a>
+            <a onclick="showTechFilters()" class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="techs" aria-selected="true"><spring:message code="explore.techs"/></a>
         </li>
         <li class="nav-item">
-            <a onclick="hideTechRating()" class="nav-link" href="#posts" data-toggle="tab" role="tab" aria-controls="posts" aria-selected="false"><spring:message code="explore.posts"/></a>
+            <a onclick="hideTechFilters()" class="nav-link" href="#posts" data-toggle="tab" role="tab" aria-controls="posts" aria-selected="false"><spring:message code="explore.posts"/></a>
         </li>
     </ul>
 
@@ -376,7 +378,7 @@
 
                         <!-- Posts Pagination -->
                         <jsp:include page="../components/pagination.jsp">
-                            <jsp:param name="total" value="${postsAmount}"/>
+                            <jsp:param name="total" value="${postsResults}"/>
                             <jsp:param name="page" value="${postsPage}"/>
                             <jsp:param name="page_size" value="${postsPageSize}"/>
                             <jsp:param name="origin" value="search_posts"/>
@@ -402,7 +404,7 @@
         let searchTab = "techs";
         <c:if test="${isPost}">
             searchTab = "posts";
-            hideTechRating();
+            hideTechFilters();
         </c:if>
         let value = '#mod-tab a[href="#'+searchTab+'"]';
         $(value).tab('show');
@@ -435,20 +437,21 @@
             document.getElementById("check${type}").checked = true;
         </c:forEach>
         document.getElementById("searchOnlyByName").checked = ${nameFlagQuery};
-
-
-        //POSTS
-
     });
 
-    function hideTechRating(){
+    function hideTechFilters(){
         document.getElementById("techRating").style.display = "none";
         $("#resultsNumber").text('${postsResults}');
+        $("#sortSelect option[value=1]").hide();
+        $("#searchByNameCheckbox").hide();
+
     }
 
-    function showTechRating(){
+    function showTechFilters(){
         document.getElementById("techRating").style.display = "block";
         $("#resultsNumber").text('${searchResultsNumber}');
+        $("#sortSelect option[value=1]").show();
+        $("#searchByNameCheckbox").show();
     }
 
 
