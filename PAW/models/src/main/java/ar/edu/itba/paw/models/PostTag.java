@@ -19,6 +19,10 @@ public class PostTag {
     @JoinColumn(name = "post_id",nullable = false)
     private Post post;
 
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PostTagType type;
+
     public PostTag() {
         //For Hibernate
     }
@@ -45,5 +49,13 @@ public class PostTag {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public PostTagType getType() {
+        return type;
+    }
+
+    public void setType(PostTagType type) {
+        this.type = type;
     }
 }
