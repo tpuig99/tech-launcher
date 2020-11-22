@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Post;
+import ar.edu.itba.paw.models.PostVote;
 import ar.edu.itba.paw.persistence.PostDao;
 import ar.edu.itba.paw.persistence.PostVoteDao;
 import ar.edu.itba.paw.service.PostService;
@@ -61,6 +62,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(long postId) {
         postDao.deletePost(postId);
+    }
+
+    @Transactional
+    @Override
+    public Optional<Post> update(long postId, String title, String description) {
+        return postDao.update(postId, title, description);
     }
 
     @Transactional

@@ -195,6 +195,9 @@ public class PostController {
                     form.setPostId(id);
                     form.setTitle(post.get().getTitle());
                     form.setDescription(post.get().getDescription());
+                    form.setNames(post.get().getPostTagsByType(PostTagType.tech_name));
+                    form.setCategories(post.get().getPostTagsByType(PostTagType.tech_category));
+                    form.setTypes(post.get().getPostTagsByType(PostTagType.tech_type));
 
                     ModelAndView mav = new ModelAndView("posts/edit_post");
 
@@ -239,24 +242,17 @@ public class PostController {
             if (user.isPresent()) {
                 if (post.get().getUser().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
 
-//                    Post newPost = ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
-//
-//                    for( String name : form.getNames()){
-//                        pts.insert(name, newPost.getPostId());
-//                    }
-//                    if(form.getCategories()!=null) {
-//                        for (String c : form.getCategories()) {
-//                            pts.insert(FrameworkCategories.valueOf(c).name(), newPost.getPostId());
-//
-//                        }
-//                    }
-//                    if(form.getTypes()!=null) {
-//                        for (String c : form.getTypes()) {
-//                            pts.insert(FrameworkType.valueOf(c).name(), newPost.getPostId());
-//                        }
-//                    }
-//
-//                    return redirectToPost(newPost.getPostId());
+                      Optional<Post> updatedPost = ps.update(id, form.getTitle(),form.getDescription());
+
+                      if (updatedPost.isPresent()) {
+                          pts.update(id, form.getNames(), form.getCategories(), form.getTypes());
+
+                          LOGGER.info("Post {}: Updated successfully with new information", id);
+
+                          return redirectToPost(updatedPost.get().getPostId());
+                      }
+
+                      return ErrorController.redirectToErrorView();
                 }
 
                 LOGGER.error("Post {}: User without enough privileges attempted to access page for updating", id);

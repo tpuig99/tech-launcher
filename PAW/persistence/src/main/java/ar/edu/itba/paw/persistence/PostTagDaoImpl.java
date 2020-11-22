@@ -1,8 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Post;
+import ar.edu.itba.paw.models.PostTag;
+import ar.edu.itba.paw.models.PostTagType;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,7 +18,6 @@ public class PostTagDaoImpl implements PostTagDao{
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional(readOnly = true)
     @Override
     public List<PostTag> getByPost(long postId) {
         final TypedQuery<PostTag> query = em.createQuery("select pt from PostTag pt where pt.post.id = :postId", PostTag.class);
@@ -25,14 +25,12 @@ public class PostTagDaoImpl implements PostTagDao{
         return query.getResultList();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<PostTag> getAll(){
         final TypedQuery<PostTag> query = em.createQuery("select pt from PostTag pt", PostTag.class);
         return query.getResultList();
     }
 
-    @Transactional
     @Override
     public Optional<PostTag> insert(String tagName, long postId, PostTagType type) {
         final PostTag postTag = new PostTag();
@@ -45,7 +43,6 @@ public class PostTagDaoImpl implements PostTagDao{
         return Optional.of(postTag);
     }
 
-    @Transactional
     @Override
     public void delete(long tagId) {
         em.remove(em.getReference(PostTag.class, tagId));

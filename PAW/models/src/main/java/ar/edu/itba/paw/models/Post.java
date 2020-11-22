@@ -3,6 +3,7 @@ package ar.edu.itba.paw.models;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "posts")
@@ -103,6 +104,11 @@ public class Post {
 
     public List<PostTag> getPostTags() {
         return postTags;
+    }
+
+    public List<String> getPostTagsByType(PostTagType type) {
+        List<PostTag> tags = postTags.stream().filter((x) -> x.getType() == type).collect(Collectors.toList());
+        return tags.stream().map(PostTag::getTagName).collect(Collectors.toList());
     }
 
     private void loadVotes() {

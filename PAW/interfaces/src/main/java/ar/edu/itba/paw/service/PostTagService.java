@@ -15,4 +15,5 @@ public interface PostTagService {
 
     List<PostTag> getAll();
 
+    void update(long postId, List<String> names, List<String> categories, List<String> types);
 }
