@@ -3,6 +3,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
 <head>
@@ -12,6 +13,7 @@
 
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/search.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/posts.css"/>"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.css" rel="stylesheet"/>
@@ -28,8 +30,8 @@
 
 <div class="content-search">
     <div class="sidebar-search">
-        <div class="d-flex flex-row-reverse">
-            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="explore.filter"/></button>
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-width my-2 my-sm-0 primary-button" type="button" onclick="search()"><spring:message code="explore.filter"/></button>
         </div>
 
         <!-- Filter By Categories -->
@@ -131,48 +133,53 @@
          </span>
 
         <!--Filter By Rating-->
-        <div class="subtitle sidebar-title"><h4><spring:message code="explore.rating"/></h4></div>
+        <div id="techRating">
+            <div class="subtitle sidebar-title"><h4><spring:message code="explore.rating"/></h4></div>
 
-        <span><spring:message code="explore.from"/></span>
-        <span>
-            <select id="stars-dropdown-1">
-                <option value="0" <c:if test="${starsQuery1 == 0}"> selected </c:if>>0</option>
-                <option value="1"<c:if test="${starsQuery1 == 1}"> selected </c:if>>1</option>
-                <option value="2"<c:if test="${starsQuery1 == 2}"> selected </c:if>>2</option>
-                <option value="3"<c:if test="${starsQuery1 == 3}"> selected </c:if>>3</option>
-                <option value="4"<c:if test="${starsQuery1 == 4}"> selected </c:if>>4</option>
-                <option value="5"<c:if test="${starsQuery1 == 5}"> selected </c:if>>5</option>
-            </select>
-         </span>
-        <span><spring:message code="explore.to_5_stars"/></span>
-        <span>
-            <select id="stars-dropdown-2">
-                <option value="0" <c:if test="${starsQuery2 == 0}"> selected </c:if>>0</option>
-                <option value="1"<c:if test="${starsQuery2 == 1}"> selected </c:if>>1</option>
-                <option value="2"<c:if test="${starsQuery2 == 2}"> selected </c:if>>2</option>
-                <option value="3"<c:if test="${starsQuery2 == 3}"> selected </c:if>>3</option>
-                <option value="4"<c:if test="${starsQuery2 == 4}"> selected </c:if>>4</option>
-                <option value="5"<c:if test="${starsQuery2 == 5 || starsQuery2==null}"> selected </c:if>>5</option>
-            </select>
-        </span>
+            <span><spring:message code="explore.from"/></span>
+            <span>
+                <select id="stars-dropdown-1">
+                    <option value="0" <c:if test="${starsQuery1 == 0}"> selected </c:if>>0</option>
+                    <option value="1"<c:if test="${starsQuery1 == 1}"> selected </c:if>>1</option>
+                    <option value="2"<c:if test="${starsQuery1 == 2}"> selected </c:if>>2</option>
+                    <option value="3"<c:if test="${starsQuery1 == 3}"> selected </c:if>>3</option>
+                    <option value="4"<c:if test="${starsQuery1 == 4}"> selected </c:if>>4</option>
+                    <option value="5"<c:if test="${starsQuery1 == 5}"> selected </c:if>>5</option>
+                </select>
+             </span>
+            <span><spring:message code="explore.to_5_stars"/></span>
+            <span>
+                <select id="stars-dropdown-2">
+                    <option value="0" <c:if test="${starsQuery2 == 0}"> selected </c:if>>0</option>
+                    <option value="1"<c:if test="${starsQuery2 == 1}"> selected </c:if>>1</option>
+                    <option value="2"<c:if test="${starsQuery2 == 2}"> selected </c:if>>2</option>
+                    <option value="3"<c:if test="${starsQuery2 == 3}"> selected </c:if>>3</option>
+                    <option value="4"<c:if test="${starsQuery2 == 4}"> selected </c:if>>4</option>
+                    <option value="5"<c:if test="${starsQuery2 == 5 || starsQuery2==null}"> selected </c:if>>5</option>
+                </select>
+            </span>
+        </div>
+
     </div>
 
     <!-- Search Bar -->
     <div class="search-bar sidebar-title">
-        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
+        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="search()" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="text" value="${techNameQuery}" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
-            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="search.title"/></button>
+            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="search()"><spring:message code="search.title"/></button>
         </form>
-        <div class="form-check">
+        <div class="form-check" id="searchByNameCheckbox">
             <input class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
             <label class="form-check-label" for="searchOnlyByName">
                 <spring:message code="explore.search_only_by_name"/>
             </label>
         </div>
+
+        <!-- Sort -->
         <div class="d-flex flex-row justify-content-end">
             <div class="mx-2">
                 <label class="subtitle" for="sortSelect"><spring:message code="explore.sort_by"/></label>
-                <select class="form-control" id="sortSelect" oninput="sortFrameworks()">
+                <select class="form-control" id="sortSelect" oninput="sort()">
                     <option value="0" <c:if test="${sortValue == 0}"> selected </c:if>><spring:message code="explore.sort_by.none"/></option>
                     <option value="1"<c:if test="${sortValue == 1}"> selected </c:if>><spring:message code="explore.sort_by.rating"/></option>
                     <option value="2"<c:if test="${sortValue == 2}"> selected </c:if>><spring:message code="explore.sort_by.comments_amount"/></option>
@@ -182,7 +189,7 @@
             </div>
             <div class="mx-2">
                 <label class="subtitle" for="orderSelect"><spring:message code="explore.order_by"/></label>
-                <select class="form-control" id="orderSelect" oninput="sortFrameworks()">
+                <select class="form-control" id="orderSelect" oninput="sort()">
                     <option value="1" <c:if test="${orderValue == 1}"> selected </c:if>><spring:message code="explore.order_by.descendant"/></option>
                     <option value="-1"<c:if test="${orderValue == -1}"> selected </c:if>><spring:message code="explore.order_by.ascendant"/></option>
                 </select>
@@ -199,7 +206,8 @@
                 <h2><spring:message code="explore.title"/></h2>
             </c:when>
             <c:otherwise>
-                <h2><spring:message code="explore.search_results"/> (${searchResultsNumber})</h2>
+                <h2><spring:message code="explore.search_results"/> (<span id="resultsNumber"></span>)</h2>
+
             </c:otherwise>
         </c:choose>
     </div>
@@ -255,63 +263,141 @@
     </div>
 
     <div class="page-description"></div>
-    <!-- Display Matching Techs -->
-    <c:choose>
-        <c:when test="${matchingFrameworks.size() == 0 }">
+    <!-- TECHS / POSTS Tabs  -->
+
+    <ul class="nav nav-tabs" id="mod-tab">
+        <li class="nav-item">
+            <a onclick="showTechFilters()" class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="techs" aria-selected="true"><spring:message code="explore.techs"/></a>
+        </li>
+        <li class="nav-item">
+            <a onclick="hideTechFilters()" class="nav-link" href="#posts" data-toggle="tab" role="tab" aria-controls="posts" aria-selected="false"><spring:message code="explore.posts"/></a>
+        </li>
+    </ul>
+
+
+    <div class="tab-content mt-4">
+        <!-- Matching Techs -->
+        <div class="tab-pane active" id="techs">
+
+            <c:choose>
+                <c:when test="${matchingFrameworks.size() == 0 }">
+                    <div>
+                        <spring:message code="explore.not_found"/>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="row equal">
+                        <c:forEach var="framework" items="${matchingFrameworks}" >
+                            <div class="card mx-4 mb-4">
+                                <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
+                                    <div class="card-body">
+                                        <c:choose>
+                                            <c:when test="${not empty framework.picture}" >
+                                                <div class="max-logo d-flex align-items-center justify-content-center">
+                                                    <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                                                </div>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <div class="max-logo d-flex align-items-center justify-content-center">
+                                                    <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>" />
+                                                </div>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <div class="card-footer text-dark">
+                                        <span>${framework.name} | </span>
+                                        <span class="fa fa-star fa-sm"></span>
+                                        <span>${framework.starsFormated}</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </c:forEach>
+                    </div>
+                    <!-- Paginación -->
+                    <jsp:include page="../components/pagination.jsp">
+                        <jsp:param name="total" value="${searchResultsNumber}"/>
+                        <jsp:param name="page" value="${page}"/>
+                        <jsp:param name="page_size" value="${page_size}"/>
+                        <jsp:param name="origin" value="search"/>
+                        <jsp:param name="toSearch" value="${techNameQuery}"/>
+                        <jsp:param name="categories" value="${categoriesQuery}"/>
+                        <jsp:param name="types" value="${typesQuery}"/>
+                        <jsp:param name="star1" value="${starsQuery1}"/>
+                        <jsp:param name="star2" value="${starsQuery2}"/>
+                        <jsp:param name="nameFlag" value="${nameFlagQuery}"/>
+                        <jsp:param name="order" value="${orderValue}"/>
+                        <jsp:param name="commentAmount" value="${commentAmount}"/>
+                        <jsp:param name="commentDate" value="${dateComment}"/>
+                        <jsp:param name="updateDate" value="${dateUpdate}"/>
+
+
+                    </jsp:include>
+
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <!-- Matching Posts -->
+        <div class="tab-pane" id="posts">
             <div>
-                <spring:message code="explore.not_found"/>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <div class="row equal">
-                <c:forEach var="framework" items="${matchingFrameworks}" >
-                    <div class="card mx-4 mb-4">
-                        <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
-                            <div class="card-body">
-                                <c:choose>
-                                    <c:when test="${not empty framework.picture}" >
-                                        <div class="max-logo d-flex align-items-center justify-content-center">
-                                            <img src="<c:url value="/techs/${framework.category}/${framework.id}/image"/>" alt="<spring:message code="tech.picture"/>"/>
+                <c:choose>
+                    <c:when test="${not empty posts}">
+                        <c:forEach items="${posts}" var="post">
+                            <div class="card mb-3 post-card">
+                                <div class="card-body">
+                                    <div class="row search-post-title ml-1">
+                                        <a href="<c:url value='/posts/${post.postId}'/>">
+                                                ${post.title}
+                                        </a>
+                                    </div>
+                                    <div class="row search-post-description ml-1">
+                                            ${post.description}
+                                    </div>
+                                    <div class="row extra-info">
+                                        <div class="col-9">
+                                            <c:forEach items="${post.postTags}" var="tag">
+                                                <button  class="badge badge-color ml-1"<%-- onclick="goToTag('${tag.tagName}')"--%>>
+                                                <span>
+                                                        ${tag.tagName}
+                                                </span>
+                                                </button>
+                                            </c:forEach>
                                         </div>
+                                        <div class="col">
+                                            <div class="row d-flex secondary-color text-right post-date small-font">
+                                                 ${post.timestamp.toLocaleString()}
+                                            </div>
+                                            <div class="row d-flex secondary-color text-right small-font">
+                                                <a href="<c:url value="/users/${post.user.username}"/>">${post.user.username}</a>
+                                            </div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="max-logo d-flex align-items-center justify-content-center">
                                             <img src="<c:url value="/resources/assets/tech_picture_default.png"/>"  alt="<spring:message code="tech.picture"/>" />
                                         </div>
-                                    </c:otherwise>
-                                </c:choose>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-footer text-dark">
-                                <span>${framework.name} | </span>
-                                <span class="fa fa-star fa-sm"></span>
-                                <span>${framework.starsFormated}</span>
-                            </div>
-                        </a>
-                    </div>
-                </c:forEach>
+
+                        </c:forEach>
+
+                        <!-- Posts Pagination -->
+                        <jsp:include page="../components/pagination.jsp">
+                            <jsp:param name="total" value="${postsResults}"/>
+                            <jsp:param name="page" value="${postsPage}"/>
+                            <jsp:param name="page_size" value="${postsPageSize}"/>
+                            <jsp:param name="origin" value="search_posts"/>
+                            <jsp:param name="posts_page" value="${postsPage}"/>
+                        </jsp:include>
+                    </c:when>
+                    <c:otherwise><spring:message code="profile.empty.comments"/></c:otherwise>
+                </c:choose>
+
             </div>
-            <!-- Paginación -->
-            <jsp:include page="../components/pagination.jsp">
-                <jsp:param name="total" value="${searchResultsNumber}"/>
-                <jsp:param name="page" value="${page}"/>
-                <jsp:param name="page_size" value="${page_size}"/>
-                <jsp:param name="origin" value="search"/>
-                <jsp:param name="toSearch" value="${techNameQuery}"/>
-                <jsp:param name="categories" value="${categoriesQuery}"/>
-                <jsp:param name="types" value="${typesQuery}"/>
-                <jsp:param name="star1" value="${starsQuery1}"/>
-                <jsp:param name="star2" value="${starsQuery2}"/>
-                <jsp:param name="nameFlag" value="${nameFlagQuery}"/>
-                <jsp:param name="order" value="${orderValue}"/>
-                <jsp:param name="commentAmount" value="${commentAmount}"/>
-                <jsp:param name="commentDate" value="${dateComment}"/>
-                <jsp:param name="updateDate" value="${dateUpdate}"/>
+        </div>
 
 
-            </jsp:include>
+    </div>
 
-        </c:otherwise>
-    </c:choose>
 </div>
 
 <script>
@@ -319,15 +405,27 @@
 
     $(document).ready(function() {
 
+        let searchTab = "techs";
+        <c:if test="${isPost}">
+            searchTab = "posts";
+            hideTechFilters();
+        </c:if>
+        let value = '#mod-tab a[href="#'+searchTab+'"]';
+        $(value).tab('show');
+
+        //TECHS
+
         let tags = [];
         <c:forEach items="${categories}" var="category">
-        tags.push('<spring:message code="category.${category}"/>');
+            tags.push('<spring:message code="category.${category}"/>');
         </c:forEach>
+
         <c:forEach items="${types}" var="type">
-        tags.push('<spring:message code="type.${type}"/>');
+            tags.push('<spring:message code="type.${type}"/>');
         </c:forEach>
+
         <c:forEach items="${frameworkNames}" var="names">
-        tags.push('${names}');
+            tags.push('${names}');
         </c:forEach>
 
         $('#searchInput').autocomplete({
@@ -336,13 +434,31 @@
         })
 
         <c:forEach items="${categoriesQuery}" var="category">
-        document.getElementById("check${category}").checked = true;
+            document.getElementById("check${category}").checked = true;
         </c:forEach>
+
         <c:forEach items="${typesQuery}" var="type">
-        document.getElementById("check${type}").checked = true;
+            document.getElementById("check${type}").checked = true;
         </c:forEach>
         document.getElementById("searchOnlyByName").checked = ${nameFlagQuery};
     });
+
+    function hideTechFilters(){
+        document.getElementById("techRating").style.display = "none";
+        $("#resultsNumber").text('${postsResults}');
+        $("#sortSelect option[value=1]").hide();
+        $("#searchByNameCheckbox").hide();
+
+    }
+
+    function showTechFilters(){
+        document.getElementById("techRating").style.display = "block";
+        $("#resultsNumber").text('${searchResultsNumber}');
+        $("#sortSelect option[value=1]").show();
+        $("#searchByNameCheckbox").show();
+    }
+
+
 
     function isEmpty( input ){
         for (let i = 0; i < input.length; i++) {
@@ -354,7 +470,19 @@
         return true;
     }
 
-    function searchFrameworks() {
+    function search(){
+
+        let tabId = $(".active").attr('tab-pane id');
+        if(tabId === 'techs'){
+            searchTechs();
+        }else{
+            searchPosts();
+        }
+
+
+    }
+
+    function searchTechs() {
         let name = document.getElementById("searchInput").value;
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
@@ -367,12 +495,36 @@
         let order = getOrder();
 
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(star1) && isEmpty(star2) && isEmpty(commentAmount) && isEmpty(commentDate) && isEmpty(updateDate))) {
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag +'&commentAmount=' + commentAmount +'&lastComment=' + commentDate +'&lastUpdate=' + updateDate +'&order=' + order + '&page=1';
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag +'&commentAmount=' + commentAmount +'&lastComment=' + commentDate +'&lastUpdate=' + updateDate +'&order=' + order + '&page=1&isPost=false';
         }
 
     }
 
-    function sortFrameworks(){
+    function searchPosts(){
+        let name = document.getElementById("searchInput").value;
+        let categories = getCheckedCategories();
+        let types = getCheckedTypes();
+        let commentAmount = getCommentAmount();
+        let commentDate = getCommentDate();
+        let updateDate = getUpdateDate();
+        let order = getOrder();
+        if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(commentAmount) && isEmpty(commentDate) && isEmpty(updateDate))) {
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types +'&commentAmount=' + commentAmount +'&lastComment=' + commentDate +'&lastUpdate=' + updateDate +'&order=' + order + '&postPage=1&isPost=true';
+        }
+
+    }
+
+    function sort(){
+        let tabId = $(".active").attr('tab-pane id');
+        if(tabId === 'techs'){
+            sortTechs();
+        }else{
+            sortPosts();
+        }
+
+    }
+
+    function sortTechs(){
         let name ="";
         let categories="";
         let types="";
@@ -385,6 +537,58 @@
         let order = getOrder();
 
         <c:if test="${not empty techNameQuery}">
+            name = "${techNameQuery}";
+        </c:if>
+
+        <c:if test="${not empty categoriesQuery}">
+            <c:forEach items="${categoriesQuery}" var="element">
+                categories = categories.concat('${element},');
+            </c:forEach>
+            categories = categories.substring(0,categories.length-1);
+        </c:if>
+
+        <c:if test="${not empty typesQuery}">
+            <c:forEach items="${typesQuery}" var="element">
+                types = types.concat('${element},');
+            </c:forEach>
+            types = types.substring(0,types.length-1);
+        </c:if>
+
+        <c:if test="${not empty starsQuery1}">
+            star1 =  ${starsQuery1};
+        </c:if>
+
+        <c:if test="${not empty starsQuery2}">
+            star2 =  ${starsQuery2};
+        </c:if>
+
+        <c:if test="${not empty commentAmount}">
+            commentAmount =  ${commentAmount};
+        </c:if>
+
+        <c:if test="${not empty dateComment}">
+            dateComment =  ${dateComment};
+        </c:if>
+
+        <c:if test="${not empty dateUpdate}">
+            dateUpdate =  ${dateUpdate};
+        </c:if>
+
+        <c:if test="${fn:length(matchingFrameworks) > 1}">
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order + '&page=${page}&isPost=false';
+        </c:if>
+    }
+
+    function sortPosts(){
+        let name ="";
+        let categories="";
+        let types="";
+        let commentAmount="";
+        let dateComment="";
+        let dateUpdate="";
+        let order = getOrder();
+
+        <c:if test="${not empty techNameQuery}">
         name = "${techNameQuery}";
         </c:if>
 
@@ -393,7 +597,6 @@
         categories = categories.concat('${element},');
         </c:forEach>
         categories = categories.substring(0,categories.length-1);
-        <%--categories = parseListToString(${categoriesQuery});--%>
         </c:if>
 
         <c:if test="${not empty typesQuery}">
@@ -403,13 +606,6 @@
         types = types.substring(0,types.length-1);
         </c:if>
 
-        <c:if test="${not empty starsQuery1}">
-        star1 =  ${starsQuery1};
-        </c:if>
-
-        <c:if test="${not empty starsQuery2}">
-        star2 =  ${starsQuery2};
-        </c:if>
 
         <c:if test="${not empty commentAmount}">
         commentAmount =  ${commentAmount};
@@ -422,15 +618,17 @@
         <c:if test="${not empty dateUpdate}">
         dateUpdate =  ${dateUpdate};
         </c:if>
-
-        <c:if test="${fn:length(matchingFrameworks) > 1}">
-        window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order + '&page=${page}';
+        <c:if test="${fn:length(posts) > 1}">
+        window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order + '&postPage=${page}&isPost=true';
         </c:if>
     }
+
+
+
     if( document.getElementById("search") != null ) {
         form = document.getElementById("search").addEventListener('submit', e => {
             e.preventDefault();
-            searchFrameworks(0);
+            search();
         });
     }
 
@@ -445,43 +643,6 @@
         document.getElementById("showMore"+element).style.display = "block";
         document.getElementById("showLess"+element).style.display = "none";
     }
-    <%--function moveToPage(goingPage){--%>
-    <%--    console.log(${page} ${searchResultsNumber} ${page_size});--%>
-    <%--    let url = "<c:url value="/search?toSearch="/>" ;--%>
-    <%--    <c:if test="${not empty techNameQuery}">--%>
-    <%--    url = url + ${techNameQuery};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty categoriesQuery}">--%>
-    <%--    url = url + '&categories=' + ${categoriesQuery};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty typesQuery}">--%>
-    <%--    url = url + '&types=' + ${typesQuery};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty starsQuery1}">--%>
-    <%--    url = url + '&starsLeft=' + ${starsQuery1};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty starsQuery2}">--%>
-    <%--    url = url + '&starsRight=' + ${starsQuery2};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty nameFlagQuery}">--%>
-    <%--    url = url + '&nameFlag=' + ${nameFlagQuery};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty commentAmount}">--%>
-    <%--    url = url +'&commentAmount=' + ${commentAmount};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty dateComment}">--%>
-    <%--    url = url +'&lastComment=' + ${dateComment};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty dateUpdate}">--%>
-    <%--    url = url +'&lastUpdate=' + ${dateUpdate};--%>
-    <%--    </c:if>--%>
-    <%--    <c:if test="${not empty orderValue}">--%>
-    <%--    url = url +'&order=' + ${orderValue};--%>
-    <%--    </c:if>--%>
-    <%--    url = url +'&page='+goingPage;--%>
-    <%--    window.location.href = url;--%>
-
-    <%--}--%>
 
 
     function getCheckedTypes(){
