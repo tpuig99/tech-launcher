@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.FrameworkCategories;
-import ar.edu.itba.paw.models.FrameworkType;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
@@ -198,11 +195,20 @@ public class ExploreController {
 
         /* --------------------- POSTS --------------------- */
 
-        mav.addObject("posts", ps.getAll(postsPage == null ? 1 : postsPage, POSTS_PAGE_SIZE) );
+       // mav.addObject("posts", ps.getAll(postsPage == null ? 1 : postsPage, POSTS_PAGE_SIZE) );
         mav.addObject("postsPage", postsPage);
         mav.addObject("postsPageSize", POSTS_PAGE_SIZE);
         mav.addObject("postsAmount", ps.getPostsAmount());
         mav.addObject("isPost", isPost);
+
+
+        List<String> tags = new ArrayList<>();
+        tags.addAll(categories);
+        tags.addAll(types);
+
+        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch  : null,tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated,order,postsPage == null ? START_PAGE :postsPage, POSTS_PAGE_SIZE);
+        mav.addObject("postsResults", posts.size());
+        mav.addObject("posts", posts);
 
         /* -------------------------------------------------- */
 

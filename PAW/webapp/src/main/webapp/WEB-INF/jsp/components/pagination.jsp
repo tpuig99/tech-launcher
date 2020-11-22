@@ -89,7 +89,7 @@
             <c:if test="${not empty param.order}">
             url = url +'&order=' + ${param.order};
             </c:if>
-            url = url +'&page='+goingPage;
+            url = url +'&page='+goingPage + '&isPost=false';
             window.location.href = url;
         }
         else if(origin === 'profile_comment'){
@@ -141,7 +141,29 @@
             window.location.href="<c:url value="/posts/${param.post_id}?page="/>" + goingPage;
         }
         else if( origin === 'search_posts'){
-            window.location.href="<c:url value="/search?postsPage="/>" + goingPage + "&isPost=true";
+            let url = "<c:url value="/search?toSearch="/>" ;
+            <c:if test="${not empty param.toSearch}">
+            url = url + '${param.toSearch}';
+            </c:if>
+
+            url = url + '&categories=' + '${param.categories}';
+            url = url + '&types=' + '${param.types}';
+            url = url.replaceAll('[','').replaceAll(']','');
+
+            <c:if test="${not empty param.commentAmount}">
+            url = url +'&commentAmount=' + ${param.commentAmount};
+            </c:if>
+            <c:if test="${not empty param.commentDate}">
+            url = url +'&lastComment=' + ${param.commentDate};
+            </c:if>
+            <c:if test="${not empty param.updateDate}">
+            url = url +'&lastUpdate=' + ${param.updateDate};
+            </c:if>
+            <c:if test="${not empty param.order}">
+            url = url +'&order=' + ${param.order};
+            </c:if>
+            url = url +'&postsPage='+goingPage + '&isPost=true';
+            window.location.href = url;
         }
 
     }

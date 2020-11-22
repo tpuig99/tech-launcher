@@ -31,7 +31,7 @@
 <div class="content-search">
     <div class="sidebar-search">
         <div class="d-flex justify-content-center">
-            <button class="btn btn-width my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="explore.filter"/></button>
+            <button class="btn btn-width my-2 my-sm-0 primary-button" type="button" onclick="search()"><spring:message code="explore.filter"/></button>
         </div>
 
         <!-- Filter By Categories -->
@@ -164,9 +164,9 @@
 
     <!-- Search Bar -->
     <div class="search-bar sidebar-title">
-        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
+        <form class="form-inline my-2 my-lg-0" method="post" onsubmit="search()" id="search">
             <input id="searchInput" class="form-control mr-sm-2" type="text" value="${techNameQuery}" placeholder="<spring:message code="search.title"/>" aria-label="Search" size="80">
-            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="searchFrameworks()"><spring:message code="search.title"/></button>
+            <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="search()"><spring:message code="search.title"/></button>
         </form>
         <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
@@ -177,7 +177,7 @@
         <div class="d-flex flex-row justify-content-end">
             <div class="mx-2">
                 <label class="subtitle" for="sortSelect"><spring:message code="explore.sort_by"/></label>
-                <select class="form-control" id="sortSelect" oninput="sortFrameworks()">
+                <select class="form-control" id="sortSelect" oninput="sort()">
                     <option value="0" <c:if test="${sortValue == 0}"> selected </c:if>><spring:message code="explore.sort_by.none"/></option>
                     <option value="1"<c:if test="${sortValue == 1}"> selected </c:if>><spring:message code="explore.sort_by.rating"/></option>
                     <option value="2"<c:if test="${sortValue == 2}"> selected </c:if>><spring:message code="explore.sort_by.comments_amount"/></option>
@@ -187,7 +187,7 @@
             </div>
             <div class="mx-2">
                 <label class="subtitle" for="orderSelect"><spring:message code="explore.order_by"/></label>
-                <select class="form-control" id="orderSelect" oninput="sortFrameworks()">
+                <select class="form-control" id="orderSelect" oninput="sort()">
                     <option value="1" <c:if test="${orderValue == 1}"> selected </c:if>><spring:message code="explore.order_by.descendant"/></option>
                     <option value="-1"<c:if test="${orderValue == -1}"> selected </c:if>><spring:message code="explore.order_by.ascendant"/></option>
                 </select>
@@ -204,7 +204,8 @@
                 <h2><spring:message code="explore.title"/></h2>
             </c:when>
             <c:otherwise>
-                <h2><spring:message code="explore.search_results"/> (${searchResultsNumber})</h2>
+                <h2><spring:message code="explore.search_results"/> (<span id="resultsNumber"></span>)</h2>
+
             </c:otherwise>
         </c:choose>
     </div>
@@ -400,8 +401,8 @@
 
         let searchTab = "techs";
         <c:if test="${isPost}">
-        searchTab = "posts";
-        hideTechRating();
+            searchTab = "posts";
+            hideTechRating();
         </c:if>
         let value = '#mod-tab a[href="#'+searchTab+'"]';
         $(value).tab('show');
@@ -410,13 +411,15 @@
 
         let tags = [];
         <c:forEach items="${categories}" var="category">
-        tags.push('<spring:message code="category.${category}"/>');
+            tags.push('<spring:message code="category.${category}"/>');
         </c:forEach>
+
         <c:forEach items="${types}" var="type">
-        tags.push('<spring:message code="type.${type}"/>');
+            tags.push('<spring:message code="type.${type}"/>');
         </c:forEach>
+
         <c:forEach items="${frameworkNames}" var="names">
-        tags.push('${names}');
+            tags.push('${names}');
         </c:forEach>
 
         $('#searchInput').autocomplete({
@@ -425,10 +428,11 @@
         })
 
         <c:forEach items="${categoriesQuery}" var="category">
-        document.getElementById("check${category}").checked = true;
+            document.getElementById("check${category}").checked = true;
         </c:forEach>
+
         <c:forEach items="${typesQuery}" var="type">
-        document.getElementById("check${type}").checked = true;
+            document.getElementById("check${type}").checked = true;
         </c:forEach>
         document.getElementById("searchOnlyByName").checked = ${nameFlagQuery};
 
@@ -439,10 +443,12 @@
 
     function hideTechRating(){
         document.getElementById("techRating").style.display = "none";
+        $("#resultsNumber").text('${postsResults}');
     }
 
     function showTechRating(){
         document.getElementById("techRating").style.display = "block";
+        $("#resultsNumber").text('${searchResultsNumber}');
     }
 
 
@@ -457,7 +463,19 @@
         return true;
     }
 
-    function searchFrameworks() {
+    function search(){
+
+        let tabId = $(".active").attr('tab-pane id');
+        if(tabId === 'techs'){
+            searchTechs();
+        }else{
+            searchPosts();
+        }
+
+
+    }
+
+    function searchTechs() {
         let name = document.getElementById("searchInput").value;
         let categories = getCheckedCategories();
         let types = getCheckedTypes();
@@ -470,12 +488,36 @@
         let order = getOrder();
 
         if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(star1) && isEmpty(star2) && isEmpty(commentAmount) && isEmpty(commentDate) && isEmpty(updateDate))) {
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag +'&commentAmount=' + commentAmount +'&lastComment=' + commentDate +'&lastUpdate=' + updateDate +'&order=' + order + '&page=1';
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag +'&commentAmount=' + commentAmount +'&lastComment=' + commentDate +'&lastUpdate=' + updateDate +'&order=' + order + '&page=1&isPost=false';
         }
 
     }
 
-    function sortFrameworks(){
+    function searchPosts(){
+        let name = document.getElementById("searchInput").value;
+        let categories = getCheckedCategories();
+        let types = getCheckedTypes();
+        let commentAmount = getCommentAmount();
+        let commentDate = getCommentDate();
+        let updateDate = getUpdateDate();
+        let order = getOrder();
+        if(!(isEmpty(name) && isEmpty(categories) && isEmpty(types) && isEmpty(commentAmount) && isEmpty(commentDate) && isEmpty(updateDate))) {
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types +'&commentAmount=' + commentAmount +'&lastComment=' + commentDate +'&lastUpdate=' + updateDate +'&order=' + order + '&postPage=1&isPost=true';
+        }
+
+    }
+
+    function sort(){
+        let tabId = $(".active").attr('tab-pane id');
+        if(tabId === 'techs'){
+            sortTechs();
+        }else{
+            sortPosts();
+        }
+
+    }
+
+    function sortTechs(){
         let name ="";
         let categories="";
         let types="";
@@ -488,6 +530,58 @@
         let order = getOrder();
 
         <c:if test="${not empty techNameQuery}">
+            name = "${techNameQuery}";
+        </c:if>
+
+        <c:if test="${not empty categoriesQuery}">
+            <c:forEach items="${categoriesQuery}" var="element">
+                categories = categories.concat('${element},');
+            </c:forEach>
+            categories = categories.substring(0,categories.length-1);
+        </c:if>
+
+        <c:if test="${not empty typesQuery}">
+            <c:forEach items="${typesQuery}" var="element">
+                types = types.concat('${element},');
+            </c:forEach>
+            types = types.substring(0,types.length-1);
+        </c:if>
+
+        <c:if test="${not empty starsQuery1}">
+            star1 =  ${starsQuery1};
+        </c:if>
+
+        <c:if test="${not empty starsQuery2}">
+            star2 =  ${starsQuery2};
+        </c:if>
+
+        <c:if test="${not empty commentAmount}">
+            commentAmount =  ${commentAmount};
+        </c:if>
+
+        <c:if test="${not empty dateComment}">
+            dateComment =  ${dateComment};
+        </c:if>
+
+        <c:if test="${not empty dateUpdate}">
+            dateUpdate =  ${dateUpdate};
+        </c:if>
+
+        <c:if test="${fn:length(matchingFrameworks) > 1}">
+            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order + '&page=${page}&isPost=false';
+        </c:if>
+    }
+
+    function sortPosts(){
+        let name ="";
+        let categories="";
+        let types="";
+        let commentAmount="";
+        let dateComment="";
+        let dateUpdate="";
+        let order = getOrder();
+
+        <c:if test="${not empty techNameQuery}">
         name = "${techNameQuery}";
         </c:if>
 
@@ -496,7 +590,6 @@
         categories = categories.concat('${element},');
         </c:forEach>
         categories = categories.substring(0,categories.length-1);
-        <%--categories = parseListToString(${categoriesQuery});--%>
         </c:if>
 
         <c:if test="${not empty typesQuery}">
@@ -506,13 +599,6 @@
         types = types.substring(0,types.length-1);
         </c:if>
 
-        <c:if test="${not empty starsQuery1}">
-        star1 =  ${starsQuery1};
-        </c:if>
-
-        <c:if test="${not empty starsQuery2}">
-        star2 =  ${starsQuery2};
-        </c:if>
 
         <c:if test="${not empty commentAmount}">
         commentAmount =  ${commentAmount};
@@ -525,15 +611,17 @@
         <c:if test="${not empty dateUpdate}">
         dateUpdate =  ${dateUpdate};
         </c:if>
-
-        <c:if test="${fn:length(matchingFrameworks) > 1}">
-        window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order + '&page=${page}';
+        <c:if test="${fn:length(posts) > 1}">
+        window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order + '&postPage=${page}&isPost=true';
         </c:if>
     }
+
+
+
     if( document.getElementById("search") != null ) {
         form = document.getElementById("search").addEventListener('submit', e => {
             e.preventDefault();
-            searchFrameworks(0);
+            search();
         });
     }
 
