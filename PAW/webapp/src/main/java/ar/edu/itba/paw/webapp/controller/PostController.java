@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.FrameworkCategories;
-import ar.edu.itba.paw.models.FrameworkType;
-import ar.edu.itba.paw.models.Post;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.posts.*;
 import org.slf4j.Logger;
@@ -164,17 +161,17 @@ public class PostController {
             Post newPost = ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
 
             for( String name : form.getNames()){
-                pts.insert(name, newPost.getPostId());
+                pts.insert(name, newPost.getPostId(), PostTagType.valueOf("tech_name"));
             }
             if(form.getCategories()!=null) {
                 for (String c : form.getCategories()) {
-                    pts.insert(FrameworkCategories.valueOf(c).name(), newPost.getPostId());
+                    pts.insert(FrameworkCategories.valueOf(c).name(), newPost.getPostId(), PostTagType.valueOf("tech_category"));
 
                 }
             }
             if(form.getTypes()!=null) {
                 for (String c : form.getTypes()) {
-                    pts.insert(FrameworkType.valueOf(c).name(), newPost.getPostId());
+                    pts.insert(FrameworkType.valueOf(c).name(), newPost.getPostId(), PostTagType.valueOf("tech_type"));
                 }
             }
 

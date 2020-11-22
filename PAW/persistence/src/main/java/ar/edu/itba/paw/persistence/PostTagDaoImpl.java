@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.Post;
-import ar.edu.itba.paw.models.PostTag;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,10 +34,11 @@ public class PostTagDaoImpl implements PostTagDao{
 
     @Transactional
     @Override
-    public Optional<PostTag> insert(String tagName, long postId) {
+    public Optional<PostTag> insert(String tagName, long postId, PostTagType type) {
         final PostTag postTag = new PostTag();
         postTag.setPost(em.getReference(Post.class, postId));
         postTag.setTagName(tagName);
+        postTag.setType(type);
 
         em.persist(postTag);
 

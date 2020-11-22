@@ -184,7 +184,9 @@ CREATE TABLE IF NOT EXISTS post_tags
     tag_id  SERIAL PRIMARY KEY,
     tag_name VARCHAR (50) NOT NULL,
     post_id INTEGER NOT NULL,
+    type VARCHAR(15) NOT NULL,
 
     FOREIGN KEY (post_id) REFERENCES posts ON DELETE CASCADE,
     UNIQUE (post_id, tag_name)
 );
+ALTER TABLE post_tags ADD COLUMN IF NOT EXISTS post_id VARCHAR(15);

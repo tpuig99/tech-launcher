@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.models.PostTag;
+import ar.edu.itba.paw.models.PostTagType;
 import ar.edu.itba.paw.persistence.PostTagDao;
 import ar.edu.itba.paw.service.PostTagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class PostTagServiceImpl implements PostTagService {
     }
 
     @Override
-    public Optional<PostTag> insert(String tagName, long postId) {
-        return postTagDao.insert(tagName, postId);
+    public Optional<PostTag> insert(String tagName, long postId, PostTagType type) {
+        return postTagDao.insert(tagName, postId, type);
     }
 
     @Override
