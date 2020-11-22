@@ -27,7 +27,7 @@
 
     <!-- Question Section -->
     <div class="content-no-sidebar-left">
-        <div class="ml-4 mr-1"><h1>${post.title}</h1></div>
+        <div class="ml-4 mr-1"><h1><c:out value="${post.title}"/></h1></div>
         <div class="post-cards">
             <div class="row post-data">
                 <!-- Up Vote - Down Vote section -->
@@ -95,9 +95,9 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
-                <div class="col-10">
-                    <div class="row post-description mr-2 description-text">
-                            ${post.description}
+                <div class="col-9">
+                    <div class="row post-description description-text">
+                            <c:out value="${post.description}" />
                     </div>
                     <div class="row extra-info">
                         <!-- Tags section -->
@@ -105,18 +105,40 @@
                             <c:forEach items="${post.postTags}" var="tag">
                                 <button  class="badge badge-color ml-1">
                                     <span>
-                                            ${tag.tagName}
+                                            <c:out value="${tag.tagName}"/>
                                     </span>
                                 </button>
                             </c:forEach>
                         </div>
                         <div class="col">
                             <div class="row d-flex secondary-color text-right post-date">
-                                    ${post.timestamp.toLocaleString()}
+                                    <c:out value="${post.timestamp.toLocaleString()}" />
                             </div>
                             <div class="row d-flex secondary-color text-right">
                                 <a href="<c:url value="/users/${post.user.username}"/>">${post.user.username}</a>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row d-flex my-1 justify-content-end">
+                        <div class="col-3">
+                            <c:if test="${isAdmin || isOwner}">
+                                <div class="row d-flex">
+                                        <%--                                                        <div class="mb-4">--%>
+                                        <%--                                                            <a href="<c:url value="/edit_post?id=${post.postId}"/>" >--%>
+                                        <%--                                                                <button class="btn btn-info btn-block text-nowrap" type="button">--%>
+                                        <%--                                                                    <i class="fa fa-edit fa-sm mr-1"></i>--%>
+                                        <%--                                                                    <spring:message code="button.edit_post"/>--%>
+                                        <%--                                                                </button>--%>
+                                        <%--                                                            </a>--%>
+                                        <%--                                                        </div>--%>
+                                    <div>
+                                        <button class="btn btn-danger text-nowrap" type="button" onclick="openDeletePostModal(${post.postId})" data-toggle="modal" data-target="#deletePostModal">
+                                            <i class="fas fa-trash-alt fa-sm mr-1"></i>
+                                            <spring:message code="button.delete_post"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </c:if>
                         </div>
                     </div>
                 </div>
@@ -129,7 +151,7 @@
         <div class="answers">
             <div class="title"><h3>Answers</h3></div>
             <c:choose>
-                <c:when test="${not empty post.postComments}">
+                <c:when test="${not empty answers}">
                     <c:forEach var="answer" items="${answers}">
                         <div class="post-cards">
                             <div class="card mb-3 post-card-answer">
@@ -165,11 +187,11 @@
                                                         <c:otherwise>
                                                             <c:url value="/posts/${post.postId}/upVoteComment/" var="postPathUpVoteComment"/>
                                                             <form:form modelAttribute="upVoteCommentForm" id="upVoteCommentForm${post.postId}CommentId${answer.postCommentId}" action="${postPathUpVoteComment}" method="post" class="mb-0 mt-0 pt-0">
-                                                                <form:label path="upVoteCommentPostId">
-                                                                    <form:input id="upVoteCommentPostId${post.postId}CommentId${answer.postCommentId}" class="input-wrap hidden-no-space" path="upVoteCommentPostId" value="${post.postId}"/>
+                                                                <form:label path="upVoteCommentPostId" class="hidden-no-space">
+                                                                    <form:input id="upVoteCommentPostId${post.postId}CommentId${answer.postCommentId}" class="hidden-no-space" path="upVoteCommentPostId" value="${post.postId}"/>
                                                                 </form:label>
-                                                                <form:label path="postCommentUpVoteId">
-                                                                    <form:input id="postCommentId${answer.postCommentId}UpVote" class="input-wrap hidden-no-space" path="postCommentUpVoteId" value="${answer.postCommentId}"/>
+                                                                <form:label path="postCommentUpVoteId" class="hidden-no-space">
+                                                                    <form:input id="postCommentId${answer.postCommentId}UpVote" class="hidden-no-space" path="postCommentUpVoteId" value="${answer.postCommentId}"/>
                                                                 </form:label>
 
                                                                 <div class="net-votes pt-0 mt-0 mb-0 pb-0">
@@ -218,13 +240,13 @@
                                         </div>
                                         <div class="col-10">
                                             <div class="row post-description align-items-center description-text">
-                                                    ${answer.description}
+                                                    <c:out value="${answer.description}"/>
                                             </div>
                                             <div class="row extra-info">
                                                 <div class="col-9 tags"></div>
                                                 <div class="col">
                                                     <div class="row d-flex secondary-color text-right post-date">
-                                                            ${answer.timestamp.toLocaleString()}
+                                                            <c:out value="${answer.timestamp.toLocaleString()}"/>
                                                     </div>
                                                     <div class="row d-flex secondary-color text-right">
                                                         <a href="<c:url value="/users/${answer.user.username}"/>">${answer.user.username}</a>
@@ -361,6 +383,35 @@
                     <div class="row justify-content-center align-items-center margin-top">
                         <div><spring:message code="register.error.confirm_email"/></div>
                     </div>
+                    <div class="row  justify-content-center align-items-center margin-top">
+                        <div><a href="<c:url value="/register/resend_token"/>"><spring:message code="button.resend"/></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deletePostModal" tabindex="-1" role="dialog" aria-labelledby="deletePostModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deletePostModalLabel"><spring:message code="post.delete"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row  justify-content-center align-items-center margin-top">
+                        <div><spring:message code="post.delete.message"/></div>
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <c:url value="/posts/delete_post" var="postPathDeletePost"/>
+                        <form:form modelAttribute="deletePostForm" action="${postPathDeletePost}" method="post">
+                            <form:label path="postIdx"><form:input  class="input-wrap" path="postIdx" type="hidden" id="postIdDeleteInput"/></form:label>
+                            <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                            <button type="submit" class="btn btn-danger ml-4"><spring:message code="button.delete"/></button>
+                        </form:form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -391,6 +442,12 @@
             $('#commentIdDeleteInput').val(commentId);
 
             $('#deleteCommentModal').modal('show');
+        }
+
+        function openDeletePostModal(postId){
+            $('#postIdDeleteInput').val(postId);
+
+            $('#deletePostModal').modal('show');
         }
 
         function goToCat( catName ){

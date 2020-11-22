@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Post;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
@@ -45,6 +47,13 @@ public class PostDaoImpl implements PostDao {
         }else{
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public Optional<Integer> getPostsCountByUser(long userId){
+        final TypedQuery<Post> query = em.createQuery("from Post as p where p.user.id = :userId", Post.class);
+        query.setParameter("userId", userId);
+        return Optional.of(query.getResultList().size());
     }
 
     @Override

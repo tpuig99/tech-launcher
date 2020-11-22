@@ -121,18 +121,18 @@
 
                                         <div class="row post-title">
                                             <a href="<c:url value='/posts/${post.postId}'/>">
-                                                    ${post.title}
+                                                    <c:out value="${post.title}"/>
                                             </a>
                                         </div>
                                         <div class="row posts-description">
-                                            ${post.description}
+                                            <c:out value="${post.description}"/>
                                         </div>
                                         <div class="row extra-info">
                                             <div class="col-9 tags">
                                                 <c:forEach items="${post.postTags}" var="tag">
                                                     <button  class="badge badge-color ml-1"<%-- onclick="goToTag('${tag.tagName}')"--%>>
                                                         <span>
-                                                            ${tag.tagName}
+                                                            <c:out value="${tag.tagName}"/>
                                                         </span>
                                                     </button>
                                                 </c:forEach>
@@ -144,6 +144,28 @@
                                                 <div class="row d-flex secondary-color text-right">
                                                     <a href="<c:url value="/users/${post.user.username}"/>">${post.user.username}</a>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="row d-flex my-1 justify-content-end">
+                                            <div class="col-3">
+                                                <c:if test="${isAdmin || post.user.username == user.name}">
+                                                    <div class="row d-flex">
+                                                            <%--                                                        <div class="mb-4">--%>
+                                                            <%--                                                            <a href="<c:url value="/edit_post?id=${post.postId}"/>" >--%>
+                                                            <%--                                                                <button class="btn btn-info btn-block text-nowrap" type="button">--%>
+                                                            <%--                                                                    <i class="fa fa-edit fa-sm mr-1"></i>--%>
+                                                            <%--                                                                    <spring:message code="button.edit_post"/>--%>
+                                                            <%--                                                                </button>--%>
+                                                            <%--                                                            </a>--%>
+                                                            <%--                                                        </div>--%>
+                                                        <div>
+                                                            <button class="btn btn-danger text-nowrap" type="button" onclick="openDeletePostModal(${post.postId})" data-toggle="modal" data-target="#deletePostModal">
+                                                                <i class="fas fa-trash-alt fa-sm mr-1"></i>
+                                                                <spring:message code="button.delete_post"/>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </c:if>
                                             </div>
                                         </div>
                                     </div>
@@ -209,16 +231,49 @@
                     <div class="row justify-content-center align-items-center margin-top">
                         <div><spring:message code="register.error.confirm_email"/></div>
                     </div>
+                    <div class="row  justify-content-center align-items-center margin-top">
+                        <div><a href="<c:url value="/register/resend_token"/>"><spring:message code="button.resend"/></a></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    
+
+    <div class="modal fade" id="deletePostModal" tabindex="-1" role="dialog" aria-labelledby="deletePostModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deletePostModalLabel"><spring:message code="post.delete"/></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row  justify-content-center align-items-center margin-top">
+                        <div><spring:message code="post.delete.message"/></div>
+                    </div>
+                    <div class="row justify-content-center align-items-center margin-top">
+                        <c:url value="/posts/delete_post" var="postPathDeletePost"/>
+                        <form:form modelAttribute="deletePostForm" action="${postPathDeletePost}" method="post">
+                            <form:label path="postIdx"><form:input  class="input-wrap" path="postIdx" type="hidden" id="postIdDeleteInput"/></form:label>
+                            <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>
+                            <button type="submit" class="btn btn-danger ml-4"><spring:message code="button.delete"/></button>
+                        </form:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         function goToTag( tagName ){
             window.location.href = "<c:url value="/"/>" + "posts/tag/" + tagName;
+        }
+
+        function openDeletePostModal(postId){
+            $('#postIdDeleteInput').val(postId);
+
+            $('#deletePostModal').modal('show');
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

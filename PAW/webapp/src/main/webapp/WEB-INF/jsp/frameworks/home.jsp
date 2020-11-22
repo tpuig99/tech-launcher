@@ -63,7 +63,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <div class="max-logo d-flex align-items-center justify-content-center">
-                                        <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                        <img src="<c:url value="/resources/assets/tech_picture_default.png"/>"  alt="<spring:message code="tech.picture"/>"/>
                                     </div>
                                 </c:otherwise>
                             </c:choose>
@@ -77,7 +77,6 @@
 
     <div>
         <c:if test="${user.name != 'anonymousUser'}">
-                                <a href="<c:url value="/techs/${framework.category}/${framework.id}"/>">
             <c:if test="${not empty interestsList}">
                 <h4 class="title"><spring:message code="techs.tastes"/></h4>
                 <div class="row equal">
@@ -93,7 +92,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <div class="max-logo d-flex align-items-center justify-content-center">
-                                                <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                                <img src="<c:url value="/resources/assets/tech_picture_default.png"/>"  alt="<spring:message code="tech.picture"/>"/>
                                             </div>
                                         </c:otherwise>
                                     </c:choose>

@@ -37,6 +37,9 @@ public class UserProfileController {
     private FrameworkService frameworkService;
 
     @Autowired
+    private PostService postService;
+
+    @Autowired
     private UserService us;
 
     final private long PAGE_SIZE = 5;
@@ -54,7 +57,8 @@ public class UserProfileController {
                                               @RequestParam(value = "comments_page",  required = false, defaultValue = START_PAGE) final Long commentsPage,
                                               @RequestParam(value = "contents_page", required = false, defaultValue = START_PAGE) final Long contentsPage,
                                               @RequestParam(value = "votes_page", required = false, defaultValue = START_PAGE) final Long votesPage,
-                                              @RequestParam(value = "frameworks_page", required = false, defaultValue = START_PAGE) final Long frameworksPage) {
+                                              @RequestParam(value = "frameworks_page", required = false, defaultValue = START_PAGE) final Long frameworksPage,
+                                              @RequestParam(value = "posts_page", required = false, defaultValue = START_PAGE) final Long postsPage) {
         ModelAndView mav = new ModelAndView("session/user_profile");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
@@ -70,10 +74,13 @@ public class UserProfileController {
             final List<Content> contentList = contentService.getContentByUser(userId, contentsPage);
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId, votesPage);
             final List<Framework> frameworks = frameworkService.getByUser(userId, frameworksPage);
+            final List<Post> posts = postService.getPostsByUser(userId, postsPage);
+
             final Optional<Long> contentCount = contentService.getContentCountByUser(userId);
             final Optional<Integer> commentsCount = commentService.getCommentsCountByUser(userId);
             final Optional<Integer> votesCount = voteService.getAllCountByUser(userId);
             final Optional<Integer> frameworksCount = frameworkService.getByUserCount(userId);
+            final Optional<Integer> postsCount = postService.getPostsCountByUser(userId);
 
             if (SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
                 form.setUserId(user.get().getId());
@@ -95,6 +102,12 @@ public class UserProfileController {
             mav.addObject("frameworks_page", frameworksPage);
             mav.addObject("frameworks_page_size", FRAMEWORK_PAGE_SIZE);
             frameworksCount.ifPresent(value -> mav.addObject("frameworksCount", value));
+
+            mav.addObject("posts",posts);
+            mav.addObject("posts_page", postsPage);
+//            mav.addObject("posts_page_size", PAGE_SIZE);
+            postsCount.ifPresent(value -> mav.addObject("postsCount", value));
+
             mav.addObject("page_size", PAGE_SIZE);
             mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
             mav.addObject("isAdmin", user.get().isAdmin());
@@ -138,14 +151,16 @@ public class UserProfileController {
                                     @RequestParam(value = "comments_page",  required = false, defaultValue = START_PAGE) final Long commentsPage,
                                     @RequestParam(value = "contents_page", required = false, defaultValue = START_PAGE) final Long contentsPage,
                                     @RequestParam(value = "votes_page", required = false, defaultValue = START_PAGE) final Long votesPage,
-                                    @RequestParam(value = "frameworks_page", required = false, defaultValue = START_PAGE) final Long frameworksPage) throws IOException {
+                                    @RequestParam(value = "frameworks_page", required = false, defaultValue = START_PAGE) final Long frameworksPage,
+                                    @RequestParam(value = "posts_page", required = false, defaultValue = START_PAGE) final Long postsPage
+    ) throws IOException {
 
         Optional<User> user = us.findByUsername(username);
 
         if (user.isPresent() && SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
             if(errors.hasErrors()){
                 LOGGER.info("User Profile: Profile Form por updating User {} profile has errors",user.get().getId());
-                final ModelAndView userError = userProfilePagination(form, username ,commentsPage,contentsPage,votesPage,frameworksPage);
+                final ModelAndView userError = userProfilePagination(form, username ,commentsPage,contentsPage,votesPage,frameworksPage, postsPage);
                 userError.addObject("profileFormError", true);
                 return userError;
             }

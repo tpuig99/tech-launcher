@@ -25,7 +25,9 @@ public class HomeController {
     @RequestMapping("/")
     public ModelAndView home() {
         final ModelAndView mav = new ModelAndView("index");
+        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+        user.ifPresent(value -> mav.addObject("user_isMod", value.isAdmin() || value.getOwnedFrameworks().size() > 0 || value.getVerifications().size() > 0));
         return mav;
     }
 

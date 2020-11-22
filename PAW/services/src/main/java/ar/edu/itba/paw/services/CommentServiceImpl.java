@@ -137,5 +137,14 @@ public class CommentServiceImpl implements CommentService {
         rc.delete(reportId);
     }
 
+    @Override
+    public List<ReportComment> getReportsByFrameworks( List<Long> frameworksIds, long page){
+        return rc.getByFrameworks( frameworksIds, page, PAGE_SIZE);
+    }
+
+    @Override
+    public Integer getReportsAmountByFrameworks(List<Long> frameworksIds){
+        return  rc.getReportsAmountByFrameworks( frameworksIds );
+    }
 
 }

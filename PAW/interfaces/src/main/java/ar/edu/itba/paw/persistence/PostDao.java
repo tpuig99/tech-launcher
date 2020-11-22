@@ -14,6 +14,7 @@ public interface PostDao {
     List<Post> getAll(long page, long pageSize);
     int getAmount();
     List<Post> getPostsByUser(long userId, long page, long pageSize);
+    Optional<Integer> getPostsCountByUser(long userId);
     List<Post> getByTagName(String tagName, long page, long pageSize);
     List<Post> search(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page, long pageSize);
 

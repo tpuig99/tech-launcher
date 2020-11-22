@@ -47,7 +47,7 @@
                         </c:when>
                         <c:otherwise>
                             <div class="d-flex flex-wrap">
-                                <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                <img src="<c:url value="/resources/assets/tech_picture_default.png"/>"  alt="<spring:message code="tech.picture"/>"/>
                             </div>
                         </c:otherwise>
                     </c:choose>
@@ -593,7 +593,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <div class="mini-logo d-flex align-items-center justify-content-center">
-                                            <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                            <img src="<c:url value="/resources/assets/tech_picture_default.png"/>"  alt="<spring:message code="tech.picture"/>"/>
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
@@ -653,6 +653,9 @@
                         </div>
                         <div class="row justify-content-center align-items-center margin-top">
                             <div><spring:message code="register.error.confirm_email"/></div>
+                        </div>
+                        <div class="row  justify-content-center align-items-center margin-top">
+                            <div><a href="<c:url value="/register/resend_token"/>"><spring:message code="button.resend"/></a></div>
                         </div>
                     </div>
                 </div>

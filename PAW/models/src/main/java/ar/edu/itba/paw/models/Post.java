@@ -34,6 +34,7 @@ public class Post {
     /*this refers to the other relation mapped in PostComment */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostComment> postComments;
+    /* TODO: eliminar postComments */
 
     /*this refers to the other relation mapped in PostTag */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE)
@@ -136,6 +137,7 @@ public class Post {
     }
 
     public long getAnswersAmount(){
+        /* TODO: hacer query para el count total */
         return postComments.stream().filter((x) -> x.getReference() == null).count();
     }
 }
