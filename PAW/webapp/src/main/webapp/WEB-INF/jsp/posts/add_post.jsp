@@ -103,7 +103,7 @@
             <!-- Tags Finish -->
 
             <div class="d-flex justify-content-center mt-4">
-                <a href="<c:url value="/"/>" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
+                <a href="<c:url value="/posts"/>" class="btn btn-danger mr-4"><spring:message code="button.cancel"/></a>
 
                 <input class="btn btn-info" id="addPostButton" type="button" onclick="this.form.submit()" value="<spring:message code="button.submit"/>"/>
                 <div class="btn btn-info disabled" id="addPostLoading" hidden>
