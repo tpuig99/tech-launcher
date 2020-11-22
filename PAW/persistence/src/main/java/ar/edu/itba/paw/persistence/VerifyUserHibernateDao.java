@@ -56,6 +56,17 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     }
 
     @Override
+    public List<VerifyUser> getVerifyByPendingAndFramework( boolean pending, List<Long> frameworkIds, long page, long pageSize){
+        final TypedQuery<VerifyUser> query;
+        query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.framework.id in (:frameworksIds)", VerifyUser.class);
+        query.setParameter("frameworksIds", frameworkIds);
+        query.setParameter("pending", pending);
+        query.setFirstResult((int) ((page-1) * pageSize));
+        query.setMaxResults((int) pageSize);
+        return  query.getResultList();
+    }
+
+    @Override
     public List<VerifyUser> getApplicantsByPending(boolean pending, long page, long pageSize) {
         final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.comment is null", VerifyUser.class);
         query.setParameter("pending", pending);
@@ -86,7 +97,7 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
 
     @Override
     public Optional<Integer> getVerifyForCommentByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.pending = :pending", VerifyUser.class);
+        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in (:frameworksIds) and vu.pending = :pending", VerifyUser.class);
         query.setParameter("frameworksIds", frameworksIds);
         query.setParameter("pending", pending);
         return Optional.of(query.getResultList().size());
@@ -123,5 +134,17 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
         VerifyUser verifyUser = em.find(VerifyUser.class,verificationId);
         verifyUser.setPending(false);
         em.merge(verifyUser);
+    }
+
+    @Override
+    public Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds){
+        final TypedQuery<VerifyUser> query;
+        if(!pending)
+            query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.framework.id in (:frameworksIds)", VerifyUser.class);
+        else
+            query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.comment is not null and vu.framework.id in (:frameworksIds)", VerifyUser.class);
+        query.setParameter("pending", pending);
+        query.setParameter("frameworksIds", frameworkIds);
+        return query.getResultList().size();
     }
 }

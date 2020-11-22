@@ -9,7 +9,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,5 +61,21 @@ public class ReportCommentHibernateDaoImpl implements ReportCommentDao{
         final TypedQuery<Long> query = em.createQuery("select rc.reportId from ReportComment rc where rc.comment.commentId = :commentId", Long.class);
         query.setParameter("commentId", commentId);
         delete(query.getSingleResult());
+    }
+
+    @Override
+    public List<ReportComment> getByFrameworks( List<Long> frameworksIds, long page, long pageSize){
+        final TypedQuery<ReportComment> query = em.createQuery("from ReportComment as rc WHERE rc.comment.framework.id in (:frameworksIds)", ReportComment.class);
+        query.setParameter("frameworksIds", frameworksIds);
+        query.setMaxResults((int)pageSize);
+        query.setFirstResult((int) ((page-1)*pageSize));
+        return  query.getResultList();
+    }
+
+    @Override
+    public Integer getReportsAmountByFrameworks( List<Long> frameworksIds ){
+        final TypedQuery<ReportComment> query = em.createQuery("from ReportComment  as rc WHERE rc.comment.framework.id in (:frameworksIds)", ReportComment.class);
+        query.setParameter("frameworksIds", frameworksIds);
+        return query.getResultList().size();
     }
 }
