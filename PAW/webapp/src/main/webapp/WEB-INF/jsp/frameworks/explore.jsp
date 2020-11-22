@@ -369,11 +369,7 @@
                                             <div class="row d-flex secondary-color text-right small-font">
                                                 <a href="<c:url value="/users/${post.user.username}"/>">${post.user.username}</a>
                                             </div>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="max-logo d-flex align-items-center justify-content-center">
-                                            <img src="<c:url value="/resources/assets/tech_picture_default.png"/>"  alt="<spring:message code="tech.picture"/>" />
-                                        </div>
+                                      </div>
                                     </div>
                                 </div>
                             </div>
