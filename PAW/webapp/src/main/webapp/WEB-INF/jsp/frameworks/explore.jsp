@@ -383,6 +383,13 @@
                             <jsp:param name="page_size" value="${postsPageSize}"/>
                             <jsp:param name="origin" value="search_posts"/>
                             <jsp:param name="posts_page" value="${postsPage}"/>
+                            <jsp:param name="toSearch" value="${techNameQuery}"/>
+                            <jsp:param name="categories" value="${categoriesQuery}"/>
+                            <jsp:param name="types" value="${typesQuery}"/>
+                            <jsp:param name="order" value="${orderValue}"/>
+                            <jsp:param name="commentAmount" value="${commentAmount}"/>
+                            <jsp:param name="commentDate" value="${dateComment}"/>
+                            <jsp:param name="updateDate" value="${dateUpdate}"/>
                         </jsp:include>
                     </c:when>
                     <c:otherwise><spring:message code="profile.empty.comments"/></c:otherwise>
