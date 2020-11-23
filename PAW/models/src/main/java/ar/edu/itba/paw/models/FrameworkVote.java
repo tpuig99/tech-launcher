@@ -45,6 +45,14 @@ public class FrameworkVote {
 
     public void setStars(int stars) { this.stars = stars; }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setFramework(Framework framework) {
+        this.framework = framework;
+    }
+
     public long getVoteId() { return id; }
 
     public long getFrameworkId() { return framework.getId(); }

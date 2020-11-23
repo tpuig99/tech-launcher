@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.*;
 
 @Rollback
 @Transactional
@@ -139,7 +138,7 @@ public class ContentDaoTest {
         Optional<Content> content2 = contentDao.changeContent(content.getContentId(),TITLE_2,LINK,TYPE);
 
         em.flush();
-        assertEquals(true,content2.isPresent());
+        assertTrue(content2.isPresent());
         assertEquals(FRAMEWORK_ID, content2.get().getFrameworkId());
         assertEquals(USER_ID,content2.get().getUserId());
         assertEquals(TITLE_2, content2.get().getTitle());
@@ -185,7 +184,7 @@ public class ContentDaoTest {
         Optional<Content> content2 = contentDao.getById(content.getContentId());
 
         em.flush();
-        assertEquals(true,content2.isPresent());
+        assertTrue(content2.isPresent());
         assertEquals(FRAMEWORK_ID, content2.get().getFrameworkId());
         assertEquals(USER_ID,content2.get().getUserId());
         assertEquals(TITLE, content2.get().getTitle());
@@ -199,7 +198,7 @@ public class ContentDaoTest {
         Optional<Content> content = contentDao.getById(1);
 
         em.flush();
-        assertEquals(false,content.isPresent());
+        assertFalse(content.isPresent());
     }
 
     @Test
@@ -228,7 +227,7 @@ public class ContentDaoTest {
         List<Content> contents = contentDao.getContentByFrameworkAndType(FRAMEWORK_ID,TYPE, 1, 5);
 
         em.flush();
-        assertEquals(false,contents.isEmpty());
+        assertFalse(contents.isEmpty());
         assertEquals(3,contents.size());
         for (Content c:contents) {
             assertEquals(FRAMEWORK_ID, c.getFrameworkId());
@@ -261,7 +260,7 @@ public class ContentDaoTest {
         List<Content> contents = contentDao.getContentByFrameworkAndTypeAndTitle(FRAMEWORK_ID,TYPE,TITLE+0);
 
         em.flush();
-        assertEquals(false,contents.isEmpty());
+        assertFalse(contents.isEmpty());
         assertEquals(1,contents.size());
         for (Content c:contents) {
             assertEquals(FRAMEWORK_ID, c.getFrameworkId());
@@ -295,7 +294,7 @@ public class ContentDaoTest {
         List<Content> contents = contentDao.getContentByUser(USER_ID, 1, 5);
 
         em.flush();
-        assertEquals(false,contents.isEmpty());
+        assertFalse(contents.isEmpty());
         assertEquals(3,contents.size());
         for (Content c:contents) {
             assertEquals(USER_ID,c.getUserId());
