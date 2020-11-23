@@ -1,7 +1,6 @@
 package ar.edu.itba.paw;
 
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.ContentTypes;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.ContentDao;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -10,11 +9,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 
@@ -27,11 +30,13 @@ import java.util.Optional;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
+@Rollback
+@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 public class ContentDaoTest {
-    private static final long FRAMEWORK_ID = 1;
-    private static final long USER_ID = 1;
+    private long FRAMEWORK_ID = 1;
+    private long USER_ID = 1;
     private static final String TITLE = "title";
     private static final String TITLE_2 = "title2";
     private static final String LINK = "link";
@@ -41,14 +46,16 @@ public class ContentDaoTest {
     private DataSource ds;
     @Autowired
     private ContentDao contentDao;
+    @PersistenceContext
+    private EntityManager em;
 
-    private JdbcTemplate jdbcTemplate;
+    private  JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
 
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("content")
                 .usingGeneratedKeyColumns("content_id");
 
@@ -57,8 +64,19 @@ public class ContentDaoTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "frameworks");
 
         for (int i = 1; i < 6; i++) {
-            jdbcTemplate.execute("insert into users values("+i+",'user"+i+"','mail"+i+"',null,default,default,default,default)");
-            jdbcTemplate.execute("insert into frameworks values("+i+",'framework"+i+"','Media','description','introduction',default,'Framework',default,default,default )");
+            User user = new User("user"+i,"mail"+i,null,true,"",true,null);
+            em.persist(user);
+            Framework framework = new Framework();
+            framework.setName("framework"+i);
+            framework.setCategory(FrameworkCategories.Media);
+            framework.setDescription("description");
+            framework.setIntroduction("introduction");
+            framework.setType(FrameworkType.Framework);
+            framework.setAuthor(user);
+            em.persist(framework);
+            em.flush();
+            USER_ID = user.getId();
+            FRAMEWORK_ID = framework.getId();
         }
 
     }
@@ -69,7 +87,9 @@ public class ContentDaoTest {
         JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = "+TITLE);
 
         final Content content = contentDao.insertContent(FRAMEWORK_ID,USER_ID,TITLE,LINK,TYPE);
+        System.out.println(content.getUser().getUsername());
 
+        em.flush();
         assertNotNull(content);
         assertEquals(FRAMEWORK_ID, content.getFrameworkId());
         assertEquals(USER_ID,content.getUserId());
@@ -108,39 +128,44 @@ public class ContentDaoTest {
         JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = "+TITLE);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
-        args.put("framework_id", FRAMEWORK_ID);
-        args.put("user_id",USER_ID);
-        args.put("title", TITLE);
-        args.put("tstamp", ts);
-        args.put("link", LINK);
-        args.put("type", TYPE.name());
-        Number contentId = jdbcInsert.executeAndReturnKey(args);
+        Content content = new Content();
+        content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
+        content.setLink(LINK);
+        content.setUser(em.find(User.class,USER_ID));
+        content.setTitle(TITLE);
+        content.setType(TYPE);
+        content.setTimestamp(ts);
+        em.persist(content);
 
-        Optional<Content> content = contentDao.changeContent(contentId.longValue(),TITLE_2,LINK,TYPE);
-        assertEquals(true,content.isPresent());
-        assertEquals(FRAMEWORK_ID, content.get().getFrameworkId());
-        assertEquals(USER_ID,content.get().getUserId());
-        assertEquals(TITLE_2, content.get().getTitle());
-        assertEquals(TYPE,content.get().getType());
-        assertEquals(LINK,content.get().getLink());
-        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "content","content_id ="+content.get().getContentId()));
+        Optional<Content> content2 = contentDao.changeContent(content.getContentId(),TITLE_2,LINK,TYPE);
+
+        em.flush();
+        assertEquals(true,content2.isPresent());
+        assertEquals(FRAMEWORK_ID, content2.get().getFrameworkId());
+        assertEquals(USER_ID,content2.get().getUserId());
+        assertEquals(TITLE_2, content2.get().getTitle());
+        assertEquals(TYPE,content2.get().getType());
+        assertEquals(LINK,content2.get().getLink());
+        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "content","content_id ="+content2.get().getContentId()));
     }
     @Test
     public void testDelete() {
         JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = "+TITLE);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        final Map<String, Object> args = new HashMap<>();
-        args.put("framework_id", FRAMEWORK_ID);
-        args.put("user_id",USER_ID);
-        args.put("title", TITLE);
-        args.put("tstamp", ts);
-        args.put("link", LINK);
-        args.put("type", TYPE.name());
-        Number contentId = jdbcInsert.executeAndReturnKey(args);
+        Content content = new Content();
+        content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
+        content.setLink(LINK);
+        content.setUser(em.find(User.class,USER_ID));
+        content.setTitle(TITLE);
+        content.setType(TYPE);
+        content.setTimestamp(ts);
+        em.persist(content);
 
-        int i = contentDao.deleteContent(contentId.longValue());
+        int i = contentDao.deleteContent(content.getContentId());
+
+        em.flush();
         assertEquals(1,i);
-        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "content","content_id ="+contentId));
+        assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "content","content_id ="+content.getContentId()));
     }
 
     //</editor-fold>
@@ -149,23 +174,24 @@ public class ContentDaoTest {
     public void testGetById() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        final Map<String, Object> args = new HashMap<>();
-        args.put("framework_id", FRAMEWORK_ID);
-        args.put("user_id",USER_ID);
-        args.put("title", TITLE);
-        args.put("tstamp", ts);
-        args.put("link", LINK);
-        args.put("type", TYPE.name());
-        Number contentId = jdbcInsert.executeAndReturnKey(args);
+        Content content = new Content();
+        content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
+        content.setLink(LINK);
+        content.setUser(em.find(User.class,USER_ID));
+        content.setTitle(TITLE);
+        content.setType(TYPE);
+        content.setTimestamp(ts);
+        em.persist(content);
 
-        Optional<Content> content = contentDao.getById(contentId.longValue());
+        Optional<Content> content2 = contentDao.getById(content.getContentId());
 
-        assertEquals(true,content.isPresent());
-        assertEquals(FRAMEWORK_ID, content.get().getFrameworkId());
-        assertEquals(USER_ID,content.get().getUserId());
-        assertEquals(TITLE, content.get().getTitle());
-        assertEquals(TYPE,content.get().getType());
-        assertEquals(LINK,content.get().getLink());
+        em.flush();
+        assertEquals(true,content2.isPresent());
+        assertEquals(FRAMEWORK_ID, content2.get().getFrameworkId());
+        assertEquals(USER_ID,content2.get().getUserId());
+        assertEquals(TITLE, content2.get().getTitle());
+        assertEquals(TYPE,content2.get().getType());
+        assertEquals(LINK,content2.get().getLink());
     }
     @Test()
     public void testGetByIdNotExisting() {
@@ -173,6 +199,7 @@ public class ContentDaoTest {
 
         Optional<Content> content = contentDao.getById(1);
 
+        em.flush();
         assertEquals(false,content.isPresent());
     }
 
@@ -181,26 +208,27 @@ public class ContentDaoTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         for (int i = 0; i < 3; i++) {
-            final Map<String, Object> args = new HashMap<>();
-            args.put("framework_id", FRAMEWORK_ID);
-            args.put("user_id",USER_ID+i);
-            args.put("title", TITLE+i);
-            args.put("tstamp", ts);
-            args.put("link", LINK);
-            args.put("type", TYPE.name());
-            jdbcInsert.executeAndReturnKey(args);
+            Content content = new Content();
+            content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
+            content.setLink(LINK);
+            content.setUser(em.find(User.class,USER_ID-i));
+            content.setTitle(TITLE+i);
+            content.setType(TYPE);
+            content.setTimestamp(ts);
+            em.persist(content);
         }
-        final Map<String, Object> args = new HashMap<>();
-        args.put("framework_id", FRAMEWORK_ID+4);
-        args.put("user_id",USER_ID+4);
-        args.put("title", TITLE);
-        args.put("tstamp", ts);
-        args.put("link", LINK);
-        args.put("type", TYPE.name());
-        jdbcInsert.executeAndReturnKey(args);
+        Content content = new Content();
+        content.setFramework(em.find(Framework.class,FRAMEWORK_ID-4));
+        content.setLink(LINK);
+        content.setUser(em.find(User.class,USER_ID-4));
+        content.setTitle(TITLE);
+        content.setType(TYPE);
+        content.setTimestamp(ts);
+        em.persist(content);
 
         List<Content> contents = contentDao.getContentByFrameworkAndType(FRAMEWORK_ID,TYPE, 1, 5);
 
+        em.flush();
         assertEquals(false,contents.isEmpty());
         assertEquals(3,contents.size());
         for (Content c:contents) {
@@ -213,26 +241,27 @@ public class ContentDaoTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         for (int i = 0; i < 3; i++) {
-            final Map<String, Object> args = new HashMap<>();
-            args.put("framework_id", FRAMEWORK_ID);
-            args.put("user_id",USER_ID+i);
-            args.put("title", TITLE+i);
-            args.put("tstamp", ts);
-            args.put("link", LINK);
-            args.put("type", TYPE.name());
-            jdbcInsert.executeAndReturnKey(args);
+            Content content = new Content();
+            content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
+            content.setLink(LINK);
+            content.setUser(em.find(User.class,USER_ID-i));
+            content.setTitle(TITLE+i);
+            content.setType(TYPE);
+            content.setTimestamp(ts);
+            em.persist(content);
         }
-        final Map<String, Object> args = new HashMap<>();
-        args.put("framework_id", FRAMEWORK_ID+4);
-        args.put("user_id",USER_ID+4);
-        args.put("title", TITLE);
-        args.put("tstamp", ts);
-        args.put("link", LINK);
-        args.put("type", TYPE.name());
-        jdbcInsert.executeAndReturnKey(args);
+        Content content = new Content();
+        content.setFramework(em.find(Framework.class,FRAMEWORK_ID-4));
+        content.setLink(LINK);
+        content.setUser(em.find(User.class,USER_ID-4));
+        content.setTitle(TITLE);
+        content.setType(TYPE);
+        content.setTimestamp(ts);
+        em.persist(content);
 
         List<Content> contents = contentDao.getContentByFrameworkAndTypeAndTitle(FRAMEWORK_ID,TYPE,TITLE+0);
 
+        em.flush();
         assertEquals(false,contents.isEmpty());
         assertEquals(1,contents.size());
         for (Content c:contents) {
@@ -246,26 +275,27 @@ public class ContentDaoTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         for (int i = 0; i < 3; i++) {
-            final Map<String, Object> args = new HashMap<>();
-            args.put("framework_id", FRAMEWORK_ID+i);
-            args.put("user_id",USER_ID);
-            args.put("title", TITLE);
-            args.put("tstamp", ts);
-            args.put("link", LINK);
-            args.put("type", TYPE.name());
-            jdbcInsert.executeAndReturnKey(args);
+            Content content = new Content();
+            content.setFramework(em.find(Framework.class,FRAMEWORK_ID-i));
+            content.setLink(LINK);
+            content.setUser(em.find(User.class,USER_ID));
+            content.setTitle(TITLE);
+            content.setType(TYPE);
+            content.setTimestamp(ts);
+            em.persist(content);
         }
-        final Map<String, Object> args = new HashMap<>();
-        args.put("framework_id", FRAMEWORK_ID+4);
-        args.put("user_id",USER_ID+4);
-        args.put("title", TITLE);
-        args.put("tstamp", ts);
-        args.put("link", LINK);
-        args.put("type", TYPE.name());
-        jdbcInsert.executeAndReturnKey(args);
+        Content content = new Content();
+        content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
+        content.setLink(LINK);
+        content.setUser(em.find(User.class,USER_ID-1));
+        content.setTitle(TITLE);
+        content.setType(TYPE);
+        content.setTimestamp(ts);
+        em.persist(content);
 
         List<Content> contents = contentDao.getContentByUser(USER_ID, 1, 5);
 
+        em.flush();
         assertEquals(false,contents.isEmpty());
         assertEquals(3,contents.size());
         for (Content c:contents) {
