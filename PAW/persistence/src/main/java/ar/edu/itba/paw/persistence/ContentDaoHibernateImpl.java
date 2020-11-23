@@ -79,6 +79,7 @@ public class ContentDaoHibernateImpl implements  ContentDao{
         content.setTitle(title);
         content.setLink(link);
         content.setType(type);
-        return Optional.empty();
+        em.merge(content);
+        return Optional.of(content);
     }
 }

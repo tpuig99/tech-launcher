@@ -50,8 +50,8 @@ public class TestConfig {
 
         return dsi;
     }
-
-    private DatabasePopulator databasePopulator() {
+    @Bean
+    public DatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
 
         dbp.addScript(hsqldbSql);
@@ -67,8 +67,8 @@ public class TestConfig {
         final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         factoryBean.setJpaVendorAdapter(vendorAdapter);
         final Properties properties = new Properties();
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
         factoryBean.setJpaProperties(properties);
         return factoryBean;
     }
