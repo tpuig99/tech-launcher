@@ -87,7 +87,6 @@ public class ContentDaoTest {
         JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = "+TITLE);
 
         final Content content = contentDao.insertContent(FRAMEWORK_ID,USER_ID,TITLE,LINK,TYPE);
-        System.out.println(content.getUser().getUsername());
 
         em.flush();
         assertNotNull(content);
