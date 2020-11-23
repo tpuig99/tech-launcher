@@ -18,7 +18,7 @@
     <div class="navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="nav-link" href="<c:url value="/search"/>"><spring:message code="explore.title"/></a>
+                <a class="nav-link" href="<c:url value="/search?isPost=false"/>"><spring:message code="explore.title"/></a>
             </li>
         </ul>
         <ul class="navbar-nav">
@@ -79,7 +79,7 @@
         let input = document.getElementById("searchInput").value
 
         if( !isEmpty(input) ) {
-            window.location.href = '<c:url value="/search?toSearch="/>' + input;
+            window.location.href = '<c:url value="/search?toSearch="/>' + input+'&isPost=false';
             return;
         }
         window.location.reload();
