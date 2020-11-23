@@ -40,9 +40,11 @@ public class FrameworkDaoImplTest {
     private static final long FRAMEWORK_ID = 1;
     private static final String FRAMEWORK_NAME = "name";
     private static final FrameworkCategories CATEGORY = Enum.valueOf(FrameworkCategories.class, "Platforms");
+    private static final FrameworkCategories CATEGORY2 = Enum.valueOf(FrameworkCategories.class, "Business");
     private static final String DESCRIPTION = "description";
     private static final String INTRODUCTION = "introduction";
     private static final FrameworkType TYPE = Enum.valueOf(FrameworkType.class, "Framework");
+    private static final FrameworkType TYPE2 = Enum.valueOf(FrameworkType.class, "Service");
     private static final long AUTHOR = 1;
     private static final String AUTHOR_NAME = "user1";
     private static final byte[] PICTURE = null;
@@ -253,6 +255,157 @@ public class FrameworkDaoImplTest {
         em.flush();
         //Class under test
         List<Framework> matchingFrameworks = frameworkDao.search("html", null, null,0,5,true,0,null,null,0,1,5);
+
+        //Asserts
+        Assert.assertFalse(matchingFrameworks.isEmpty());
+        Assert.assertEquals(results, matchingFrameworks);
+    }
+
+    @Test
+    public void testSearchByNameAndDescription(){
+        //Preconditions
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
+        Date date = new Date(System.currentTimeMillis());
+
+        List<Framework> results = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            Framework framework = new Framework();
+            framework.setCategory(CATEGORY);
+            framework.setType(TYPE);
+            framework.setIntroduction(INTRODUCTION);
+            framework.setAuthor(em.find(User.class, USER_ID));
+            framework.setPublishDate(date);
+
+            switch(i) {
+                case 0:
+                    framework.setName("html");
+                    framework.setDescription("html is great");
+                    results.add(framework);
+                    break;
+                case 1:
+                    framework.setName("canvas");
+                    framework.setDescription("canvas works with html");
+                    results.add(framework);
+                    break;
+                case 2:
+                    framework.setName("css");
+                    framework.setDescription("cascade style sheet");
+                    break;
+                case 3:
+                    framework.setName("html5");
+                    framework.setDescription("use vue with css and html");
+                    results.add(framework);
+                    break;
+            }
+
+            em.persist(framework);
+
+        }
+
+
+        em.flush();
+        //Class under test
+        List<Framework> matchingFrameworks = frameworkDao.search("html", null, null,0,5,false,0,null,null,0,1,5);
+
+        //Asserts
+        Assert.assertFalse(matchingFrameworks.isEmpty());
+        Assert.assertEquals(results, matchingFrameworks);
+    }
+
+    @Test
+    public void testSearchByCategory(){
+        //Preconditions
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
+        Date date = new Date(System.currentTimeMillis());
+
+        List<Framework> results = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            Framework framework = new Framework();
+            framework.setName("html"+i);
+            framework.setDescription("html is great");
+
+            framework.setType(TYPE);
+            framework.setIntroduction(INTRODUCTION);
+            framework.setAuthor(em.find(User.class, USER_ID));
+            framework.setPublishDate(date);
+
+            switch(i) {
+                case 0:
+                case 1:
+                    framework.setCategory(CATEGORY);
+                    results.add(framework);
+                    break;
+                case 2:
+                case 3:
+                    framework.setCategory(CATEGORY2);
+                    break;
+
+            }
+
+            em.persist(framework);
+
+        }
+
+
+
+        em.flush();
+        List<FrameworkCategories> categoriesList = new ArrayList<>();
+        categoriesList.add(CATEGORY);
+        //Class under test
+        List<Framework> matchingFrameworks = frameworkDao.search(null, categoriesList, null,0,5,false,0,null,null,0,1,5);
+
+        //Asserts
+        Assert.assertFalse(matchingFrameworks.isEmpty());
+        Assert.assertEquals(results, matchingFrameworks);
+    }
+
+    @Test
+    public void testSearchByType(){
+        //Preconditions
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
+        Date date = new Date(System.currentTimeMillis());
+
+        List<Framework> results = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            Framework framework = new Framework();
+            framework.setName("html"+i);
+            framework.setDescription("html is great");
+
+            framework.setCategory(CATEGORY);
+            framework.setIntroduction(INTRODUCTION);
+            framework.setAuthor(em.find(User.class, USER_ID));
+            framework.setPublishDate(date);
+
+            switch(i) {
+                case 0:
+                case 1:
+                    framework.setType(TYPE);
+                    results.add(framework);
+                    break;
+                case 2:
+                case 3:
+                    framework.setType(TYPE2);
+                    break;
+
+            }
+
+            em.persist(framework);
+
+        }
+
+
+
+        em.flush();
+        List<FrameworkType> typesList = new ArrayList<>();
+        typesList.add(TYPE);
+        //Class under test
+        List<Framework> matchingFrameworks = frameworkDao.search(null, null,typesList,0,5,false,0,null,null,0,1,5);
 
         //Asserts
         Assert.assertFalse(matchingFrameworks.isEmpty());
