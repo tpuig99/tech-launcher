@@ -357,7 +357,17 @@
                                             <c:forEach items="${post.postTags}" var="tag">
                                                 <button  class="badge badge-color ml-1"<%-- onclick="goToTag('${tag.tagName}')"--%>>
                                                 <span>
-                                                        ${tag.tagName}
+                                                        <c:choose>
+                                                            <c:when test="${tag.type.name() == 'tech_name'}">
+                                                                <c:out value="${tag.tagName}"/>
+                                                            </c:when>
+                                                            <c:when test="${tag.type.name() == 'tech_type'}">
+                                                                <spring:message code="type.${tag.tagName}"/>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <spring:message code="category.${tag.tagName}"/>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                 </span>
                                                 </button>
                                             </c:forEach>

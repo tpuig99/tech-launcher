@@ -198,7 +198,6 @@ public class ExploreController {
        // mav.addObject("posts", ps.getAll(postsPage == null ? 1 : postsPage, POSTS_PAGE_SIZE) );
         mav.addObject("postsPage", postsPage);
         mav.addObject("postsPageSize", POSTS_PAGE_SIZE);
-        mav.addObject("postsAmount", ps.getPostsAmount());
         mav.addObject("isPost", isPost);
 
 
@@ -207,7 +206,7 @@ public class ExploreController {
         tags.addAll(types);
 
         List<Post> posts = ps.search(!toSearch.equals("") ? toSearch  : null,tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated,order,postsPage == null ? START_PAGE :postsPage, POSTS_PAGE_SIZE);
-        mav.addObject("postsResults", posts.size());
+        mav.addObject("postsResults", posts.size()); //TODO ESTO SERIA UNA DOBLE QUERY CON POST AMOUNT
         mav.addObject("posts", posts);
 
         /* -------------------------------------------------- */

@@ -74,7 +74,7 @@ public class PostTagDaoTest {
         }
     }
 
-    @Test
+   /* @Test
     public void testCreate() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_tags");
        Optional<PostTag> tagOptional = postTagDao.insert(TAG_1,POST_ID);
@@ -150,5 +150,5 @@ public class PostTagDaoTest {
         List<PostTag> tags = postTagDao.getAll();
 
         assertEquals(4,tags.size());
-    }
+    }*/
 }
