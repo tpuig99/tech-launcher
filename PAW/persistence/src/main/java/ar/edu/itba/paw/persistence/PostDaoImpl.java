@@ -91,6 +91,17 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
+    public Optional<Post> update(long postId, String title, String description) {
+        Post post = em.find(Post.class, postId);
+
+        post.setTitle(title);
+        post.setDescription(description);
+
+        em.merge(post);
+        return Optional.of(post);
+    }
+
+    @Override
     public int getAmount() {
         Query pagingQuery = em.createNativeQuery("SELECT post_id FROM posts");
         @SuppressWarnings("unchecked")

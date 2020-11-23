@@ -19,6 +19,7 @@ public interface PostService {
 
     Post insertPost(long userId, String title, String description);
     void deletePost(long postId);
+    Optional<Post> update(long postId, String title, String description);
 
     Optional<Post> vote(long postId, long userId, int voteSign);
     int getPostsAmount();

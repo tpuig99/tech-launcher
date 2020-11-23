@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.FrameworkCategories;
-import ar.edu.itba.paw.models.FrameworkType;
-import ar.edu.itba.paw.models.Post;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.form.posts.*;
 import org.slf4j.Logger;
@@ -16,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -138,16 +137,12 @@ public class PostController {
     @RequestMapping("/posts/add_post")
     public ModelAndView addPostPage(@ModelAttribute("addPostForm") final AddPostForm form, final BindingResult errors) {
 
-        if(errors.hasErrors()){
-            return addPostPage(form, errors);
-        }
         final ModelAndView mav = new ModelAndView("posts/add_post");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
         mav.addObject("categories", fs.getAllCategories());
         mav.addObject("frameworkNames", fs.getFrameworkNames());
         mav.addObject("types", fs.getAllTypes());
-
 
         return mav;
     }
@@ -164,17 +159,17 @@ public class PostController {
             Post newPost = ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
 
             for( String name : form.getNames()){
-                pts.insert(name, newPost.getPostId());
+                pts.insert(name, newPost.getPostId(), PostTagType.valueOf("tech_name"));
             }
             if(form.getCategories()!=null) {
                 for (String c : form.getCategories()) {
-                    pts.insert(FrameworkCategories.valueOf(c).name(), newPost.getPostId());
+                    pts.insert(FrameworkCategories.valueOf(c).name(), newPost.getPostId(), PostTagType.valueOf("tech_category"));
 
                 }
             }
             if(form.getTypes()!=null) {
                 for (String c : form.getTypes()) {
-                    pts.insert(FrameworkType.valueOf(c).name(), newPost.getPostId());
+                    pts.insert(FrameworkType.valueOf(c).name(), newPost.getPostId(), PostTagType.valueOf("tech_type"));
                 }
             }
 
@@ -184,84 +179,95 @@ public class PostController {
         return ErrorController.redirectToErrorView();
     }
 
-//    @RequestMapping(value = "/update_tech",  method = { RequestMethod.GET})
-//    public ModelAndView updateTech(@ModelAttribute("frameworkForm") final FrameworkForm form, @RequestParam("id") final long frameworkId) {
-//        final Optional<Framework> framework = fs.findById(frameworkId);
-//        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-//
-//        if (framework.isPresent()) {
-//            if (user.isPresent()) {
-//                if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
-//                    form.setCategory(framework.get().getCategory().name());
-//                    form.setDescription(framework.get().getDescription());
-//                    if(form.getFrameworkName() == null)
-//                        form.setFrameworkName(framework.get().getName());
-//                    form.setIntroduction(framework.get().getIntroduction());
-//                    form.setFrameworkId(frameworkId);
-//                    form.setType(framework.get().getType().name());
-//
-//                    ModelAndView mav = new ModelAndView("frameworks/update_tech");
-//
-//                    mav.addObject("categories", fs.getAllCategories());
-//                    mav.addObject("types", fs.getAllTypes());
-//                    mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-//                    mav.addObject("category",framework.get().getCategory());
-//                    mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
-//
-//                    LOGGER.info("Tech {}: User {} accessed the page for updating the Tech", form.getFrameworkId(), user.get().getId());
-//                    return mav;
-//                }
-//
-//                LOGGER.error("Tech {}: User without enough privileges attempted to access page for updating", form.getFrameworkId());
-//                return ErrorController.redirectToErrorView();
-//            }
-//
-//            LOGGER.error("Tech {}: Unauthorized user attempted to access page for updating", form.getFrameworkId());
-//            return ErrorController.redirectToErrorView();
-//        }
-//
-//        LOGGER.error("Tech {}: Requested for getting update page and not found", form.getFrameworkId());
-//        return ErrorController.redirectToErrorView();
-//    }
-//
-//    @RequestMapping(value = "/update_tech", method = { RequestMethod.POST })
-//    public ModelAndView updateTech(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) throws IOException {
-//        if (errors.hasErrors()) {
-//            LOGGER.info("Tech {}: Update Form has errors", form.getFrameworkId());
-//            return updateTech(form,form.getFrameworkId());
-//        }
-//
-//        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-//        final Optional<Framework> framework = fs.findById(form.getFrameworkId());
-//
-//        if(framework.isPresent()) {
-//            if (user.isPresent()) {
-//                if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
-//                    FrameworkType type = FrameworkType.valueOf(form.getType());
-//                    FrameworkCategories category = FrameworkCategories.valueOf(form.getCategory());
-//                    byte[] picture = form.getPicture().getBytes();
-//                    final Optional<Framework> updatedFramework = fs.update(form.getFrameworkId(),form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,picture);
-//
-//                    if (updatedFramework.isPresent()) {
-//                        LOGGER.info("Tech {}: User {} updated the Tech", form.getFrameworkId(), user.get().getId());
-//                        return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory().name());
-//                    }
-//
-//                    LOGGER.error("Tech {}: A problem occurred while updating the Tech", form.getFrameworkId());
-//                    return ErrorController.redirectToErrorView();
-//                }
-//
-//                LOGGER.error("Tech {}: User without enough privileges attempted to update tech", form.getFrameworkId());
-//                return ErrorController.redirectToErrorView();
-//            }
-//
-//            LOGGER.error("Tech {}: Unauthorized user tried to update Tech", form.getFrameworkId());
-//            return ErrorController.redirectToErrorView();
-//        }
-//
-//        LOGGER.error("Tech {}: Requested for updating tech and not found", form.getFrameworkId());
-//        return ErrorController.redirectToErrorView();
-//    }
+    @RequestMapping(value = "/posts/edit_post/{id}", method = { RequestMethod.GET})
+    public ModelAndView editPostPage(@ModelAttribute("editPostForm") final AddPostForm form,  final BindingResult errors, @PathVariable long id) {
+
+        final Optional<Post> post = ps.findById(id);
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (post.isPresent()) {
+            if (user.isPresent()) {
+                if (post.get().getUser().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
+                    final User u = user.get();
+
+                    form.setPostId(id);
+                    form.setTitle(post.get().getTitle());
+                    form.setDescription(post.get().getDescription());
+                    form.setNames(post.get().getPostTagsByType(PostTagType.tech_name));
+                    form.setCategories(post.get().getPostTagsByType(PostTagType.tech_category));
+                    form.setTypes(post.get().getPostTagsByType(PostTagType.tech_type));
+
+                    ModelAndView mav = new ModelAndView("posts/edit_post");
+
+                    mav.addObject("categories", fs.getAllCategories());
+                    mav.addObject("frameworkNames", fs.getFrameworkNames());
+                    mav.addObject("types", fs.getAllTypes());
+
+                    mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+
+                    mav.addObject("isAdmin", u.isAdmin());
+                    mav.addObject("isOwner", post.get().getUser().getId().equals(u.getId()) );
+                    mav.addObject("user_isMod", u.isVerify() || u.isAdmin());
+                    mav.addObject("isEnable", u.isEnable());
+
+                    LOGGER.info("Post {}: User {} accessed the page for updating the Post", id, user.get().getId());
+                    return mav;
+                }
+
+                LOGGER.error("Post {}: User without enough privileges attempted to access page for updating", id);
+                return ErrorController.redirectToErrorView();
+            }
+
+            LOGGER.error("Post {}: Unauthorized user attempted to access page for updating", id);
+            return ErrorController.redirectToErrorView();
+        }
+
+        LOGGER.error("Post {}: Requested for getting update page and not found", id);
+        return ErrorController.redirectToErrorView();
+    }
+
+    @RequestMapping(value = "/posts/edit_post/{id}", method = { RequestMethod.POST})
+    public ModelAndView editPost(@Valid @ModelAttribute("editPostForm") final AddPostForm form, final BindingResult errors, @PathVariable long id) {
+
+        if(errors.hasErrors()){
+            return editPostPage(form, errors, id);
+        }
+
+        final Optional<Post> post = ps.findById(id);
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (post.isPresent()) {
+            if (user.isPresent()) {
+                if (post.get().getUser().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
+
+                      Optional<Post> updatedPost = ps.update(id, form.getTitle(),form.getDescription());
+
+                      if (updatedPost.isPresent()) {
+                          List<String> names = form.getNames() == null ? Collections.emptyList() : form.getNames();
+                          List<String> categories = form.getCategories() == null ? Collections.emptyList() : form.getCategories();
+                          List<String> types = form.getTypes() == null ? Collections.emptyList() : form.getTypes();
+
+                          pts.update(id, names, categories, types);
+
+                          LOGGER.info("Post {}: Updated successfully with new information", id);
+
+                          return redirectToPost(updatedPost.get().getPostId());
+                      }
+
+                      return ErrorController.redirectToErrorView();
+                }
+
+                LOGGER.error("Post {}: User without enough privileges attempted to access page for updating", id);
+                return ErrorController.redirectToErrorView();
+            }
+
+            LOGGER.error("Post {}: Unauthorized user attempted to access page for updating", id);
+            return ErrorController.redirectToErrorView();
+        }
+
+        LOGGER.error("Post {}: Requested for getting update page and not found", id);
+        return ErrorController.redirectToErrorView();
+    }
 
     @RequestMapping(path={"/posts/delete_post"}, method = RequestMethod.POST)
     public ModelAndView deleteFramework(@Valid @ModelAttribute("deletePostForm") final DeletePostForm form){

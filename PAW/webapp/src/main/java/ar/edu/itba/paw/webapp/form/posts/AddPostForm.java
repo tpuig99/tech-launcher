@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.webapp.form.posts;
 
-import ar.edu.itba.paw.models.PostTag;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -24,6 +21,8 @@ public class AddPostForm {
     private List<String> categories;
 
     private List<String> types;
+
+    private Long postId;
 
 
     public String getTitle() {
@@ -64,5 +63,13 @@ public class AddPostForm {
 
     public void setTypes(List<String> types) {
         this.types = types;
+    }
+
+    public Long getPostId() {
+        return postId;
+    }
+
+    public void setPostId(Long postId) {
+        this.postId = postId;
     }
 }

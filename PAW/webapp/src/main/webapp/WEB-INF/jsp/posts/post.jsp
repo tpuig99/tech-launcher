@@ -105,7 +105,17 @@
                             <c:forEach items="${post.postTags}" var="tag">
                                 <button  class="badge badge-color ml-1">
                                     <span>
-                                            <c:out value="${tag.tagName}"/>
+                                        <c:choose>
+                                            <c:when test="${tag.type.name() == 'tech_name'}">
+                                                <c:out value="${tag.tagName}"/>
+                                            </c:when>
+                                            <c:when test="${tag.type.name() == 'tech_type'}">
+                                                <spring:message code="type.${tag.tagName}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <spring:message code="category.${tag.tagName}"/>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </span>
                                 </button>
                             </c:forEach>
@@ -119,28 +129,26 @@
                             </div>
                         </div>
                     </div>
+                    <c:if test="${isAdmin || isOwner}">
                     <div class="row d-flex my-1 justify-content-end">
-                        <div class="col-3">
-                            <c:if test="${isAdmin || isOwner}">
                                 <div class="row d-flex">
-                                        <%--                                                        <div class="mb-4">--%>
-                                        <%--                                                            <a href="<c:url value="/edit_post?id=${post.postId}"/>" >--%>
-                                        <%--                                                                <button class="btn btn-info btn-block text-nowrap" type="button">--%>
-                                        <%--                                                                    <i class="fa fa-edit fa-sm mr-1"></i>--%>
-                                        <%--                                                                    <spring:message code="button.edit_post"/>--%>
-                                        <%--                                                                </button>--%>
-                                        <%--                                                            </a>--%>
-                                        <%--                                                        </div>--%>
-                                    <div>
-                                        <button class="btn btn-danger text-nowrap" type="button" onclick="openDeletePostModal(${post.postId})" data-toggle="modal" data-target="#deletePostModal">
+                                    <div class="mb-4 mx-2">
+                                        <a href="<c:url value="/posts/edit_post/${post.postId}"/>" >
+                                            <button class="btn btn-info btn-block text-nowrap" type="button">
+                                                <i class="fa fa-edit fa-sm mr-1"></i>
+                                                <spring:message code="button.edit_post"/>
+                                            </button>
+                                        </a>
+                                    </div>
+                                    <div class="mx-2">
+                                        <button class="btn btn-danger btn-block text-nowrap" type="button" onclick="openDeletePostModal(${post.postId})" data-toggle="modal" data-target="#deletePostModal">
                                             <i class="fas fa-trash-alt fa-sm mr-1"></i>
                                             <spring:message code="button.delete_post"/>
                                         </button>
                                     </div>
                                 </div>
-                            </c:if>
-                        </div>
                     </div>
+                    </c:if>
                 </div>
             </div>
 
