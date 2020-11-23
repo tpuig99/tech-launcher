@@ -346,11 +346,11 @@
                                 <div class="card-body">
                                     <div class="row search-post-title ml-1">
                                         <a href="<c:url value='/posts/${post.postId}'/>">
-                                                ${post.title}
+                                                <c:out value="${post.title}" />
                                         </a>
                                     </div>
                                     <div class="row search-post-description ml-1">
-                                            ${post.description}
+                                            <c:out value="${post.description}" />
                                     </div>
                                     <div class="row extra-info">
                                         <div class="col-9">

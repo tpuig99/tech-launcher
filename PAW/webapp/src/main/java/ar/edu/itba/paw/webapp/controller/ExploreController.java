@@ -172,10 +172,8 @@ public class ExploreController {
         mav.addObject("page_size", TECHS_PAGE_SIZE);
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("categories", allCategories);
-//        mav.addObject("categories_translated", ts.getAllCategories());
         mav.addObject("frameworkNames",fs.getFrameworkNames());
         mav.addObject("types", allTypes);
-//        mav.addObject("types_translated", ts.getAllTypes());
         mav.addObject("search_page", true);
         mav.addObject("searchResultsNumber", searchResultsNumber);
 
@@ -206,7 +204,8 @@ public class ExploreController {
         tags.addAll(types);
 
         List<Post> posts = ps.search(!toSearch.equals("") ? toSearch  : null,tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated,order,postsPage == null ? START_PAGE :postsPage, POSTS_PAGE_SIZE);
-        mav.addObject("postsResults", posts.size()); //TODO ESTO SERIA UNA DOBLE QUERY CON POST AMOUNT
+        Integer postsSearchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch  : null,tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated,order);
+        mav.addObject("postsResults", postsSearchResultsNumber);
         mav.addObject("posts", posts);
 
         /* -------------------------------------------------- */
