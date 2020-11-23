@@ -140,4 +140,11 @@ public class Post {
         /* TODO: hacer query para el count total */
         return postComments.stream().filter((x) -> x.getReference() == null).count();
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "title='" + title + '\'' +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package ar.edu.itba.paw;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.PostDao;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +21,7 @@ import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static junit.framework.Assert.*;
 
@@ -166,6 +164,113 @@ public class PostDaoTest {
         }
     }
 
+    @Test
+    public void searchByTags(){
+        //Preconditions
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        List<Post> results = new ArrayList<>();
+
+        for (int i = 0; i < 4;i++) {
+            Post post  = new Post();
+            post.setUser(em.find(User.class,USER_ID));
+            post.setTitle(TITLE);
+            post.setDescription(DESCRIPTION);
+            post.setTimestamp(ts);
+            em.persist(post);
+            PostTag tag = new PostTag();
+            tag.setPost(post);
+
+            switch (i){
+                case 0:
+                case 1:
+                    tag.setTagName("category"+i);
+                    results.add(post);
+                    break;
+                case 2:
+                case 3:
+                    tag.setTagName("other"+i);
+                    break;
+
+            }
+            em.persist(tag);
+
+
+        }
+
+
+        em.flush();
+
+        List<String> tags = new ArrayList<>();
+        tags.add("category0");
+        tags.add("category1");
+        //Class under test
+        List<Post> matchingPosts = postDao.search(null, tags,0,0,0,null,null,0,1,5);
+
+        //Asserts
+        Assert.assertFalse(matchingPosts.isEmpty());
+        Assert.assertEquals(results, matchingPosts);
+    }
+
+    @Test
+    public void searchByTitleOrDescription(){
+        //Preconditions
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        List<Post> results = new ArrayList<>();
+
+        for (int i = 0; i < 4;i++) {
+            Post post  = new Post();
+            post.setUser(em.find(User.class,USER_ID));
+            post.setTimestamp(ts);
+            PostTag tag = new PostTag();
+
+
+            switch (i){
+                case 0:
+                    post.setTitle("i want to code in C ");
+                    post.setDescription("C is a difficult language");
+                    tag.setTagName("C");
+                    results.add(post);
+                    break;
+                case 1:
+                    post.setTitle("How to code in C");
+                    post.setDescription("C is a difficult language");
+                    tag.setTagName("C");
+                    results.add(post);
+                    break;
+                case 2:
+                    post.setTitle("Postgres");
+                    post.setDescription("Postgres is an easy language");
+                    tag.setTagName("Postgres");
+                    break;
+                case 3:
+                    post.setTitle("Python");
+                    post.setDescription("Python is an easy language");
+                    tag.setTagName("Python");
+                    break;
+
+            }
+            tag.setPost(post);
+            em.persist(post);
+            em.persist(tag);
+
+        }
+
+
+        em.flush();
+
+        List<String> tags = new ArrayList<>();
+        tags.add("C");
+        //Class under test
+        List<Post> matchingPosts = postDao.search("C", tags,0,0,0,null,null,0,1,5);
+
+        //Asserts
+        Assert.assertFalse(matchingPosts.isEmpty());
+        Assert.assertEquals(results, matchingPosts);
+    }
 
 
 }
