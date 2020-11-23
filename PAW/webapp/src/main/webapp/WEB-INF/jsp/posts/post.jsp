@@ -103,7 +103,7 @@
                         <!-- Tags section -->
                         <div class="col-9 tags">
                             <c:forEach items="${post.postTags}" var="tag">
-                                <button  class="badge badge-color ml-1">
+                                <button  class="badge badge-color ml-1" onclick="goToExplore('${tag.tagName}','${tag.type.name()}')">
                                     <span>
                                         <c:choose>
                                             <c:when test="${tag.type.name() == 'tech_name'}">
@@ -458,8 +458,19 @@
             $('#deletePostModal').modal('show');
         }
 
-        function goToCat( catName ){
-            window.location.href = "<c:url value="/"/>" + "posts/categories/" + catName;
+
+        function goToExplore( tagName, type ){
+            let url = "<c:url value="/search?"/>"
+
+            if(type === 'tech_name'){
+                url = url + 'toSearch=' + tagName;
+            }else if(type === 'tech_type'){
+                url = url + 'types=' + tagName;
+            }else{
+                url = url + 'categories=' + tagName;
+            }
+
+            window.location.href = url + '&isPost=true'
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
