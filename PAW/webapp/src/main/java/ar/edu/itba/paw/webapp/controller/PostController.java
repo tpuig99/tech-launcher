@@ -135,16 +135,12 @@ public class PostController {
     @RequestMapping("/posts/add_post")
     public ModelAndView addPostPage(@ModelAttribute("addPostForm") final AddPostForm form, final BindingResult errors) {
 
-        if(errors.hasErrors()){
-            return addPostPage(form, errors);
-        }
         final ModelAndView mav = new ModelAndView("posts/add_post");
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
 
         mav.addObject("categories", fs.getAllCategories());
         mav.addObject("frameworkNames", fs.getFrameworkNames());
         mav.addObject("types", fs.getAllTypes());
-
 
         return mav;
     }
