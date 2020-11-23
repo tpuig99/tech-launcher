@@ -1,5 +1,7 @@
 package ar.edu.itba.paw;
 
+import ar.edu.itba.paw.models.FrameworkVote;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,10 +14,12 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
 
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 public class FrameworkVoteDaoImplTest {
-/*
+
     private static final long VOTE_ID = 1L;
     private static final long FRAMEWORK_ID = 1L;
     private static final long USER_ID = 1L;
@@ -53,7 +57,7 @@ public class FrameworkVoteDaoImplTest {
         //Preconditions
         JdbcTestUtils.deleteFromTables(jdbcTemplate,"framework_votes");
 
-       /* //Class under test
+        //Class under test
         final FrameworkVote frameworkVote = frameworkVoteDao.insert(FRAMEWORK_ID,USER_ID,STARS);
 
         //Asserts
@@ -63,9 +67,8 @@ public class FrameworkVoteDaoImplTest {
         Assert.assertEquals(USER_ID, frameworkVote.getUserId());
         Assert.assertEquals(STARS, frameworkVote.getStars());
 
-        assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "framework_votes","framework_id ="+frameworkVote.getVoteId()));
+        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "framework_votes","framework_id ="+frameworkVote.getVoteId()));
     }
-*/
 
 
 }
