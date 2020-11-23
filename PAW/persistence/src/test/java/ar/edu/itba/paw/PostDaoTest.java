@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -133,6 +134,38 @@ public class PostDaoTest {
         assertEquals(TITLE, post2.get().getTitle());
         assertEquals(DESCRIPTION, post2.get().getDescription());
     }
+
+    @Test
+    public void testGetByUser() {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate,"posts");
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+
+        for (int i = 0; i < 4;i++) {
+            Post post  = new Post();
+            post.setUser(em.find(User.class,USER_ID));
+            post.setTitle(TITLE);
+            post.setDescription(DESCRIPTION);
+            post.setTimestamp(ts);
+            em.persist(post);
+        }
+
+        Post post  = new Post();
+        post.setUser(em.find(User.class,USER_ID-1));
+        post.setTitle(TITLE);
+        post.setDescription(DESCRIPTION);
+        post.setTimestamp(ts);
+        em.persist(post);
+
+        List<Post> posts = postDao.getPostsByUser(USER_ID,1,5);
+
+        em.flush();
+        assertFalse(posts.isEmpty());
+        assertEquals(4, posts.size());
+        for (Post p : posts) {
+            assertEquals(USER_ID, p.getUser().getId().longValue());
+        }
+    }
+
 
 
 }
