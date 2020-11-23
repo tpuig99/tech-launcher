@@ -130,7 +130,7 @@
                                         <div class="row extra-info">
                                             <div class="col-9 tags">
                                                 <c:forEach items="${post.postTags}" var="tag">
-                                                    <button  class="badge badge-color ml-1"<%-- onclick="goToTag('${tag.tagName}')"--%>>
+                                                    <button  class="badge badge-color ml-1" onclick="goToExplore('${tag.tagName}','${tag.type.name()}' )">
                                                         <span>
                                                             <c:choose>
                                                                 <c:when test="${tag.type.name() == 'tech_name'}">
@@ -276,8 +276,18 @@
     </div>
 
     <script>
-        function goToTag( tagName ){
-            window.location.href = "<c:url value="/"/>" + "posts/tag/" + tagName;
+        function goToExplore( tagName, type ){
+            let url = "<c:url value="/search?"/>"
+
+            if(type === 'tech_name'){
+                url = url + 'toSearch=' + tagName;
+            }else if(type === 'tech_type'){
+                url = url + 'types=' + tagName;
+            }else{
+                url = url + 'categories=' + tagName;
+            }
+
+            window.location.href = url + '&isPost=true'
         }
 
         function openDeletePostModal(postId){

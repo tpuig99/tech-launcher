@@ -355,7 +355,7 @@
                                     <div class="row extra-info">
                                         <div class="col-9">
                                             <c:forEach items="${post.postTags}" var="tag">
-                                                <button  class="badge badge-color ml-1"<%-- onclick="goToTag('${tag.tagName}')"--%>>
+                                                <button  class="badge badge-color ml-1" onclick="goToExplore('${tag.tagName}','${tag.type.name()}')">
                                                 <span>
                                                         <c:choose>
                                                             <c:when test="${tag.type.name() == 'tech_name'}">
@@ -759,6 +759,19 @@
         return string;
     }
 
+    function goToExplore( tagName, type ){
+        let url = "<c:url value="/search?"/>"
+
+        if(type === 'tech_name'){
+            url = url + 'toSearch=' + tagName;
+        }else if(type === 'tech_type'){
+            url = url + 'types=' + tagName;
+        }else{
+            url = url + 'categories=' + tagName;
+        }
+
+        window.location.href = url + '&isPost=true'
+    }
 
 </script>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" crossorigin="anonymous"></script>
