@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -178,7 +180,7 @@ public class PostController {
     }
 
     @RequestMapping(value = "/posts/edit_post/{id}", method = { RequestMethod.GET})
-    public ModelAndView editPostPage(@ModelAttribute("editPostForm") final AddPostForm form, @PathVariable long id, final BindingResult errors) {
+    public ModelAndView editPostPage(@ModelAttribute("editPostForm") final AddPostForm form,  final BindingResult errors, @PathVariable long id) {
 
         final Optional<Post> post = ps.findById(id);
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -225,10 +227,10 @@ public class PostController {
     }
 
     @RequestMapping(value = "/posts/edit_post/{id}", method = { RequestMethod.POST})
-    public ModelAndView editPost(@ModelAttribute("editPostForm") final AddPostForm form, @PathVariable long id, final BindingResult errors) {
+    public ModelAndView editPost(@Valid @ModelAttribute("editPostForm") final AddPostForm form, final BindingResult errors, @PathVariable long id) {
 
         if(errors.hasErrors()){
-            return editPostPage(form, id, errors);
+            return editPostPage(form, errors, id);
         }
 
         final Optional<Post> post = ps.findById(id);
@@ -241,7 +243,11 @@ public class PostController {
                       Optional<Post> updatedPost = ps.update(id, form.getTitle(),form.getDescription());
 
                       if (updatedPost.isPresent()) {
-                          pts.update(id, form.getNames(), form.getCategories(), form.getTypes());
+                          List<String> names = form.getNames() == null ? Collections.emptyList() : form.getNames();
+                          List<String> categories = form.getCategories() == null ? Collections.emptyList() : form.getCategories();
+                          List<String> types = form.getTypes() == null ? Collections.emptyList() : form.getTypes();
+
+                          pts.update(id, names, categories, types);
 
                           LOGGER.info("Post {}: Updated successfully with new information", id);
 

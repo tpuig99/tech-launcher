@@ -32,6 +32,8 @@
 
     <c:url value="/posts/edit_post/${editPostForm.postId}" var="postPath"/>
     <form:form modelAttribute="editPostForm" action="${postPath}" method="post" id="editPostForm">
+        <form:input type="hidden"  path="postId"/>
+
         <div class="form-group">
             <spring:message code="add_tech.name.placeholder" var="techname_placeholder" />
             <form:label path="title"><h4><spring:message code="add_tech.name"/></h4></form:label>

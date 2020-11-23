@@ -31,7 +31,7 @@
         <div class="page-description"></div>
 
         <c:url value="/posts/addPost/add" var="postPath"/>
-        <form:form modelAttribute="addPostForm" action="${postPath}" method="post" id="addPostForm" enctype="multipart/form-data">
+        <form:form modelAttribute="addPostForm" action="${postPath}" method="post" id="addPostForm" >
             <div class="form-group">
                 <spring:message code="add_tech.name.placeholder" var="techname_placeholder" />
                 <form:label path="title"><h4><spring:message code="add_tech.name"/></h4></form:label>
@@ -52,14 +52,14 @@
                 <div class="col-4">
                     <div class="search-bar sidebar-title">
                         <form:label path="names"><spring:message code="post.tech_names"/></form:label>
-                        <form:input onchange="addTag()" onclick="addTag()" path="names" id="tagsInput" class="form-control mr-sm-2" type="text" aria-label="Select Tag"/>
+                        <form:select onclick="updateNameTags()" path="names" items="${frameworkNames}" multiple="true" id="selectName" class="form-control" />
                         <form:errors path="names" element="p" cssClass="formError"/>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="form-group">
                         <form:label path="categories"><spring:message code="add_tech.category"/></form:label>
-                        <form:select multiple="true" id="selectCategory" path="categories" class="form-control"  onfocus='this.size=5;' onblur='this.size=5;' onchange='addTagCategory();this.blur();'>
+                        <form:select onclick="updateCategoryTags()" path="categories" multiple="true" id="selectCategory" class="form-control" >
                             <c:forEach items="${categories}" var="cat">
                                 <form:option value="${cat}"><spring:message code="category.${cat}"/></form:option>
                             </c:forEach>
@@ -70,7 +70,7 @@
                 <div class="col">
                     <div class="form-group">
                         <form:label path="types"><spring:message code="add_tech.type"/></form:label>
-                        <form:select multiple="true" id="selectType" path="types" class="form-control" onfocus='this.size=5;' onblur='this.size=5;' onchange='addTagType(); this.blur();'>
+                        <form:select onclick="updateTypeTags()" multiple="true" id="selectType" path="types" class="form-control">
                             <c:forEach items="${types}" var="typ">
                                 <form:option value="${typ}"><spring:message code="type.${typ}"/></form:option>
                             </c:forEach>
@@ -118,46 +118,89 @@
 
         $(document).ready(function() {
 
-            $('#addPostForm').on('submit', function(){
-                $('#addPostButton').prop("hidden",true);
-                $('#addPostLoading').prop("hidden",false);
+            let values = $('#selectCategory').val();
+            for (let i = 0; i < values.length ; i++) {
+                let tagName = values[i];
+                let aux = '[id="'+tagName+'"]';
+                $(aux).prop("hidden",false);
+            }
+
+            values = $('#selectType').val();
+            for (let i = 0; i < values.length ; i++) {
+                let tagName = values[i];
+                let aux = '[id="'+tagName+'"]';
+                $(aux).prop("hidden",false);
+            }
+
+            values = $('#selectName').val();
+            for (let i = 0; i < values.length ; i++) {
+                let tagName = values[i];
+                let aux = '[id="'+tagName+'"]';
+                $(aux).prop("hidden",false);
+            }
+
+            $('#editPostForm').on('submit', function(){
+                $('#editPostButton').prop("hidden",true);
+                $('#editPostLoading').prop("hidden",false);
             });
 
-            let tags = [];
-            <c:forEach items="${frameworkNames}" var="names">
-            tags.push('${names}');
-            </c:forEach>
-
-            $('#tagsInput').autocomplete({
-                source : tags,
-
-            })
-
-            $('#tagsInput').on('submit', function(){
-                addTag();
+            $('option').mousedown(function(e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
             });
 
         });
 
+        function updateNameTags() {
+            let hiddenTagName;
+            let hiddenAux;
+            <c:forEach items="${frameworkNames}" var="name">
+            hiddenTagName = '${name}';
+            hiddenAux = '[id="'+hiddenTagName+'"]';
+            $(hiddenAux).prop("hidden",true);
+            </c:forEach>
 
-
-        function addTag(){
-            let tagName = document.getElementById("tagsInput").value;
-            let aux = '[id="'+tagName+'"]';
-            $(aux).prop("hidden",false);
-
+            let values = $('#selectName').val();
+            for (let i = 0; i < values.length ; i++) {
+                let tagName = values[i];
+                let aux = '[id="'+tagName+'"]';
+                $(aux).prop("hidden",false);
+            }
         }
 
-        function addTagCategory(){
-            let tagName = document.getElementById("selectCategory").value;
-            let aux = '[id="'+tagName+'"]';
-            $(aux).prop("hidden",false);
+        function updateCategoryTags(){
+            let hiddenTagName;
+            let hiddenAux;
+            <c:forEach items="${categories}" var="category">
+            hiddenTagName = '${category}';
+            hiddenAux = '[id="'+hiddenTagName+'"]';
+            $(hiddenAux).prop("hidden",true);
+            </c:forEach>
+
+            let values = $('#selectCategory').val();
+            for (let i = 0; i < values.length ; i++) {
+                let tagName = values[i];
+                let aux = '[id="'+tagName+'"]';
+                $(aux).prop("hidden",false);
+            }
         }
 
-        function addTagType(){
-            let tagName = document.getElementById("selectType").value;
-            let aux = '[id="'+tagName+'"]';
-            $(aux).prop("hidden",false);
+        function updateTypeTags() {
+            let hiddenTagName;
+            let hiddenAux;
+            <c:forEach items="${types}" var="type">
+            hiddenTagName = '${type}';
+            hiddenAux = '[id="'+hiddenTagName+'"]';
+            $(hiddenAux).prop("hidden",true);
+            </c:forEach>
+
+            let values = $('#selectType').val();
+            for (let i = 0; i < values.length ; i++) {
+                let tagName = values[i];
+                let aux = '[id="'+tagName+'"]';
+                $(aux).prop("hidden",false);
+            }
         }
 
 
