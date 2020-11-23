@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Post;
 import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -113,5 +114,90 @@ public class PostDaoImpl implements PostDao {
         }else{
             return 0;
         }
+    }
+
+    @Override
+    public List<Post> search(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page, long pageSize) {
+        if(toSearch == null && tags == null && commentAmount == 0
+                && lastComment == null && lastUpdated == null && (order == null || order == 0)) {
+            return getAll(page,pageSize);
+        }
+        StringBuilder sb = new StringBuilder(" select p from Post p left outer join p.postVotes v on p.postId = v.post.postId left outer join p.postComments c on p.postId = c.post.postId left outer join p.postTags t on p.postId = t.post.postId ");
+        if(toSearch!=null || tags!=null || lastUpdated!=null) {
+            sb.append(" where ");
+        }
+
+        String search = "";
+
+        if(toSearch != null && !toSearch.isEmpty()){
+            search = "%"+toSearch.toLowerCase()+"%";
+                sb.append(" lower(p.description) like :search or lower(p.title) like :search or lower(t.tagName) like :search ");
+        }
+
+        if (tags != null) {
+            if(!sb.toString().substring(sb.length()-6).contains("where")){
+                sb.append(" and ");
+            }
+            if(search != ""){
+                sb.append(" (  t.tagName in (:tags) or lower(t.tagName) like :search ) ");
+            } else {
+                sb.append(" t.tagName in (:tags) ");
+            }
+        }
+
+        if (lastUpdated != null) {
+            if(!sb.toString().substring(sb.length()-6).contains("where")){
+                sb.append(" and ");
+            }
+            sb.append(" p.timestamp >= :lastUpdated ");
+        }
+
+
+        //TODO:falta la de los votos en general, pero, tiene sentido?
+
+        sb.append(" group by p having count(distinct c.postCommentId) >= :commentAmount ");
+
+        if(lastComment!=null) {
+            sb.append(" and max(c.timestamp) >= :lastComment ");
+        }
+
+        if(order != null && order != 0){
+            sb.append(" order by ");
+
+            switch (Math.abs(order)){
+                case 1:
+                    sb.append(" p.votesUp - p.votesDown ").append(order > 0 ?" desc ":" asc ");
+                    break;
+                case 2:
+                    sb.append(" count(distinct c.postCommentId) ").append(order > 0 ?" desc ":" asc ");
+                    break;
+                case 3:
+                    sb.append(" p.timestamp ").append(order > 0 ?" desc ":" asc ");
+                    break;
+                case 4:
+                    sb.append(" max(c.timestamp) ").append(order > 0 ?" desc ":" asc ");
+                    break;
+            }
+        }
+
+        final TypedQuery<Post> query = em.createQuery(sb.toString(), Post.class);
+        if (page != -1 || pageSize != -1) {
+            query.setFirstResult((int) ((page-1) * pageSize));
+            query.setMaxResults((int) pageSize);
+        }
+        query.setParameter("commentAmount", Long.valueOf(commentAmount));
+        if(toSearch != null && !toSearch.isEmpty())
+            query.setParameter("search", search);
+        if(tags != null)
+            query.setParameter("tags", tags);
+        if(lastUpdated != null)
+            query.setParameter("lastUpdated", lastUpdated);
+//        query.setParameter("starsLeft", Double.valueOf(starsLeft));
+//        query.setParameter("starsRight", Double.valueOf(starsRight));
+        if(lastComment != null)
+            query.setParameter("lastComment", lastComment);
+
+        return query.getResultList();
+
     }
 }

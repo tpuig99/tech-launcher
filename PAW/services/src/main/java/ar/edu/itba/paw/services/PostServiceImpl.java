@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +51,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getByTagName(String category, long page, long pageSize) {
         return postDao.getByTagName(category,page, pageSize);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Post> search(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page, long pageSize) {
+        return postDao.search(toSearch,tags,starsLeft,starsRight,commentAmount,lastComment,lastUpdated,order,page,pageSize);
     }
 
     @Transactional
