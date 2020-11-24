@@ -29,7 +29,7 @@
             <div class="d-flex flex-row-reverse">
                 <c:choose>
                     <c:when test="${user.name == 'anonymousUser'}">
-                        <button class="btn btn-info mt-2 mb-4" data-toggle="modal" data-target="#loginModal"">
+                        <button class="btn btn-info mt-2 mb-4" data-toggle="modal" data-target="#loginModal">
                             <spring:message code="forum.add_post"/>
                         </button>
                     </c:when>
