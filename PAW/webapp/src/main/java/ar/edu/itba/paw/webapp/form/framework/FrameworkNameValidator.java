@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
+import java.util.Optional;
 
 class FrameworkNameValidator implements ConstraintValidator<FrameworkName, Object> {
     @Autowired
@@ -20,11 +21,11 @@ class FrameworkNameValidator implements ConstraintValidator<FrameworkName, Objec
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context){
         FrameworkForm form = (FrameworkForm) obj;
-        List<Framework> framework = fs.search(form.getFrameworkName(),null,null,0,5,true,0,null,null, null,1);
+        Optional<Framework> framework = fs.getByName(form.getFrameworkName());
         if(form.getFrameworkId()==null)
-            return framework.isEmpty();
-        if(framework.isEmpty())
+            return !framework.isPresent();
+        if(!framework.isPresent())
             return true;
-        return framework.get(0).getId() == form.getFrameworkId();
+        return framework.get().getId() == form.getFrameworkId();
     }
 }

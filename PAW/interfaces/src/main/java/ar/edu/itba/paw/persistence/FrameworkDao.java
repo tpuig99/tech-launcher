@@ -16,6 +16,7 @@ public interface FrameworkDao {
     List<Framework> getUserInterests(long userId);
     List<Framework> getByMinStars(int stars);
     List<Framework> getByUser(long userId, long page, long pageSize);
+    Optional<Framework> getByName(String name);
     int getAmountByCategory(FrameworkCategories categories);
 
     Optional<Integer> getByUserCount(long userId);

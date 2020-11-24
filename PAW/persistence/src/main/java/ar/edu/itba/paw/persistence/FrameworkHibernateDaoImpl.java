@@ -74,6 +74,13 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     }
 
     @Override
+    public Optional<Framework> getByName(String name) {
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.name = :name", Framework.class);
+        query.setParameter("name", name);
+        return query.getResultList().stream().findFirst();
+    }
+
+    @Override
     public int getAmountByCategory(FrameworkCategories categories) {
         final TypedQuery<Framework> query = em.createQuery("from Framework f where category = :category", Framework.class);
         query.setParameter("category", categories);

@@ -102,6 +102,11 @@ public class FrameworkServiceImpl implements FrameworkService {
     @Override
     public List<Framework> getUserInterests(long userId) { return frameworkDao.getUserInterests(userId); }
 
+    @Override
+    public Optional<Framework> getByName(String name) {
+        return frameworkDao.getByName(name);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<Framework> getCompetitors(Framework framework) {
