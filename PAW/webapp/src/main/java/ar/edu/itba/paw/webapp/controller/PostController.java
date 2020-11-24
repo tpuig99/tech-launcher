@@ -157,9 +157,10 @@ public class PostController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent() ){
             Post newPost = ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
-
-            for( String name : form.getNames()){
-                pts.insert(name, newPost.getPostId(), PostTagType.valueOf("tech_name"));
+            if(form.getNames() != null ) {
+                for (String name : form.getNames()) {
+                    pts.insert(name, newPost.getPostId(), PostTagType.valueOf("tech_name"));
+                }
             }
             if(form.getCategories()!=null) {
                 for (String c : form.getCategories()) {
