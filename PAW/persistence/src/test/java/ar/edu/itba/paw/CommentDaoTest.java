@@ -152,39 +152,6 @@ public class CommentDaoTest {
         Assert.assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comments", "comment_id =" + comment.getCommentId()));
     }
 
-    //TODO: See whats going on
-    /*
-    @Test
-    public void testDeleteCommentWithResponses() {
-        // Arrange
-        Comment comment = new Comment();
-        comment.setFramework(em.find(Framework.class, FRAMEWORK_ID));
-        comment.setUser(em.find(User.class, USER_ID));
-        comment.setDescription(DESCRIPTION);
-        comment.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        comment.setReference(null);
-        em.persist(comment);
-
-        for (int i = 0; i < 5; i++) {
-            Comment reply = new Comment();
-            reply.setFramework(em.find(Framework.class, FRAMEWORK_ID));
-            reply.setUser(em.find(User.class, USER_ID));
-            reply.setDescription(DESCRIPTION);
-            reply.setTimestamp(new Timestamp(System.currentTimeMillis()));
-            reply.setReference(comment.getCommentId());
-            em.persist(reply);
-        }
-
-        // Act
-        commentDao.deleteComment(comment.getCommentId());
-        em.flush();
-
-        // Assert
-        Assert.assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comments", "comment_id =" + comment.getCommentId()));
-        Assert.assertEquals(0, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "comments", "reference =" + comment.getCommentId()));
-    }
-     */
-
     @Test
     public void testChangeComment() {
         // Arrange

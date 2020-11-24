@@ -48,6 +48,7 @@ public class PostServiceImpl implements PostService {
         return postDao.getPostsCountByUser(userId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Post> getByTagName(String category, long page, long pageSize) {
         return postDao.getByTagName(category,page, pageSize);
@@ -100,7 +101,7 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public int getPostsAmount() {
         return postDao.getAmount();
