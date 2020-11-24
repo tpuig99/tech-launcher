@@ -32,7 +32,8 @@ import static junit.framework.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 public class VerificationTokenDaoTest {
-    private static User[] users_ids = new User[8];
+    private static final int USERS = 8;
+    private static User[] users_ids = new User[USERS];
     private static final String TOKEN = "token";
     private static final String TOKEN_2 = "token2";
 
@@ -58,7 +59,7 @@ public class VerificationTokenDaoTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "verification_token");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < USERS; i++) {
             User user = new User("user"+i,"mail"+i,null,true,"",true,null);
             em.persist(user);
 
