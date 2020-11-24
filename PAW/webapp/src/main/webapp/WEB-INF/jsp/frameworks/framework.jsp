@@ -58,7 +58,7 @@
                             <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
                             <div><spring:message code="tech.author"/>:&nbsp;<a href="<c:url value="/users/${framework.author.username}"/>">${framework.author.username}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i></div>
                             <div><spring:message code="tech.date"/>:&nbsp;${framework.publishDate.toLocaleString()}</div>
-                             <div><a href="<c:url value="/search?categories=${framework.category.name()}&types=${framework.type.name()}&isPost=true"/>"><spring:message code="tech.see_posts_related"/></a></div>
+                            <div><a href="<c:url value="/search?toSearch=${framework.name}&isPost=true"/>"><spring:message code="tech.see_posts_related"/></a></div>
 
                             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.category"/>"> <spring:message code="category.${framework.category.name()}"/></span>
                             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.type"/>"><spring:message code="type.${framework.type.name()}"/></span>
@@ -957,13 +957,6 @@
                 $('#commentIdDeleteInput').val(commentId);
 
                 $('#deleteCommentModal').modal('show');
-            }
-
-            function goToExplorePosts(){
-                let categories = ${framework.category};
-                let type = ${framework.type};
-                let name  = ${framework.name}
-                window.location.href = <c:url value="/search?isPost=true"/>;
             }
 
         </script>
