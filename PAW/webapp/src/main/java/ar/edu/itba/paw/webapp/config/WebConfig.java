@@ -73,13 +73,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //        ds.setPassword("uygwr2BX7");
 
 //        Uncomment when deploying (Ctrl + '/')
-//        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
-//        ds.setUsername("paw-2020b-1");
-//        ds.setPassword("uygwr2BX7");
-
-        ds.setUrl("jdbc:postgresql://localhost:5432/postgres");
-        ds.setUsername("postgres");
+        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
+        ds.setUsername("paw-2020b-1");
         ds.setPassword("uygwr2BX7");
+
+//        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
+//        ds.setUsername("postgres");
+//        ds.setPassword("uygwr2BX7");
 
 
 
@@ -138,8 +138,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
         // Si ponen esto en prod, hay tabla!!!
-            properties.setProperty("hibernate.show_sql", "true");
-            properties.setProperty("format_sql", "true");
+//            properties.setProperty("hibernate.show_sql", "true");
+//            properties.setProperty("format_sql", "true");
         factoryBean.setJpaProperties(properties);
         return factoryBean;
     }

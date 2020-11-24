@@ -68,7 +68,6 @@ public class PostDaoTest {
 
     @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"posts","title = "+TITLE);
 
         final Post post = postDao.insertPost(USER_ID, TITLE, DESCRIPTION);
 
@@ -83,8 +82,6 @@ public class PostDaoTest {
     @Test(expected = Exception.class)
     public void testCreateOnExisting() {
         
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"posts","title = ",TITLE);
-        
         final Map<String, Object> args = new HashMap<>();
         args.put("description", DESCRIPTION);
         args.put("user_id",USER_ID);
@@ -96,7 +93,6 @@ public class PostDaoTest {
 
     @Test
     public void testDelete() {
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"posts","title = "+TITLE);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
 
         Post post  = new Post();
@@ -114,7 +110,6 @@ public class PostDaoTest {
 
     @Test
     public void testGetById() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"posts");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
 
         Post post  = new Post();
@@ -135,7 +130,6 @@ public class PostDaoTest {
 
     @Test
     public void testGetByUser() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"posts");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
 
         for (int i = 0; i < 4;i++) {
@@ -167,7 +161,6 @@ public class PostDaoTest {
     @Test
     public void searchByTags(){
         //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
 
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         List<Post> results = new ArrayList<>();
@@ -181,6 +174,7 @@ public class PostDaoTest {
             em.persist(post);
             PostTag tag = new PostTag();
             tag.setPost(post);
+            tag.setType(PostTagType.tech_name);
 
             switch (i){
                 case 0:
@@ -216,7 +210,6 @@ public class PostDaoTest {
     @Test
     public void searchByTitleOrDescription(){
         //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
 
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         List<Post> results = new ArrayList<>();
@@ -226,7 +219,7 @@ public class PostDaoTest {
             post.setUser(em.find(User.class,USER_ID));
             post.setTimestamp(ts);
             PostTag tag = new PostTag();
-
+            tag.setType(PostTagType.tech_name);
 
             switch (i){
                 case 0:
