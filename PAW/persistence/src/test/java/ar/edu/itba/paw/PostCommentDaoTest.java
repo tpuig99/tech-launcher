@@ -42,7 +42,6 @@ public class PostCommentDaoTest {
     private long POST_ID;
     private final int PAGE = 1;
     private final int PAGE_SIZE = 5;
-    private final String TEST_TITLE="Expresso Patronum";
     private final String TEST_DESCRIPTION="Somebody once told me the world is gonna roll me";
 
 
