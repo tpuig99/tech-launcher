@@ -27,7 +27,28 @@
 
 <!-- Question Section -->
 <div class="content-no-sidebar-left">
-    <div class="ml-4 mr-1"><h1><c:out value="${post.title}"/></h1></div>
+    <div class="ml-4 mr-1 description-text"><h1><c:out value="${post.title}"/></h1></div>
+
+    <c:if test="${isAdmin || isOwner}">
+        <div class="row d-flex my-1 justify-content-end">
+            <div class="row d-flex">
+                <div class="mb-4 mx-2">
+                    <a href="<c:url value="/posts/edit_post/${post.postId}"/>" >
+                        <button class="btn btn-info btn-block text-nowrap" type="button">
+                            <i class="fa fa-edit fa-sm mr-1"></i>
+                            <spring:message code="button.edit_post"/>
+                        </button>
+                    </a>
+                </div>
+                <div class="mx-2">
+                    <button class="btn btn-danger btn-block text-nowrap" type="button" onclick="openDeletePostModal(${post.postId})" data-toggle="modal" data-target="#deletePostModal">
+                        <i class="fas fa-trash-alt fa-sm mr-1"></i>
+                        <spring:message code="button.delete_post"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </c:if>
     <div class="post-cards">
         <div class="row post-data">
             <!-- Up Vote - Down Vote section -->
@@ -129,26 +150,6 @@
                         </div>
                     </div>
                 </div>
-                <c:if test="${isAdmin || isOwner}">
-                    <div class="row d-flex my-1 justify-content-end">
-                        <div class="row d-flex">
-                            <div class="mb-4 mx-2">
-                                <a href="<c:url value="/posts/edit_post/${post.postId}"/>" >
-                                    <button class="btn btn-info btn-block text-nowrap" type="button">
-                                        <i class="fa fa-edit fa-sm mr-1"></i>
-                                        <spring:message code="button.edit_post"/>
-                                    </button>
-                                </a>
-                            </div>
-                            <div class="mx-2">
-                                <button class="btn btn-danger btn-block text-nowrap" type="button" onclick="openDeletePostModal(${post.postId})" data-toggle="modal" data-target="#deletePostModal">
-                                    <i class="fas fa-trash-alt fa-sm mr-1"></i>
-                                    <spring:message code="button.delete_post"/>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </c:if>
             </div>
         </div>
 
@@ -269,7 +270,11 @@
 
                 </c:forEach>
             </c:when>
-            <c:otherwise><spring:message code="post.no_answers_yet"/></c:otherwise>
+            <c:otherwise>
+                <div class="row justify-content-center mt-2">
+                    <spring:message code="post.no_answers_yet"/>
+                </div>
+            </c:otherwise>
         </c:choose>
     </div>
     <!-- Answers pagination -->
