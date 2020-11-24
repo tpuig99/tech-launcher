@@ -47,14 +47,10 @@ public class PostVoteDaoTest {
     private EntityManager em;
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert jdbcInsert;
 
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("post_votes")
-                .usingGeneratedKeyColumns("post_vote_id");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "posts");
 
