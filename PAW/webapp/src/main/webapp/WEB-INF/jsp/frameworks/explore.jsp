@@ -779,11 +779,12 @@
         <c:choose>
         <c:when test="${isPost}">
         searchTab = "posts";
-        $("#resultsNumber").text('${searchResultsNumber}');
+        $("#resultsNumber").text('${postsResults}');
         </c:when>
         <c:otherwise>
         searchTab="techs"
-        $("#resultsNumber").text('${postsResults}');
+        $("#resultsNumber").text('${searchResultsNumber}');
+
         </c:otherwise>
         </c:choose>
 
