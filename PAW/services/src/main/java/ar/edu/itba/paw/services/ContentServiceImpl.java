@@ -77,11 +77,13 @@ public class ContentServiceImpl implements ContentService {
         return rc.getAll(page, PAGE_SIZE);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Integer> getAllReportsAmount() {
         return rc.getAllReportsAmount();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Integer> getReportsAmount(List<Long> frameworksIds) {
         return rc.getReportsAmount(frameworksIds);

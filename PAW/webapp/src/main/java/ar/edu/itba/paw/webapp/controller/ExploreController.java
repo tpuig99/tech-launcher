@@ -16,12 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.ZoneOffset;
+import java.util.*;
 
 @Controller
 public class ExploreController {
@@ -96,8 +93,8 @@ public class ExploreController {
             toSearch="";
         }
 
-        Timestamp tscomment = null;
-        Timestamp tsUpdated = null;
+        Date tscomment = null;
+        Date tsUpdated = null;
         LocalDate dateComment = null;
         LocalDate dateUpdate = null;
 
@@ -155,10 +152,10 @@ public class ExploreController {
             }
         }
         if(dateComment!=null){
-            tscomment=Timestamp.valueOf(dateComment.atStartOfDay());
+            tscomment= Date.from(dateComment.atStartOfDay().toInstant(ZoneOffset.UTC));
         }
         if(dateUpdate!=null){
-            tsUpdated=Timestamp.valueOf(dateUpdate.atStartOfDay());
+            tsUpdated=Date.from(dateUpdate.atStartOfDay().toInstant(ZoneOffset.UTC));
         }
 
        /* --------------------- TECHS --------------------- */

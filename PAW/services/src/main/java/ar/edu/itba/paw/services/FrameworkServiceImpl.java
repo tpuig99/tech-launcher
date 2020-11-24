@@ -56,6 +56,7 @@ public class FrameworkServiceImpl implements FrameworkService {
         return frameworkDao.searchResultsNumber(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public int getAmountByCategory(FrameworkCategories categories) {
         return frameworkDao.getAmountByCategory(categories);
@@ -102,6 +103,7 @@ public class FrameworkServiceImpl implements FrameworkService {
     @Override
     public List<Framework> getUserInterests(long userId) { return frameworkDao.getUserInterests(userId); }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Framework> getByName(String name) {
         return frameworkDao.getByName(name);
