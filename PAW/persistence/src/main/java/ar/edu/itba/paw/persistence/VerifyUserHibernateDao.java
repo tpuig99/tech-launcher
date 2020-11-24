@@ -77,7 +77,7 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
 
     @Override
     public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.comment is null", VerifyUser.class);
+        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.comment is null and vu.pending = true", VerifyUser.class);
         query.setParameter("frameworksIds", frameworksIds);
         query.setFirstResult((int) ((page-1) * pageSize));
         query.setMaxResults((int) pageSize);
@@ -112,8 +112,9 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
 
     @Override
     public Optional<Integer> getApplicantsByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.comment is null", VerifyUser.class);
+        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.comment is null and vu.pending = :pending", VerifyUser.class);
         query.setParameter("frameworksIds", frameworksIds);
+        query.setParameter("pending",pending);
         return Optional.of(query.getResultList().size());
     }
 
