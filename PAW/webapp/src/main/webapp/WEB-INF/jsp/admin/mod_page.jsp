@@ -22,7 +22,7 @@
     <div class="page-title-big row"><spring:message code="moderate.moderation_panel"/></div>
 
     <!-- Mods managing -->
-    <%! public String tab = "";%>
+    <%! private String tab = "";%>
     <div class="container">
         <ul class="nav nav-tabs" id="mod-tab">
             <li class="nav-item">

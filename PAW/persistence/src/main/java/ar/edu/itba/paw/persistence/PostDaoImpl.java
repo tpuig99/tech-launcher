@@ -160,22 +160,16 @@ public class PostDaoImpl implements PostDao {
             sb.append(" p.timestamp >= :lastUpdated ");
         }
 
-
-        //TODO:falta la de los votos en general, pero, tiene sentido?
-
         sb.append(" group by p having count(distinct c.postCommentId) >= :commentAmount ");
 
         if(lastComment!=null) {
             sb.append(" and max(c.timestamp) >= :lastComment ");
         }
 
-        if(order != null && order != 0){
+        if(order != null && order != 0 && Math.abs(order) != 1){
             sb.append(" order by ");
 
             switch (Math.abs(order)){
-                case 1:
-                    sb.append(" p.votesUp - p.votesDown ").append(order > 0 ?" desc ":" asc ");
-                    break;
                 case 2:
                     sb.append(" count(distinct c.postCommentId) ").append(order > 0 ?" desc ":" asc ");
                     break;

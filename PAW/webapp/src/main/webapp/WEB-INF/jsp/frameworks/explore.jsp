@@ -27,7 +27,7 @@
     <jsp:param name="isMod" value="${user_isMod}"/>
     <jsp:param name="search_page" value="${search_page}"/>
 </jsp:include>
-
+<%! private String searchTab = "";%>
 <div class="content-search">
     <div class="sidebar-search">
         <div class="d-flex justify-content-center">
@@ -265,7 +265,7 @@
     <div class="page-description"></div>
     <!-- TECHS / POSTS Tabs  -->
 
-    <ul class="nav nav-tabs" id="mod-tab">
+    <ul class="nav nav-tabs" id="searchTabs">
         <li class="nav-item">
             <a onclick="showTechFilters()" class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="techs" aria-selected="true"><spring:message code="explore.techs"/></a>
         </li>
@@ -325,7 +325,7 @@
                         <jsp:param name="star1" value="${starsQuery1}"/>
                         <jsp:param name="star2" value="${starsQuery2}"/>
                         <jsp:param name="nameFlag" value="${nameFlagQuery}"/>
-                        <jsp:param name="order" value="${orderValue}"/>
+                        <jsp:param name="order" value="${orderValue * sortValue}"/>
                         <jsp:param name="commentAmount" value="${commentAmount}"/>
                         <jsp:param name="commentDate" value="${dateComment}"/>
                         <jsp:param name="updateDate" value="${dateUpdate}"/>
@@ -396,7 +396,7 @@
                             <jsp:param name="toSearch" value="${techNameQuery}"/>
                             <jsp:param name="categories" value="${categoriesQuery}"/>
                             <jsp:param name="types" value="${typesQuery}"/>
-                            <jsp:param name="order" value="${orderValue}"/>
+                            <jsp:param name="order" value="${orderValue * sortValue }"/>
                             <jsp:param name="commentAmount" value="${commentAmount}"/>
                             <jsp:param name="commentDate" value="${dateComment}"/>
                             <jsp:param name="updateDate" value="${dateUpdate}"/>
@@ -483,14 +483,17 @@
         return true;
     }
 
+
+
     function search(){
 
-        let tabId = $(".active").attr('tab-pane id');
-        if(tabId === 'techs'){
+        console.log(searchTab);
+        if(searchTab === 'techs'){
             searchTechs();
         }else{
             searchPosts();
         }
+
 
 
     }
@@ -528,13 +531,11 @@
     }
 
     function sort(){
-        let tabId = $(".active").attr('tab-pane id');
-        if(tabId === 'techs'){
+        if(searchTab === 'techs'){
             sortTechs();
         }else{
             sortPosts();
         }
-
     }
 
     function sortTechs(){
@@ -772,6 +773,28 @@
 
         window.location.href = url + '&isPost=true'
     }
+    $(document).ready(function() {
+        console.log('${isPost}')
+
+        <c:choose>
+            <c:when test="${isPost}">
+                searchTab = "posts";
+            </c:when>
+            <c:otherwise>
+                searchTab="techs"
+            </c:otherwise>
+        </c:choose>
+
+        console.log(searchTab)
+
+        let value = '#searchTabs a[href="#'+searchTab+'"]';
+        $(value).tab('show');
+    });
+    $(function () {
+        $('.nav-link').click(function () {
+            searchTab = $(this).attr('href').replace("#","");
+        })
+    });
 
 </script>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" crossorigin="anonymous"></script>

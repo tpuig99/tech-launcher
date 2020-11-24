@@ -123,19 +123,19 @@
             window.location.href="<c:url value="/techs/${param.category}?frameworks_page="/>"+goingPage;
         }
         else if(origin === 'mod_mod'){
-            window.location.href="<c:url value="/mod?tabs="/>"+tab+"&modsPage="+goingPage+"&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}";
+            window.location.href="<c:url value="/mod?tabs=demote"/>"+"&modsPage="+goingPage+"&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}";
         }
         else if(origin === 'mod_report_comment'){
-            window.location.href="<c:url value="/mod?tabs="/>"+tab+"&modsPage=${param.modsPage}&rComPage="+goingPage+"&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}";
+            window.location.href="<c:url value="/mod?tabs=reports"/>"+"&modsPage=${param.modsPage}&rComPage="+goingPage+"&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}";
         }
         else if(origin === 'mod_applicants'){
-            window.location.href = "<c:url value="/mod?tabs="/>"+tab +"&modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=+"+goingPage+"&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}";
+            window.location.href = "<c:url value="/mod?tabs=promote"/>"+"&modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=+"+goingPage+"&verifyPage=${param.verifyPage}&rConPage=${param.rConPage}";
         }
         else if(origin === 'mod_verify'){
-            window.location.href="<c:url value="/mod?tabs="/>"+tab +"&modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage="+goingPage+"&rConPage=${param.rConPage}";
+            window.location.href="<c:url value="/mod?tabs=promote"/>"+"&modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage="+goingPage+"&rConPage=${param.rConPage}";
         }
         else if(origin === 'mod_report_content'){
-            window.location.href="<c:url value="/mod?tabs="/>"+tab +"modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage="+goingPage;
+            window.location.href="<c:url value="/mod?tabs=reports"/>"+"&modsPage=${param.modsPage}&rComPage=${param.rComPage}&applicantsPage=${param.applicantsPage}&verifyPage=${param.verifyPage}&rConPage="+goingPage;
         }
         else if( origin === 'posts'){
             window.location.href="<c:url value="/posts?page="/>" + goingPage;
