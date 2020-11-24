@@ -600,7 +600,7 @@ public class FrameworkController {
                     fs.delete(form.getFrameworkIdx());
 
                     LOGGER.info("Techs: Tech {} deleted successfully", form.getFrameworkIdx());
-                    return new ModelAndView("redirect:/" + "frameworks");
+                    return new ModelAndView("redirect:/" + "techs");
                 }
 
                 LOGGER.error("Tech {}: User without enough privileges attempted to delete the Tech", form.getFrameworkIdx());
