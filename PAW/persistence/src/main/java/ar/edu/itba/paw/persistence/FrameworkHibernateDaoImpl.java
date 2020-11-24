@@ -63,7 +63,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     }
 
 
-    /* TODO: add pagination  */
     @Override
     public List<Framework> getByUser(long userId, long page, long pageSize) {
         final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.author.id = :userId order by f.id", Framework.class);
