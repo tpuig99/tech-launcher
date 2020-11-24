@@ -308,7 +308,7 @@ public class UserController {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            if( user.isAdmin() ){
+            if( user.isAdmin() || user.getOwnedFrameworks().size() > 0){
                 Optional<Comment> commentOptional = commentService.getById(form.getDeleteCommentId());
                 if( commentOptional.isPresent() ){
                     commentService.acceptReport(form.getDeleteCommentId());
@@ -331,7 +331,7 @@ public class UserController {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            if( user.isAdmin() ){
+            if( user.isAdmin() || user.getOwnedFrameworks().size() > 0){
                 commentService.denyReport(form.getIgnoreCommentId());
                 LOGGER.info("User: Comment {} was removed from its report", form.getIgnoreCommentId());
                 return modPage(DEFAULT_REPORT_TAB,null, null, null, null, null);
