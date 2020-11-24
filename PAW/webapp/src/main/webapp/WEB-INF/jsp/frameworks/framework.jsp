@@ -136,7 +136,7 @@
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-10">
-                                    <a target="_blank" href="${book.link}">${book.title}</a>
+                                    <a target="_blank" href="${book.link}"><c:out value="${book.title}"/></a>
                                 </div>
 
                                 <c:choose>
@@ -182,7 +182,7 @@
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-10">
-                                    <a target="_blank" href="${course.link}">${course.title}</a>
+                                    <a target="_blank" href="${course.link}"><c:out value="${course.title}"/></a>
                                 </div>
                                 <c:choose>
                                     <c:when test="${isAdmin || verifyForFramework || user.name == course.userName || isOwner}">
@@ -226,7 +226,7 @@
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-10">
-                                    <a target="_blank" href="${tutorial.link}">${tutorial.title}</a>
+                                    <a target="_blank" href="${tutorial.link}"><c:out value="${tutorial.title}"/></a>
                                 </div>
                                 <c:choose>
                                     <c:when test="${isAdmin || verifyForFramework || user.name == tutorial.userName || isOwner}">
