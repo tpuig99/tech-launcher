@@ -19,6 +19,6 @@ public interface PostService {
     Optional<Post> update(long postId, String title, String description);
     Integer searchResultsNumber(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order);
 
-    Optional<Post> vote(long postId, long userId, int voteSign);
+    void vote(long postId, long userId, int voteSign);
     int getPostsAmount();
 }

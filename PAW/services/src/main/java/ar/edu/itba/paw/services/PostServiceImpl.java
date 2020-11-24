@@ -87,7 +87,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Optional<Post> vote(long postId, long userId, int voteSign) {
+    public void vote(long postId, long userId, int voteSign) {
 
         Optional<PostVote> vote = postVoteDao.getByPostAndUser(postId,userId);
         if(vote.isPresent()){
@@ -98,10 +98,6 @@ public class PostServiceImpl implements PostService {
         }else {
             postVoteDao.insert(postId, userId, voteSign);
         }
-
-        Optional<Post> post = findById(postId);
-
-        return post;
     }
 
     @Transactional
