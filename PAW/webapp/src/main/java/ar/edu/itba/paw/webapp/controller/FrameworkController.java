@@ -174,13 +174,12 @@ public class FrameworkController {
 
         if (user.isPresent()) {
             final Optional<CommentVote> commentVote = commentService.vote(form.getCommentId(), user.get().getId(),1);
-
-            if(commentVote.isPresent()){
-                LOGGER.info("Tech {}: User {} upvoted comment {}", form.getFrameworkId(), user.get().getId(), form.getCommentId());
-                return FrameworkController.redirectToFramework(commentVote.get().getComment().getFrameworkId(), commentVote.get().getComment().getCategory());
+            LOGGER.info("Tech {}: User {} upvoted comment {}", form.getFrameworkId(), user.get().getId(), form.getCommentId());
+            final Optional<Framework> fw = fs.findById(form.getFrameworkId());
+            if( fw.isPresent()) {
+                return FrameworkController.redirectToFramework(fw.get().getId(), fw.get().getCategory().name());
             }
-
-            LOGGER.error("Tech {}: A problem occurred while upvoting comment {}", form.getFrameworkId(), form.getCommentId());
+            LOGGER.error("Tech {}: Tech doesn't exist", form.getFrameworkId());
             return ErrorController.redirectToErrorView();
         }
 
@@ -195,13 +194,12 @@ public class FrameworkController {
 
         if (user.isPresent()) {
             final Optional<CommentVote> commentVote = commentService.vote(form.getDownVoteCommentId(), user.get().getId(),-1);
-
-            if(commentVote.isPresent()){
-                LOGGER.info("Tech {}: User {} downvoted comment {}", form.getDownVoteFrameworkId(), user.get().getId(), form.getDownVoteCommentId());
-                return FrameworkController.redirectToFramework(commentVote.get().getComment().getFrameworkId(), commentVote.get().getComment().getCategory());
+            LOGGER.info("Tech {}: User {} downvoted comment {}", form.getDownVoteFrameworkId(), user.get().getId(), form.getDownVoteCommentId());
+            final Optional<Framework> fw = fs.findById(form.getDownVoteFrameworkId());
+            if( fw.isPresent()) {
+                return FrameworkController.redirectToFramework(fw.get().getId(), fw.get().getCategory().name());
             }
-
-            LOGGER.error("Tech {}: A problem occurred while downvoting comment {}", form.getDownVoteFrameworkId(), form.getDownVoteCommentId());
+            LOGGER.error("Tech {}: Tech doesn't exist", form.getDownVoteFrameworkId());
             return ErrorController.redirectToErrorView();
         }
 
