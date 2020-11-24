@@ -140,5 +140,6 @@ public class VerificationTokenDaoTest {
         em.flush();
         assertFalse(vt.isPresent());
     }
-    //</editor-fold>
+
+
 }

@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -17,6 +18,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static junit.framework.Assert.*;
@@ -36,6 +39,8 @@ public class UserDaoTest {
     private EntityManager em;
 
     private JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert jdbcInsert;
+
     private final String USER1 = "testUser1";
     private final String USER_MAIL = "testMail";
     private final String PASSWORD1 = "password1";
@@ -45,7 +50,9 @@ public class UserDaoTest {
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("users")
+                .usingGeneratedKeyColumns("user_id");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
     }
 
@@ -178,24 +185,19 @@ public class UserDaoTest {
         em.flush();
     }
 
-    /* TODO: test why this isn't working. It's supposedly creating another user
+
     @Test(expected = Exception.class)
     public void testCreateOnExisting() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        User testUser = new User();
-        testUser.setUsername(USER1);
-        testUser.setMail(USER_MAIL);
-        testUser.setPassword(PASSWORD1);
-        testUser.setEnable(false);
-        testUser.setDescription("");
-        testUser.setAllowMod(true);
+        final Map<String, Object> args = new HashMap<>();
+        args.put("user_name", USER1);
+        args.put("mail",USER_MAIL);
+        args.put("password", PASSWORD1);
+        jdbcInsert.execute(args);
 
-        em.persist(testUser);
-        em.flush();
 
         User user = userDao.create(USER1, USER_MAIL, PASSWORD2);
     }
-    */
 
     @Test
     public  void testChangeEnable(){

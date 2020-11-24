@@ -146,7 +146,6 @@ public class VerifyUserTest {
         em.flush();
     }
 
-    /* TODO: Tests why this fails
     @Test
     public void testDeleteVerificationByUser(){
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "verify_users");
@@ -162,10 +161,9 @@ public class VerifyUserTest {
         assertTrue(verifyUser.isPresent());
 
         verifyUserDao.deleteVerificationByUser(USERS[1].getId());
-        verifyUser = verifyUserDao.getById(user.getVerificationId());
-        assertFalse(verifyUser.isPresent());
+
+        assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "verify_users"));
     }
-     */
 
 
 }
