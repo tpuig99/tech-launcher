@@ -346,11 +346,11 @@
                                 <div class="card-body">
                                     <div class="row search-post-title ml-1">
                                         <a href="<c:url value='/posts/${post.postId}'/>">
-                                                <c:out value="${post.title}" />
+                                            <c:out value="${post.title}" />
                                         </a>
                                     </div>
                                     <div class="row search-post-description ml-1">
-                                            <c:out value="${post.description}" />
+                                        <c:out value="${post.description}" />
                                     </div>
                                     <div class="row extra-info">
                                         <div class="col-9">
@@ -374,12 +374,12 @@
                                         </div>
                                         <div class="col">
                                             <div class="row d-flex secondary-color text-right post-date small-font">
-                                                 ${post.timestamp.toLocaleString()}
+                                                    ${post.timestamp.toLocaleString()}
                                             </div>
                                             <div class="row d-flex secondary-color text-right small-font">
                                                 <a href="<c:url value="/users/${post.user.username}"/>">${post.user.username}</a>
                                             </div>
-                                      </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -402,7 +402,7 @@
                             <jsp:param name="updateDate" value="${dateUpdate}"/>
                         </jsp:include>
                     </c:when>
-                    <c:otherwise><spring:message code="profile.empty.comments"/></c:otherwise>
+                    <c:otherwise><spring:message code="explore.not_found"/></c:otherwise>
                 </c:choose>
 
             </div>
@@ -420,8 +420,8 @@
 
         let searchTab = "techs";
         <c:if test="${isPost}">
-            searchTab = "posts";
-            hideTechFilters();
+        searchTab = "posts";
+        hideTechFilters();
         </c:if>
         let value = '#mod-tab a[href="#'+searchTab+'"]';
         $(value).tab('show');
@@ -430,15 +430,15 @@
 
         let tags = [];
         <c:forEach items="${categories}" var="category">
-            tags.push('<spring:message code="category.${category}"/>');
+        tags.push('<spring:message code="category.${category}"/>');
         </c:forEach>
 
         <c:forEach items="${types}" var="type">
-            tags.push('<spring:message code="type.${type}"/>');
+        tags.push('<spring:message code="type.${type}"/>');
         </c:forEach>
 
         <c:forEach items="${frameworkNames}" var="names">
-            tags.push('${names}');
+        tags.push('${names}');
         </c:forEach>
 
         $('#searchInput').autocomplete({
@@ -447,11 +447,11 @@
         })
 
         <c:forEach items="${categoriesQuery}" var="category">
-            document.getElementById("check${category}").checked = true;
+        document.getElementById("check${category}").checked = true;
         </c:forEach>
 
         <c:forEach items="${typesQuery}" var="type">
-            document.getElementById("check${type}").checked = true;
+        document.getElementById("check${type}").checked = true;
         </c:forEach>
         document.getElementById("searchOnlyByName").checked = ${nameFlagQuery};
     });
@@ -551,45 +551,45 @@
         let order = getOrder();
 
         <c:if test="${not empty techNameQuery}">
-            name = "${techNameQuery}";
+        name = "${techNameQuery}";
         </c:if>
 
         <c:if test="${not empty categoriesQuery}">
-            <c:forEach items="${categoriesQuery}" var="element">
-                categories = categories.concat('${element},');
-            </c:forEach>
-            categories = categories.substring(0,categories.length-1);
+        <c:forEach items="${categoriesQuery}" var="element">
+        categories = categories.concat('${element},');
+        </c:forEach>
+        categories = categories.substring(0,categories.length-1);
         </c:if>
 
         <c:if test="${not empty typesQuery}">
-            <c:forEach items="${typesQuery}" var="element">
-                types = types.concat('${element},');
-            </c:forEach>
-            types = types.substring(0,types.length-1);
+        <c:forEach items="${typesQuery}" var="element">
+        types = types.concat('${element},');
+        </c:forEach>
+        types = types.substring(0,types.length-1);
         </c:if>
 
         <c:if test="${not empty starsQuery1}">
-            star1 =  ${starsQuery1};
+        star1 =  ${starsQuery1};
         </c:if>
 
         <c:if test="${not empty starsQuery2}">
-            star2 =  ${starsQuery2};
+        star2 =  ${starsQuery2};
         </c:if>
 
         <c:if test="${not empty commentAmount}">
-            commentAmount =  ${commentAmount};
+        commentAmount =  ${commentAmount};
         </c:if>
 
         <c:if test="${not empty dateComment}">
-            dateComment =  ${dateComment};
+        dateComment =  ${dateComment};
         </c:if>
 
         <c:if test="${not empty dateUpdate}">
-            dateUpdate =  ${dateUpdate};
+        dateUpdate =  ${dateUpdate};
         </c:if>
 
         <c:if test="${fn:length(matchingFrameworks) > 1}">
-            window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order + '&page=${page}&isPost=false';
+        window.location.href = "<c:url value="/search"/>?" + 'toSearch=' + name + '&categories=' + categories + '&types=' + types + '&starsLeft=' + star1 + '&starsRight=' + star2 + '&nameFlag=' + nameFlag + '&commentAmount=' +commentAmount +'&lastComment=' + dateComment +'&lastUpdate=' + dateUpdate+ '&order=' + order + '&page=${page}&isPost=false';
         </c:if>
     }
 
@@ -777,12 +777,12 @@
         console.log('${isPost}')
 
         <c:choose>
-            <c:when test="${isPost}">
-                searchTab = "posts";
-            </c:when>
-            <c:otherwise>
-                searchTab="techs"
-            </c:otherwise>
+        <c:when test="${isPost}">
+        searchTab = "posts";
+        </c:when>
+        <c:otherwise>
+        searchTab="techs"
+        </c:otherwise>
         </c:choose>
 
         console.log(searchTab)

@@ -259,7 +259,7 @@ public class FrameworkController {
         if (framework.isPresent()) {
             if(errors.hasErrors()){
                 LOGGER.info("Tech {}: Content Form has errors", frameworkId);
-                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory().name(), null, null, null, null);
+                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory().name(), Long.valueOf(START_PAGE), Long.valueOf(START_PAGE), Long.valueOf(START_PAGE), Long.valueOf(START_PAGE));
 
                 loadForms(framework1);
                 framework1.addObject("contentFormError", true);
