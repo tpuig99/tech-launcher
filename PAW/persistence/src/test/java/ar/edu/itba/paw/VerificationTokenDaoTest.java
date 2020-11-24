@@ -1,9 +1,7 @@
 package ar.edu.itba.paw;
 
-import ar.edu.itba.paw.models.Content;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
-import ar.edu.itba.paw.persistence.ReportContentDao;
 import ar.edu.itba.paw.persistence.VerificationTokenDao;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +31,7 @@ import static junit.framework.Assert.*;
 @ContextConfiguration(classes = TestConfig.class)
 public class VerificationTokenDaoTest {
     private static final int USERS = 8;
-    private static User[] users_ids = new User[USERS];
+    private static final User[] users_ids = new User[USERS];
     private static final String TOKEN = "token";
     private static final String TOKEN_2 = "token2";
 
