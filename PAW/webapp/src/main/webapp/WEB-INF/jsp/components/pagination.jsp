@@ -37,7 +37,7 @@
                         <li class="page-item active"><div class="page-link">${param.page}</div></li>
                         <c:if test="${(param.total/param.page_size)-param.page > 0 }">
                             <li class="page-item"><div class="page-link" onclick="moveToPage(${param.page+1},'${param.origin}')">${param.page+1}</div></li>
-                            <c:if test="${(param.total/param.page_size)-param.page >=1 }">
+                            <c:if test="${(param.total/param.page_size)-param.page > 1 }">
                                 <li class="page-item"><div class="page-link" onclick="moveToPage(${param.page+2},'${param.origin}')">${param.page+2}</div></li>
                             </c:if>
                         </c:if>
