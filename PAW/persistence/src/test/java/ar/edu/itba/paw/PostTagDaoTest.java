@@ -1,9 +1,6 @@
 package ar.edu.itba.paw;
 
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.Post;
-import ar.edu.itba.paw.models.PostTag;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.ContentDao;
 import ar.edu.itba.paw.persistence.PostTagDao;
 import org.junit.Before;
@@ -74,10 +71,10 @@ public class PostTagDaoTest {
         }
     }
 
-    @Test
+   @Test
     public void testCreate() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_tags");
-       Optional<PostTag> tagOptional = postTagDao.insert(TAG_1,POST_ID);
+       Optional<PostTag> tagOptional = postTagDao.insert(TAG_1,POST_ID, PostTagType.tech_name);
 
         em.flush();
         assertTrue(tagOptional.isPresent());
@@ -90,7 +87,7 @@ public class PostTagDaoTest {
     @Test(expected = Exception.class)
     public void testCreateWithoutPost() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_tags");
-        Optional<PostTag> tagOptional = postTagDao.insert(TAG_1,POST_ID+1);
+        Optional<PostTag> tagOptional = postTagDao.insert(TAG_1,POST_ID+1,PostTagType.tech_name);
         em.flush();
     }
     @Test
@@ -99,6 +96,7 @@ public class PostTagDaoTest {
         PostTag postTag = new PostTag();
         postTag.setPost(em.find(Post.class,POST_ID));
         postTag.setTagName(TAG_1);
+        postTag.setType(PostTagType.tech_name);
         em.persist(postTag);
         em.flush();
 
@@ -119,6 +117,7 @@ public class PostTagDaoTest {
             PostTag postTag = new PostTag();
             postTag.setPost(em.find(Post.class,POST_ID));
             postTag.setTagName(TAG_1+i);
+            postTag.setType(PostTagType.tech_name);
             em.persist(postTag);
             em.flush();
 
@@ -126,6 +125,7 @@ public class PostTagDaoTest {
         PostTag postTag = new PostTag();
         postTag.setPost(em.find(Post.class,POST_ID-1));
         postTag.setTagName(TAG_1);
+        postTag.setType(PostTagType.tech_name);
         em.persist(postTag);
         em.flush();
         List<PostTag> tags = postTagDao.getByPost(POST_ID);
@@ -142,6 +142,7 @@ public class PostTagDaoTest {
             PostTag postTag = new PostTag();
             postTag.setPost(em.find(Post.class,POST_ID));
             postTag.setTagName(TAG_1+i);
+            postTag.setType(PostTagType.tech_name);
             em.persist(postTag);
             em.flush();
 

@@ -19,13 +19,6 @@ public class PostVoteDaoImpl implements PostVoteDao{
     private EntityManager em;
 
     @Override
-    public Optional<PostVote> getByPost(long postId) {
-        final TypedQuery<PostVote> query = em.createQuery("select pv from PostVote pv where pv.post.id= :postId", PostVote.class);
-        query.setParameter("postId", postId);
-        return query.getResultList().stream().findFirst();
-    }
-
-    @Override
     public List<PostVote> getByUser(long userId, long page, long pageSize) {
         Query pagingQuery = em.createNativeQuery("SELECT post_vote_id FROM post_votes WHERE user_id = " + String.valueOf(userId)+ " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
         @SuppressWarnings("unchecked")

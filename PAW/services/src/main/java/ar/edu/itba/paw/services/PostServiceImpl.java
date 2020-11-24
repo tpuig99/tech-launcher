@@ -33,7 +33,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     @Override
     public List<Post> getAll(long page, long pageSize) {
-        return postDao.getAll(page, pageSize);
+        return postDao.getAllByPage(page, pageSize);
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +59,14 @@ public class PostServiceImpl implements PostService {
         return postDao.search(toSearch,tags,starsLeft,starsRight,commentAmount,lastComment,lastUpdated,order,page,pageSize);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Integer searchResultsNumber(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order){
+        if(starsLeft<starsRight)
+            return postDao.searchResultsNumber(toSearch,tags,starsLeft,starsRight,commentAmount,lastComment,lastUpdated, order);
+        return postDao.searchResultsNumber(toSearch,tags,starsRight,starsLeft,commentAmount,lastComment,lastUpdated, order);
+    }
+
     @Transactional
     @Override
     public Post insertPost( long userId, String title, String description) {
@@ -79,7 +87,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Optional<Post> vote(long postId, long userId, int voteSign) {
+    public void vote(long postId, long userId, int voteSign) {
 
         Optional<PostVote> vote = postVoteDao.getByPostAndUser(postId,userId);
         if(vote.isPresent()){
@@ -90,10 +98,6 @@ public class PostServiceImpl implements PostService {
         }else {
             postVoteDao.insert(postId, userId, voteSign);
         }
-
-        Optional<Post> post = findById(postId);
-
-        return post;
     }
 
     @Transactional

@@ -346,18 +346,28 @@
                                 <div class="card-body">
                                     <div class="row search-post-title ml-1">
                                         <a href="<c:url value='/posts/${post.postId}'/>">
-                                                ${post.title}
+                                                <c:out value="${post.title}" />
                                         </a>
                                     </div>
                                     <div class="row search-post-description ml-1">
-                                            ${post.description}
+                                            <c:out value="${post.description}" />
                                     </div>
                                     <div class="row extra-info">
                                         <div class="col-9">
                                             <c:forEach items="${post.postTags}" var="tag">
-                                                <button  class="badge badge-color ml-1"<%-- onclick="goToTag('${tag.tagName}')"--%>>
+                                                <button  class="badge badge-color ml-1" onclick="goToExplore('${tag.tagName}','${tag.type.name()}')">
                                                 <span>
-                                                        ${tag.tagName}
+                                                        <c:choose>
+                                                            <c:when test="${tag.type.name() == 'tech_name'}">
+                                                                <c:out value="${tag.tagName}"/>
+                                                            </c:when>
+                                                            <c:when test="${tag.type.name() == 'tech_type'}">
+                                                                <spring:message code="type.${tag.tagName}"/>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <spring:message code="category.${tag.tagName}"/>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                 </span>
                                                 </button>
                                             </c:forEach>
@@ -749,6 +759,19 @@
         return string;
     }
 
+    function goToExplore( tagName, type ){
+        let url = "<c:url value="/search?"/>"
+
+        if(type === 'tech_name'){
+            url = url + 'toSearch=' + tagName;
+        }else if(type === 'tech_type'){
+            url = url + 'types=' + tagName;
+        }else{
+            url = url + 'categories=' + tagName;
+        }
+
+        window.location.href = url + '&isPost=true'
+    }
 
 </script>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f" crossorigin="anonymous"></script>

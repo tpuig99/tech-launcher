@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Post;
-import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +25,13 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public List<Post> getAll(long page, long pageSize) {
+    public List<Post> getAll() {
+        TypedQuery<Post> query = em.createQuery("from Post as p", Post.class);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Post> getAllByPage(long page, long pageSize) {
             TypedQuery<Post> query = em.createQuery("from Post as p", Post.class);
             query.setMaxResults((int)pageSize);
             query.setFirstResult((int) ((page-1)*pageSize));
@@ -120,7 +124,11 @@ public class PostDaoImpl implements PostDao {
     public List<Post> search(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page, long pageSize) {
         if(toSearch == null && tags == null && commentAmount == 0
                 && lastComment == null && lastUpdated == null && (order == null || order == 0)) {
-            return getAll(page,pageSize);
+            if (page == -1 && pageSize == -1) {
+                return getAll();
+            }
+
+            return getAllByPage(page,pageSize);
         }
         StringBuilder sb = new StringBuilder(" select p from Post p left outer join p.postVotes v on p.postId = v.post.postId left outer join p.postComments c on p.postId = c.post.postId left outer join p.postTags t on p.postId = t.post.postId ");
         if(toSearch!=null || tags!=null || lastUpdated!=null) {
@@ -199,5 +207,11 @@ public class PostDaoImpl implements PostDao {
 
         return query.getResultList();
 
+    }
+
+    @Override
+    public Integer searchResultsNumber(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order) {
+        final List<Post> resultList = search(toSearch, tags, starsLeft, starsRight, commentAmount, lastComment, lastUpdated, order, -1, -1);
+        return resultList.size();
     }
 }
