@@ -17,7 +17,7 @@ public class VerificationTokenHibernateDaoImpl implements VerificationTokenDao {
     private EntityManager em;
 
     @Override
-    public void insert(long userId, String token) {
+    public VerificationToken insert(long userId, String token) {
         Date ts = new Date(System.currentTimeMillis());
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(ts);
@@ -25,11 +25,11 @@ public class VerificationTokenHibernateDaoImpl implements VerificationTokenDao {
         ts = new Date(calendar.getTime().getTime());
         final VerificationToken vt = new VerificationToken(token, em.getReference(User.class,userId), ts);
         em.persist(vt);
-
+        return  vt;
     }
 
     @Override
-    public void change(VerificationToken verificationToken, String token) {
+    public VerificationToken change(VerificationToken verificationToken, String token) {
         Date ts = new Date(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(ts);
@@ -38,6 +38,7 @@ public class VerificationTokenHibernateDaoImpl implements VerificationTokenDao {
         verificationToken.setToken(token);
         verificationToken.setExpiryDay(ts);
         em.merge(verificationToken);
+        return verificationToken;
     }
 
     @Override
