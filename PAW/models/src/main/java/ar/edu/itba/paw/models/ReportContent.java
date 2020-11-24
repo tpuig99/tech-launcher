@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "content_report")
+@Table(name = "content_report", uniqueConstraints = @UniqueConstraint( columnNames = {"content_id", "user_id"}))
 public class ReportContent {
 
     @Id
