@@ -283,8 +283,8 @@
                                             <c:otherwise>
                                                 <c:url value="/upvote" var="postPathUpVote"/>
                                                 <form:form modelAttribute="upVoteForm" id="upVoteForm${comment.commentId}" action="${postPathUpVote}" method="post">
-                                                    <form:label path="frameworkId"><form:input id="upVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
-                                                    <form:label path="commentId"><form:input id="upVoteFormCommentId${comment.commentId}" class="input-wrap" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
+                                                    <form:label path="frameworkId" class="hidden-no-space"><form:input id="upVoteFormFrameworkId${comment.commentId}" class="input-wrap hidden-no-space" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                                    <form:label path="commentId" class="hidden-no-space"><form:input id="upVoteFormCommentId${comment.commentId}" class="input-wrap hidden-no-space" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
 
                                                     <button class="btn upVote btn-link" type="submit">
                                                         <c:choose>
@@ -320,8 +320,8 @@
                                             <c:otherwise>
                                                 <c:url value="/downvote" var="postPathDownVote"/>
                                                 <form:form modelAttribute="downVoteForm" id="downVoteForm${comment.commentId}" action="${postPathDownVote}" method="post">
-                                                    <form:label path="downVoteFrameworkId"><form:input id="downVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="downVoteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
-                                                    <form:label path="downVoteCommentId"><form:input id="downVoteFormCommentId${comment.commentId}" class="input-wrap" path="downVoteCommentId" type="hidden" value="${comment.commentId}"/></form:label>
+                                                    <form:label path="downVoteFrameworkId" class="hidden-no-space"><form:input id="downVoteFormFrameworkId${comment.commentId}" class="input-wrap hidden-no-space" path="downVoteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                                    <form:label path="downVoteCommentId" class="hidden-no-space"><form:input id="downVoteFormCommentId${comment.commentId}" class="input-wrap hidden-no-space" path="downVoteCommentId" type="hidden" value="${comment.commentId}"/></form:label>
 
                                                     <button class=" btn upVote btn-link" type="submit">
                                                         <c:choose>
