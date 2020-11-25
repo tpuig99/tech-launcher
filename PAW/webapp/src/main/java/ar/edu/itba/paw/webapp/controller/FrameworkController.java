@@ -336,48 +336,6 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
-    @RequestMapping(path={"/content/report/cancel"}, method = RequestMethod.PUT)
-    public ModelAndView cancelReportContent(@RequestParam("id")long reportId){
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if( user.isPresent()){
-            contentService.deleteReport(reportId);
-            LOGGER.info("Report {}: User {} cancelled content report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to cancel content report", reportId);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/report/content/accept"}, method = RequestMethod.PUT)
-    public ModelAndView acceptReportContent(@RequestParam("id")long reportId){
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if(user.isPresent()){
-            contentService.acceptReport(reportId);
-            LOGGER.info("Report {}: User {} accepted content report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to accept content report", reportId);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/report/content/deny"}, method = RequestMethod.PUT)
-    public ModelAndView denyReportContent(@RequestParam("id")long reportId){
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if( user.isPresent()){
-            contentService.denyReport(reportId);
-            LOGGER.info("Report {}: User {} denied content report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to deny content report", reportId);
-        return ErrorController.redirectToErrorView();
-    }
-
     @RequestMapping(path={"/comment/report"}, method = RequestMethod.POST)
     public ModelAndView reportComment(@Valid @ModelAttribute("reportCommentForm")ReportCommentForm form, final BindingResult errors, HttpServletRequest request){
 
@@ -396,48 +354,6 @@ public class FrameworkController {
         }
 
         LOGGER.error("Tech {}: requested for reporting comment and not found", form.getReportCommentFrameworkId());
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/report/comment/accept"}, method = RequestMethod.PUT)
-    public ModelAndView acceptReportComment(@RequestParam("id")long reportId){
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if( user.isPresent()){
-            commentService.acceptReport(reportId);
-            LOGGER.info("Report {}: User {} accepted comment report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to accept comment report", reportId);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/report/comment/deny"}, method = RequestMethod.PUT)
-    public ModelAndView denyReportComment(@RequestParam("id")long reportId){
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if( user.isPresent()){
-            commentService.denyReport(reportId);
-            LOGGER.info("Report {}: User {} denied comment report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to deny comment report", reportId);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/comment/report/cancel"}, method = RequestMethod.PUT)
-    public ModelAndView cancelReportComment(@RequestParam("id")long reportId) {
-        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (user.isPresent()) {
-            commentService.deleteReport(reportId);
-            LOGGER.info("Report {}: User {} cancelled comment report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to cancel comment report", reportId);
         return ErrorController.redirectToErrorView();
     }
 
