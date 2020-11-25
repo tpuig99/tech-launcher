@@ -15,6 +15,7 @@ public interface FrameworkService {
     List<Framework> getCompetitors(Framework framework);
     List<Framework> getBestRatedFrameworks();
     List<Framework> getUserInterests(long userId);
+    Optional<Framework> getByName(String name);
     List<Framework> getByUser(long userId, long page);
     List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page);
     Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Date lastComment, Date lastUpdated);

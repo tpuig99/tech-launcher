@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Post;
+import ar.edu.itba.paw.models.PostVote;
 import ar.edu.itba.paw.persistence.PostDao;
 import ar.edu.itba.paw.persistence.PostVoteDao;
 import ar.edu.itba.paw.service.PostService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,18 +33,39 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     @Override
     public List<Post> getAll(long page, long pageSize) {
-        return postDao.getAll(page, pageSize);
+        return postDao.getAllByPage(page, pageSize);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Post> getPostsByUser(long userId, long page, long pageSize) {
-        return postDao.getPostsByUser(userId, page, pageSize);
+    public List<Post> getPostsByUser(long userId, long page) {
+        return postDao.getPostsByUser(userId, page, PAGE_SIZE_USER_PROFILE);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<Integer> getPostsCountByUser( long userId ){
+        return postDao.getPostsCountByUser(userId);
+    }
+
+    @Transactional(readOnly = true)
     @Override
     public List<Post> getByTagName(String category, long page, long pageSize) {
         return postDao.getByTagName(category,page, pageSize);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Post> search(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page, long pageSize) {
+        return postDao.search(toSearch,tags,starsLeft,starsRight,commentAmount,lastComment,lastUpdated,order,page,pageSize);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Integer searchResultsNumber(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order){
+        if(starsLeft<starsRight)
+            return postDao.searchResultsNumber(toSearch,tags,starsLeft,starsRight,commentAmount,lastComment,lastUpdated, order);
+        return postDao.searchResultsNumber(toSearch,tags,starsRight,starsLeft,commentAmount,lastComment,lastUpdated, order);
     }
 
     @Transactional
@@ -59,7 +82,13 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Optional<Post> vote(long postId, long userId, int voteSign) {
+    public Optional<Post> update(long postId, String title, String description) {
+        return postDao.update(postId, title, description);
+    }
+
+    @Transactional
+    @Override
+    public void vote(long postId, long userId, int voteSign) {
 
         Optional<PostVote> vote = postVoteDao.getByPostAndUser(postId,userId);
         if(vote.isPresent()){
@@ -70,13 +99,9 @@ public class PostServiceImpl implements PostService {
         }else {
             postVoteDao.insert(postId, userId, voteSign);
         }
-
-        Optional<Post> post = findById(postId);
-
-        return post;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public int getPostsAmount() {
         return postDao.getAmount();

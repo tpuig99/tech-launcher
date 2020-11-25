@@ -71,6 +71,8 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
     public void deleteByContent(long contentId) {
         final TypedQuery<Long> query = em.createQuery("select rc.reportId from ReportContent rc where rc.content.contentId = :contentId", Long.class);
         query.setParameter("contentId", contentId);
-        delete(query.getSingleResult());
+        for (Long l : query.getResultList()) {
+            delete(l);
+        }
     }
 }

@@ -174,13 +174,12 @@ public class FrameworkController {
 
         if (user.isPresent()) {
             final Optional<CommentVote> commentVote = commentService.vote(form.getCommentId(), user.get().getId(),1);
-
-            if(commentVote.isPresent()){
-                LOGGER.info("Tech {}: User {} upvoted comment {}", form.getFrameworkId(), user.get().getId(), form.getCommentId());
-                return FrameworkController.redirectToFramework(commentVote.get().getComment().getFrameworkId(), commentVote.get().getComment().getCategory());
+            LOGGER.info("Tech {}: User {} upvoted comment {}", form.getFrameworkId(), user.get().getId(), form.getCommentId());
+            final Optional<Framework> fw = fs.findById(form.getFrameworkId());
+            if( fw.isPresent()) {
+                return FrameworkController.redirectToFramework(fw.get().getId(), fw.get().getCategory().name());
             }
-
-            LOGGER.error("Tech {}: A problem occurred while upvoting comment {}", form.getFrameworkId(), form.getCommentId());
+            LOGGER.error("Tech {}: Tech doesn't exist", form.getFrameworkId());
             return ErrorController.redirectToErrorView();
         }
 
@@ -195,13 +194,12 @@ public class FrameworkController {
 
         if (user.isPresent()) {
             final Optional<CommentVote> commentVote = commentService.vote(form.getDownVoteCommentId(), user.get().getId(),-1);
-
-            if(commentVote.isPresent()){
-                LOGGER.info("Tech {}: User {} downvoted comment {}", form.getDownVoteFrameworkId(), user.get().getId(), form.getDownVoteCommentId());
-                return FrameworkController.redirectToFramework(commentVote.get().getComment().getFrameworkId(), commentVote.get().getComment().getCategory());
+            LOGGER.info("Tech {}: User {} downvoted comment {}", form.getDownVoteFrameworkId(), user.get().getId(), form.getDownVoteCommentId());
+            final Optional<Framework> fw = fs.findById(form.getDownVoteFrameworkId());
+            if( fw.isPresent()) {
+                return FrameworkController.redirectToFramework(fw.get().getId(), fw.get().getCategory().name());
             }
-
-            LOGGER.error("Tech {}: A problem occurred while downvoting comment {}", form.getDownVoteFrameworkId(), form.getDownVoteCommentId());
+            LOGGER.error("Tech {}: Tech doesn't exist", form.getDownVoteFrameworkId());
             return ErrorController.redirectToErrorView();
         }
 
@@ -261,7 +259,7 @@ public class FrameworkController {
         if (framework.isPresent()) {
             if(errors.hasErrors()){
                 LOGGER.info("Tech {}: Content Form has errors", frameworkId);
-                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory().name(), null, null, null, null);
+                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory().name(), Long.valueOf(START_PAGE), Long.valueOf(START_PAGE), Long.valueOf(START_PAGE), Long.valueOf(START_PAGE));
 
                 loadForms(framework1);
                 framework1.addObject("contentFormError", true);
@@ -338,48 +336,6 @@ public class FrameworkController {
         return ErrorController.redirectToErrorView();
     }
 
-    @RequestMapping(path={"/content/report/cancel"}, method = RequestMethod.PUT)
-    public ModelAndView cancelReportContent(@RequestParam("id")long reportId){
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if( user.isPresent()){
-            contentService.deleteReport(reportId);
-            LOGGER.info("Report {}: User {} cancelled content report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to cancel content report", reportId);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/report/content/accept"}, method = RequestMethod.PUT)
-    public ModelAndView acceptReportContent(@RequestParam("id")long reportId){
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if(user.isPresent()){
-            contentService.acceptReport(reportId);
-            LOGGER.info("Report {}: User {} accepted content report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to accept content report", reportId);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/report/content/deny"}, method = RequestMethod.PUT)
-    public ModelAndView denyReportContent(@RequestParam("id")long reportId){
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if( user.isPresent()){
-            contentService.denyReport(reportId);
-            LOGGER.info("Report {}: User {} denied content report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to deny content report", reportId);
-        return ErrorController.redirectToErrorView();
-    }
-
     @RequestMapping(path={"/comment/report"}, method = RequestMethod.POST)
     public ModelAndView reportComment(@Valid @ModelAttribute("reportCommentForm")ReportCommentForm form, final BindingResult errors, HttpServletRequest request){
 
@@ -398,48 +354,6 @@ public class FrameworkController {
         }
 
         LOGGER.error("Tech {}: requested for reporting comment and not found", form.getReportCommentFrameworkId());
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/report/comment/accept"}, method = RequestMethod.PUT)
-    public ModelAndView acceptReportComment(@RequestParam("id")long reportId){
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if( user.isPresent()){
-            commentService.acceptReport(reportId);
-            LOGGER.info("Report {}: User {} accepted comment report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to accept comment report", reportId);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/report/comment/deny"}, method = RequestMethod.PUT)
-    public ModelAndView denyReportComment(@RequestParam("id")long reportId){
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if( user.isPresent()){
-            commentService.denyReport(reportId);
-            LOGGER.info("Report {}: User {} denied comment report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to deny comment report", reportId);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/comment/report/cancel"}, method = RequestMethod.PUT)
-    public ModelAndView cancelReportComment(@RequestParam("id")long reportId) {
-        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (user.isPresent()) {
-            commentService.deleteReport(reportId);
-            LOGGER.info("Report {}: User {} cancelled comment report", reportId, user.get().getId());
-            return UserController.redirectToModView();
-        }
-
-        LOGGER.error("Report {}: Unauthorized user tried to cancel comment report", reportId);
         return ErrorController.redirectToErrorView();
     }
 
@@ -600,7 +514,7 @@ public class FrameworkController {
                     fs.delete(form.getFrameworkIdx());
 
                     LOGGER.info("Techs: Tech {} deleted successfully", form.getFrameworkIdx());
-                    return new ModelAndView("redirect:/" + "frameworks");
+                    return new ModelAndView("redirect:/" + "techs");
                 }
 
                 LOGGER.error("Tech {}: User without enough privileges attempted to delete the Tech", form.getFrameworkIdx());

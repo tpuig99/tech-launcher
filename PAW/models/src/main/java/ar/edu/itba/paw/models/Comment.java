@@ -44,7 +44,7 @@ public class Comment {
     private List<ReportComment> reports;
 
     /*this refers to the other relation mapped in VerifyUser*/
-    @OneToOne(fetch = FetchType.LAZY,mappedBy = "comment")
+    @OneToOne(fetch = FetchType.LAZY,mappedBy = "comment", cascade = CascadeType.REMOVE)
     private VerifyUser verifyUser;
 
     @Transient

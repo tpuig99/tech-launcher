@@ -47,7 +47,7 @@
                         </c:when>
                         <c:otherwise>
                             <div class="d-flex flex-wrap">
-                                <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                <img src="<c:url value="/resources/assets/tech_picture_default.png"/>"  alt="<spring:message code="tech.picture"/>"/>
                             </div>
                         </c:otherwise>
                     </c:choose>
@@ -58,6 +58,8 @@
                             <span class="framework-title"><h2><c:out value="${framework.name}"/></h2></span>
                             <div><spring:message code="tech.author"/>:&nbsp;<a href="<c:url value="/users/${framework.author.username}"/>">${framework.author.username}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="<spring:message code="tooltip.owner"/>"></i></div>
                             <div><spring:message code="tech.date"/>:&nbsp;${framework.publishDate.toLocaleString()}</div>
+                            <div><a href="<c:url value="/search?toSearch=${framework.name}&isPost=true"/>"><spring:message code="tech.see_posts_related"/></a></div>
+
                             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.category"/>"> <spring:message code="category.${framework.category.name()}"/></span>
                             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="<spring:message code="add_tech.type"/>"><spring:message code="type.${framework.type.name()}"/></span>
                         </div>
@@ -134,7 +136,7 @@
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-10">
-                                    <a target="_blank" href="${book.link}">${book.title}</a>
+                                    <a target="_blank" href="${book.link}"><c:out value="${book.title}"/></a>
                                 </div>
 
                                 <c:choose>
@@ -180,7 +182,7 @@
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-10">
-                                    <a target="_blank" href="${course.link}">${course.title}</a>
+                                    <a target="_blank" href="${course.link}"><c:out value="${course.title}"/></a>
                                 </div>
                                 <c:choose>
                                     <c:when test="${isAdmin || verifyForFramework || user.name == course.userName || isOwner}">
@@ -224,7 +226,7 @@
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-10">
-                                    <a target="_blank" href="${tutorial.link}">${tutorial.title}</a>
+                                    <a target="_blank" href="${tutorial.link}"><c:out value="${tutorial.title}"/></a>
                                 </div>
                                 <c:choose>
                                     <c:when test="${isAdmin || verifyForFramework || user.name == tutorial.userName || isOwner}">
@@ -281,8 +283,8 @@
                                             <c:otherwise>
                                                 <c:url value="/upvote" var="postPathUpVote"/>
                                                 <form:form modelAttribute="upVoteForm" id="upVoteForm${comment.commentId}" action="${postPathUpVote}" method="post">
-                                                    <form:label path="frameworkId"><form:input id="upVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
-                                                    <form:label path="commentId"><form:input id="upVoteFormCommentId${comment.commentId}" class="input-wrap" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
+                                                    <form:label path="frameworkId" class="hidden-no-space"><form:input id="upVoteFormFrameworkId${comment.commentId}" class="input-wrap hidden-no-space" path="frameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                                    <form:label path="commentId" class="hidden-no-space"><form:input id="upVoteFormCommentId${comment.commentId}" class="input-wrap hidden-no-space" path="commentId" type="hidden" value="${comment.commentId}"/></form:label>
 
                                                     <button class="btn upVote btn-link" type="submit">
                                                         <c:choose>
@@ -318,8 +320,8 @@
                                             <c:otherwise>
                                                 <c:url value="/downvote" var="postPathDownVote"/>
                                                 <form:form modelAttribute="downVoteForm" id="downVoteForm${comment.commentId}" action="${postPathDownVote}" method="post">
-                                                    <form:label path="downVoteFrameworkId"><form:input id="downVoteFormFrameworkId${comment.commentId}" class="input-wrap" path="downVoteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
-                                                    <form:label path="downVoteCommentId"><form:input id="downVoteFormCommentId${comment.commentId}" class="input-wrap" path="downVoteCommentId" type="hidden" value="${comment.commentId}"/></form:label>
+                                                    <form:label path="downVoteFrameworkId" class="hidden-no-space"><form:input id="downVoteFormFrameworkId${comment.commentId}" class="input-wrap hidden-no-space" path="downVoteFrameworkId" type="hidden" value="${framework.id}"/></form:label>
+                                                    <form:label path="downVoteCommentId" class="hidden-no-space"><form:input id="downVoteFormCommentId${comment.commentId}" class="input-wrap hidden-no-space" path="downVoteCommentId" type="hidden" value="${comment.commentId}"/></form:label>
 
                                                     <button class=" btn upVote btn-link" type="submit">
                                                         <c:choose>
@@ -591,7 +593,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <div class="mini-logo d-flex align-items-center justify-content-center">
-                                            <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="<spring:message code="tech.picture"/>"/>
+                                            <img src="<c:url value="/resources/assets/tech_picture_default.png"/>"  alt="<spring:message code="tech.picture"/>"/>
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
@@ -651,6 +653,9 @@
                         </div>
                         <div class="row justify-content-center align-items-center margin-top">
                             <div><spring:message code="register.error.confirm_email"/></div>
+                        </div>
+                        <div class="row  justify-content-center align-items-center margin-top">
+                            <div><a href="<c:url value="/register/resend_token"/>"><spring:message code="button.resend"/></a></div>
                         </div>
                     </div>
                 </div>

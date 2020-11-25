@@ -48,6 +48,11 @@
     border-top: 4px solid #AFBBF2;
 }
 
+.emphasis.emph-post:hover
+{
+    border-top: 4px solid #D7263D;
+}
+
 .emphasis
 {
     border-top: 4px solid transparent;

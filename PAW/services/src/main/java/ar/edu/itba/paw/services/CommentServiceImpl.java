@@ -108,6 +108,7 @@ public class CommentServiceImpl implements CommentService {
         return rc.getAll(page, PAGE_SIZE);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Integer> getAllReportsAmount() {
         return rc.getAllReportsAmount();
@@ -137,5 +138,16 @@ public class CommentServiceImpl implements CommentService {
         rc.delete(reportId);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<ReportComment> getReportsByFrameworks( List<Long> frameworksIds, long page){
+        return rc.getByFrameworks( frameworksIds, page, PAGE_SIZE);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Integer getReportsAmountByFrameworks(List<Long> frameworksIds){
+        return  rc.getReportsAmountByFrameworks( frameworksIds );
+    }
 
 }

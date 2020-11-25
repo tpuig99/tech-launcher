@@ -3,6 +3,7 @@ package ar.edu.itba.paw.models;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "posts")
@@ -104,6 +105,11 @@ public class Post {
         return postTags;
     }
 
+    public List<String> getPostTagsByType(PostTagType type) {
+        List<PostTag> tags = postTags.stream().filter((x) -> x.getType() == type).collect(Collectors.toList());
+        return tags.stream().map(PostTag::getTagName).collect(Collectors.toList());
+    }
+
     private void loadVotes() {
         votesUp = Long.valueOf(0);
         votesDown = Long.valueOf(0);
@@ -135,4 +141,14 @@ public class Post {
         return 0;
     }
 
+    public long getAnswersAmount(){
+        return postComments.stream().filter((x) -> x.getReference() == null).count();
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "title='" + title + '\'' +
+                '}';
+    }
 }

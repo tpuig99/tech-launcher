@@ -276,3 +276,7 @@ label:hover:before {
 .no-overflow-x ul {
     overflow-x: hidden;
 }
+
+.hidden-no-space {
+    display: none;
+}

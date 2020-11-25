@@ -13,12 +13,13 @@ import java.util.Optional;
 
 @Service
 public class PostCommentServiceImpl implements PostCommentService {
+    private final int PAGE_SIZE = 5;
 
     @Autowired
-    PostCommentDao postCommentDao;
+    private PostCommentDao postCommentDao;
 
     @Autowired
-    PostCommentVoteDao postCommentVoteDao;
+    private PostCommentVoteDao postCommentVoteDao;
 
     @Transactional(readOnly = true)
     @Override
@@ -28,8 +29,8 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<PostComment> getByPost(long postId) {
-        return postCommentDao.getByPost(postId);
+    public List<PostComment> getByPost(long postId, long page) {
+        return postCommentDao.getByPost(postId, page, PAGE_SIZE);
     }
 
     @Transactional
@@ -47,7 +48,7 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Transactional
     @Override
-    public Optional<PostComment> vote(long postCommentId, long userId, int voteSign) {
+    public void vote(long postCommentId, long userId, int voteSign) {
         Optional<PostCommentVote> vote = postCommentVoteDao.getByPostCommentAndUser(postCommentId, userId);
         if (vote.isPresent()) {
             if (vote.get().getVote() == voteSign)
@@ -57,8 +58,5 @@ public class PostCommentServiceImpl implements PostCommentService {
         } else {
             postCommentVoteDao.insert(postCommentId, userId, voteSign);
         }
-        Optional<PostComment> postComment = getById(postCommentId);
-
-        return postComment;
     }
 }

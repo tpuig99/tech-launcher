@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface PostCommentDao {
 
     Optional<PostComment> findById(long postCommentId);
-    List<PostComment> getByPost(long postId);
+    List<PostComment> getByPost(long postId, long page, long pageSize);
 
     PostComment insertPostComment(long postId, long userId, String description, Long reference);
     void deletePostComment(long postCommentId);

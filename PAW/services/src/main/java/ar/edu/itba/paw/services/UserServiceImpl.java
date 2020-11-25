@@ -178,17 +178,6 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-//    @Transactional
-//    @Override
-//    public void updateDescription(long userId, String description) {
-//        userDao.updateDescription(userId,description);
-//    }
-//
-//    @Transactional
-//    @Override
-//    public void updatePicture(long userId, byte[] picture) { userDao.updatePicture(userId, picture);}
-
-
     @Transactional
     @Override
     public VerifyUser createVerify(User user, Framework framework) {
@@ -214,21 +203,25 @@ public class UserServiceImpl implements UserService {
         return verifyUserDao.getVerifyForCommentByPending(pending, page, PAGE_SIZE);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Integer> getVerifyByPendingAmount(boolean pending) {
         return verifyUserDao.getVerifyForCommentByPendingAmount(pending);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Integer> getVerifyByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
         return verifyUserDao.getVerifyForCommentByFrameworkAmount(frameworksIds,pending);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Integer> getApplicantsByPendingAmount(boolean pending) {
         return verifyUserDao.getApplicantsByPendingAmount(pending);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Integer> getApplicantsByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
         return verifyUserDao.getApplicantsByFrameworkAmount(frameworksIds,pending);
@@ -252,7 +245,6 @@ public class UserServiceImpl implements UserService {
         verifyUserDao.verify(verificationId);
     }
 
-    @Transactional
     @Override
     public void passwordMailing(User user, String appUrl) {
 
@@ -268,7 +260,6 @@ public class UserServiceImpl implements UserService {
         sendEmail(recipientAddress,subject,message);
     }
 
-    @Transactional
     @Override
     public void modMailing(User user, String frameworkName) {
         String subject = messageSource.getMessage("email.moderator.subject",new Object[]{frameworkName}, LocaleContextHolder.getLocale());
@@ -319,7 +310,6 @@ public class UserServiceImpl implements UserService {
         userDao.updateInformation(userId, description, picture, updatePicture);
     }
 
-    @Transactional
     public void internalLogin(String user, String pass, HttpServletRequest req) {
         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user, pass);
         Authentication auth = authManager.authenticate(authReq);
@@ -328,5 +318,17 @@ public class UserServiceImpl implements UserService {
         sc.setAuthentication(auth);
         HttpSession session = req.getSession(true);
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<VerifyUser> getVerifyByPendingAndFrameworks( boolean pending, List<Long> frameworkIds, long page ){
+        return verifyUserDao.getVerifyByPendingAndFramework( pending, frameworkIds, page, PAGE_SIZE);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds){
+        return verifyUserDao.getVerifyByPendingAndFrameworksAmount( pending, frameworkIds);
     }
 }

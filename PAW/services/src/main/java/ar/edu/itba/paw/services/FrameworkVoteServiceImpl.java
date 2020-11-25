@@ -14,7 +14,7 @@ import java.util.Optional;
 @Service
 public class FrameworkVoteServiceImpl implements FrameworkVoteService {
     @Autowired
-    FrameworkVoteDao vs;
+    private FrameworkVoteDao vs;
 
     private final long PAGE_SIZE = 10;
 

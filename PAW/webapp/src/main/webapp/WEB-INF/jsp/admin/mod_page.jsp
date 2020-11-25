@@ -22,13 +22,13 @@
     <div class="page-title-big row"><spring:message code="moderate.moderation_panel"/></div>
 
     <!-- Mods managing -->
-    <%! public String tab = "";%>
+    <%! private String tab = "";%>
     <div class="container">
         <ul class="nav nav-tabs" id="mod-tab">
             <li class="nav-item">
                 <a class="nav-link" href="#promote" data-toggle="tab" role="tab" aria-controls="promote" aria-selected="true"><spring:message code="moderate.promote"/></a>
             </li>
-            <c:if test="${isAdmin}">
+            <c:if test="${isAdmin || isOwner}">
                 <li class="nav-item">
                     <a class="nav-link" href="#demote" data-toggle="tab" role="tab" aria-controls="demote" aria-selected="false" ><spring:message code="moderate.demote"/></a>
                 </li>
@@ -161,7 +161,7 @@
                 <div class="add-margin"><h5><spring:message code="moderate.demote_description"/></h5></div>
                 <div class="page-title"><spring:message code="moderator.title"/>  (${modsAmount})</div>
                 <div>
-                    <c:if test="${isAdmin}">
+                    <c:if test="${isAdmin || isOwner}">
                         <div class="page-description"></div>
                         <div class="d-flex flex-wrap justify-content-center">
                             <c:choose>
@@ -215,9 +215,9 @@
             <div class="tab-pane" id="reports">
                 <div class="add-margin"><h5><spring:message code="moderate.see_reports_description"/></h5></div>
                 <!-- Reported Comments -->
-                <c:if test="${isAdmin}"><div class="row">
+                <c:if test="${isAdmin || isOwner}"><div class="row">
                 <div class="col-6"></c:if>
-                    <c:if test="${isAdmin}">
+                    <c:if test="${isAdmin || isOwner}">
                         <div class="page-title"><spring:message code="moderate.comment.title"/>  (${reportedCommentsAmount})</div>
                         <div class="page-description"></div>
                         <div class="row justify-content-center">
@@ -277,9 +277,9 @@
                             </jsp:include>
                         </c:if>
                     </c:if>
-                    <c:if test="${isAdmin}"></div></c:if>
+                    <c:if test="${isAdmin || isOwner}"></div></c:if>
 
-                <c:if test="${isAdmin}"><div class="col"></c:if>
+                <c:if test="${isAdmin || isOwner}"><div class="col"></c:if>
                 <!-- reported content -->
                 <div class="page-title"><spring:message code="moderate.content.title"/>  (${reportedContentAmount})</div>
                 <div class="page-description"></div>
@@ -340,8 +340,8 @@
                         <jsp:param name="rConPage" value="${rConPage}"/>
                     </jsp:include>
                 </c:if>
-                <c:if test="${isAdmin}"></div></c:if>
-                <c:if test="${isAdmin}"></div></c:if>
+                <c:if test="${isAdmin || isOwner}"></div></c:if>
+                <c:if test="${isAdmin || isOwner}"></div></c:if>
             </div>
         </div>
     </div>

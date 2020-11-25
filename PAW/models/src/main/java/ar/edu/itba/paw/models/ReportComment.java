@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "comment_report")
+@Table(name = "comment_report", uniqueConstraints = @UniqueConstraint( columnNames = {"comment_id", "user_id"}))
 public class ReportComment {
 
     @Id
@@ -18,7 +18,6 @@ public class ReportComment {
     @Column(name="description", nullable = false)
     private String reportDescription;
 
-    //TODO user and comment should be UNIQUE(user_id,conmment_id), dont know how to do it
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;

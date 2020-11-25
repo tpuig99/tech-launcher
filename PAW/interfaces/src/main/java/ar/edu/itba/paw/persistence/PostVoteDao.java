@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostVoteDao {
-    Optional<PostVote> getByPost(long postId);
     List<PostVote> getByUser(long userId, long page, long pageSize);
     Optional<PostVote> getByPostAndUser(long postId, long userId);
 

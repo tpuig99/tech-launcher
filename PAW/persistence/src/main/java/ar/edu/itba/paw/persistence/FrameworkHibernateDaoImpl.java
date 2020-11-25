@@ -63,7 +63,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
     }
 
 
-    /* TODO: add pagination  */
     @Override
     public List<Framework> getByUser(long userId, long page, long pageSize) {
         final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.author.id = :userId order by f.id", Framework.class);
@@ -71,6 +70,13 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         query.setFirstResult((int) ((page-1) * pageSize));
         query.setMaxResults((int) pageSize);
         return query.getResultList();
+    }
+
+    @Override
+    public Optional<Framework> getByName(String name) {
+        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.name = :name", Framework.class);
+        query.setParameter("name", name);
+        return query.getResultList().stream().findFirst();
     }
 
     @Override
