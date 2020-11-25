@@ -8,36 +8,29 @@
 <head>
     <title id="title"><spring:message code="user.validation.error"/></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="icon" href="<c:url value="/resources/assets/favicon.ico"/>" type="image/x-icon">
+    <link rel="shortcut icon" href="<c:url value="/resources/assets/favicon.ico"/>" type="image/x-icon">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/register.css"/>"/>
 </head>
 <body>
+
 <jsp:include page="../components/navbar.jsp">
     <jsp:param name="connected" value="${user.authenticated}"/>
     <jsp:param name="username" value="${user.name}"/>
-    <jsp:param name="isMod" value="${user_isMod}"/>
 </jsp:include>
 
 
 <div class="content">
     <div class="page-description">${message}</div>
-    <button class="btn btn-info" onclick="resendToken('${token}')"><spring:message code="button.resend"/></button>
+    <div class="page-description">${message}<button class="btn btn-info" onclick="goHome()"><spring:message code="button.back_to_home"/></button></div>
 </div>
 
-
-<script type="text/javascript">
-
-    let serverContext = '${pageContext.request.contextPath}';
-
-    function resendToken(token){
-        $.get(serverContext + "resend_registration_token?token=" + token,
-            function(){
-                window.location.href = serverContext +'email_resent';
-            })
-            .catch(function(message) {
-            });
+<script>
+    function goHome(){
+        window.location.href = "<c:url value="/"/>";
     }
 </script>
 

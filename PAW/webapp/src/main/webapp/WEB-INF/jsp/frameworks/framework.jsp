@@ -12,6 +12,8 @@
                         htmlEscape="true"/>
     </title>
 
+    <link rel="icon" href="<c:url value="/resources/assets/favicon.ico"/>" type="image/x-icon">
+    <link rel="shortcut icon" href="<c:url value="/resources/assets/favicon.ico"/>" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/framework.css"/>"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">

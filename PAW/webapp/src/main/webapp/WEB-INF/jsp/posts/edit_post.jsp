@@ -7,6 +7,8 @@
 <head>
     <title><spring:message code="edit_post.wref"/></title>
 
+    <link rel="icon" href="<c:url value="/resources/assets/favicon.ico"/>" type="image/x-icon">
+    <link rel="shortcut icon" href="<c:url value="/resources/assets/favicon.ico"/>" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/posts.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/form.css"/>"/>

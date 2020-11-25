@@ -120,6 +120,14 @@ public class PostController {
         mav.addObject("frameworkNames", fs.getFrameworkNames());
         mav.addObject("types", fs.getAllTypes());
 
+        final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            mav.addObject("isAdmin", user.isAdmin());
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+            mav.addObject("isEnable", user.isEnable());
+        }
+
         return mav;
     }
 

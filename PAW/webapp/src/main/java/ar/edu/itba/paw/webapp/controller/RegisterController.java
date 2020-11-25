@@ -102,6 +102,11 @@ public class RegisterController {
         mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
         mav.addObject("message", messageSource.getMessage("register.success.account.validated", new Object[]{}, LocaleContextHolder.getLocale()));
         mav.addObject("title", messageSource.getMessage("register.success.email.validated", new Object[]{}, LocaleContextHolder.getLocale()));
+        final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if( optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
+        }
         return mav;
     }
 

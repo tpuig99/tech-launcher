@@ -5,7 +5,6 @@
 
 <head>
     <c:url value="/resources/js/search.js" var="searchJs"/>
-    <!-- <script src="/resources/js/search.js"></script>-->
 </head>
 <body>
 

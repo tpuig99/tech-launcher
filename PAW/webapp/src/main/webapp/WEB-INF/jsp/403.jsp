@@ -2,6 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
+    <link rel="icon" href="<c:url value="/resources/assets/favicon.ico"/>" type="image/x-icon">
+    <link rel="shortcut icon" href="<c:url value="/resources/assets/favicon.ico"/>" type="image/x-icon">
     <link rel="stylesheet" href="<c:url value="/css/style.css"/>" />
 </head>
 <body>

@@ -11,6 +11,8 @@
         <spring:message code="explore.wref"/>
     </title>
 
+    <link rel="icon" href="<c:url value="/resources/assets/favicon.ico"/>" type="image/x-icon">
+    <link rel="shortcut icon" href="<c:url value="/resources/assets/favicon.ico"/>" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/base_page.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/search.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/styles/posts.css"/>"/>
@@ -202,7 +204,7 @@
     <div class="page-title">
 
         <c:choose>
-            <c:when test="${empty techNameQuery and empty starsQuery1 and empty starsQuery2 and empty categoriesQuery and empty typesQuery and empty orderQuery and empty commentAmount and empty dateUpdate and empty dateComment and empty selectOrder}">
+            <c:when test="${empty techNameQuery and empty starsQuery1 and empty starsQuery2 and empty categoriesQuery and empty typesQuery and empty orderValue and empty commentAmount and empty dateUpdate and empty dateComment and empty sortValue}">
                 <h2><spring:message code="explore.title"/></h2>
             </c:when>
             <c:otherwise>
