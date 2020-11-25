@@ -83,6 +83,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 
 
+
         return ds;
     }
 
@@ -112,19 +113,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public CommonsMultipartResolver multipartResolver(){
         return new CommonsMultipartResolver();
-    }
-
-    /*@Bean
-    public PlatformTransactionManager transactionManager(final DataSource ds) {
-        return new DataSourceTransactionManager(ds);
-    }*/
-
-    @Controller
-    static class FaviconController {
-        @RequestMapping("favicon.ico")
-        String favicon() {
-            return "forward:/resources/assets/favicon.ico";
-        }
     }
 
     @Bean
