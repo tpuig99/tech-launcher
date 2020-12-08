@@ -3,19 +3,12 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
-import ar.edu.itba.paw.webapp.form.framework.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
@@ -45,35 +38,50 @@ public class FrameworkController {
     @Autowired
     private UserService us;
 
-    @Autowired
-    private MessageSource messageSource;
-
     @Context
     private UriInfo uriInfo;
 
     private final String START_PAGE = "1";
-    private final long PAGE_SIZE = 5;
+    private final int PAGE_SIZE = 5;
+    private final int CATEGORY_PAGE_SIZE = 7;
+
+    @GET
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response frameworksHome() {
+        List<Framework> frameworks = fs.getBestRatedFrameworks();
+        List<FrameworkDTO> list = frameworks.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<FrameworkDTO>>(list){}).build();
+    }
 
     @GET
     @Path("/{category}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response frameworkMenuPaging(@PathParam("category") String category,
-                                        @RequestParam(value = "frameworks_page", required = false, defaultValue = START_PAGE) Long frameworksPage) {
+                                        @QueryParam("page") @DefaultValue(START_PAGE) Long frameworksPage) {
         final FrameworkCategories enumCategory = FrameworkCategories.valueOf(category);
         LOGGER.info("Techs: Getting Techs by category '{}'", enumCategory.name());
+        final double pages = Math.ceil(((double)fs.getAmountByCategory(enumCategory))/CATEGORY_PAGE_SIZE);
         List<Framework> frameworkList = fs.getByCategory(enumCategory, frameworksPage);
         List<FrameworkDTO> list = frameworkList.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<FrameworkDTO>>(list){}).build();
+        Response.ResponseBuilder response = Response.ok(new GenericEntity<List<FrameworkDTO>>(list){})
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).build(),"first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).build(),"last");
+        if(frameworksPage < pages)
+                response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",frameworksPage+1).build(),"next");
+        if(frameworksPage != 1)
+                response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",frameworksPage-1).build(),"prev");
+
+        return response.build();
     }
 
     @GET
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response framework(@PathParam("id") long id,
-                              @RequestParam(value = "books_page", required = false, defaultValue = START_PAGE) Long booksPage,
-                              @RequestParam(value = "courses_page", required = false, defaultValue = START_PAGE) Long coursesPage,
-                              @RequestParam(value = "tutorials_page", required = false, defaultValue = START_PAGE) Long tutorialsPage,
-                              @RequestParam(value = "comments_page", required = false, defaultValue = START_PAGE) Long commentsPage) {
+                              @QueryParam("books_page") @DefaultValue(START_PAGE) Long booksPage,
+                              @QueryParam("courses_page") @DefaultValue(START_PAGE) Long coursesPage,
+                              @QueryParam("tutorials_page") @DefaultValue(START_PAGE) Long tutorialsPage,
+                              @QueryParam("comments_page") @DefaultValue(START_PAGE) Long commentsPage) {
 
         Optional<Framework> framework = fs.findById(id);
         if (framework.isPresent()) {
@@ -450,6 +458,6 @@ public class FrameworkController {
         LOGGER.error("Tech {}: requested for reporting content and not found", id);
         return Response.status(Response.Status.NOT_FOUND).build();
     }
-    
+
 }
 
