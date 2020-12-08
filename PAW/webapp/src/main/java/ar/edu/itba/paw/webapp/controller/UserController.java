@@ -337,5 +337,21 @@ public class UserController {
         LOGGER.error("User: Unauthorized user attempted to ignore a reported content");
         return ErrorController.redirectToErrorView();
     }
+    @RequestMapping("/mod/quit")
+    public ModelAndView QuitMod(@RequestParam("fId") final long fId,@RequestParam("category") final String cat) {
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
+        if(user.isPresent()){
+            if (us.quitModdingFromTech(user.get(), fId)) {
+                LOGGER.info("Tech {}: User {} is no longer a Mod", fId, user.get().getId());
+                //return FrameworkController.redirectToFramework(fId, cat);
+            }
+
+            LOGGER.error("Tech {}: User {} tried to quit from being a Mod without previously being one", fId, user.get().getId());
+            return ErrorController.redirectToErrorView();
+        }
+
+        LOGGER.error("Tech {}: Unauthorized user tried to quit modding", fId);
+        return ErrorController.redirectToErrorView();
+    }
 }
