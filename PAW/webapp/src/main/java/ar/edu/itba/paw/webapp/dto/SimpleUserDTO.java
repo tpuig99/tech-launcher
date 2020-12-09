@@ -17,6 +17,15 @@ public class SimpleUserDTO {
         return dto;
     }
 
+    public static SimpleUserDTO fromUser(User user ) {
+        SimpleUserDTO dto = new SimpleUserDTO();
+        dto.username=user.getUsername();
+        dto.admin = user.isAdmin();
+        dto.verify = false;
+        dto.author = false;
+        return dto;
+    }
+
     public String getUsername() {
         return username;
     }
