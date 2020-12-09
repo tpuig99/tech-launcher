@@ -6,20 +6,13 @@ import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.dto.ModDTO;
-import ar.edu.itba.paw.webapp.form.mod_page.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -68,9 +61,6 @@ public class ModController {
                             @QueryParam("verifyPage") @DefaultValue(START_PAGE) Long verifyPage,
                             @QueryParam("rConPage") @DefaultValue(START_PAGE) Long rConPage) {
 
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-
-        mav.addObject("selectTab",tabs);
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         Integer modsAmount, verifyAmount, applicantsAmount, reportedCommentsAmount, reportedContentAmount;
@@ -92,7 +82,7 @@ public class ModController {
                 reportedCommentsAmount = commentService.getAllReportsAmount().get();
                 reportedContentAmount = contentService.getAllReportsAmount().get();
 
-                return mav;
+                return Response.ok().build();
 
             } else if( ownedFrameworks.size() > 0){
                 List<Long> frameworksIds = new LinkedList<>();
@@ -118,6 +108,7 @@ public class ModController {
                 reportedCommentsAmount = commentService.getReportsAmountByFrameworks(frameworksIdsForReportedComments); // TODO: getVerifyByPendingAndFrameworkAmount
                 reportedContentAmount = contentService.getReportsAmount(frameworksIds).get();
 
+                return Response.ok().build();
             }
             else if( user.isVerify() ){
                 List<Long> frameworksIds = new LinkedList<>();
@@ -125,6 +116,7 @@ public class ModController {
                     if( !verifyUser.isPending() )
                         frameworksIds.add(verifyUser.getFrameworkId());
                 });
+
                 modDTO.setVerified(us.getVerifyByFrameworks(frameworksIds, true, verifyPage == null ? pageStart:verifyPage));
                 modDTO.setApplicants(us.getApplicantsByFrameworks(frameworksIds, applicantsPage == null ? pageStart:applicantsPage));
                 modDTO.setReportedContents(contentService.getReportsByFrameworks(frameworksIds, rConPage == null ? pageStart:rConPage));
@@ -132,14 +124,16 @@ public class ModController {
                 verifyAmount = us.getVerifyByFrameworkAmount(frameworksIds,true).get();
                 applicantsAmount = us.getApplicantsByFrameworkAmount(frameworksIds,true).get();
                 reportedContentAmount = contentService.getReportsAmount(frameworksIds).get();
+
+                return Response.ok().build();
             }
 
             LOGGER.error("User: User {} does not have enough privileges to access Mod Page", user.getId());
-            return ErrorController.redirectToErrorView();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         LOGGER.error("User: Unauthorized user attempted to access mod page");
-        return ErrorController.redirectToErrorView();
+        return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
     @DELETE
