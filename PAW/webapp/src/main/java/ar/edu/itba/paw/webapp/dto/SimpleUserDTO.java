@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.User;
 

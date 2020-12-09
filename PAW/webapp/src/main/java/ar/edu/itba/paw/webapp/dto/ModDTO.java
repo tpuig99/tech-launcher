@@ -49,7 +49,7 @@ public class ModDTO {
         return reportedContents;
     }
 
-    public void setReportedContents(List<ReportContent> reportContents) {
-        this.reportedContents = reportContents;
+    public void setReportedContents(List<ReportContent> reportedContents) {
+        this.reportedContents = reportedContents;
     }
 }

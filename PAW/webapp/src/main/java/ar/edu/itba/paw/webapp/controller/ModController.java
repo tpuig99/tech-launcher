@@ -5,7 +5,8 @@ import ar.edu.itba.paw.service.CommentService;
 import ar.edu.itba.paw.service.ContentService;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.webapp.dto.ModDTO;
+import ar.edu.itba.paw.webapp.dto.ReportDTO;
+import ar.edu.itba.paw.webapp.dto.VerifyUserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +15,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.LinkedList;
+import javax.ws.rs.core.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Path("mod")
 @Component
@@ -52,89 +52,213 @@ public class ModController {
 
     private static final String MOD_VIEW = "/mod?tabs=";
 
-    @GET
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response modPage(@QueryParam("tabs") @DefaultValue(DEFAULT_PROMOTE_TAB) String tabs,
-                            @QueryParam("modsPage") @DefaultValue(START_PAGE) Long modsPage,
-                            @QueryParam("rComPage") @DefaultValue(START_PAGE) Long rComPage,
-                            @QueryParam("applicantsPage") @DefaultValue(START_PAGE) Long applicantsPage,
-                            @QueryParam("verifyPage") @DefaultValue(START_PAGE) Long verifyPage,
-                            @QueryParam("rConPage") @DefaultValue(START_PAGE) Long rConPage) {
-
-        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        Integer modsAmount, verifyAmount, applicantsAmount, reportedCommentsAmount, reportedContentAmount;
-        ModDTO modDTO = new ModDTO();
-
-        if( userOptional.isPresent()){
-            User user = userOptional.get();
-            List<Framework> ownedFrameworks = user.getOwnedFrameworks();
-            if( user.isAdmin()) {
-                modDTO.setMods(us.getVerifyByPending(false, modsPage == null ? pageStart : modsPage));
-                modDTO.setVerified(us.getVerifyByPending(true, verifyPage == null ? pageStart : verifyPage));
-                modDTO.setApplicants(us.getApplicantsByPending(true, applicantsPage == null ? pageStart : applicantsPage));
-                modDTO.setReportedComments(commentService.getAllReport(rComPage == null ? pageStart : rComPage));
-                modDTO.setReportedContents(contentService.getAllReports(rConPage == null ? pageStart : rConPage));
-
-                modsAmount = us.getVerifyByPendingAmount(false).get();
-                verifyAmount = us.getVerifyByPendingAmount(true).get();
-                applicantsAmount = us.getApplicantsByPendingAmount(true).get();
-                reportedCommentsAmount = commentService.getAllReportsAmount().get();
-                reportedContentAmount = contentService.getAllReportsAmount().get();
-
-                return Response.ok().build();
-
-            } else if( ownedFrameworks.size() > 0){
-                List<Long> frameworksIds = new LinkedList<>();
-                user.getVerifications().forEach( verifyUser -> {
-                    if( !verifyUser.isPending() )
-                        frameworksIds.add(verifyUser.getFrameworkId());
-                });
-                List<Long> frameworksIdsForReportedComments = new LinkedList<>();
-                ownedFrameworks.forEach( framework -> {
-                    frameworksIds.add(framework.getId());
-                    frameworksIdsForReportedComments.add(framework.getId());
-                });
-
-                modDTO.setMods(us.getVerifyByPendingAndFrameworks(false, frameworksIdsForReportedComments, modsPage == null ? pageStart : modsPage));
-                modDTO.setVerified(us.getVerifyByFrameworks(frameworksIds, true, verifyPage == null ? pageStart:verifyPage));
-                modDTO.setApplicants(us.getApplicantsByFrameworks(frameworksIds, applicantsPage == null ? pageStart:applicantsPage));
-                modDTO.setReportedContents(contentService.getReportsByFrameworks(frameworksIds, rConPage == null ? pageStart:rConPage));
-                modDTO.setReportedComments(commentService.getReportsByFrameworks( frameworksIdsForReportedComments, rComPage == null ? pageStart:rComPage));
-
-                modsAmount = us.getVerifyByPendingAndFrameworksAmount(false, frameworksIdsForReportedComments); // TODO: getVerifyByPendingAndFrameworkAmount
-                verifyAmount = us.getVerifyByFrameworkAmount(frameworksIds,true).get();
-                applicantsAmount = us.getApplicantsByFrameworkAmount(frameworksIds,true).get();
-                reportedCommentsAmount = commentService.getReportsAmountByFrameworks(frameworksIdsForReportedComments); // TODO: getVerifyByPendingAndFrameworkAmount
-                reportedContentAmount = contentService.getReportsAmount(frameworksIds).get();
-
-                return Response.ok().build();
-            }
-            else if( user.isVerify() ){
-                List<Long> frameworksIds = new LinkedList<>();
-                user.getVerifications().forEach( verifyUser -> {
-                    if( !verifyUser.isPending() )
-                        frameworksIds.add(verifyUser.getFrameworkId());
-                });
-
-                modDTO.setVerified(us.getVerifyByFrameworks(frameworksIds, true, verifyPage == null ? pageStart:verifyPage));
-                modDTO.setApplicants(us.getApplicantsByFrameworks(frameworksIds, applicantsPage == null ? pageStart:applicantsPage));
-                modDTO.setReportedContents(contentService.getReportsByFrameworks(frameworksIds, rConPage == null ? pageStart:rConPage));
-
-                verifyAmount = us.getVerifyByFrameworkAmount(frameworksIds,true).get();
-                applicantsAmount = us.getApplicantsByFrameworkAmount(frameworksIds,true).get();
-                reportedContentAmount = contentService.getReportsAmount(frameworksIds).get();
-
-                return Response.ok().build();
-            }
-
-            LOGGER.error("User: User {} does not have enough privileges to access Mod Page", user.getId());
-            return Response.status(Response.Status.FORBIDDEN).build();
+    private Response.ResponseBuilder addPaginationLinks (Response.ResponseBuilder responseBuilder, String parameterName, double currentPage, double pages) {
+        responseBuilder
+                .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName,1).build(),"first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName,pages).build(),"last");
+        if(currentPage < pages) {
+            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("modsPage", currentPage + 1).build(), "next");
+        }
+        if(currentPage != 1) {
+            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("modsPage", currentPage - 1).build(), "prev");
         }
 
-        LOGGER.error("User: Unauthorized user attempted to access mod page");
+        return responseBuilder;
+    }
+
+    private void getVerifiedAndOwnedFrameworks (User user, List<Long> frameworkIds, List<Long> frameworkIdsForReportedComments) {
+
+        user.getVerifications().forEach( verifyUser -> {
+            if( !verifyUser.isPending() )
+                frameworkIds.add(verifyUser.getFrameworkId());
+        });
+
+        user.getOwnedFrameworks().forEach( framework -> {
+            frameworkIds.add(framework.getId());
+            frameworkIdsForReportedComments.add(framework.getId());
+        });
+    }
+
+    @GET
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response moderators (@QueryParam("modsPage") @DefaultValue(START_PAGE) Long modsPage) {
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            List<Framework> ownedFrameworks = user.getOwnedFrameworks();
+            int modsAmount = 0;
+            List<VerifyUser> userList = Collections.emptyList();
+            List<VerifyUserDTO> verifyUserDTOList;
+
+            if (user.isAdmin()) {
+                userList = us.getVerifyByPending(false, modsPage);
+                modsAmount = us.getVerifyByPendingAmount(false).get();
+
+            } else if (ownedFrameworks.size() > 0) {
+                List<Long> frameworkIds = new ArrayList<>();
+                List<Long> frameworkIdsForReportedComments = new ArrayList<>();
+                getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+
+                userList = us.getVerifyByPendingAndFrameworks(false, frameworkIdsForReportedComments, modsPage);
+                modsAmount = us.getVerifyByPendingAndFrameworksAmount(false, frameworkIdsForReportedComments);
+            }
+
+            if( userList.size() > 0) {
+                verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
+                double pages = Math.ceil(((double) modsAmount) / PAGE_SIZE);
+                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList){});
+                return addPaginationLinks(response, "modsPage", modsPage, pages).build();
+            }
+
+            return Response.noContent().build();
+        }
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
+
+    @GET
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response applicants (@QueryParam("applicantsPage") @DefaultValue(START_PAGE) Long applicantsPage) {
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            List<Framework> ownedFrameworks = user.getOwnedFrameworks();
+            int modsAmount = 0;
+            List<VerifyUser> userList = Collections.emptyList();
+            List<VerifyUserDTO> verifyUserDTOList;
+
+            if (user.isAdmin()) {
+                userList = us.getApplicantsByPending(true, applicantsPage);
+                modsAmount = us.getApplicantsByPendingAmount(false).get();
+
+            } else if (ownedFrameworks.size() > 0 || user.isVerify() ) {
+                List<Long> frameworkIds = new ArrayList<>();
+                List<Long> frameworkIdsForReportedComments = new ArrayList<>();
+                getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+
+                userList = us.getApplicantsByFrameworks(frameworkIds, applicantsPage);
+                modsAmount = us.getApplicantsByFrameworkAmount(frameworkIds, true).get();
+            }
+
+            if( userList.size() > 0) {
+                verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
+                double pages = Math.ceil(((double) modsAmount) / PAGE_SIZE);
+                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList){});
+                return addPaginationLinks(response, "applicantsPage", applicantsPage, pages).build();
+            }
+
+            return Response.noContent().build();
+        }
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    @GET
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response verified (@QueryParam("verifyPage") @DefaultValue(START_PAGE) Long verifyPage) {
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            List<Framework> ownedFrameworks = user.getOwnedFrameworks();
+            int modsAmount = 0;
+            List<VerifyUser> userList = Collections.emptyList();
+            List<VerifyUserDTO> verifyUserDTOList = null;
+
+            if (user.isAdmin()) {
+                userList = us.getVerifyByPending(true, verifyPage);
+                modsAmount = us.getVerifyByPendingAmount(true).get();
+
+            } else if (ownedFrameworks.size() > 0 || user.isVerify() ) {
+                List<Long> frameworkIds = new ArrayList<>();
+                List<Long> frameworkIdsForReportedComments = new ArrayList<>();
+                getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+
+                userList = us.getVerifyByPendingAndFrameworks(true, frameworkIdsForReportedComments, verifyPage);
+                modsAmount = us.getVerifyByPendingAndFrameworksAmount(true, frameworkIdsForReportedComments);
+            }
+
+            if( userList.size() > 0) {
+                verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
+                double pages = Math.ceil(((double) modsAmount) / PAGE_SIZE);
+                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList){});
+                return addPaginationLinks(response, "verifyPage", verifyPage, pages).build();
+            }
+
+            return Response.noContent().build();
+        }
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    @GET
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response reportedComments (@QueryParam("rComPage") @DefaultValue(START_PAGE) Long rComPage) {
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            List<Framework> ownedFrameworks = user.getOwnedFrameworks();
+            int reportsAmount = 0;
+            List<ReportComment> commentList = Collections.emptyList();
+            List<ReportDTO> reportDTOList;
+
+            if (user.isAdmin()) {
+                commentList = commentService.getAllReport(rComPage);
+                reportsAmount = commentService.getAllReportsAmount().get();
+
+            } else if (ownedFrameworks.size() > 0) {
+                List<Long> frameworkIds = new ArrayList<>();
+                List<Long> frameworkIdsForReportedComments = new ArrayList<>();
+                getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+
+                commentList = commentService.getReportsByFrameworks(frameworkIdsForReportedComments, rComPage);
+                reportsAmount = commentService.getReportsAmountByFrameworks(frameworkIds);
+            }
+
+            if( commentList.size() > 0) {
+                reportDTOList = commentList.stream().map(ReportDTO::fromReportComment).collect(Collectors.toList());
+                double pages = Math.ceil(((double) reportsAmount) / PAGE_SIZE);
+                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOList){});
+                return addPaginationLinks(response, "rComPage", rComPage, pages).build();
+            }
+
+            return Response.noContent().build();
+        }
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    @GET
+    @Produces(value = {MediaType.APPLICATION_JSON})
+    public Response reportedContents (@QueryParam("rConPage") @DefaultValue(START_PAGE) Long rConPage) {
+        Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            List<Framework> ownedFrameworks = user.getOwnedFrameworks();
+            int reportsAmount = 0;
+            List<ReportContent> contentList = Collections.emptyList();
+            List<ReportDTO> reportDTOList;
+
+            if (user.isAdmin()) {
+                contentList = contentService.getAllReports(rConPage);
+                reportsAmount = contentService.getAllReportsAmount().get();
+
+            } else if (ownedFrameworks.size() > 0 || user.isVerify()) {
+                List<Long> frameworkIds = new ArrayList<>();
+                List<Long> frameworkIdsForReportedComments = new ArrayList<>();
+                getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+
+                contentList = contentService.getReportsByFrameworks(frameworkIds, rConPage);
+                reportsAmount = contentService.getReportsAmount(frameworkIds).get();
+            }
+
+            if( contentList.size() > 0) {
+                reportDTOList = contentList.stream().map(ReportDTO::fromReportContent).collect(Collectors.toList());
+                double pages = Math.ceil(((double) reportsAmount) / PAGE_SIZE);
+                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOList){});
+                return addPaginationLinks(response, "rConPage", rConPage, pages).build();
+            }
+
+            return Response.noContent().build();
+        }
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+    
 
     @DELETE
     @Path("/{id}")
