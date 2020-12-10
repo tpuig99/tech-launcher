@@ -18,12 +18,9 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -37,16 +34,16 @@ import java.util.Properties;
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Value("classpath:schema.sql")
     private Resource schemaSql;
-    @Bean
-    public ViewResolver viewResolver() {
-        final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix("/WEB-INF/jsp/");
-        viewResolver.setSuffix(".jsp");
-
-        return viewResolver;
-    }
+//    @Bean
+//    public ViewResolver viewResolver() {
+//        final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+//
+//        viewResolver.setViewClass(JstlView.class);
+//        viewResolver.setPrefix("/WEB-INF/jsp/");
+//        viewResolver.setSuffix(".jsp");
+//
+//        return viewResolver;
+//    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -71,16 +68,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //        ds.setPassword("uygwr2BX7");
 
 //        Uncomment when deploying (Ctrl + '/')
-        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
-        ds.setUsername("paw-2020b-1");
-        ds.setPassword("uygwr2BX7");
-
-//        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
-//        ds.setUsername("postgres");
+//        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
+//        ds.setUsername("paw-2020b-1");
 //        ds.setPassword("uygwr2BX7");
 
-
-
+        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
+        ds.setUsername("postgres");
+        ds.setPassword("uygwr2BX7");
 
         return ds;
     }
