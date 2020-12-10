@@ -57,10 +57,10 @@ public class ModController {
                 .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName,1).build(),"first")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName,pages).build(),"last");
         if(currentPage < pages) {
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("modsPage", currentPage + 1).build(), "next");
+            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, currentPage + 1).build(), "next");
         }
         if(currentPage != 1) {
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("modsPage", currentPage - 1).build(), "prev");
+            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, currentPage - 1).build(), "prev");
         }
 
         return responseBuilder;
@@ -80,6 +80,7 @@ public class ModController {
     }
 
     @GET
+    @Path("/moderators")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response moderators (@QueryParam("modsPage") @DefaultValue(START_PAGE) Long modsPage) {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -116,6 +117,7 @@ public class ModController {
     }
 
     @GET
+    @Path("/applicants")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response applicants (@QueryParam("applicantsPage") @DefaultValue(START_PAGE) Long applicantsPage) {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -152,6 +154,7 @@ public class ModController {
     }
 
     @GET
+    @Path("/verified")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response verified (@QueryParam("verifyPage") @DefaultValue(START_PAGE) Long verifyPage) {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -188,6 +191,7 @@ public class ModController {
     }
 
     @GET
+    @Path("/reported_comments")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response reportedComments (@QueryParam("rComPage") @DefaultValue(START_PAGE) Long rComPage) {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -224,6 +228,7 @@ public class ModController {
     }
 
     @GET
+    @Path("/reported_contents")
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response reportedContents (@QueryParam("rConPage") @DefaultValue(START_PAGE) Long rConPage) {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
