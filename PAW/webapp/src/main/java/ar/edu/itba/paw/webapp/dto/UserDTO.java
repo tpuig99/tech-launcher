@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class UserDTO {
     private String username;
     private String mail;
+    private String password;
     private String description;
     private byte [] picture;
     private List<String> verificationNames;
@@ -60,5 +61,13 @@ public class UserDTO {
 
     public List<String> getVerifications() {
         return verificationNames;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -212,6 +212,43 @@ public class UserProfileController {
     }
 
     @PUT
+    @Path("/{id}/password")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response changePassword(@PathParam("id") Long userId ,final UserDTO form) {
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
+            if (SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
+                us.updatePassword(userId, form.getPassword());
+                LOGGER.info("Register: User {} updated its password successfully", userId);
+
+                return Response.ok(form).build();
+            }
+            LOGGER.error("User Profile: User {} does not have enough privileges to update profile", userId);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        LOGGER.error("User Profile: Unauthorized user attempted to update another profile");
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    @GET
+    @Path("password")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response changePasswordWithToken(@QueryParam("token") String token ,final UserDTO form) {
+        String[] strings = token.split("-a_d-ss-");
+        Long userId = Long.valueOf(strings[strings.length - 1]);
+
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
+            return changePassword(userId, form);
+        }
+
+        LOGGER.error("User Profile: User {} not found", userId);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response updateProfile(@PathParam("id") Long userId, final UserDTO form) throws IOException {
