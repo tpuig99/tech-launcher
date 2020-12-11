@@ -2,11 +2,18 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
+import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
+import ar.edu.itba.paw.webapp.auth.JwtTokenUtil;
 import ar.edu.itba.paw.webapp.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -38,6 +45,15 @@ public class UserProfileController {
     private PostService postService;
 
     @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private PawUserDetailsService userDetailsService;
+
+    @Autowired
     private UserService us;
 
     @Context
@@ -47,6 +63,35 @@ public class UserProfileController {
     final private long FRAMEWORK_PAGE_SIZE = 7;
     final private long VOTE_PAGE_SIZE = 10;
     final private String START_PAGE = "1";
+
+
+   @POST
+   @Path("/authenticate")
+   @Produces(value = {MediaType.APPLICATION_JSON,})
+   public Response createAuthenticationToken(JwtRequestDTO jwtRequestDTO) {
+       try {
+           authenticate(jwtRequestDTO.getUsername(), jwtRequestDTO.getPassword());
+       } catch (Exception e) {
+           return Response.status(Response.Status.NOT_FOUND).build();
+       }
+
+       final UserDetails userDetails = userDetailsService
+               .loadUserByUsername(jwtRequestDTO.getUsername());
+
+       final String token = jwtTokenUtil.generateToken(userDetails);
+
+       return Response.ok(new JwtResponseDTO(token)).build();
+   }
+
+    private void authenticate(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
+    }
 
     private Response.ResponseBuilder addPaginationLinks (Response.ResponseBuilder responseBuilder, String parameterName, double currentPage, double pages) {
         responseBuilder
