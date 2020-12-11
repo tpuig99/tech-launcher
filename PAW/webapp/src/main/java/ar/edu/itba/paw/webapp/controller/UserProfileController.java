@@ -276,7 +276,7 @@ public class UserProfileController {
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    @GET
+    @POST
     @Path("password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response changePasswordWithToken(@QueryParam("token") String token ,final UserDTO form) {

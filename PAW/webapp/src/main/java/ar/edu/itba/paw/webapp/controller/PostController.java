@@ -2,22 +2,20 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.dto.CommentDTO;
 import ar.edu.itba.paw.webapp.dto.PostCommentDTO;
 import ar.edu.itba.paw.webapp.dto.PostDTO;
 import ar.edu.itba.paw.webapp.dto.VoteDTO;
-import ar.edu.itba.paw.webapp.form.posts.*;
+import ar.edu.itba.paw.webapp.form.posts.AddPostForm;
+import ar.edu.itba.paw.webapp.form.posts.DeletePostForm;
+import ar.edu.itba.paw.webapp.form.posts.DownVoteForm;
+import ar.edu.itba.paw.webapp.form.posts.UpVoteForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
@@ -85,7 +83,7 @@ public class PostController {
     @GET
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response post(@PathParam("id") long id, @ModelAttribute("postCommentForm") final PostCommentForm form, @ModelAttribute("deletePostCommentForm") final DeletePostCommentForm deletePostCommentForm, @QueryParam(value = "page") @DefaultValue(START_PAGE) Long commentsPage) {
+    public Response post(@PathParam("id") long id, @QueryParam(value = "page") @DefaultValue(START_PAGE) Long commentsPage) {
         Optional<Post> post = ps.findById(id);
         if(post.isPresent()) {
             LOGGER.info("Post {}: Requested and found, retrieving data", id);
@@ -107,7 +105,7 @@ public class PostController {
 
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response addPost(@Valid @ModelAttribute("addPostForm") final AddPostForm form , final BindingResult errors) {
+    public Response addPost(final AddPostForm form) {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if( user.isPresent()) {
@@ -140,7 +138,7 @@ public class PostController {
     @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response editPost(@Valid @ModelAttribute("editPostForm") final AddPostForm form, final BindingResult errors, @PathParam("id") long id) {
+    public Response editPost(final AddPostForm form, @PathParam("id") long id) {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         final Optional<Post> post = ps.findById(id);
         if (post.isPresent()) {
@@ -175,7 +173,7 @@ public class PostController {
     @DELETE
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response deletePost(@Valid @ModelAttribute("deletePostForm") final DeletePostForm form){
+    public Response deletePost(final DeletePostForm form){
         Optional<Post> post = ps.findById(form.getPostIdx());
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
@@ -202,7 +200,7 @@ public class PostController {
     @POST
     @Path("/{id}/up_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response voteUpPost(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, @PathParam("id") long postId, final BindingResult errors ){
+    public Response voteUpPost(final UpVoteForm form, @PathParam("id") long postId){
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ){
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -222,7 +220,7 @@ public class PostController {
     @POST
     @Path("/{id}/down_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response voteDownPost(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form, @PathParam("id") long postId, final BindingResult errors){
+    public Response voteDownPost(final DownVoteForm form, @PathParam("id") long postId){
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ){
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -242,7 +240,7 @@ public class PostController {
     @POST
     @Path("/{id}/comment/{commentId}/up_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response voteUpComment(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, @PathParam("id") long postId, @PathParam("id") long commentId, final BindingResult errors ){
+    public Response voteUpComment(final UpVoteForm form, @PathParam("id") long postId, @PathParam("commentId") long commentId) {
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ) {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -258,7 +256,7 @@ public class PostController {
     @POST
     @Path("/{id}/comment/{commentId}/down_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response voteDownComment(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathParam("id") long postId, @PathParam("id") long commentId, final BindingResult errors){
+    public Response voteDownComment(final DownVoteForm form,  @PathParam("id") long postId, @PathParam("commentId") long commentId){
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ) {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -285,7 +283,7 @@ public class PostController {
     @POST
     @Path("/{id}/comment")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response commentPost(@Valid @ModelAttribute("postCommentForm") final PostCommentDTO form, @PathParam("id") long postId){
+    public Response commentPost(final PostCommentDTO form, @PathParam("id") long postId){
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ){
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
