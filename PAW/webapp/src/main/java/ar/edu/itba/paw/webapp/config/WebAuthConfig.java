@@ -42,9 +42,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 /* Permit just /users/authenticate or /register */
                 .authorizeRequests()
-                .antMatchers("/users/authenticate").permitAll()
-                .antMatchers("/register").permitAll()
-                .anyRequest().authenticated().and()
+                .anyRequest().permitAll().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

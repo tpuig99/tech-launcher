@@ -36,6 +36,7 @@
         <commons-fileupload.version>1.3.1</commons-fileupload.version>
         <com-sun-mail.version>1.6.4</com-sun-mail.version>
         <jersey.version>3.0-SNAPSHOT</jersey.version>
+        <io.jsonwebtoken.version>0.11.2</io.jsonwebtoken.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -118,7 +119,6 @@
                 <artifactId>jersey-media-multipart</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
@@ -295,6 +295,25 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>0.9.1</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${io.jsonwebtoken.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${io.jsonwebtoken.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${io.jsonwebtoken.version}</version>
+                <scope>runtime</scope>
             </dependency>
 
         </dependencies>
