@@ -169,13 +169,6 @@ public class ExploreController {
             tsUpdated=Date.from(dateUpdate.atStartOfDay().toInstant(ZoneOffset.UTC));
         }
 
-       /* --------------------- TECHS --------------------- */
-
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, order,page == null ? START_PAGE :page);
-        Integer searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
-        LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
-
-        search.setFrameworks(frameworks.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList()));
         search.setToSearch(toSearch);
         search.setCategories(categoriesQuery);
         search.setTypes(typesQuery);
@@ -185,16 +178,30 @@ public class ExploreController {
         search.setLastComment(lastComment);
         search.setLastUpdate(lastUpdate);
 
+       /* --------------------- TECHS --------------------- */
 
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, order,page == null ? START_PAGE :page);
+        Integer searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
+        LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
+
+        search.setFrameworksAmount(searchResultsNumber);
+        search.setFrameworks(frameworks.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList()));
+
+        /* -------------------------------------------------- */
         /* --------------------- POSTS --------------------- */
+
         search.setPost(isPost);
         List<String> tags = new ArrayList<>();
 
         tags.addAll(categories);
         tags.addAll(types);
         List<Post> posts = ps.search(!toSearch.equals("") ? toSearch  : null,tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated,order,postsPage == null ? START_PAGE :postsPage, POSTS_PAGE_SIZE);
+        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch  : null,  tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount, tscomment, tsUpdated, order);
+        LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
 
         search.setPosts(posts.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
+        search.setPostsAmount(searchResultsNumber);
+
         /* -------------------------------------------------- */
 
         if (order != null) {
