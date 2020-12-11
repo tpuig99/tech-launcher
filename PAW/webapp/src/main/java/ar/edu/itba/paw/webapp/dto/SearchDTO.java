@@ -6,8 +6,8 @@ import ar.edu.itba.paw.models.Post;
 import java.util.List;
 
 public class SearchDTO {
-    private List<Framework> frameworks;
-    private List<Post> posts;
+    private List<FrameworkDTO> frameworks;
+    private List<PostDTO> posts;
     private Integer frameworksAmount, postsAmount;
     private String toSearch;
     private List<String> types, categories;
@@ -34,19 +34,19 @@ public class SearchDTO {
         this.categories = categories;
     }
 
-    public List<Framework> getFrameworks() {
+    public List<FrameworkDTO> getFrameworks() {
         return frameworks;
     }
 
-    public void setFrameworks(List<Framework> frameworks) {
+    public void setFrameworks(List<FrameworkDTO> frameworks) {
         this.frameworks = frameworks;
     }
 
-    public List<Post> getPosts() {
+    public List<PostDTO> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(List<PostDTO> posts) {
         this.posts = posts;
     }
 

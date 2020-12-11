@@ -4,7 +4,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.webapp.dto.SearchDTO;
+import ar.edu.itba.paw.webapp.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Path("explore")
 @Component
@@ -173,7 +175,7 @@ public class ExploreController {
         Integer searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
         LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
 
-        search.setFrameworks(frameworks);
+        search.setFrameworks(frameworks.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList()));
         search.setToSearch(toSearch);
         search.setCategories(categoriesQuery);
         search.setTypes(types);
@@ -182,7 +184,7 @@ public class ExploreController {
         search.setNameFlag(nameFlag);
         search.setLastComment(lastComment);
         search.setLastUpdate(lastUpdate);
-
+        
 
         /* --------------------- POSTS --------------------- */
         search.setPost(isPost);
@@ -192,7 +194,7 @@ public class ExploreController {
         tags.addAll(types);
         List<Post> posts = ps.search(!toSearch.equals("") ? toSearch  : null,tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated,order,postsPage == null ? START_PAGE :postsPage, POSTS_PAGE_SIZE);
 
-        search.setPosts(posts);
+        search.setPosts(posts.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
         /* -------------------------------------------------- */
 
         if (order != null) {
