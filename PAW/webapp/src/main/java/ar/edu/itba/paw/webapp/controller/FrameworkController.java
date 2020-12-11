@@ -54,7 +54,7 @@ public class FrameworkController {
     }
 
     @GET
-    @Path("/{category}")
+    @Path("/category/{category}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response frameworkMenuPaging(@PathParam("category") String category,
                                         @QueryParam("page") @DefaultValue(START_PAGE) Long frameworksPage) {
