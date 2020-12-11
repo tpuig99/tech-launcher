@@ -178,13 +178,13 @@ public class ExploreController {
         search.setFrameworks(frameworks.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList()));
         search.setToSearch(toSearch);
         search.setCategories(categoriesQuery);
-        search.setTypes(types);
+        search.setTypes(typesQuery);
         search.setStarsLeft(starsLeft);
         search.setStarsRight(starsRight);
         search.setNameFlag(nameFlag);
         search.setLastComment(lastComment);
         search.setLastUpdate(lastUpdate);
-        
+
 
         /* --------------------- POSTS --------------------- */
         search.setPost(isPost);
