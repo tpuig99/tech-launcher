@@ -1,6 +1,6 @@
 <html ng-app>
   <head>
-    <title><spring:message code="login.wref"/></title>
+    <title>{{'LOGIN_TITLE' | translate}}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
    </head>
   <body>
@@ -11,7 +11,7 @@
       </div>
       <div class="page-description"></div>
 
-      <div ng-if="${param.error != null}" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
+      <div ng-if="param.error != null" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
 
       <form action="/login" method="post" enctype="application/x-www-form-urlencoded">
         <div class="form-group">

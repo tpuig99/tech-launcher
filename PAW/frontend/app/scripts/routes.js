@@ -9,11 +9,11 @@ define([], function() {
                 controller: 'HomeCtrl'
             },
             '/register': {
-                templateUrl: '/views/register/register.html',
+                templateUrl: '/views/session/register.html',
                 controller: 'RegisterCtrl'
             },
             '/login': {
-                templateUrl: '/views/login/login.html',
+                templateUrl: '/views/session/login.html',
                 controller: 'LoginCtrl'
             }
             /* ===== yeoman hook ===== */
