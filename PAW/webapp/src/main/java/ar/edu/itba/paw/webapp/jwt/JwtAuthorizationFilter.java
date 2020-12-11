@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.jwt;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,9 +19,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     public static final String AUTHORIZATION = "Authorization";
 
-    @Autowired
-    private JwtService jwtService;
-
     public JwtAuthorizationFilter(AuthenticationManager authManager) {super(authManager); }
 
     @Override
@@ -31,10 +27,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         String authHeader = request.getHeader(AUTHORIZATION);
 
-        if (jwtService.isBearer(authHeader)) {
-            List<GrantedAuthority> authorities = jwtService.roles(authHeader).stream()
+        if (JwtService.isBearer(authHeader)) {
+            List<GrantedAuthority> authorities = JwtService.roles(authHeader).stream()
                     .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(jwtService.user(authHeader), null, authorities);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(JwtService.user(authHeader), null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
