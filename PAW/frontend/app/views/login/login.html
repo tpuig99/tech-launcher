@@ -1,0 +1,45 @@
+<html ng-app>
+  <head>
+    <title><spring:message code="login.wref"/></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+   </head>
+  <body>
+
+    <div class="content-no-sidebar">
+      <div class="page-title">
+        {{'LOGIN_TITLE' | translate}}
+      </div>
+      <div class="page-description"></div>
+
+      <div ng-if="${param.error != null}" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
+
+      <form action="/login" method="post" enctype="application/x-www-form-urlencoded">
+        <div class="form-group">
+          <label for="username">{{'LOGIN_USERNAME' | translate}}</label>
+          <input class="form-control" id="username" name="j_username" type="text" placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
+        </div>
+        <div class="form-group">
+          <label for="password">{{'LOGIN_PASSWORD' | translate}}</label>
+          <input class="form-control" id="password" name="j_password" type="password" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
+        </div>
+        <div class="form-group">
+          <label><input name="j_rememberme" type="checkbox"/>{{'LOGIN_REMEMBER_ME' | translate}}</label>
+        </div>
+        <div class="d-flex justify-content-center">
+          <input class="btn primary-button" type="submit" value="{{'LOGIN_TITLE' | translate}}"/>
+        </div>
+      </form>
+      <div>
+        <span>{{'LOGIN_SIGN_UP_QUESTION' | translate}}</span><span><a href="${pageContext.request.contextPath}/register">{{'LOGIN_SIGN_UP' | translate}}</a></span>
+      </div>
+      <div>
+        <span>{{'LOGIN_FORGOT_QUESTION' | translate}}</span><span><a href="${pageContext.request.contextPath}/recover/forgot_password">{{'LOGIN_FORGOT_PASSWORD' | translate}}</a></span>
+      </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
