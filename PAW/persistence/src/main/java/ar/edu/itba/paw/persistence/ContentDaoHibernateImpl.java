@@ -1,17 +1,17 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Content;
-import ar.edu.itba.paw.models.ContentTypes;
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class ContentDaoHibernateImpl implements  ContentDao{
@@ -25,21 +25,36 @@ public class ContentDaoHibernateImpl implements  ContentDao{
 
     @Override
     public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page, long pageSize) {
-        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.framework.id = :frameworkId and c.type = :type", Content.class);
-        query.setParameter("frameworkId",frameworkId);
-        query.setParameter("type",type);
-        query.setMaxResults((int) pageSize);
-        query.setFirstResult((int) ((page-1)*pageSize));
-        return query.getResultList();
+
+        Query pagingQuery = em.createNativeQuery("SELECT content_id FROM content c WHERE c.framework_id = "+ String.valueOf(frameworkId) + " and c.type = " + type + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Content> query = em.createQuery("from Content as c where c.contentId in (:resultList)", Content.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return Collections.emptyList();
+        }
+
     }
 
     @Override
     public List<Content> getContentByUser(long userId, long page, long pagesize) {
-        final TypedQuery<Content> query = em.createQuery("FROM Content c WHERE c.user.id = :userId", Content.class);
-        query.setParameter("userId",userId);
-        query.setMaxResults((int) pagesize);
-        query.setFirstResult((int) ((page-1)*pagesize));
-        return query.getResultList();
+
+        Query pagingQuery = em.createNativeQuery("SELECT content_id FROM content c WHERE c.user_id = "+ String.valueOf(userId) + " LIMIT " + String.valueOf(pagesize) + " OFFSET " + String.valueOf((page-1)*pagesize));
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Content> query = em.createQuery("from Content as c where c.contentId in (:resultList)", Content.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return Collections.emptyList();
+        }
+
     }
 
     @Override
