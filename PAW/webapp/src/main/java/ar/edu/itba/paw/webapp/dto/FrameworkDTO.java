@@ -1,11 +1,9 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.ContentTypes;
 import ar.edu.itba.paw.models.Framework;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FrameworkDTO {
     private String techName;
@@ -19,10 +17,10 @@ public class FrameworkDTO {
     private Integer votes_cant;
     private Double stars;
     private Integer comments_amount;
-    private List<CommentDTO> commentDTOList;
-    private List<ContentDTO> bookDTOList;
-    private List<ContentDTO> tutorialDTOList;
-    private List<ContentDTO> courseDTOList;
+    private List<CommentDTO> comments;
+    private List<ContentDTO> book;
+    private List<ContentDTO> tutorial;
+    private List<ContentDTO> course;
 
 
     public static FrameworkDTO fromFramework(Framework framework) {
@@ -129,35 +127,35 @@ public class FrameworkDTO {
         this.comments_amount = comments_amount;
     }
 
-    public List<CommentDTO> getCommentDTOList() {
-        return commentDTOList;
+    public List<CommentDTO> getComments() {
+        return comments;
     }
 
-    public void setCommentDTOList(List<CommentDTO> commentDTOList) {
-        this.commentDTOList = commentDTOList;
+    public void setComments(List<CommentDTO> comments) {
+        this.comments = comments;
     }
 
-    public List<ContentDTO> getBookDTOList() {
-        return bookDTOList;
+    public List<ContentDTO> getBook() {
+        return book;
     }
 
-    public void setBookDTOList(List<ContentDTO> bookDTOList) {
-        this.bookDTOList = bookDTOList;
+    public void setBook(List<ContentDTO> book) {
+        this.book = book;
     }
 
-    public List<ContentDTO> getTutorialDTOList() {
-        return tutorialDTOList;
+    public List<ContentDTO> getTutorial() {
+        return tutorial;
     }
 
-    public void setTutorialDTOList(List<ContentDTO> tutorialDTOList) {
-        this.tutorialDTOList = tutorialDTOList;
+    public void setTutorial(List<ContentDTO> tutorial) {
+        this.tutorial = tutorial;
     }
 
-    public List<ContentDTO> getCourseDTOList() {
-        return courseDTOList;
+    public List<ContentDTO> getCourse() {
+        return course;
     }
 
-    public void setCourseDTOList(List<ContentDTO> courseDTOList) {
-        this.courseDTOList = courseDTOList;
+    public void setCourse(List<ContentDTO> course) {
+        this.course = course;
     }
 }

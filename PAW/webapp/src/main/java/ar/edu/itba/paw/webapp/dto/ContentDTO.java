@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Content;
 import java.util.Date;
 
 public class ContentDTO {
+    private long id;
     private SimpleUserDTO user;
     private Date date;
     private String title;
@@ -13,12 +14,21 @@ public class ContentDTO {
     private String type;
     public static ContentDTO fromContent(Content content) {
         final ContentDTO dto = new ContentDTO();
+        dto.id = content.getContentId();
         dto.date = content.getTimestamp();
         dto.link = content.getLink();
         dto.user = SimpleUserDTO.fromUser(content.getUser(), content.getFramework());
         dto.title = content.getTitle();
         dto.type = content.getType().name();
         return dto;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public SimpleUserDTO getUser() {
