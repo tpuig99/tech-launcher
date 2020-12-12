@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.PostCommentDTO;
 import ar.edu.itba.paw.webapp.dto.PostDTO;
+import ar.edu.itba.paw.webapp.dto.PostsDTO;
 import ar.edu.itba.paw.webapp.dto.VoteDTO;
 import ar.edu.itba.paw.webapp.form.posts.AddPostForm;
 import ar.edu.itba.paw.webapp.form.posts.DeletePostForm;
@@ -67,8 +68,10 @@ public class PostController {
     public Response posts( @QueryParam("page") @DefaultValue(START_PAGE) Long postsPage) {
         final double pages = Math.ceil(((double)ps.getPostsAmount())/POSTS_PAGE_SIZE);
         List<Post> postsList = ps.getAll(postsPage, POSTS_PAGE_SIZE);
-        List<PostDTO> list = postsList.stream().map(PostDTO::fromPost).collect(Collectors.toList());
-        Response.ResponseBuilder response = Response.ok(new GenericEntity<List<PostDTO>>(list){})
+        PostsDTO list = new PostsDTO();
+        list.setPosts(postsList.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
+
+        Response.ResponseBuilder response = Response.ok(list)
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).build(),"first")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).build(),"last");
         if(postsPage < pages)

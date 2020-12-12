@@ -83,14 +83,29 @@ public class ExploreController {
         LOGGER.info("Explore: Using search only by name: {}", nameFlag);
         LOGGER.info("Explore: Searching by comment amount = {}", commentAmount);
 
-        for( String c : categories){
-            categoriesQuery.add(c);
-            categoriesList.add(FrameworkCategories.valueOf(c));
+        if( categories.size() != 1 || !categories.get(0).equals("")) {
+            for (String c : categories) {
+                categoriesQuery.add(c);
+
+                try {
+                    categoriesList.add(FrameworkCategories.valueOf(c));
+                } catch (Exception e){
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+            }
         }
 
-        for( String c : types){
-            typesQuery.add(c);
-            typesList.add(FrameworkType.valueOf(c));
+        if( types.size() != 1 || !types.get(0).equals("")) {
+            for (String c : types) {
+
+                typesQuery.add(c);
+
+                try {
+                    typesList.add(FrameworkType.valueOf(c));
+                } catch (Exception e){
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+            }
         }
 
         List<String> allCategories = fs.getAllCategories();
@@ -179,6 +194,17 @@ public class ExploreController {
         search.setPost(isPost);
 
         Integer searchResultsNumber;
+        if (order != null) {
+            if( order < -4 || order > 4 ){
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+            search.setOrder((int) Math.signum(order));
+            search.setSort(Math.abs(order));
+        }  else {
+            search.setOrder(1);
+            search.setSort(0);
+        }
+
        /* --------------------- TECHS --------------------- */
         if( !isPost ) {
             List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == null ? START_PAGE : page);
@@ -187,6 +213,7 @@ public class ExploreController {
 
             search.setFrameworksAmount(searchResultsNumber);
             search.setFrameworks(frameworks.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList()));
+
         }
         /* -------------------------------------------------- */
         /* --------------------- POSTS --------------------- */
@@ -204,13 +231,6 @@ public class ExploreController {
         }
         /* -------------------------------------------------- */
 
-        if (order != null) {
-            search.setOrder((int) Math.signum(order));
-            search.setSort(Math.abs(order));
-        }  else {
-            search.setOrder(1);
-            search.setSort(0);
-        }
 
         return Response.ok(search).build();
     }

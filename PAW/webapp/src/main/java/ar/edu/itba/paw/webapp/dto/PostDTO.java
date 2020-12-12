@@ -5,13 +5,14 @@ import ar.edu.itba.paw.models.Post;
 import ar.edu.itba.paw.models.PostTag;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PostDTO {
     private String postTitle;
     private String postDescription;
     private SimpleUserDTO postOwner;
     private Date timestamp;
-    private List<PostTag> postTags;
+    private List<PostTagDTO> postTags;
     private List<PostCommentDTO> postComments;
     private long answersAmount, votesUp, votesDown;
 
@@ -21,7 +22,7 @@ public class PostDTO {
         dto.postDescription = post.getDescription();
         dto.postOwner = SimpleUserDTO.fromUser(post.getUser());
         dto.timestamp = post.getTimestamp();
-        dto.postTags = post.getPostTags();
+        dto.postTags = post.getPostTags().stream().map(PostTagDTO::fromPostTag).collect(Collectors.toList());
         dto.answersAmount = post.getAnswersAmount();
         dto.votesUp = post.getVotesUp();
         dto.votesDown = post.getVotesDown();
@@ -60,11 +61,11 @@ public class PostDTO {
         this.timestamp = timestamp;
     }
 
-    public List<PostTag> getPostTags() {
+    public List<PostTagDTO> getPostTags() {
         return postTags;
     }
 
-    public void setPostTags(List<PostTag> postTags) {
+    public void setPostTags(List<PostTagDTO> postTags) {
         this.postTags = postTags;
     }
 
