@@ -2,10 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.dto.PostCommentDTO;
-import ar.edu.itba.paw.webapp.dto.PostDTO;
-import ar.edu.itba.paw.webapp.dto.PostsDTO;
-import ar.edu.itba.paw.webapp.dto.VoteDTO;
+import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.form.posts.AddPostForm;
 import ar.edu.itba.paw.webapp.form.posts.DeletePostForm;
 import ar.edu.itba.paw.webapp.form.posts.DownVoteForm;
@@ -30,6 +27,7 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
+    final private Integer minTitleLength = 3, minDescriptionLength = 0, maxTitleLength = 200, maxDescriptionLength = 5000;
 
     @Autowired
     private PostService ps;
@@ -106,12 +104,35 @@ public class PostController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
+    private boolean postIsValid( final PostAddDTO post ){
+        if( post.getTitle() == null ){
+            return false;
+        }
+        if( post.getTitle().length() < minTitleLength || post.getTitle().length() > maxTitleLength ){
+            return false;
+        }
+
+        if( post.getDescription() == null ){
+            return false;
+        }
+
+        if( post.getDescription().length() < minDescriptionLength || post.getDescription().length() > maxDescriptionLength ){
+            return false;
+        }
+
+        return !post.getTypes().isEmpty() || !post.getCategories().isEmpty() || !post.getNames().isEmpty();
+    }
+
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response addPost(final AddPostForm form) {
+    public Response addPost(final PostAddDTO form) {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if( user.isPresent()) {
+            if( !postIsValid(form)){
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
             Post newPost = ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
             if(form.getNames() != null ) {
                 for (String name : form.getNames()) {
@@ -141,11 +162,15 @@ public class PostController {
     @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response editPost(final AddPostForm form, @PathParam("id") long id) {
+    public Response editPost(final PostAddDTO form, @PathParam("id") long id) {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         final Optional<Post> post = ps.findById(id);
         if (post.isPresent()) {
             if (user.isPresent()) {
+                if( !postIsValid(form)){
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+
                 if (post.get().getUser().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
                     Optional<Post> updatedPost = ps.update(id, form.getTitle(),form.getDescription());
 
@@ -176,40 +201,40 @@ public class PostController {
     @DELETE
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response deletePost(final DeletePostForm form){
-        Optional<Post> post = ps.findById(form.getPostIdx());
+    public Response deletePost(@PathParam("id") Long postId){
+        Optional<Post> post = ps.findById(postId);
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if(post.isPresent()) {
             if (user.isPresent()) {
                 if (post.get().getUser().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
-                    ps.deletePost(form.getPostIdx());
-                    LOGGER.info("Posts: Post {} deleted successfully", form.getPostIdx());
+                    ps.deletePost(postId);
+                    LOGGER.info("Posts: Post {} deleted successfully", postId);
                     return Response.noContent().build();
                 }
 
-                LOGGER.error("Post {}: User without enough privileges attempted to delete the Post", form.getPostIdx());
+                LOGGER.error("Post {}: User without enough privileges attempted to delete the Post", postId);
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
 
-            LOGGER.error("Post {}: Unauthorized user tried to delete the Post", form.getPostIdx());
+            LOGGER.error("Post {}: Unauthorized user tried to delete the Post", postId);
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        LOGGER.error("Post {}: Requested for deleting Post and not found", form.getPostIdx());
+        LOGGER.error("Post {}: Requested for deleting Post and not found", postId);
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST
     @Path("/{id}/up_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response voteUpPost(final UpVoteForm form, @PathParam("id") long postId){
+    public Response voteUpPost(@PathParam("id") long postId){
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ){
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-            if( user.isPresent() && postId == form.getUpVotePostId()){
-                ps.vote(form.getUpVotePostId(), user.get().getId(), UP_VOTE_VALUE);
+            if( user.isPresent() ){
+                ps.vote(postId, user.get().getId(), UP_VOTE_VALUE);
                 LOGGER.info("Post {}: User {} voted up post",postId, user.get().getId());
                 PostDTO postDTO = PostDTO.fromPost(post.get());
                 postDTO.setVotesUp(postDTO.getVotesUp() + 1);
@@ -223,13 +248,13 @@ public class PostController {
     @POST
     @Path("/{id}/down_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response voteDownPost(final DownVoteForm form, @PathParam("id") long postId){
+    public Response voteDownPost(@PathParam("id") long postId){
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ){
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-            if( user.isPresent() && postId == form.getDownVotePostId()){
-                ps.vote(form.getDownVotePostId(), user.get().getId(), DOWN_VOTE_VALUE);
+            if( user.isPresent() ){
+                ps.vote(postId, user.get().getId(), DOWN_VOTE_VALUE);
                 LOGGER.info("Post {}: User {} voted down post", postId, user.get().getId());
                 PostDTO postDTO = PostDTO.fromPost(post.get());
                 postDTO.setVotesUp(postDTO.getVotesDown() + 1);
@@ -243,12 +268,19 @@ public class PostController {
     @POST
     @Path("/{id}/comment/{commentId}/up_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response voteUpComment(final UpVoteForm form, @PathParam("id") long postId, @PathParam("commentId") long commentId) {
+    public Response voteUpComment(@PathParam("id") long postId, @PathParam("commentId") long commentId) {
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ) {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            if (user.isPresent() && postId == form.getUpVoteCommentPostId()) {
-                pcs.vote(form.getPostCommentUpVoteId(), user.get().getId(), UP_VOTE_VALUE);
+            boolean appears = false;
+            for( PostComment comment : post.get().getPostComments()) {
+                if( comment.getPostCommentId() == commentId ){
+                    appears = true;
+                    break;
+                }
+            }
+            if (user.isPresent() && appears) {
+                pcs.vote(commentId, user.get().getId(), UP_VOTE_VALUE);
                 return getVoteCommentResponse(commentId);
             }
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -259,12 +291,19 @@ public class PostController {
     @POST
     @Path("/{id}/comment/{commentId}/down_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response voteDownComment(final DownVoteForm form,  @PathParam("id") long postId, @PathParam("commentId") long commentId){
+    public Response voteDownComment( @PathParam("id") long postId, @PathParam("commentId") long commentId){
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ) {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            if (user.isPresent() && postId == form.getDownVoteCommentPostId()) {
-                pcs.vote(form.getPostCommentDownVoteId(), user.get().getId(), UP_VOTE_VALUE);
+            boolean appears = false;
+            for( PostComment comment : post.get().getPostComments()) {
+                if( comment.getPostCommentId() == commentId ){
+                    appears = true;
+                    break;
+                }
+            }
+            if (user.isPresent() && appears) {
+                pcs.vote(commentId, user.get().getId(), DOWN_VOTE_VALUE);
                 return getVoteCommentResponse(commentId);
             }
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -303,12 +342,12 @@ public class PostController {
     @DELETE
     @Path("/{id}/comment/{commentId}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response deletePostComment(@PathParam("id") final long postId, @PathParam("commentId") final long commentId, final PostCommentDTO form) {
+    public Response deletePostComment(@PathParam("id") final long postId, @PathParam("commentId") final long commentId) {
         final Optional<Post> post = ps.findById(postId);
         if (post.isPresent()) {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            if (user.isPresent() && postId == form.getPostId()) {
-                pcs.deletePostComment(form.getPostCommentId());
+            if (user.isPresent()) {
+                pcs.deletePostComment(commentId);
                 return Response.noContent().build();
             }
             LOGGER.error("Post {}: Unauthorized user tried to delete comment", postId);
