@@ -54,7 +54,7 @@ public class PostDaoTest {
                 .withTableName("posts")
                 .usingGeneratedKeyColumns("post_id");
 
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
+
 
         for (int i = 1; i < 6; i++) {
             User user = new User("user"+i,"mail"+i,null,true,"",true,null);

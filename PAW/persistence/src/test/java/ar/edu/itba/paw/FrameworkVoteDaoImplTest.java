@@ -58,11 +58,6 @@ public class FrameworkVoteDaoImplTest {
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("framework_votes")
                 .usingGeneratedKeyColumns("vote_id");
-
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "frameworks");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "framework_votes");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-
         for (int i = 1; i < 4; i++) {
             User user = new User("user"+i,"mail"+i,null,true,"",true,null);
             em.persist(user);
@@ -83,7 +78,6 @@ public class FrameworkVoteDaoImplTest {
     @Test
     public void testCreate() {
         //Preconditions
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"framework_votes","framework_id = "+FRAMEWORK_ID);
 
         //Class under test
         final FrameworkVote frameworkVote = frameworkVoteDao.insert(FRAMEWORK_ID,USER_ID,STARS);
@@ -101,9 +95,7 @@ public class FrameworkVoteDaoImplTest {
     @Test(expected = Exception.class)
     public void testCreateOnExisting() {
 
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"framework_votes","framework_id = "+FRAMEWORK_ID);
-
-        final Map<String, Object> args = new HashMap<>();
+         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", FRAMEWORK_ID);
         args.put("user_id",USER_ID);
         args.put("stars", STARS);
@@ -114,8 +106,6 @@ public class FrameworkVoteDaoImplTest {
 
     @Test
     public void testDelete() {
-
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"framework_votes","framework_id = "+FRAMEWORK_ID);
 
         final FrameworkVote frameworkVote  = new FrameworkVote();
         frameworkVote.setStars(STARS);

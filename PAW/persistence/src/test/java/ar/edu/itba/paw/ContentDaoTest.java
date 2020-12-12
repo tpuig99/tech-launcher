@@ -58,10 +58,6 @@ public class ContentDaoTest {
                 .withTableName("content")
                 .usingGeneratedKeyColumns("content_id");
 
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "content");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "frameworks");
-
         for (int i = 1; i < 6; i++) {
             User user = new User("user"+i,"mail"+i,null,true,"",true,null);
             em.persist(user);
@@ -83,7 +79,7 @@ public class ContentDaoTest {
     //<editor-fold desc="Content Methods">
     @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = "+TITLE);
+
 
         final Content content = contentDao.insertContent(FRAMEWORK_ID,USER_ID,TITLE,LINK,TYPE);
 
@@ -96,9 +92,10 @@ public class ContentDaoTest {
         assertEquals(LINK,content.getLink());
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "content","content_id ="+content.getContentId()));
     }
+
     @Test(expected = Exception.class)
     public void testCreateOnExisting() {
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = ",TITLE);
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", FRAMEWORK_ID);
@@ -111,6 +108,7 @@ public class ContentDaoTest {
 
         final Content content = contentDao.insertContent(FRAMEWORK_ID,USER_ID,TITLE,LINK,TYPE);
     }
+
     @Test(expected = Exception.class)
     public void testCreateWithoutUser() {
         JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = ",TITLE);
@@ -123,7 +121,7 @@ public class ContentDaoTest {
     }
     @Test
     public void testChange() {
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = "+TITLE);
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         Content content = new Content();
@@ -148,7 +146,7 @@ public class ContentDaoTest {
     }
     @Test
     public void testDelete() {
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = "+TITLE);
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         Content content = new Content();
         content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
@@ -170,7 +168,7 @@ public class ContentDaoTest {
     //<editor-fold desc="Getters">
     @Test
     public void testGetById() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         Content content = new Content();
         content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
@@ -193,7 +191,7 @@ public class ContentDaoTest {
     }
     @Test()
     public void testGetByIdNotExisting() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
 
         Optional<Content> content = contentDao.getById(1);
 
@@ -203,7 +201,7 @@ public class ContentDaoTest {
 
     @Test
     public void testGetByFrameworkAndType() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         for (int i = 0; i < 3; i++) {
             Content content = new Content();
@@ -236,7 +234,7 @@ public class ContentDaoTest {
     }
     @Test
     public void testGetByFrameworkAndTypeAndTitle() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         for (int i = 0; i < 3; i++) {
             Content content = new Content();
@@ -270,7 +268,7 @@ public class ContentDaoTest {
     }
     @Test
     public void testGetByUser() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         for (int i = 0; i < 3; i++) {
             Content content = new Content();

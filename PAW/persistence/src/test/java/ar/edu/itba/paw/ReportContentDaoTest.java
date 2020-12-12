@@ -50,10 +50,6 @@ public class ReportContentDaoTest {
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
 
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "content_report");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "content");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "frameworks");
         Timestamp ts = new Timestamp(System.currentTimeMillis());
 
         for (int i = 1; i < 7; i++) {
@@ -85,7 +81,7 @@ public class ReportContentDaoTest {
     //<editor-fold desc="reportContent methods">
     @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
+
         reportContentDao.add(CONTENT_ID,USER_ID,DESCRIPTION);
         em.flush();
         assertEquals(1, JdbcTestUtils.countRowsInTable(jdbcTemplate, "content_report"));
@@ -93,7 +89,7 @@ public class ReportContentDaoTest {
     }
     @Test(expected = Exception.class)
     public void testCreateOnExisting() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
+
         ReportContent rp = new ReportContent();
         rp.setContent(em.find(Content.class,CONTENT_ID));
         rp.setDescription(DESCRIPTION);
@@ -106,20 +102,21 @@ public class ReportContentDaoTest {
 
     @Test(expected = Exception.class)
     public void testCreateWithoutUser() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
+
         reportContentDao.add(CONTENT_ID,USER_ID+7,DESCRIPTION);
         em.flush();
     }
     @Test(expected = Exception.class)
     public void testCreateWithoutContent() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
+
         reportContentDao.add(CONTENT_ID+7,USER_ID,DESCRIPTION);
         em.flush();
     }
 
     @Test
     public void testDelete() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
+
+
         ReportContent rp = new ReportContent();
         rp.setContent(em.find(Content.class,CONTENT_ID));
         rp.setDescription(DESCRIPTION);
@@ -133,7 +130,7 @@ public class ReportContentDaoTest {
     }
     @Test
     public void testDeleteByContent() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
+
         for (int i = 0; i < 2; i++) {
             ReportContent rp = new ReportContent();
             rp.setContent(em.find(Content.class,CONTENT_ID));
@@ -153,7 +150,7 @@ public class ReportContentDaoTest {
 
     @Test
     public void testGetAll() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content_report");
+
         for (int i = 0; i < 5; i++) {
             ReportContent rp = new ReportContent();
             rp.setContent(em.find(Content.class,CONTENT_ID));
