@@ -9,10 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -76,7 +73,7 @@ public class CommentHibernateDaoImpl implements CommentDao {
             query.setParameter("resultList", resultList);
             return query.getResultList();
         }else{
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
 

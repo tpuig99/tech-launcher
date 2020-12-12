@@ -10,6 +10,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
             query.setParameter("resultList", resultList);
             return query.getResultList();
         }else{
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 
