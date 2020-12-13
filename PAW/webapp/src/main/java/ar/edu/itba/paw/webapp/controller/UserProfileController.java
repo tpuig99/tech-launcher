@@ -219,7 +219,7 @@ public class UserProfileController {
     @GET
     @Path("{id}/techs")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response getUserTechs (@PathParam("id") Long userId,  @QueryParam("techs_page") Long techsPage) {
+    public Response getUserTechs (@PathParam("id") Long userId,  @QueryParam("techs_page")@DefaultValue(START_PAGE) Long techsPage) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
@@ -227,7 +227,7 @@ public class UserProfileController {
             final Optional<Integer> techsAmount = frameworkService.getByUserCount(userId);
 
             if(techsList.size() > 0) {
-                List<FrameworkDTO> frameworkDTOList = techsList.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList());
+                List<FrameworkDTO> frameworkDTOList = techsList.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList());
                 double pages = Math.ceil(((double) techsAmount.get()) / FRAMEWORK_PAGE_SIZE);
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<FrameworkDTO>>(frameworkDTOList){});
                 return addPaginationLinks(response, "techs_page", techsPage, pages).build();
