@@ -4,6 +4,8 @@ public class UserAddDTO {
     private String username;
     private String mail;
     private String password;
+    private String description;
+    private byte[] picture;
 
     public String getUsername() {
         return username;
@@ -27,5 +29,21 @@ public class UserAddDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
     }
 }

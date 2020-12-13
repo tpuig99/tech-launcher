@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -206,7 +205,7 @@ public class UserProfileController {
 
             if(techsList.size() > 0) {
                 List<FrameworkDTO> frameworkDTOList = techsList.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList());
-                List<FrameworkDTO> frameworkDTOList = techsList.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList());
+                // List<FrameworkDTO> frameworkDTOList = techsList.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList());
                 long pages = 0;
                 if (techsAmount.isPresent()) {
                     pages = (long) Math.ceil((double) techsAmount.get() / FRAMEWORK_PAGE_SIZE);
@@ -232,11 +231,15 @@ public class UserProfileController {
     @PUT
     @Path("/{id}/password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response changePassword(@PathParam("id") Long userId ,final UserDTO form) {
+    public Response changePassword(@PathParam("id") Long userId ,final UserAddDTO form) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
             if (SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
+                if (form.getPassword() == null) {
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+
                 us.updatePassword(userId, form.getPassword());
                 LOGGER.info("Register: User {} updated its password successfully", userId);
 
@@ -252,13 +255,16 @@ public class UserProfileController {
     @POST
     @Path("password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response changePasswordWithToken(@QueryParam("token") String token ,final UserDTO form) {
+    public Response changePasswordWithToken(@QueryParam("token") String token, final UserAddDTO form) {
         String[] strings = token.split("-a_d-ss-");
         Long userId = Long.valueOf(strings[strings.length - 1]);
 
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
+            if (form.getPassword() == null) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
             return changePassword(userId, form);
         }
 
@@ -269,17 +275,21 @@ public class UserProfileController {
     @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response updateProfile(@PathParam("id") Long userId, final UserUpdateDTO dto) throws IOException {
+    public Response updateProfile(@PathParam("id") Long userId, final UserAddDTO dto) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
             if (SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
 
+                if (dto.getPicture() == null && dto.getDescription() == null) {
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+
                 if (dto.getPicture() != null) {
                     byte[] picture = dto.getPicture();
-                    us.updateInformation(userId, dto.getDescription(), picture, true);
+                    us.updateInformation(userId, dto.getDescription() == null ? user.get().getDescription() : dto.getDescription(), picture, true);
                 } else {
-                    us.updateInformation(userId, dto.getDescription(), user.get().getPicture(), false);
+                    us.updateInformation(userId, dto.getDescription() == null ? user.get().getDescription() : dto.getDescription(), user.get().getPicture(), false);
                 }
 
                 LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
