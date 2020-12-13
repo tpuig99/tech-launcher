@@ -205,6 +205,7 @@ public class UserProfileController {
             final Optional<Integer> techsAmount = frameworkService.getByUserCount(userId);
 
             if(techsList.size() > 0) {
+                List<FrameworkDTO> frameworkDTOList = techsList.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList());
                 List<FrameworkDTO> frameworkDTOList = techsList.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList());
                 long pages = 0;
                 if (techsAmount.isPresent()) {

@@ -212,7 +212,7 @@ public class ExploreController {
             LOGGER.info("Explore: Found {} matching techs", searchResultsNumber);
 
             search.setFrameworksAmount(searchResultsNumber);
-            search.setFrameworks(frameworks.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList()));
+            search.setFrameworks(frameworks.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
 
         }
         /* -------------------------------------------------- */

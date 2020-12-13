@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import jdk.jfr.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
@@ -52,10 +54,11 @@ public class FrameworkController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response frameworksHome() {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
         List<Framework> frameworks = fs.getBestRatedFrameworks();
-        TechsHomeDTO dto = TechsHomeDTO.fromTechs(frameworks);
-        user.ifPresent(value -> dto.setInterests(fs.getUserInterests(value.getId()).stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList())));
+        TechsHomeDTO dto = TechsHomeDTO.fromTechs(frameworks,uriInfo);
+        user.ifPresent(value -> {
+            dto.setInterests(fs.getUserInterests(value.getId()).stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
+        });
         return Response.ok(dto).build();
     }
 
@@ -63,56 +66,87 @@ public class FrameworkController {
     @Path("/category/{category}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response frameworkMenuPaging(@PathParam("category") String category,
-                                        @QueryParam("page") @DefaultValue(START_PAGE) Long frameworksPage) {
+                                        @QueryParam("page") @DefaultValue(START_PAGE) int frameworksPage) {
         final FrameworkCategories enumCategory = FrameworkCategories.valueOf(category);
         LOGGER.info("Techs: Getting Techs by category '{}'", enumCategory.name());
         int amount = fs.getAmountByCategory(enumCategory);
-        final double pages = Math.ceil(((double)amount)/CATEGORY_PAGE_SIZE);
+        final int pages = (int) Math.ceil(((double)amount)/CATEGORY_PAGE_SIZE);
         List<Framework> frameworkList = fs.getByCategory(enumCategory, frameworksPage);
-        CategoriesDTO categoriesDTO = CategoriesDTO.fromCategories(frameworkList,amount);
-        Response.ResponseBuilder response = Response.ok(categoriesDTO)
+        CategoriesDTO categoriesDTO = CategoriesDTO.fromCategories(frameworkList,amount,uriInfo);
+        return pagination(uriInfo,frameworksPage,pages,categoriesDTO);
+    }
+    private Response pagination(UriInfo uriInfo,int page,int pages,Object dto){
+        Response.ResponseBuilder response = Response.ok(dto)
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).build(),"first")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).build(),"last");
-        if(frameworksPage < pages)
-                response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",frameworksPage+1).build(),"next");
-        if(frameworksPage != 1)
-                response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",frameworksPage-1).build(),"prev");
-
-        return response.build();
+        if(page < pages)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page+1).build(),"next");
+        if(page != 1)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page-1).build(),"prev");
+        return  response.build();
     }
-
     @GET
-    @Path("/{id}")
+    @Path("/{id}/comments")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response framework(@PathParam("id") long id,
-                              @QueryParam("books_page") @DefaultValue(START_PAGE) Long booksPage,
-                              @QueryParam("courses_page") @DefaultValue(START_PAGE) Long coursesPage,
-                              @QueryParam("tutorials_page") @DefaultValue(START_PAGE) Long tutorialsPage,
-                              @QueryParam("comments_page") @DefaultValue(START_PAGE) Long commentsPage) {
+    public Response commentsOfTech(@PathParam("id") long id,
+                              @QueryParam("page") @DefaultValue(START_PAGE) int page) {
 
         Optional<Framework> framework = fs.findById(id);
         if (framework.isPresent()) {
             LOGGER.info("Tech {}: Requested and found, retrieving data", id);
-            FrameworkDTO dto = FrameworkDTO.fromFramework(framework.get());
-            dto.setBook(contentService.getContentByFrameworkAndType(id, ContentTypes.book, booksPage).stream()
-                    .map(ContentDTO::fromContent)
-                    .collect(Collectors.toList()));
-            dto.setCourse(contentService.getContentByFrameworkAndType(id, ContentTypes.course, coursesPage).stream()
-                    .map(ContentDTO::fromContent)
-                    .collect(Collectors.toList()));
-            dto.setTutorial(contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial, tutorialsPage).stream()
-                    .map(ContentDTO::fromContent)
-                    .collect(Collectors.toList()));
-            dto.setComments(commentService.getCommentsWithoutReferenceByFramework(id, commentsPage).stream()
-                    .map(CommentDTO::fromComment)
-                    .collect(Collectors.toList()));
-
-            final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            if( optionalUser.isPresent()){
-                User user = optionalUser.get();
-                /*TODO:add user info*/
+            int amount = framework.get().getCommentsAmount();
+            int pages = (int) Math.ceil((double) amount/PAGE_SIZE);
+            List<CommentDTO> dto = commentService.getCommentsWithoutReferenceByFramework(id, page).stream()
+                    .map(CommentDTO::fromComment).collect(Collectors.toList());
+            return pagination(uriInfo,page,pages,new GenericEntity<List<CommentDTO>>(dto){});
+        }
+        LOGGER.error("Tech {}: Requested and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    @GET
+    @Path("/{id}/content")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response contentOfTech(@PathParam("id") long id,
+                                   @QueryParam("type")  String type,
+                                   @QueryParam("page")@DefaultValue(START_PAGE) int page) {
+        if(type == null){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        Optional<Framework> framework = fs.findById(id);
+        if (framework.isPresent()) {
+            LOGGER.info("Tech {}: Requested and found, retrieving data", id);
+            ContentTypes contentTypes;
+            try{
+                contentTypes = ContentTypes.valueOf(type);
+            } catch (IllegalArgumentException e){
+                return Response.status(Response.Status.CONFLICT).entity("Incorrect Type.").build();
             }
+            int amount = (int) framework.get().getContentAmount(contentTypes);
+            int pages = (int) Math.ceil((double) amount/PAGE_SIZE);
+            List<ContentDTO> dto = contentService.getContentByFrameworkAndType(id, contentTypes, page).stream()
+                    .map(ContentDTO::fromContent)
+                    .collect(Collectors.toList());
+            Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ContentDTO>>(dto){})
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).queryParam("type",type).build(),"first")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).queryParam("type",type).build(),"last");
+            if(page < pages)
+                response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page+1).queryParam("type",type).build(),"next");
+            if(page != 1)
+                response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page-1).queryParam("type",type).build(),"prev");
+            return  response.build();
+        }
+        LOGGER.error("Tech {}: Requested and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    @GET
+    @Path("/{id}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response framework(@PathParam("id") long id) {
 
+        Optional<Framework> framework = fs.findById(id);
+        if (framework.isPresent()) {
+            LOGGER.info("Tech {}: Requested and found, retrieving data", id);
+            FrameworkDTO dto = FrameworkDTO.fromFramework(framework.get(),uriInfo);
             return Response.ok(dto).build();
         }
         LOGGER.error("Tech {}: Requested and not found", id);
@@ -213,7 +247,7 @@ public class FrameworkController {
 
                     if (updatedFramework.isPresent()) {
                         LOGGER.info("Tech {}: User {} updated the Tech", id, user.get().getId());
-                        return Response.ok(FrameworkDTO.fromFramework(updatedFramework.get())).build();
+                        return Response.ok(FrameworkDTO.fromFramework(updatedFramework.get(),uriInfo)).build();
                     }
 
                     LOGGER.error("Tech {}: A problem occurred while updating the Tech", id);
