@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class FrameworkAddDTO {
@@ -10,7 +12,7 @@ public class FrameworkAddDTO {
     private String introduction;
     private String category;
     private String type;
-    private MultipartFile picture;
+    private byte[] picture;
 
     public String getTechName() {
         return techName;
@@ -52,11 +54,11 @@ public class FrameworkAddDTO {
         this.type = type;
     }
 
-    public MultipartFile getPicture() {
+    public byte[] getPicture() {
         return picture;
     }
 
-    public void setPicture(MultipartFile picture) {
+    public void setPicture(byte[] picture) {
         this.picture = picture;
     }
 }

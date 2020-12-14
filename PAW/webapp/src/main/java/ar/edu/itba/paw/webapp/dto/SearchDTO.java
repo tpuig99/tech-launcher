@@ -1,8 +1,5 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.Post;
-
 import java.util.List;
 
 public class SearchDTO {

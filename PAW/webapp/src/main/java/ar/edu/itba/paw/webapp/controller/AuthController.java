@@ -11,7 +11,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,12 +21,16 @@ import javax.ws.rs.core.Response;
 @Path("login")
 @Component
 public class AuthController {
+
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @Autowired
     private PawUserDetailsService userDetailsService;
+
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response login(JwtRequestDTO jwtRequestDTO) {

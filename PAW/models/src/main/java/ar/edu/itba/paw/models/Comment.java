@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -81,6 +82,10 @@ public class Comment {
     private void loadVotes() {
         votesUp = 0L;
         votesDown = 0L;
+        if(commentVotes == null){
+            commentVotes = new ArrayList<>();
+            return;
+        }
         for (CommentVote vote: commentVotes) {
             if(vote.isVoteUp())
                 votesUp++;

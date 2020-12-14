@@ -232,7 +232,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         framework.setType(type);
         framework.setPublishDate(ts);
 
-        if (picture.length > 0) {
+        if (picture!=null && picture.length>0) {
             framework.setPicture(picture);
         }  else {
             framework.setPicture(framework.getPicture());

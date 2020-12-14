@@ -18,7 +18,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
@@ -57,8 +56,8 @@ public class ExploreController {
 
     @GET
     public Response advancedSearch(@QueryParam("to_search") @DefaultValue("") String toSearch,
-                                   @QueryParam("categories") @DefaultValue("") final List<String> categories,
-                                   @QueryParam("types") @DefaultValue("") final List<String> types,
+                                   @QueryParam("categories") final List<String> categories,
+                                   @QueryParam("types") final List<String> types,
                                    @QueryParam("stars_left") final Integer starsLeft,
                                    @QueryParam("stars_right") final Integer starsRight,
                                    @QueryParam("name_flag") final boolean nameFlag,
@@ -84,14 +83,29 @@ public class ExploreController {
         LOGGER.info("Explore: Using search only by name: {}", nameFlag);
         LOGGER.info("Explore: Searching by comment amount = {}", commentAmount);
 
-        for( String c : categories){
-            categoriesQuery.add(c);
-            categoriesList.add(FrameworkCategories.valueOf(c));
+        if( categories.size() != 1 || !categories.get(0).equals("")) {
+            for (String c : categories) {
+                categoriesQuery.add(c);
+
+                try {
+                    categoriesList.add(FrameworkCategories.valueOf(c));
+                } catch (Exception e){
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+            }
         }
 
-        for( String c : types){
-            typesQuery.add(c);
-            typesList.add(FrameworkType.valueOf(c));
+        if( types.size() != 1 || !types.get(0).equals("")) {
+            for (String c : types) {
+
+                typesQuery.add(c);
+
+                try {
+                    typesList.add(FrameworkType.valueOf(c));
+                } catch (Exception e){
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+            }
         }
 
         List<String> allCategories = fs.getAllCategories();
@@ -177,40 +191,46 @@ public class ExploreController {
         search.setNameFlag(nameFlag);
         search.setLastComment(lastComment);
         search.setLastUpdate(lastUpdate);
-
-       /* --------------------- TECHS --------------------- */
-
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, order,page == null ? START_PAGE :page);
-        Integer searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
-        LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
-
-        search.setFrameworksAmount(searchResultsNumber);
-        search.setFrameworks(frameworks.stream().map(FrameworkDTO::fromFramework).collect(Collectors.toList()));
-
-        /* -------------------------------------------------- */
-        /* --------------------- POSTS --------------------- */
-
         search.setPost(isPost);
-        List<String> tags = new ArrayList<>();
 
-        tags.addAll(categories);
-        tags.addAll(types);
-        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch  : null,tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated,order,postsPage == null ? START_PAGE :postsPage, POSTS_PAGE_SIZE);
-        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch  : null,  tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount, tscomment, tsUpdated, order);
-        LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
-
-        search.setPosts(posts.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
-        search.setPostsAmount(searchResultsNumber);
-
-        /* -------------------------------------------------- */
-
+        Integer searchResultsNumber;
         if (order != null) {
+            if( order < -4 || order > 4 ){
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
             search.setOrder((int) Math.signum(order));
             search.setSort(Math.abs(order));
         }  else {
             search.setOrder(1);
             search.setSort(0);
         }
+
+       /* --------------------- TECHS --------------------- */
+        if( !isPost ) {
+            List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == null ? START_PAGE : page);
+            searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated);
+            LOGGER.info("Explore: Found {} matching techs", searchResultsNumber);
+
+            search.setFrameworksAmount(searchResultsNumber);
+            search.setFrameworks(frameworks.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
+
+        }
+        /* -------------------------------------------------- */
+        /* --------------------- POSTS --------------------- */
+        else {
+            List<String> tags = new ArrayList<>();
+            tags.addAll(categories);
+            tags.addAll(types);
+
+            List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, postsPage == null ? START_PAGE : postsPage, POSTS_PAGE_SIZE);
+            searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order);
+            LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
+
+            search.setPosts(posts.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
+            search.setPostsAmount(searchResultsNumber);
+        }
+        /* -------------------------------------------------- */
+
 
         return Response.ok(search).build();
     }

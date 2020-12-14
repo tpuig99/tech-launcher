@@ -11,15 +11,21 @@ public class UserDTO {
     private String mail;
     private String password;
     private String description;
-    private byte [] picture;
     private List<String> verificationNames;
+    private Boolean enabled;
+    private Boolean allowedModeration;
+    private Boolean admin;
+
 
     public static UserDTO fromUser (User user) {
         UserDTO dto = new UserDTO();
         dto.username = user.getUsername();
         dto.description = user.getDescription();
         dto.mail = user.getMail();
-        dto.picture = user.getPicture();
+        dto.verificationNames = user.getVerifications().stream().map(VerifyUser::getFrameworkName).collect(Collectors.toList());
+        dto.enabled = user.isEnable();
+        dto.allowedModeration = user.isAllowMod();
+        dto.admin = user.isAdmin();
         return dto;
     }
 
@@ -47,14 +53,6 @@ public class UserDTO {
         this.description = description;
     }
 
-    public byte[] getPicture() {
-        return picture;
-    }
-
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
-    }
-
     public void setVerifications(List<VerifyUser> verifyUserList) {
         this.verificationNames = verifyUserList.stream().map(VerifyUser::getFrameworkName).collect(Collectors.toList());
     }
@@ -69,5 +67,29 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Boolean getAllowedModeration() {
+        return allowedModeration;
+    }
+
+    public void setAllowedModeration(Boolean allowedModeration) {
+        this.allowedModeration = allowedModeration;
+    }
+
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
     }
 }

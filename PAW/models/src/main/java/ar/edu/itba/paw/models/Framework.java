@@ -274,7 +274,7 @@ public class Framework {
         return getContentAmount(ContentTypes.tutorial);
     }
 
-    private long getContentAmount(ContentTypes type) {
+    public long getContentAmount(ContentTypes type) {
         return contents.stream().filter((x) -> x.getType() == type).count();
     }
     public long getCommentsWithoutReferenceAmount(){

@@ -17,6 +17,7 @@ public class CommentDTO {
     private Long referenceId;
     private List<CommentDTO> replies;
     private Long frameworkId;
+    private Long commentId;
 
     public static CommentDTO fromComment(Comment comment) {
         final CommentDTO dto = new CommentDTO();
@@ -26,7 +27,9 @@ public class CommentDTO {
         dto.user = SimpleUserDTO.fromUser(comment.getUser(), comment.getFramework());
         dto.votes_up = comment.getVotesUp();
         dto.votes_down = comment.getVotesDown();
-        dto.replies = comment.getReplies().stream().map(CommentDTO::fromComment).collect(Collectors.toList());
+        if(comment.getReplies() != null)
+            dto.replies = comment.getReplies().stream().map(CommentDTO::fromComment).collect(Collectors.toList());
+        dto.commentId = comment.getCommentId();
         return dto;
     }
 
@@ -91,5 +94,13 @@ public class CommentDTO {
 
     public void setFrameworkId(Long frameworkId) {
         this.frameworkId = frameworkId;
+    }
+
+    public Long getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(Long commentId) {
+        this.commentId = commentId;
     }
 }
