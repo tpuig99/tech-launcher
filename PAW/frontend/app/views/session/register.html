@@ -3,7 +3,8 @@
     <title>{{'REGISTER_WREF' | translate}}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="../../styles/base_page.scss">
+    <link rel="stylesheet" href="../../styles/base_page.css">
+    <link rel="stylesheet" type="text/css" href="../../styles/register.css"/>
   </head>
   <body>
 
@@ -16,8 +17,7 @@
       </c:if>
       <div class="page-description"></div>
 
-      <c:url value="/create" var="postPath"/>
-      <form modelAttribute="registerForm" action="${postPath}" method="post">
+      <form modelAttribute="registerForm" action="/create" method="post">
         <div class="form-group">
 
           <label path="username"> {{'LOGIN_USERNAME' | translate}}</label>
