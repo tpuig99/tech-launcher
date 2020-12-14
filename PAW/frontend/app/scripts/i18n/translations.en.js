@@ -24,6 +24,9 @@ define([], function() {
     LOGIN_FORGOT_PASSWORD:'Recover your password',
 
     REGISTER_WREF:'Tech Launcher - Sign Up',
-    REGISTER_TITLE:'Sign Up'
+    REGISTER_TITLE:'Sign Up',
+
+    FORM_ERROR_LENGTH: 'Must be between {{ min }} and {{ max }} characters',
+    FORM_ERROR_EMPTY: 'Must not be empty',
 	};
 });
