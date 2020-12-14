@@ -15,6 +15,10 @@ define([], function() {
             '/login': {
                 templateUrl: '/views/session/login.html',
                 controller: 'LoginCtrl'
+            },
+            '/post/:id': {
+                templateUrl: '/views/posts/post.html',
+                controller: 'PostCtrl'
             }
             /* ===== yeoman hook ===== */
             /* Do not remove these commented lines! Needed for auto-generation */

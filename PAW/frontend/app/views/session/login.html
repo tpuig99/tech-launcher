@@ -1,4 +1,4 @@
-<html ng-app>
+<html ng-app="">
   <head>
     <title>{{'LOGIN_TITLE' | translate}}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
@@ -16,27 +16,30 @@
 
       <div ng-if="param.error != null" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
 
-      <form action="/login" method="post" enctype="application/x-www-form-urlencoded">
+      <form name="loginForm" action="/login" method="post" enctype="application/x-www-form-urlencoded">
         <div class="form-group">
           <label for="username">{{'LOGIN_USERNAME' | translate}}</label>
-          <input class="form-control" id="username" name="j_username" type="text" placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
+          <input class="form-control"  ng-model="usernameInput" name="usernameInput" required id="username" type="text" placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
+          <div ng-show="loginForm.usernameInput.$invalid">Please enter an username</div>
         </div>
+
         <div class="form-group">
           <label for="password">{{'LOGIN_PASSWORD' | translate}}</label>
-          <input class="form-control" id="password" name="j_password" type="password" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
+          <input class="form-control" id="password" name="passwordInput" type="password" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
         </div>
+
         <div class="form-group">
-          <label><input name="j_rememberme" type="checkbox"/>{{'LOGIN_REMEMBER_ME' | translate}}</label>
+          <label><input name="remembermeInput" type="checkbox"/>{{'LOGIN_REMEMBER_ME' | translate}}</label>
         </div>
         <div class="d-flex justify-content-center">
           <input class="btn primary-button" type="submit" value="{{'LOGIN_TITLE' | translate}}"/>
         </div>
       </form>
       <div>
-        <span>{{'LOGIN_SIGN_UP_QUESTION' | translate}}</span><span><a href="${pageContext.request.contextPath}/register">{{'LOGIN_SIGN_UP' | translate}}</a></span>
+        <span>{{'LOGIN_SIGN_UP_QUESTION' | translate}}</span><span><a href="/#/register">{{'LOGIN_SIGN_UP' | translate}}</a></span>
       </div>
       <div>
-        <span>{{'LOGIN_FORGOT_QUESTION' | translate}}</span><span><a href="${pageContext.request.contextPath}/recover/forgot_password">{{'LOGIN_FORGOT_PASSWORD' | translate}}</a></span>
+        <span>{{'LOGIN_FORGOT_QUESTION' | translate}}</span><span><a href="/recover/forgot_password">{{'LOGIN_FORGOT_PASSWORD' | translate}}</a></span>
       </div>
     </div>
 
