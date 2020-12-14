@@ -6,45 +6,50 @@
     <link rel="stylesheet" href="../../styles/base_page.css">
     <link rel="stylesheet" type="text/css" href="../../styles/register.css"/>
   </head>
-  <body>
+  <body ng-controller="RegisterCtrl">
 
     <div class="content-no-sidebar">
       <div class="page-title">
         {{'REGISTER_TITLE' | translate}}
       </div>
-      <c:if test="${not empty errorMessage}">
-        <c:out value="${errorMessage}"/>
-      </c:if>
+
       <div class="page-description"></div>
 
-      <form modelAttribute="registerForm" action="/create" method="post">
+      <form name="registerForm" action="/create" method="post">
         <div class="form-group">
 
-          <label path="username"> {{'LOGIN_USERNAME' | translate}}</label>
-          <input class="form-control" type="text" path="username" placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
-          <form:errors path="username" cssClass="formError" element="p"/>
+          <label for="username"> {{'LOGIN_USERNAME' | translate}}</label>
+          <input class="form-control" type="text" id="username" ng-model="usernameInput" name="usernameInput" required ng-minlength="3" ng-maxlength="100" placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
+          <div ng-show="registerForm.usernameInput.$dirty && registerForm.usernameInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
+          <div ng-show="registerForm.usernameInput.$error.minlength|| registerForm.usernameInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 100}'}}</div>
+
         </div>
         <div class="form-group">
 
-          <label path="password"> {{'LOGIN_PASSWORD' | translate}}</label>
-          <input class="form-control" type="password" path="password" placeholder="${{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
-          <form:errors path="password" cssClass="formError" element="p"/>
+          <label for="password"> {{'LOGIN_PASSWORD' | translate}}</label>
+          <input class="form-control" type="password" ng-model="passwordInput" name="passwordInput" required ng-minlength="6" ng-maxlength="100" id="password" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
+          <div ng-show="registerForm.passwordInput.$dirty && registerForm.passwordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
+          <div ng-show="registerForm.passwordInput.$error.minlength|| loginForm.passwordInput.$error.maxlength">
+            {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
+
         </div>
         <div class="form-group">
 
-          <label path="repeatPassword"> {{'LOGIN_PASSWORD_REPEAT' | translate}}</label>
-          <input class="form-control" type="password" path="repeatPassword"  placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
-          <form:errors path="repeatPassword" cssClass="formError" element="p"/>
-          <form:errors cssClass="formError" element="p"/>
+          <label for="repeatPassword"> {{'LOGIN_PASSWORD_REPEAT' | translate}}</label>
+          <input class="form-control" type="password" id="repeatPassword"  ng-model="repeatPasswordInput" name="repeatPasswordInput" required ng-minlength="6" ng-maxlength="100" id="password"  placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
+          <div ng-show="registerForm.repeatPasswordInput.$dirty && registerForm.repeatPasswordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
+          <div ng-show="registerForm.repeatPasswordInput.$error.minlength|| registerForm.repeatPasswordInput.$error.maxlength">
+            {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
         </div>
         <div class="form-group">
 
-          <label path="email">{{'LOGIN_EMAIL' | translate}}</label>
-          <input class="form-control" type="email" path="email" placeholder="{{'LOGIN_EMAIL_PLACEHOLDER' | translate}}"/>
-          <form:errors path="email" cssClass="formError" element="p"/>
+          <label for="email">{{'LOGIN_EMAIL' | translate}}</label>
+          <input class="form-control" type="email" id="email" ng-model="emailInput" name="emailInput" required placeholder="{{'LOGIN_EMAIL_PLACEHOLDER' | translate}}"/>
+          <div ng-show="registerForm.emailInput.$dirty && registerForm.emailInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
+          <div ng-show="registerForm.emailInput.$error.email ">This email format is not valid</div>
         </div>
         <div class="d-flex justify-content-center">
-          <input class="btn primary-button" type="submit" value="<spring:message code="button.sign_up"/>"/>
+          <input class="btn primary-button" type="submit" value="{{'REGISTER_TITLE' | translate}}"/>
         </div>
       </form>
     </div>
@@ -53,4 +58,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
-  </html>
+</html>

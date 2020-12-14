@@ -24,7 +24,7 @@ define([], function() {
     LOGIN_FORGOT_PASSWORD:'Recuperar Contraseña',
 
     REGISTER_WREF:'Tech Launcher - Registro',
-    REGISTER__TITLE:'Registrarse',
+    REGISTER_TITLE:'Registrarse',
 
     FORM_ERROR_LENGTH: 'Debe tener entre {{ min }} y {{ max }} caracteres',
     FORM_ERROR_EMPTY: 'No debe estar vacío',
