@@ -73,7 +73,7 @@ public class UserProfileController {
 
             LOGGER.info("User Profile: Requested user {} exists, retrieving data", userId);
 
-            UserDTO dto = UserDTO.fromUser(user.get());
+            UserDTO dto = UserDTO.fromUser(user.get(),uriInfo);
 
             LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
             return Response.ok(dto).build();
@@ -95,7 +95,7 @@ public class UserProfileController {
             final Optional<Integer> commentsAmount = commentService.getCommentsCountByUser(userId);
 
             if(commentsList.size() > 0) {
-                List<CommentDTO> commentDTOList = commentsList.stream().map(CommentDTO::fromComment).collect(Collectors.toList());
+                List<CommentDTO> commentDTOList = commentsList.stream().map((Comment comment) -> CommentDTO.fromComment(comment,uriInfo)).collect(Collectors.toList());
                 long pages = 0;
                 if (commentsAmount.isPresent()) {
                     pages = (long) Math.ceil((double) commentsAmount.get() / PAGE_SIZE);
@@ -123,7 +123,7 @@ public class UserProfileController {
             final Optional<Long> contentsAmount = contentService.getContentCountByUser(userId);
 
             if(contentsList.size() > 0) {
-                List<ContentDTO> contentDTOList = contentsList.stream().map(ContentDTO::fromContent).collect(Collectors.toList());
+                List<ContentDTO> contentDTOList = contentsList.stream().map((Content content) -> ContentDTO.fromContent(content,uriInfo)).collect(Collectors.toList());
                 long pages = 0;
                 if (contentsAmount.isPresent()) {
                     pages = (long) Math.ceil((double) contentsAmount.get() / PAGE_SIZE);
@@ -177,7 +177,7 @@ public class UserProfileController {
             final Optional<Integer> votesAmount = voteService.getAllCountByUser(userId);
 
             if(votesList.size() > 0) {
-                List<VoteDTO> voteDTOList = votesList.stream().map(VoteDTO::fromFrameworkVote).collect(Collectors.toList());
+                List<VoteDTO> voteDTOList = votesList.stream().map((FrameworkVote vote) -> VoteDTO.fromFrameworkVote(vote,uriInfo)).collect(Collectors.toList());
                 long pages = 0;
                 if (votesAmount.isPresent()) {
                     pages = (long) Math.ceil((double) votesAmount.get() / VOTE_PAGE_SIZE);

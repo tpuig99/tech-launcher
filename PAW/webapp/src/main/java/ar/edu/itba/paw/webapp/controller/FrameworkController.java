@@ -81,7 +81,7 @@ public class FrameworkController {
         return  response.build();
     }
     @GET
-    @Path("/{id}/comments")
+    @Path("/{id}/comment")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response commentsOfTech(@PathParam("id") long id,
                               @QueryParam("page") @DefaultValue(START_PAGE) int page) {
@@ -92,7 +92,7 @@ public class FrameworkController {
             int amount = framework.get().getCommentsAmount();
             int pages = (int) Math.ceil((double) amount/PAGE_SIZE);
             List<CommentDTO> dto = commentService.getCommentsWithoutReferenceByFramework(id, page).stream()
-                    .map(CommentDTO::fromComment).collect(Collectors.toList());
+                    .map((Comment comment) -> CommentDTO.fromComment(comment,uriInfo)).collect(Collectors.toList());
             return pagination(uriInfo,page,pages,new GenericEntity<List<CommentDTO>>(dto){});
         }
         LOGGER.error("Tech {}: Requested and not found", id);
@@ -119,7 +119,7 @@ public class FrameworkController {
             int amount = (int) framework.get().getContentAmount(contentTypes);
             int pages = (int) Math.ceil((double) amount/PAGE_SIZE);
             List<ContentDTO> dto = contentService.getContentByFrameworkAndType(id, contentTypes, page).stream()
-                    .map(ContentDTO::fromContent)
+                    .map((Content content) -> ContentDTO.fromContent(content,uriInfo))
                     .collect(Collectors.toList());
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ContentDTO>>(dto){})
                     .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).queryParam("type",type).build(),"first")
@@ -343,13 +343,33 @@ public class FrameworkController {
                if(form == null || form.getDescription() == null || form.getDescription().isEmpty()){
                    return Response.status(Response.Status.CONFLICT).entity("Comment can not be empty.").build();
                }
-                Comment comment = commentService.insertComment(id, user.get().getId(), form.getDescription(), form.getReferenceId());
-                if (form.getReferenceId() == null)
-                    LOGGER.info("Tech {}: User {} inserted a comment", id, user.get().getId());
-                else
-                    LOGGER.info("Tech {}: User {} replied comment {}", id, user.get().getId(), form.getReferenceId());
+                Comment comment = commentService.insertComment(id, user.get().getId(), form.getDescription(), null);
+                return Response.ok(CommentDTO.fromComment(comment,uriInfo)).build();
+            }
 
-                return Response.ok(CommentDTO.fromComment(comment)).build();
+            LOGGER.error("Tech {}: Unauthorized user tried to insert a comment", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+
+    }
+    @POST
+    @Path("/{id}/comment/{commentId}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response replyComment(@PathParam("id") long id,@PathParam("commentId") long commentId,final CommentAddDTO form) {
+        final Optional<Framework> framework = fs.findById(id);
+
+        if (framework.isPresent()) {
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+            if (user.isPresent() && user.get().isEnable()) {
+                if(form == null || form.getDescription() == null || form.getDescription().isEmpty()){
+                    return Response.status(Response.Status.CONFLICT).entity("Comment can not be empty.").build();
+                }
+                Comment comment = commentService.insertComment(id, user.get().getId(), form.getDescription(), commentId);
+                LOGGER.info("Tech {}: User {} replied comment {}", id, user.get().getId(), commentId);
+
+                return Response.ok(CommentDTO.fromComment(comment,uriInfo)).build();
             }
 
             LOGGER.error("Tech {}: Unauthorized user tried to insert a comment", id);
@@ -537,7 +557,7 @@ public class FrameworkController {
                     Content insertContent = contentService.insertContent(id, user.get().getId(), content.getTitle(), pathToContent, type);
 
                     LOGGER.info("Tech {}: User {} inserted new content", id, user.get().getId());
-                    return Response.ok(ContentDTO.fromContent(insertContent)).build();
+                    return Response.ok(ContentDTO.fromContent(insertContent,uriInfo)).build();
                 }
                 LOGGER.error("Tech {}: Unauthorized user tried to insert content", id);
                 return Response.status(Response.Status.FORBIDDEN).build();
