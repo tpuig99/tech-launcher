@@ -1,61 +1,49 @@
-<html ng-app="">
-  <head>
-    <title>{{'REGISTER_WREF' | translate}}</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="../../styles/base_page.css">
-    <link rel="stylesheet" type="text/css" href="../../styles/register.css"/>
-  </head>
-  <body ng-controller="RegisterCtrl">
+<div ng-controller="RegisterCtrl">
 
-    <div class="content-no-sidebar">
-      <div class="page-title">
-        {{'REGISTER_TITLE' | translate}}
-      </div>
-
-      <div class="page-description"></div>
-
-      <form name="registerForm" action="/create" method="post">
-        <div class="form-group">
-
-          <label for="username"> {{'LOGIN_USERNAME' | translate}}</label>
-          <input class="form-control" type="text" id="username" ng-model="usernameInput" name="usernameInput" required ng-minlength="3" ng-maxlength="100" placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
-          <div ng-show="registerForm.usernameInput.$dirty && registerForm.usernameInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
-          <div ng-show="registerForm.usernameInput.$error.minlength|| registerForm.usernameInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 100}'}}</div>
-
-        </div>
-        <div class="form-group">
-
-          <label for="password"> {{'LOGIN_PASSWORD' | translate}}</label>
-          <input class="form-control" type="password" ng-model="passwordInput" name="passwordInput" required ng-minlength="6" ng-maxlength="100" id="password" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
-          <div ng-show="registerForm.passwordInput.$dirty && registerForm.passwordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
-          <div ng-show="registerForm.passwordInput.$error.minlength|| loginForm.passwordInput.$error.maxlength">
-            {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
-
-        </div>
-        <div class="form-group">
-
-          <label for="repeatPassword"> {{'LOGIN_PASSWORD_REPEAT' | translate}}</label>
-          <input class="form-control" type="password" id="repeatPassword"  ng-model="repeatPasswordInput" name="repeatPasswordInput" required ng-minlength="6" ng-maxlength="100" id="password"  placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
-          <div ng-show="registerForm.repeatPasswordInput.$dirty && registerForm.repeatPasswordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
-          <div ng-show="registerForm.repeatPasswordInput.$error.minlength|| registerForm.repeatPasswordInput.$error.maxlength">
-            {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
-        </div>
-        <div class="form-group">
-
-          <label for="email">{{'LOGIN_EMAIL' | translate}}</label>
-          <input class="form-control" type="email" id="email" ng-model="emailInput" name="emailInput" required placeholder="{{'LOGIN_EMAIL_PLACEHOLDER' | translate}}"/>
-          <div ng-show="registerForm.emailInput.$dirty && registerForm.emailInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
-          <div ng-show="registerForm.emailInput.$error.email ">This email format is not valid</div>
-        </div>
-        <div class="d-flex justify-content-center">
-          <input class="btn primary-button" type="submit" value="{{'REGISTER_TITLE' | translate}}"/>
-        </div>
-      </form>
+  <div class="content-no-sidebar">
+    <div class="page-title">
+      {{'REGISTER_TITLE' | translate}}
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </body>
-</html>
+    <div class="page-description"></div>
+
+    <form name="registerForm" action="/create" method="post">
+      <div class="form-group">
+
+        <label for="username"> {{'LOGIN_USERNAME' | translate}}</label>
+        <input class="form-control" type="text" id="username" ng-model="usernameInput" name="usernameInput" required ng-minlength="3" ng-maxlength="100" placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
+        <div ng-show="registerForm.usernameInput.$dirty && registerForm.usernameInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
+        <div ng-show="registerForm.usernameInput.$error.minlength || registerForm.usernameInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 100}'}}</div>
+
+      </div>
+      <div class="form-group">
+
+        <label for="password"> {{'LOGIN_PASSWORD' | translate}}</label>
+        <input class="form-control" type="password" ng-model="passwordInput" name="passwordInput" required ng-minlength="6" ng-maxlength="100" id="password" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
+        <div ng-show="registerForm.passwordInput.$dirty && registerForm.passwordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
+        <div ng-show="registerForm.passwordInput.$error.minlength || loginForm.passwordInput.$error.maxlength">
+          {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
+
+      </div>
+      <div class="form-group">
+
+        <label for="repeatPassword"> {{'LOGIN_PASSWORD_REPEAT' | translate}}</label>
+        <input class="form-control" type="password" id="repeatPassword"  ng-model="repeatPasswordInput" name="repeatPasswordInput" required ng-minlength="6" ng-maxlength="100" id="password"  placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
+        <div ng-show="registerForm.repeatPasswordInput.$dirty && registerForm.repeatPasswordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
+        <div ng-show="registerForm.repeatPasswordInput.$error.minlength|| registerForm.repeatPasswordInput.$error.maxlength">
+          {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
+      </div>
+      <div class="form-group">
+
+        <label for="email">{{'LOGIN_EMAIL' | translate}}</label>
+        <input class="form-control" type="email" id="email" ng-model="emailInput" name="emailInput" required placeholder="{{'LOGIN_EMAIL_PLACEHOLDER' | translate}}"/>
+        <div ng-show="registerForm.emailInput.$dirty && registerForm.emailInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
+        <div ng-show="registerForm.emailInput.$error.email ">This email format is not valid</div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <input class="btn primary-button" type="submit" value="{{'REGISTER_TITLE' | translate}}" ng-click="registerForm.$valid"/>
+      </div>
+    </form>
+  </div>
+</div>
+

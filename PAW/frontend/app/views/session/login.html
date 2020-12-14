@@ -1,55 +1,42 @@
-<html ng-app="">
-  <head>
-    <title>{{'LOGIN_TITLE' | translate}}</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="../../styles/base_page.css">
-    <link rel="stylesheet" type="text/css" href="../../styles/register.css"/>
-  </head>
-  <body ng-controller="LoginCtrl">
+<div ng-controller="LoginCtrl">
 
-    <div class="content-no-sidebar">
-      <div class="page-title">
-        {{'LOGIN_TITLE' | translate}}
-      </div>
-      <div class="page-description"></div>
-
-      <div ng-if="param.error != null" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
-
-      <form name="loginForm" action="/login" method="post" enctype="application/x-www-form-urlencoded">
-        <div class="form-group">
-          <label for="username">{{'LOGIN_USERNAME' | translate}}</label>
-          <input class="form-control" id="username" ng-model="usernameInput" name="usernameInput" required ng-minlength="3" ng-maxlength="100"  type="text" placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
-          <div ng-show="loginForm.usernameInput.$dirty && loginForm.usernameInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
-          <div ng-show="loginForm.usernameInput.$error.minlength|| loginForm.usernameInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 100}'}}</div>
-        </div>
-
-        <div class="form-group">
-          <label for="password">{{'LOGIN_PASSWORD' | translate}}</label>
-          <input class="form-control" id="password" ng-model="passwordInput" name="passwordInput" required ng-minlength="6" ng-maxlength="100" type="password" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
-          <div ng-show="loginForm.passwordInput.$dirty && loginForm.passwordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
-          <div ng-show="loginForm.passwordInput.$error.minlength|| loginForm.passwordInput.$error.maxlength">
-            {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
-        </div>
-
-        <div class="form-group">
-          <label><input name="remembermeInput" type="checkbox"/>{{'LOGIN_REMEMBER_ME' | translate}}</label>
-        </div>
-        <div class="d-flex justify-content-center">
-          <input class="btn primary-button" type="submit" value="{{'LOGIN_TITLE' | translate}}"/>
-        </div>
-      </form>
-      <div>
-        <span>{{'LOGIN_SIGN_UP_QUESTION' | translate}} </span><span><a href="/#/register">{{'LOGIN_SIGN_UP' | translate}}</a></span>
-      </div>
-      <div>
-        <span>{{'LOGIN_FORGOT_QUESTION' | translate}} </span><span><a href="/recover/forgot_password">{{'LOGIN_FORGOT_PASSWORD' | translate}}</a></span>
-      </div>
+  <div class="content-no-sidebar">
+    <div class="page-title">
+      {{'LOGIN_TITLE' | translate}}
     </div>
+    <div class="page-description"></div>
 
+    <div ng-if="param.error != null" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </body>
-</html>
+    <form name="loginForm" action="/login" method="post" enctype="application/x-www-form-urlencoded" novalidate>
+      <div class="form-group">
+        <label for="username">{{'LOGIN_USERNAME' | translate}}</label>
+        <input class="form-control" id="username" ng-model="usernameInput" name="usernameInput" required ng-minlength="3" ng-maxlength="100"  type="text" placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
+        <div ng-show="loginForm.usernameInput.$dirty && loginForm.usernameInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
+        <div ng-show="loginForm.usernameInput.$error.minlength || loginForm.usernameInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 100}'}}</div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">{{'LOGIN_PASSWORD' | translate}}</label>
+        <input class="form-control" id="password" ng-model="passwordInput" name="passwordInput" required ng-minlength="6" ng-maxlength="100" type="password" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
+        <div ng-show="loginForm.passwordInput.$dirty && loginForm.passwordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
+        <div ng-show="loginForm.passwordInput.$error.minlength || loginForm.passwordInput.$error.maxlength">
+          {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
+      </div>
+
+      <div class="form-group">
+        <label><input name="remembermeInput" type="checkbox"/>{{'LOGIN_REMEMBER_ME' | translate}}</label>
+      </div>
+      <div class="d-flex justify-content-center">
+        <input class="btn primary-button" type="submit" value="{{'LOGIN_TITLE' | translate}}" ng-click="loginForm.$valid"/>
+      </div>
+    </form>
+    <div>
+      <span>{{'LOGIN_SIGN_UP_QUESTION' | translate}} </span><span><a ng-href="#/register">{{'LOGIN_SIGN_UP' | translate}}</a></span>
+    </div>
+    <div>
+      <span>{{'LOGIN_FORGOT_QUESTION' | translate}} </span><span><a ng-href="#/recover/forgot_password">{{'LOGIN_FORGOT_PASSWORD' | translate}}</a></span>
+    </div>
+  </div>
+
+</div>

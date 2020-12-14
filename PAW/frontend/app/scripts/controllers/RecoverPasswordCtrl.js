@@ -1,7 +1,8 @@
 'use strict';
 define(['frontend'], function(frontend) {
 
-    frontend.controller('PostCtrl', function($scope) {
+
+    frontend.controller('RecoverPasswordCtrl', function($scope) {
 
     });
 
