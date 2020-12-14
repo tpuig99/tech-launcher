@@ -14,7 +14,7 @@ public class PostDTO {
     private Date timestamp;
     private List<PostTagDTO> postTags;
     private List<PostCommentDTO> postComments;
-    private long answersAmount, votesUp, votesDown;
+    private long votesUp, votesDown;
 
     public static PostDTO fromPost(Post post) {
         final PostDTO dto = new PostDTO();
@@ -23,7 +23,6 @@ public class PostDTO {
         dto.postOwner = SimpleUserDTO.fromUser(post.getUser());
         dto.timestamp = post.getTimestamp();
         dto.postTags = post.getPostTags().stream().map(PostTagDTO::fromPostTag).collect(Collectors.toList());
-        dto.answersAmount = post.getAnswersAmount();
         dto.votesUp = post.getVotesUp();
         dto.votesDown = post.getVotesDown();
         return dto;
@@ -67,14 +66,6 @@ public class PostDTO {
 
     public void setPostTags(List<PostTagDTO> postTags) {
         this.postTags = postTags;
-    }
-
-    public long getAnswersAmount() {
-        return answersAmount;
-    }
-
-    public void setAnswersAmount(long answersAmount) {
-        this.answersAmount = answersAmount;
     }
 
     public long getVotesUp() {
