@@ -7,6 +7,9 @@ define([], function() {
 		WELCOME_CONTROLLER: 'A new and shiny controller has been made!',
 		WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
 
+    BUTTON_DELETE_POST:'Eliminar Pregunta',
+    BUTTON_EDIT_POST:'Editar Pregunta',
+
     LOGIN_WREF:'Tech Launcher - Iniciar Sesión',
     LOGIN_TITLE:'Iniciar Sesión',
     LOGIN_ERROR:'El nombre de usuario o la contraseña son incorrectos.',
@@ -25,6 +28,16 @@ define([], function() {
 
     REGISTER_WREF:'Tech Launcher - Registro',
     REGISTER_TITLE:'Registrarse',
+
+    POST_TITLE: 'Pregunta',
+    POST_NO_ANSWERS_YET: 'No hay respuestas aún',
+    POST_ANSWER_YOURSELF: 'Añade una respuesta !',
+    POST_answers:'Respuestas',
+    POST_ADD_POST: 'Añadir Pregunta',
+    POST_TAGS: 'Selecciona al menos una etiqueta',
+    POST_TECH_NAMES: 'Nombres de tecnologías',
+    POST_DELETE:'Eliminar Pregunta',
+    POST_DELETE_MESSAGE:'Estás seguro que deseas eliminar esta Pregunta?',
 
     FORM_ERROR_LENGTH: 'Debe tener entre {{ min }} y {{ max }} caracteres',
     FORM_ERROR_EMPTY: 'No debe estar vacío',

@@ -1,11 +1,143 @@
 <html ng-app>
   <head>
-    <title>{{'LOGIN_TITLE' | translate}}</title>
+    <title>{{'POST_TITLE' | translate}}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="../../styles/base_page.css">
   </head>
-  <body ng-controller="PostCtrl">
 
+  <body ng-controller="PostCtrl">
+    <div class="content-no-sidebar-left">
+
+      <!--Questions Section -->
+      <div class="ml-4 mr-1 description-text"><h1><c:out value="${post.title}"/></h1></div>
+
+      <div ng-if="${isAdmin || isOwner}">
+        <div class="row d-flex my-1 justify-content-end">
+          <div class="row d-flex">
+            <div class="mb-4 mx-2">
+              <a href="/posts/edit_post/${post.postId}" >
+              <button class="btn btn-info btn-block text-nowrap" type="button">
+                <i class="fa fa-edit fa-sm mr-1"></i>
+                {{'BUTTON_EDIT_POST' | translate}}
+              </button>
+              </a>
+            </div>
+            <div class="mx-2">
+              <button class="btn btn-danger btn-block text-nowrap" type="button" onclick="openDeletePostModal(${post.postId})" data-toggle="modal" data-target="#deletePostModal">
+                <i class="fas fa-trash-alt fa-sm mr-1"></i>
+                {{'BUTTON_DELETE_POST' | translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="post-cards">
+        <div class="row post-data">
+          <!-- Up Vote - Down Vote section -->
+          <div class=" ml-4 col-1 net-votes">
+            <c:choose>
+              <c:when test="${user.name == 'anonymousUser'}">
+                <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                <div>
+                  <h4>${post.votesUp - post.votesDown}</h4>
+                </div>
+                <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
+              </c:when>
+              <c:otherwise>
+                <c:choose>
+                  <c:when test="${!isEnable}">
+                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                    <div>
+                      <h4>${post.votesUp - post.votesDown}</h4>
+                    </div>
+                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                  </c:when>
+                  <c:otherwise>
+
+                    <form name="upVoteForm"  id="upVoteForm${post.postId}" action="/posts/${post.postId}/upVote/" method="post" class="mb-0 mt-0">
+                      <label for="upVotePostId">
+                        <input id="upVotePostId${post.postId}" class="input-wrap" id="upVotePostId" type="hidden" value="${post.postId}"/>
+                      </label>
+                      <div class="net-votes">
+                        <button class="btn pt-0 pb-0" type="submit">
+                          <c:choose>
+                            <c:when test="${post.getUserAuthVote(user.name) > 0}">
+                              <i class="fa fa-2x fa-arrow-up votedUp"></i>
+                            </c:when>
+                            <c:otherwise>
+                              <i class="fa fa-2x fa-arrow-up"></i>
+                            </c:otherwise>
+                          </c:choose>
+                        </button>
+                        <div>
+                          <h4>${post.votesUp - post.votesDown}</h4>
+                        </div>
+                      </div>
+                    </form>
+
+                    <form name="downVoteForm" id="downVoteForm${post.postId}" action="/posts/${post.postId}/downVote/" method="post" class="mt-0">
+                      <label for="downVotePostId${post.postId}">
+                        <input  id="downVotePostId${post.postId}" class="input-wrap" type="hidden" value="${post.postId}"/>
+                      </label>
+                      <div class="net-votes">
+                        <button class="btn pt-0 pb-0" type="submit">
+                          <c:choose>
+                            <c:when test="${post.getUserAuthVote(user.name) < 0}">
+                              <i class="fa fa-2x fa-arrow-down votedDown"></i>
+                            </c:when>
+                            <c:otherwise>
+                              <i class="fa fa-2x fa-arrow-down"></i>
+                            </c:otherwise>
+                          </c:choose>
+                        </button>
+                      </div>
+                    </form>
+
+                  </c:otherwise>
+                </c:choose>
+              </c:otherwise>
+            </c:choose>
+          </div>
+          <div class="col-9">
+            <div class="row post-description description-text">
+              <c:out value="${post.description}" />
+            </div>
+            <div class="row extra-info">
+              <!-- Tags section -->
+              <div class="col-9 tags">
+                <c:forEach items="${post.postTags}" var="tag">
+                  <button  class="badge badge-color ml-1" onclick="goToExplore('${tag.tagName}','${tag.type.name()}')">
+                                    <span>
+                                        <c:choose>
+                                            <c:when test="${tag.type.name() == 'tech_name'}">
+                                                <c:out value="${tag.tagName}"/>
+                                            </c:when>
+                                            <c:when test="${tag.type.name() == 'tech_type'}">
+                                                <spring:message code="type.${tag.tagName}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <spring:message code="category.${tag.tagName}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </span>
+                  </button>
+                </c:forEach>
+              </div>
+              <div class="col">
+                <div class="row d-flex secondary-color text-right post-date">
+                  <c:out value="${post.timestamp.toLocaleString()}" />
+                </div>
+                <div class="row d-flex secondary-color text-right">
+                  <a href="/users/${post.user.username}">${post.user.username}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
   </body>
 </html>

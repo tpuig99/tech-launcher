@@ -7,6 +7,9 @@ define([], function() {
 		WELCOME_CONTROLLER: 'A new and shiny controller has been made!',
 		WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
 
+    BUTTON_DELETE_POST:'Delete Post',
+    BUTTON_EDIT_POST:'Edit Post',
+
     LOGIN_WREF:'Tech Launcher - Login',
     LOGIN_TITLE:'Login',
     LOGIN_ERROR:'The username or password is incorrect.',
@@ -25,6 +28,16 @@ define([], function() {
 
     REGISTER_WREF:'Tech Launcher - Sign Up',
     REGISTER_TITLE:'Sign Up',
+
+    POST_TITLE: 'Post',
+    POST_NO_ANSWERS_YET: 'There are no answers yet',
+    POST_ANSWER_YOURSELF: 'Answer yourself !',
+    POST_ANSWERS:'Answers',
+    POST_ADD_POST: 'Add Post',
+    POST_TAGS: 'Select at least one tag',
+    POST_TECH_NAMES: 'Tech Names',
+    POST_DELETE:'Delete Post',
+    POST_DELETE_MESSAGE:'Are you sure you want to delete this Post?',
 
     FORM_ERROR_LENGTH: 'Must be between {{ min }} and {{ max }} characters',
     FORM_ERROR_EMPTY: 'Must not be empty',
