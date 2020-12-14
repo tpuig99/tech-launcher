@@ -16,7 +16,7 @@ define([], function() {
                 templateUrl: '/views/session/login.html',
                 controller: 'LoginCtrl'
             },
-            '/post/:id': {
+            '/posts/:id': {
                 templateUrl: '/views/posts/post.html',
                 controller: 'PostCtrl'
             }

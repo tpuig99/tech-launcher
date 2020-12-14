@@ -6,6 +6,8 @@ module.exports = function (grunt) {
 
   require('time-grunt')(grunt);
 
+  var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
+
   var appConfig = {
     app: 'app',
     dist: 'dist'
@@ -19,6 +21,20 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
+      server: {
+        proxies: [
+          {
+            context: '/api/v1',
+            host: 'localhost',
+            port: 8080,
+            https: false,
+            changeOrigin: true,
+            rewrite: {
+              '^/api/v1': '/api/v1'
+            }
+          }
+        ]
+      },
       livereload: {
         options: {
           open: true,
@@ -26,7 +42,8 @@ module.exports = function (grunt) {
             return [
             connect.static('.tmp'),
             connect().use('/bower_components', connect.static('./bower_components')),
-            connect.static(appConfig.app)
+            connect.static(appConfig.app),
+              proxySnippet
             ];
           }
         }
@@ -432,7 +449,17 @@ module.exports = function (grunt) {
 
     var data = {
       baseUrl: options.baseUrl,
-      moduleMappings: mappings
+      moduleMappings: mappings,
+      replacer: function(key, value) {
+        if (typeof value !== 'string') {
+          return value;
+        }
+        if (value.startsWith('controllers') ||
+          value.startsWith('services') ||
+          value.startsWith('directives')) {
+          return options.baseUrl + value;
+        }
+      }
     };
 
     var outFile = options.outputFile;
