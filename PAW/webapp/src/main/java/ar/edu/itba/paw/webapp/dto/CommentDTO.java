@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.Framework;
 import org.eclipse.persistence.internal.sessions.CommitOrderDependencyNode;
 
+import javax.ws.rs.core.UriInfo;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,9 +18,9 @@ public class CommentDTO {
     private Long referenceId;
     private List<CommentDTO> replies;
     private Long frameworkId;
-    private Long commentId;
+    private String location;
 
-    public static CommentDTO fromComment(Comment comment) {
+    public static CommentDTO fromComment(Comment comment, UriInfo uriInfo) {
         final CommentDTO dto = new CommentDTO();
         dto.description = comment.getDescription();
         dto.date = comment.getTimestamp();
@@ -28,8 +29,8 @@ public class CommentDTO {
         dto.votes_up = comment.getVotesUp();
         dto.votes_down = comment.getVotesDown();
         if(comment.getReplies() != null)
-            dto.replies = comment.getReplies().stream().map(CommentDTO::fromComment).collect(Collectors.toList());
-        dto.commentId = comment.getCommentId();
+            dto.replies = comment.getReplies().stream().map((Comment comment1) -> fromComment(comment1,uriInfo)).collect(Collectors.toList());
+        dto.location = uriInfo.getBaseUriBuilder().path("/techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId()).build().toString();
         return dto;
     }
 
@@ -96,11 +97,11 @@ public class CommentDTO {
         this.frameworkId = frameworkId;
     }
 
-    public Long getCommentId() {
-        return commentId;
+    public String getLocation() {
+        return location;
     }
 
-    public void setCommentId(Long commentId) {
-        this.commentId = commentId;
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

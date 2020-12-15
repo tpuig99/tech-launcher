@@ -54,6 +54,17 @@ public class ExploreController {
         return messageSource.getMessage(code, Collections.EMPTY_LIST.toArray(), LocaleContextHolder.getLocale());
     }
 
+    private Response pagination(UriInfo uriInfo,int page,int pages,Object dto){
+        Response.ResponseBuilder response = Response.ok(dto)
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).build(),"first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).build(),"last");
+        if(page < pages)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page+1).build(),"next");
+        if(page != 1)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page-1).build(),"prev");
+        return  response.build();
+    }
+
     @GET
     public Response advancedSearch(@QueryParam("to_search") @DefaultValue("") String toSearch,
                                    @QueryParam("categories") final List<String> categories,
@@ -65,8 +76,8 @@ public class ExploreController {
                                    @QueryParam("comment_ammount") final Integer commentAmount,
                                    @QueryParam("last_comment") final Integer lastComment,
                                    @QueryParam("last_update") final Integer lastUpdate,
-                                   @QueryParam("techs_page") final Long page,
-                                   @QueryParam("posts_page") final Long postsPage,
+                                   @QueryParam("techs_page") final Integer page,
+                                   @QueryParam("posts_page") final Integer postsPage,
                                    @QueryParam("is_post") final boolean isPost){
 
         List<FrameworkCategories> categoriesList = new ArrayList<>();
@@ -213,7 +224,7 @@ public class ExploreController {
 
             search.setFrameworksAmount(searchResultsNumber);
             search.setFrameworks(frameworks.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
-
+            return pagination(uriInfo, page, searchResultsNumber, search);
         }
         /* -------------------------------------------------- */
         /* --------------------- POSTS --------------------- */
@@ -228,11 +239,9 @@ public class ExploreController {
 
             search.setPosts(posts.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
             search.setPostsAmount(searchResultsNumber);
+            return pagination(uriInfo, postsPage, searchResultsNumber, search);
         }
         /* -------------------------------------------------- */
-
-
-        return Response.ok(search).build();
     }
 }
 

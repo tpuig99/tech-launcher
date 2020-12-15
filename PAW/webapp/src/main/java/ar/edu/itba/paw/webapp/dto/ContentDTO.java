@@ -3,32 +3,25 @@ package ar.edu.itba.paw.webapp.dto;
 import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.Content;
 
+import javax.ws.rs.core.UriInfo;
 import java.util.Date;
 
 public class ContentDTO {
-    private long id;
+    private String location;
     private SimpleUserDTO user;
     private Date date;
     private String title;
     private String link;
     private String type;
-    public static ContentDTO fromContent(Content content) {
+    public static ContentDTO fromContent(Content content, UriInfo uriInfo) {
         final ContentDTO dto = new ContentDTO();
-        dto.id = content.getContentId();
         dto.date = content.getTimestamp();
         dto.link = content.getLink();
         dto.user = SimpleUserDTO.fromUser(content.getUser(), content.getFramework());
         dto.title = content.getTitle();
         dto.type = content.getType().name();
+        dto.location = uriInfo.getBaseUriBuilder().path("/techs/"+content.getFrameworkId()+"/content/"+content.getContentId()).build().toString();
         return dto;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public SimpleUserDTO getUser() {
@@ -70,4 +63,13 @@ public class ContentDTO {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }
+

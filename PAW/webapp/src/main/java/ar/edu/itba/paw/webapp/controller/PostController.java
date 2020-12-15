@@ -3,16 +3,11 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
-import ar.edu.itba.paw.webapp.form.posts.AddPostForm;
-import ar.edu.itba.paw.webapp.form.posts.DeletePostForm;
-import ar.edu.itba.paw.webapp.form.posts.DownVoteForm;
-import ar.edu.itba.paw.webapp.form.posts.UpVoteForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -36,7 +31,7 @@ public class PostController {
     private FrameworkService fs;
 
     @Autowired
-    private PostCommentService pcs;
+    private PostCommentService commentService;
 
     @Autowired
     private PostTagService pts;
@@ -53,31 +48,26 @@ public class PostController {
     private final int UP_VOTE_VALUE = 1;
     private final int DOWN_VOTE_VALUE = -1;
 
-    private static ModelAndView redirectToPosts() {
-        return new ModelAndView("redirect:/posts");
-    }
-
-    private static ModelAndView redirectToPost( long postId) {
-        return new ModelAndView("redirect:/posts/" + postId);
+    private Response pagination(UriInfo uriInfo,int page,int pages,Object dto){
+        Response.ResponseBuilder response = Response.ok(dto)
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).build(),"first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).build(),"last");
+        if(page < pages)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page+1).build(),"next");
+        if(page != 1)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page-1).build(),"prev");
+        return  response.build();
     }
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response posts( @QueryParam("page") @DefaultValue(START_PAGE) Long postsPage) {
+    public Response posts( @QueryParam("page") @DefaultValue(START_PAGE) Integer postsPage) {
         final double pages = Math.ceil(((double)ps.getPostsAmount())/POSTS_PAGE_SIZE);
         List<Post> postsList = ps.getAll(postsPage, POSTS_PAGE_SIZE);
         PostsDTO list = new PostsDTO();
         list.setPosts(postsList.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
 
-        Response.ResponseBuilder response = Response.ok(list)
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).build(),"first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).build(),"last");
-        if(postsPage < pages)
-            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",postsPage+1).build(),"next");
-        if(postsPage != 1)
-            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",postsPage-1).build(),"prev");
-
-        return response.build();
+        return pagination(uriInfo, postsPage, (int)pages, list);
     }
 
 
@@ -89,9 +79,6 @@ public class PostController {
         if(post.isPresent()) {
             LOGGER.info("Post {}: Requested and found, retrieving data", id);
             PostDTO dto = PostDTO.fromPost(post.get());
-            dto.setPostComments(pcs.getByPost(post.get().getPostId(), commentsPage).stream()
-                .map(PostCommentDTO::fromComment)
-                .collect(Collectors.toList()));
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()){
@@ -104,23 +91,42 @@ public class PostController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    private boolean postIsValid( final PostAddDTO post ){
+    @GET
+    @Path("/{id}/answers")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response answersOfPost(@PathParam("id") long id,
+                                   @QueryParam("page") @DefaultValue(START_PAGE) int page) {
+
+        Optional<Post> post = ps.findById(id);
+        if (post.isPresent()) {
+            LOGGER.info("Tech {}: Requested and found, retrieving data", id);
+            long amount = post.get().getAnswersAmount();
+            int pages = (int) Math.ceil((double) amount/COMMENTS_PAGE_SIZE);
+            List<PostCommentDTO> dto = commentService.getByPost(id, page).stream()
+                    .map(PostCommentDTO::fromComment).collect(Collectors.toList());
+            return pagination(uriInfo,page,pages,new GenericEntity<List<PostCommentDTO>>(dto){});
+        }
+        LOGGER.error("Tech {}: Requested and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    private boolean postIsInvalid(final PostAddDTO post ){
         if( post.getTitle() == null ){
-            return false;
+            return true;
         }
         if( post.getTitle().length() < minTitleLength || post.getTitle().length() > maxTitleLength ){
-            return false;
+            return true;
         }
 
         if( post.getDescription() == null ){
-            return false;
+            return true;
         }
 
         if( post.getDescription().length() < minDescriptionLength || post.getDescription().length() > maxDescriptionLength ){
-            return false;
+            return true;
         }
 
-        return !post.getTypes().isEmpty() || !post.getCategories().isEmpty() || !post.getNames().isEmpty();
+        return post.getTypes().isEmpty() && post.getCategories().isEmpty() && post.getNames().isEmpty();
     }
 
     @POST
@@ -129,7 +135,7 @@ public class PostController {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if( user.isPresent()) {
-            if( !postIsValid(form)){
+            if(postIsInvalid(form)){
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
@@ -167,7 +173,7 @@ public class PostController {
         final Optional<Post> post = ps.findById(id);
         if (post.isPresent()) {
             if (user.isPresent()) {
-                if( !postIsValid(form)){
+                if(postIsInvalid(form)){
                     return Response.status(Response.Status.BAD_REQUEST).build();
                 }
 
@@ -266,7 +272,7 @@ public class PostController {
     }
 
     @POST
-    @Path("/{id}/comment/{commentId}/up_vote")
+    @Path("/{id}/answer/{commentId}/up_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response voteUpComment(@PathParam("id") long postId, @PathParam("commentId") long commentId) {
         final Optional<Post> post = ps.findById(postId);
@@ -280,7 +286,7 @@ public class PostController {
                 }
             }
             if (user.isPresent() && appears) {
-                pcs.vote(commentId, user.get().getId(), UP_VOTE_VALUE);
+                commentService.vote(commentId, user.get().getId(), UP_VOTE_VALUE);
                 return getVoteCommentResponse(commentId);
             }
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -289,7 +295,7 @@ public class PostController {
     }
 
     @POST
-    @Path("/{id}/comment/{commentId}/down_vote")
+    @Path("/{id}/answer/{commentId}/down_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response voteDownComment( @PathParam("id") long postId, @PathParam("commentId") long commentId){
         final Optional<Post> post = ps.findById(postId);
@@ -303,7 +309,7 @@ public class PostController {
                 }
             }
             if (user.isPresent() && appears) {
-                pcs.vote(commentId, user.get().getId(), DOWN_VOTE_VALUE);
+                commentService.vote(commentId, user.get().getId(), DOWN_VOTE_VALUE);
                 return getVoteCommentResponse(commentId);
             }
             return Response.status(Response.Status.FORBIDDEN).build();
@@ -312,7 +318,7 @@ public class PostController {
     }
 
     private Response getVoteCommentResponse( long commentId) {
-        Optional<PostComment> comment = pcs.getById(commentId);
+        Optional<PostComment> comment = commentService.getById(commentId);
         if (comment.isPresent()) {
             VoteDTO dto = new VoteDTO();
             dto.setCount(Double.valueOf(comment.get().getVotesUp()));
@@ -323,14 +329,14 @@ public class PostController {
 
 
     @POST
-    @Path("/{id}/comment")
+    @Path("/{id}/answer")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response commentPost(final PostCommentDTO form, @PathParam("id") long postId){
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ){
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( user.isPresent() ){
-                pcs.insertPostComment(form.getPostId(), user.get().getId(), form.getDescription(), null);
+                commentService.insertPostComment(form.getPostId(), user.get().getId(), form.getDescription(), null);
                 return Response.ok(form).build();
             }
             LOGGER.error("Post {}: Unauthorized user tried to insert a comment", postId);
@@ -340,14 +346,14 @@ public class PostController {
     }
 
     @DELETE
-    @Path("/{id}/comment/{commentId}")
+    @Path("/{id}/answer/{commentId}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response deletePostComment(@PathParam("id") final long postId, @PathParam("commentId") final long commentId) {
         final Optional<Post> post = ps.findById(postId);
         if (post.isPresent()) {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if (user.isPresent()) {
-                pcs.deletePostComment(commentId);
+                commentService.deletePostComment(commentId);
                 return Response.noContent().build();
             }
             LOGGER.error("Post {}: Unauthorized user tried to delete comment", postId);

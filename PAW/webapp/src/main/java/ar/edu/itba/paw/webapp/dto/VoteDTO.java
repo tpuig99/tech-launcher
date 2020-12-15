@@ -2,18 +2,20 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.FrameworkVote;
 
+import javax.ws.rs.core.UriInfo;
+
 public class VoteDTO {
-    private Long voteId;
+    private String techLocation;
     private String frameworkName;
     private String frameworkCategory;
     private Double count;
 
-    public static VoteDTO fromFrameworkVote (FrameworkVote vote) {
+    public static VoteDTO fromFrameworkVote (FrameworkVote vote, UriInfo uriInfo) {
         VoteDTO dto = new VoteDTO();
         dto.count = (double) vote.getStars();
         dto.frameworkName = vote.getFrameworkName();
         dto.frameworkCategory = vote.getCategory();
-        dto.voteId = vote.getVoteId();
+        dto.techLocation = uriInfo.getBaseUriBuilder().path("/techs/"+vote.getFrameworkId()).build().toString();
         return dto;
     }
 
@@ -25,12 +27,12 @@ public class VoteDTO {
         this.count = count;
     }
 
-    public Long getVoteId() {
-        return voteId;
+    public String getTechLocation() {
+        return techLocation;
     }
 
-    public void setVoteId(Long voteId) {
-        this.voteId = voteId;
+    public void setTechLocation(String techLocation) {
+        this.techLocation = techLocation;
     }
 
     public String getFrameworkName() {

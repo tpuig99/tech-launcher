@@ -47,7 +47,7 @@ public class RegisterController {
             User registeredUser = us.create(userDTO.getUsername(), userDTO.getMail(), userDTO.getPassword());
             /* Add JWT */
             LOGGER.info("Register: User '{}' registered successfully with id {}", registeredUser.getUsername(), registeredUser.getId());
-            UserDTO dto = UserDTO.fromUser(registeredUser);
+            UserDTO dto = UserDTO.fromUser(registeredUser,uriInfo);
             return Response.ok(dto).build();
         }
         catch (UserAlreadyExistException uaeEx) {
