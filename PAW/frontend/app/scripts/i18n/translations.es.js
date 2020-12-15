@@ -41,6 +41,7 @@ define([], function() {
     POST_DELETE_MESSAGE: 'Estás seguro que deseas eliminar esta Pregunta?',
 
     FORM_ERROR_LENGTH: 'Debe tener entre {{ min }} y {{ max }} caracteres',
-    FORM_ERROR_EMPTY: 'No debe estar vacío'
+    FORM_ERROR_EMPTY: 'No debe estar vacío',
+    FORM_ERROR_EMAIL_FORMAT: 'Mail inválido'
 	};
 });

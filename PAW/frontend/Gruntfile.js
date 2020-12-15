@@ -43,7 +43,7 @@ module.exports = function (grunt) {
             connect.static('.tmp'),
             connect().use('/bower_components', connect.static('./bower_components')),
             connect.static(appConfig.app),
-              proxySnippet
+            //  proxySnippet
             ];
           }
         }

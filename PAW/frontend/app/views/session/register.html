@@ -38,7 +38,7 @@
         <label for="email">{{'LOGIN_EMAIL' | translate}}</label>
         <input class="form-control" type="email" id="email" ng-model="emailInput" name="emailInput" required placeholder="{{'LOGIN_EMAIL_PLACEHOLDER' | translate}}"/>
         <div ng-show="registerForm.emailInput.$dirty && registerForm.emailInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
-        <div ng-show="registerForm.emailInput.$error.email ">This email format is not valid</div>
+        <div ng-show="registerForm.emailInput.$error.email ">{{ 'FORM_ERROR_EMAIL_FORMAT' | translate}}</div>
       </div>
       <div class="d-flex justify-content-center">
         <input class="btn primary-button" type="submit" value="{{'REGISTER_TITLE' | translate}}" ng-click="registerForm.$valid"/>

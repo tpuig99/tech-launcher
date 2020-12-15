@@ -41,6 +41,7 @@ define([], function() {
     POST_DELETE_MESSAGE: 'Are you sure you want to delete this Post?',
 
     FORM_ERROR_LENGTH: 'Must be between {{ min }} and {{ max }} characters',
-    FORM_ERROR_EMPTY: 'Must not be empty'
+    FORM_ERROR_EMPTY: 'Must not be empty',
+    FORM_ERROR_EMAIL_FORMAT: 'This email format is not valid'
 	};
 });
