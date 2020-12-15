@@ -20,6 +20,10 @@ define([], function() {
                 templateUrl: '/views/session/login.html',
                 controller: 'LoginCtrl'
             },
+            '/login/:id/password': {
+              templateUrl: '/views/session/change_password.html',
+              controller: 'LoginCtrl'
+            },
             '/posts/:id': {
                 templateUrl: '/views/posts/post.html',
                 controller: 'PostCtrl'

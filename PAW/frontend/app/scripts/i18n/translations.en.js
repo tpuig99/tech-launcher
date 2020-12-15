@@ -10,6 +10,8 @@ define([], function() {
     BUTTON_DELETE_POST: 'Delete Post',
     BUTTON_EDIT_POST: 'Edit Post',
     BUTTON_SEND_EMAIL: 'Send Email',
+    BUTTON_CANCEL: 'Cancel',
+    BUTTON_SUBMIT: 'Submit',
 
     LOGIN_WREF: 'Tech Launcher - Login',
     LOGIN_TITLE: 'Login',
@@ -26,6 +28,7 @@ define([], function() {
     LOGIN_SIGN_UP: 'Sign Up',
     LOGIN_FORGOT_QUESTION: 'Forgot your password?',
     LOGIN_FORGOT_PASSWORD: 'Recover your password',
+    LOGIN_CHANGE_PASSWORD: 'Change Password',
 
     REGISTER_WREF: 'Tech Launcher - Sign Up',
     REGISTER_TITLE: 'Sign Up',
