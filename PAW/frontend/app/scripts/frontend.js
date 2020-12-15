@@ -20,7 +20,8 @@ define(['routes',
 				'$filterProvider',
 				'$provide',
 				'$translateProvider',
-				function($routeProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $translateProvider) {
+				'RestangularProvider',
+				function($routeProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $translateProvider, RestangularProvider) {
 
 					frontend.controller = $controllerProvider.register;
 					frontend.directive = $compileProvider.directive;
@@ -39,6 +40,9 @@ define(['routes',
 
 					$translateProvider.translations('preferredLanguage', i18n);
 					$translateProvider.preferredLanguage('preferredLanguage');
+          $translateProvider.useSanitizeValueStrategy('escape');
+
+          RestangularProvider.setBaseUrl('api/v1/');
 				}]);
 		return frontend;
 	}

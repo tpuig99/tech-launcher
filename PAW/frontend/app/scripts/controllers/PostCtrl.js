@@ -1,14 +1,21 @@
 'use strict';
-define(['frontend'], function(frontend) {
+define(['frontend',
+        'services/postService'
+  ], function(frontend) {
 
-    frontend.controller('PostCtrl', function($scope, Restangular) {
+    frontend.controller('PostCtrl', ['$scope', '$route', '$routeParams', 'postService', 'Restangular', function($scope, $route, $routeParams, postService, Restangular) {
 
       $scope.isAdmin = true;
       $scope.isOwner = true;
+      $scope.isEnabled = true;
 
-      $scope.post = Restangular.one('posts',1).get();  // GET /posts/:id
+      $scope.post = Restangular.one('posts',$routeParams.id).get();  // GET /posts/:id
 
+      /* $scope.upVote = function(post){
 
-    });
+        postService.postUpVote(post);
+
+      } */
+    }]);
 
 });
