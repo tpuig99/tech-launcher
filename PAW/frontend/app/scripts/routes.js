@@ -8,13 +8,9 @@ define([], function() {
                 templateUrl: '/views/home.html',
                 controller: 'HomeCtrl'
             },
-            '/register': {
-                templateUrl: '/views/session/register.html',
-                controller: 'RegisterCtrl'
-            },
-            '/register/forgot_password': {
-              templateUrl: '/views/session/recover_password.html',
-              controller: 'RecoverPasswordCtrl'
+            '/explore': {
+              templateUrl: '/views/explore.html',
+              controller: 'ExploreCtrl'
             },
             '/login': {
                 templateUrl: '/views/session/login.html',
@@ -23,6 +19,14 @@ define([], function() {
             '/login/:id/password': {
               templateUrl: '/views/session/change_password.html',
               controller: 'LoginCtrl'
+            },
+            '/register': {
+              templateUrl: '/views/session/register.html',
+              controller: 'RegisterCtrl'
+            },
+            '/register/forgot_password': {
+              templateUrl: '/views/session/recover_password.html',
+              controller: 'RecoverPasswordCtrl'
             },
             '/posts/:id': {
                 templateUrl: '/views/posts/post.html',
