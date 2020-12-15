@@ -6,9 +6,9 @@ module.exports = function (grunt) {
 
   require('time-grunt')(grunt);
 
-  // var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
+  let proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
-  var appConfig = {
+  let appConfig = {
     app: 'app',
     dist: 'dist'
   };
@@ -42,8 +42,8 @@ module.exports = function (grunt) {
             return [
             connect.static('.tmp'),
             connect().use('/bower_components', connect.static('./bower_components')),
-            connect.static(appConfig.app)
-            //  proxySnippet
+            connect.static(appConfig.app),
+            proxySnippet
             ];
           }
         }
