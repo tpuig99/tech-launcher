@@ -61,7 +61,7 @@
             </goals>
             <configuration>
               <!-- Install is default -->
-              <arguments>install</arguments>
+              <arguments>install --allow-root</arguments>
             </configuration>
           </execution>
 
@@ -71,7 +71,7 @@
               <goal>grunt</goal>
             </goals>
             <configuration>
-              <arguments>--force</arguments>
+              <arguments>serve --force</arguments>
             </configuration>
           </execution>
 
