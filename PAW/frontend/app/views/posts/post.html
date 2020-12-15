@@ -4,7 +4,7 @@
     <!--Questions Section -->
     <div class="ml-4 mr-1 description-text"><h1><c:out value="${post.title}"/></h1></div>
 
-    <div ng-if="${isAdmin || isOwner}">
+    <div ng-if="isAdmin || isOwner">
       <div class="row d-flex my-1 justify-content-end">
         <div class="row d-flex">
           <div class="mb-4 mx-2">
@@ -32,7 +32,7 @@
             <c:when test="${user.name == 'anonymousUser'}">
               <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
               <div>
-                <h4>${post.votesUp - post.votesDown}</h4>
+                <h4>{{post.votesUp - post.votesDown}}</h4>
               </div>
               <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
             </c:when>
@@ -141,7 +141,7 @@
             <div class="card mb-3 post-card-answer">
               <div class="card-body">
                 <!-- Delete comment -->
-                <div ng-if="${isAdmin || isOwner || answer.user.username == user.name}">
+                <div ng-if="isAdmin || isOwner || answer.user.username == user.name}">
                   <div class="row">
                       <span class="col d-flex justify-content-end align-items-end">
                           <button class="btn btn-link" onclick="openDeleteCommentModal(${answer.postCommentId})"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>

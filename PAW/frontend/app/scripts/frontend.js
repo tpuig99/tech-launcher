@@ -9,7 +9,8 @@ define(['routes',
 	function(config, dependencyResolverFor, i18n) {
 		var frontend = angular.module('frontend', [
 			'ngRoute',
-			'pascalprecht.translate'
+			'pascalprecht.translate',
+      'restangular'
 		]);
 		frontend
 			.config(

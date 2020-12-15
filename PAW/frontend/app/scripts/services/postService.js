@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend'], function(frontend) {
 
-	frontend.service('SampleService', function() {
+	frontend.service('postService', function() {
 
 	});
 });
