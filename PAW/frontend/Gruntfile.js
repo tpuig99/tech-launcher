@@ -55,7 +55,7 @@ module.exports = function (grunt) {
         }
       }
     },
-    watchFile: {
+    watch: {
        bower: {
          files: ['bower.json'],
          tasks: ['wiredep:serve']
@@ -489,7 +489,7 @@ module.exports = function (grunt) {
       'autoprefixer',
       'bower',
       'connect:livereload',
-      'watchFile'
+      'watch'
     ]);
   });
 
