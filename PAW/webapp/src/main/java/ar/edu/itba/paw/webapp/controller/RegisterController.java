@@ -4,14 +4,25 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.webapp.auth.JwtTokenUtil;
+import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
+import ar.edu.itba.paw.webapp.dto.JwtRequestDTO;
+import ar.edu.itba.paw.webapp.dto.JwtResponseDTO;
 import ar.edu.itba.paw.webapp.dto.UserAddDTO;
 import ar.edu.itba.paw.webapp.dto.UserDTO;
+import ar.edu.itba.paw.webapp.form.register.OnRegistrationCompleteEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -37,6 +48,15 @@ public class RegisterController {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PawUserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     @Context
     private UriInfo uriInfo;
 
@@ -45,17 +65,41 @@ public class RegisterController {
     public Response register (final UserAddDTO userDTO) {
         try {
             User registeredUser = us.create(userDTO.getUsername(), userDTO.getMail(), userDTO.getPassword());
-            /* Add JWT */
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, LocaleContextHolder.getLocale(), uriInfo.getRequestUri().toString() , false));
             LOGGER.info("Register: User '{}' registered successfully with id {}", registeredUser.getUsername(), registeredUser.getId());
-            UserDTO dto = UserDTO.fromUser(registeredUser,uriInfo);
-            return Response.ok(dto).build();
+
+            return loginAfterRegister(new JwtRequestDTO(userDTO.getUsername(), userDTO.getPassword()));
         }
         catch (UserAlreadyExistException uaeEx) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 
+    private Response loginAfterRegister(JwtRequestDTO jwtRequestDTO) {
+        try {
+            authenticate(jwtRequestDTO.getUsername(), jwtRequestDTO.getPassword());
+        } catch (Exception e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
 
+        final UserDetails userDetails = userDetailsService
+                .loadUserByUsername(jwtRequestDTO.getUsername());
+
+        final String token = jwtTokenUtil.generateToken(userDetails);
+
+        return Response.ok(new JwtResponseDTO(token)).build();
+
+    }
+
+    private void authenticate(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
+    }
 
 //    @RequestMapping(value = "/create", method = {RequestMethod.POST})
 //    public ModelAndView create(@Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors, HttpServletRequest request) {
@@ -106,9 +150,6 @@ public class RegisterController {
 
                 if ((verificationToken.get().getExpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
                     LOGGER.error("Register: Verification token for user {} expired", user.get().getId());
-//                    model.addAttribute("message", messageSource.getMessage("register.error.link_expired", new Object[]{}, LocaleContextHolder.getLocale()));
-//                    model.addAttribute("expired", true);
-//                    model.addAttribute("token", token);
                     return Response.status(Response.Status.NOT_FOUND).build();
                 }
 
