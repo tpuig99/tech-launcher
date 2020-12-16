@@ -61,7 +61,7 @@
             </goals>
             <configuration>
               <!-- Install is default -->
-              <arguments>install</arguments>
+              <arguments>install --allow-root</arguments>
             </configuration>
           </execution>
 

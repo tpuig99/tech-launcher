@@ -55,11 +55,11 @@ module.exports = function (grunt) {
         }
       }
     },
-    watch: {
-      bower: {
-        files: ['bower.json'],
-        tasks: ['wiredep:serve']
-      },
+    watchFile: {
+       bower: {
+         files: ['bower.json'],
+         tasks: ['wiredep:serve']
+       },
       js: {
         files: ['<%= yeoman.app %>/scripts/**/*.js'],
         tasks: ['newer:eslint:all'],
@@ -489,7 +489,7 @@ module.exports = function (grunt) {
       'autoprefixer',
       'bower',
       'connect:livereload',
-      'watch'
+      'watchFile'
     ]);
   });
 
