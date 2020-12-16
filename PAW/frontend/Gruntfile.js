@@ -117,6 +117,9 @@ module.exports = function (grunt) {
     },
 
     eslint: {
+      options: {
+        fix: grunt.option('fix') // this will get params from the flags
+      },
       all: [
       '<%= yeoman.app %>/scripts/**/*.js',
       'test/spec/**/*.js',
