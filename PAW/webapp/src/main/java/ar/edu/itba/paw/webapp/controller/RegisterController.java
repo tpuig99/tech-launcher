@@ -6,10 +6,7 @@ import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.auth.JwtTokenUtil;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
-import ar.edu.itba.paw.webapp.dto.JwtRequestDTO;
-import ar.edu.itba.paw.webapp.dto.JwtResponseDTO;
-import ar.edu.itba.paw.webapp.dto.UserAddDTO;
-import ar.edu.itba.paw.webapp.dto.UserDTO;
+import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.form.register.OnRegistrationCompleteEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,14 +65,14 @@ public class RegisterController {
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, LocaleContextHolder.getLocale(), uriInfo.getRequestUri().toString() , false));
             LOGGER.info("Register: User '{}' registered successfully with id {}", registeredUser.getUsername(), registeredUser.getId());
 
-            return loginAfterRegister(new JwtRequestDTO(userDTO.getUsername(), userDTO.getPassword()));
+            return login(new JwtRequestDTO(userDTO.getUsername(), userDTO.getPassword()));
         }
         catch (UserAlreadyExistException uaeEx) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 
-    private Response loginAfterRegister(JwtRequestDTO jwtRequestDTO) {
+    private Response login(JwtRequestDTO jwtRequestDTO) {
         try {
             authenticate(jwtRequestDTO.getUsername(), jwtRequestDTO.getPassword());
         } catch (Exception e) {
@@ -100,36 +97,6 @@ public class RegisterController {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
-
-//    @RequestMapping(value = "/create", method = {RequestMethod.POST})
-//    public ModelAndView create(@Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors, HttpServletRequest request) {
-//        if (errors.hasErrors()) {
-//            return index(form);
-//        }
-//        try {
-//            User registered = us.create(form.getUsername(), form.getEmail(), form.getPassword());
-//            // GET URL - GET URI + GETCONTEXTPATH
-//            String appUrl = request.getRequestURL().toString();
-//            appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
-//            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl, false));
-//            us.internalLogin(form.getUsername(), form.getPassword(),request);
-//            LOGGER.info("Register: User '{}' registered successfully with id {}", registered.getUsername(),registered.getId());
-//
-//        } catch (UserAlreadyExistException uaeEx) {
-//            LOGGER.error("Register: {}", UserAlreadyExistException.class);
-//            ModelAndView mav = new ModelAndView("session/registerForm");
-//            mav.addObject("errorMessage", uaeEx.getLocalizedMessage());
-//            return mav;
-//
-//        } catch (RuntimeException ex) {
-//            LOGGER.error("Register: {}", RuntimeException.class);
-//            ModelAndView mav = new ModelAndView("session/registerForm");
-//            mav.addObject("errorMessage", messageSource.getMessage("register.error.try_again", new Object[]{}, LocaleContextHolder.getLocale()));
-//            return mav;
-//        }
-//
-//        return new ModelAndView("redirect:/register/success/pending_validation");
-//    }
 
     @GET
     @Path("/confirm")
@@ -169,6 +136,7 @@ public class RegisterController {
 
     @POST
     @Path("resend_token")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response resendToken() {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(user.isPresent()){
@@ -177,10 +145,9 @@ public class RegisterController {
 
             if (verificationToken.isPresent()) {
                 Optional<User> registered = Optional.ofNullable(verificationToken.get().getUser());
-//                String appUrl = request.getRequestURL().toString();
-//                appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
+
                 if (registered.isPresent()) {
-//                    eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered.get(), request.getLocale(), appUrl, true));
+                    eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered.get(), LocaleContextHolder.getLocale(), uriInfo.getBaseUri().toString() + "register", true));
                     LOGGER.info("Register: Resending verification token for user {}", registered.get().getId());
                     return Response.ok().build();
                 }
@@ -196,6 +163,7 @@ public class RegisterController {
 
     @POST
     @Path("forgot_password")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response forgotPassword(final UserDTO userDTO) {
         Optional<User> optionalUser = us.findByMail(userDTO.getMail());
         if (!optionalUser.isPresent()) {
@@ -203,13 +171,27 @@ public class RegisterController {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        User user = optionalUser.get();
-//        String appUrl = request.getRequestURL().toString();
-//        appUrl = appUrl.substring(0, appUrl.indexOf(request.getRequestURI())).concat(request.getContextPath());
-
-//        us.passwordMailing(user, appUrl);
+        us.passwordMailing(optionalUser.get(), uriInfo.getBaseUri().toString() + "register");
         LOGGER.info("Register: Successfully sent recovery mail to {}", userDTO.getMail());
         return Response.ok().build();
+    }
+
+    @GET
+    @Path("forgot_password")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response forgotPasswordToken(@QueryParam("token") String token) {
+        String[] strings = token.split("-a_d-ss-");
+        Long userId = Long.valueOf(strings[strings.length - 1]);
+
+        Optional<User> optionalUser = us.findById(userId);
+
+        if (optionalUser.isPresent()) {
+            PasswordDTO dto = new PasswordDTO();
+            dto.setToken(token);
+            return Response.ok(dto).build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
 }

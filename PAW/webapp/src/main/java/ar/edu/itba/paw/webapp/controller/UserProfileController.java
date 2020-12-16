@@ -255,17 +255,20 @@ public class UserProfileController {
     @POST
     @Path("password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response changePasswordWithToken(@QueryParam("token") String token, final UserAddDTO form) {
-        String[] strings = token.split("-a_d-ss-");
+    public Response changePasswordWithToken(PasswordDTO passwordDTO) {
+
+        String[] strings = passwordDTO.getToken().split("-a_d-ss-");
         Long userId = Long.valueOf(strings[strings.length - 1]);
 
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
-            if (form.getPassword() == null) {
+            if (passwordDTO.getPassword() == null) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
-            return changePassword(userId, form);
+            UserAddDTO userAddDTO = new UserAddDTO();
+            userAddDTO.setPassword(passwordDTO.getPassword());
+            return changePassword(userId, userAddDTO);
         }
 
         LOGGER.error("User Profile: User {} not found", userId);
