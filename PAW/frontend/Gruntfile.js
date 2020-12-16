@@ -24,13 +24,13 @@ module.exports = function (grunt) {
       server: {
         proxies: [
           {
-            context: '/api/v1',
+            context: '/',
             host: 'localhost',
             port: 8080,
             https: false,
             changeOrigin: true,
             rewrite: {
-              '^/api/v1': '/api/v1'
+              '^/': '/'
             }
           }
         ]
