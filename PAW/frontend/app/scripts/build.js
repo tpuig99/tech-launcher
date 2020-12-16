@@ -23,7 +23,9 @@ require.config({
         scrollspy: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy',
         tab: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab',
         tooltip: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip',
-        transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition'
+        transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition',
+        lodash: '../../bower_components/lodash/lodash',
+        restangular: '../../bower_components/restangular/dist/restangular'
     },
     shim: {
         angular: {
@@ -56,6 +58,15 @@ require.config({
             deps: [
                 'angular'
             ]
+        },
+        lodash: {
+            exports: '_'
+        },
+        restangular: {
+            deps: [
+                'angular',
+                'lodash'
+            ]
         }
     },
     packages: [
@@ -71,6 +82,7 @@ if (paths) {
 
 require([
         'angular',
+        'restangular',
         'frontend',
         'controllers/IndexCtrl'
     ],
