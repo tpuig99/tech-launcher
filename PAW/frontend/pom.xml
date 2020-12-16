@@ -66,16 +66,14 @@
           </execution>
 
           <execution>
-            <id>grunt build</id>
+            <id>grunt serve</id>
             <goals>
               <goal>grunt</goal>
             </goals>
             <configuration>
-              <arguments>--force</arguments>
+              <arguments>serve --force</arguments>
             </configuration>
           </execution>
-
-          <!--    TODO: Run tests      -->
 
         </executions>
       </plugin>

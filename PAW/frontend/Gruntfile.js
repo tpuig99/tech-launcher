@@ -6,9 +6,9 @@ module.exports = function (grunt) {
 
   require('time-grunt')(grunt);
 
-  let proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
+  var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
-  let appConfig = {
+  var appConfig = {
     app: 'app',
     dist: 'dist'
   };

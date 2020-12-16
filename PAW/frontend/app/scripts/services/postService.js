@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend'], function(frontend) {
 
-	frontend.service('postService', function(Restangular) {
+	frontend.service('postService', function() {
 
 	 /* let apiRest = Restangular.withConfig( function(RestangularConfigurer) {
 	    RestangularConfigurer.addResponseInterceptor(
