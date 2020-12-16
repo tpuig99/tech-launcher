@@ -243,7 +243,7 @@ public class UserProfileController {
                 us.updatePassword(userId, form.getPassword());
                 LOGGER.info("Register: User {} updated its password successfully", userId);
 
-                return Response.ok(form).build();
+                return Response.ok().build();
             }
             LOGGER.error("User Profile: User {} does not have enough privileges to update profile", userId);
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -266,9 +266,11 @@ public class UserProfileController {
             if (passwordDTO.getPassword() == null) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
-            UserAddDTO userAddDTO = new UserAddDTO();
-            userAddDTO.setPassword(passwordDTO.getPassword());
-            return changePassword(userId, userAddDTO);
+
+            us.updatePassword(userId, passwordDTO.getPassword());
+            LOGGER.info("Register: User {} updated its password successfully", userId);
+
+            return Response.ok().build();
         }
 
         LOGGER.error("User Profile: User {} not found", userId);
