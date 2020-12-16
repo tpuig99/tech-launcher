@@ -225,11 +225,117 @@
 
     <div class="page-description"></div>
 
-    
+    <tabs>
+      <pane title="{{'EXPLORE_TECHS' | translate}}" ng-click="showTechFilters()">
 
 
 
+            <div ng-if="matchingFrameworks.size() == 0 ">
+              {{'EXPLORE_NOT_FOUND' | translate}}
+            </div>
+
+            <div ng-if="matchingFrameworks.size() != 0" class="row equal">
+
+                <div ng-repeat="framework in matchingFrameworks" class="card mx-4 mb-4">
+                  <a ng-href=" /techs/{{framework.category}}/{{framework.id}}">
+                  <div class="card-body">
+
+                    <div ng-if="!framework.picture.isEmpty()" class="max-logo d-flex align-items-center justify-content-center">
+                      <img src="/techs/{{framework.category}}/{{framework.id}}/image" alt="{{'TECH_PICTURE' | translate}}"/>
+                    </div>
+                    <div ng-if="framework.picture.isEmpty()" class="max-logo d-flex align-items-center justify-content-center">
+                      <img src="https://pngimg.com/uploads/question_mark/question_mark_PNG130.png" alt="{{'TECH_PICTURE' | translate}}" />
+                    </div>
+
+                  </div>
+                  <div class="card-footer text-dark">
+                    <span>{{framework.name}} | </span>
+                    <span class="fa fa-star fa-sm"></span>
+                    <span>{{framework.starsFormated}}</span>
+                  </div>
+                  </a>
+                </div>
+
+            </div>
+            <!-- Paginación -->
+            <jsp:include page="../components/pagination.jsp">
+              <jsp:param name="total" value="${searchResultsNumber}"/>
+              <jsp:param name="page" value="${page}"/>
+              <jsp:param name="page_size" value="${page_size}"/>
+              <jsp:param name="origin" value="search"/>
+              <jsp:param name="toSearch" value="${techNameQuery}"/>
+              <jsp:param name="categories" value="${categoriesQuery}"/>
+              <jsp:param name="types" value="${typesQuery}"/>
+              <jsp:param name="star1" value="${starsQuery1}"/>
+              <jsp:param name="star2" value="${starsQuery2}"/>
+              <jsp:param name="nameFlag" value="${nameFlagQuery}"/>
+              <jsp:param name="order" value="${orderValue * sortValue}"/>
+              <jsp:param name="commentAmount" value="${commentAmount}"/>
+              <jsp:param name="commentDate" value="${dateComment}"/>
+              <jsp:param name="updateDate" value="${dateUpdate}"/>
+            </jsp:include>
+      </pane>
+      <!-- POSTS TAB -->
+      <pane title="{{'EXPLORE_POSTS' | translate}}" ng-click="hideTechFilters()">
+        <div>
+
+            <div ng-if="!posts.isEmpy()">
+
+                <div ng-repeat="post in posts" class="card mb-3 post-card">
+                  <div class="card-body">
+                    <div class="row search-post-title ml-1">
+                      <a ng-href="/posts/{{post.postId}}">{{post.title}}</a>
+                    </div>
+                    <div class="row search-post-description ml-1">{{post.description}}</div>
+                    <div class="row extra-info">
+                      <div class="col-9">
+                          <button ng-repeat="tag in post.postTags" class="badge badge-color ml-1" onclick="goToExplore('${tag.tagName}','${tag.type.name()}')">
+                            <span ng-switch="tag.type.name()">
+                              <span ng-switch-when="tech_name">{{tag.tagName}}</span>
+                              <span ng-switch-when="tech_type">
+                                <spring:message code="type.${tag.tagName}"/>
+                              </span>
+                              <span ng-switch-default>
+                                  <spring:message code="category.${tag.tagName}"/>
+                              </span>
+                            </span>
+                          </button>
+
+                      </div>
+                      <div class="col">
+                        <div class="row d-flex secondary-color text-right post-date small-font">
+                          {{post.timestamp.toLocaleString()}}
+                        </div>
+                        <div class="row d-flex secondary-color text-right small-font">
+                          <a ng-href="/users/{{post.user.username}}">{{post.user.username}}</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
 
+              <!-- Posts Pagination -->
+              <jsp:include page="../components/pagination.jsp">
+                <jsp:param name="total" value="${postsResults}"/>
+                <jsp:param name="page" value="${postsPage}"/>
+                <jsp:param name="page_size" value="${postsPageSize}"/>
+                <jsp:param name="origin" value="search_posts"/>
+                <jsp:param name="posts_page" value="${postsPage}"/>
+                <jsp:param name="toSearch" value="${techNameQuery}"/>
+                <jsp:param name="categories" value="${categoriesQuery}"/>
+                <jsp:param name="types" value="${typesQuery}"/>
+                <jsp:param name="order" value="${orderValue * sortValue }"/>
+                <jsp:param name="commentAmount" value="${commentAmount}"/>
+                <jsp:param name="commentDate" value="${dateComment}"/>
+                <jsp:param name="updateDate" value="${dateUpdate}"/>
+              </jsp:include>
+            </div>
+            <div ng-if="posts.isEmpy()">{{'EXPLORE_NOT_FOUND' | translate}}</div>
+
+
+        </div>
+      </pane>
+    </tabs>
   </div>
 </div>
