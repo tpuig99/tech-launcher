@@ -5,7 +5,7 @@ define(['frontend'], function(frontend) {
     $scope.isAdmin = true;
     $scope.isOwner = true;
     $scope.isEnable = false;
-    $scope.search_page = false;
+    $scope.searchPage = false;
     $scope.username = 'pepe';
   });
 

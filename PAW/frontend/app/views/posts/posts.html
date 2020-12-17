@@ -17,8 +17,8 @@
       <div class="row showing-results">
         <div class="col-9"></div>
         <div class="col showing-results data">
-          {{page_size * (curr_page - 1) + 1}}- <a ng-if="posts.length < page_size">{{page_size * (curr_page - 1) + posts.length}}</a>
-          <div ng-if="posts.length >= page_size">{{page_size * (curr_page)}}</div>
+          {{pageSize * (currPage - 1) + 1}}- <a ng-if="posts.length < pageSize">{{pageSize * (currPage - 1) + posts.length}}</a>
+          <div ng-if="posts.length >= pageSize">{{pageSize * (currPage)}}</div>
           {{'FORUM_SHOWING_RESULTS' | translate}} {{postAmount}}
         </div>
       </div>
@@ -93,10 +93,10 @@
                                       {{tag.tag}}
                                   </div>
                                   <div ng-if="tag.type == 'type'">
-                                      {{'TYPE_' + tag.tag | translate}}
+                                      {{'TYPE_' + tag.tag | uppercase | translate}}
                                   </div>
                                   <div ng-if="tag.type == 'category'">
-                                      {{ "CATEGORY_"+ tag.tag | translate}}
+                                      {{ "CATEGORY_"+tag.tag | uppercase | translate}}
                                   </div>
                           </span>
                         </button>
