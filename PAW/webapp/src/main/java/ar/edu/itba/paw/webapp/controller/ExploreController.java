@@ -224,7 +224,7 @@ public class ExploreController {
 
             search.setFrameworksAmount(searchResultsNumber);
             search.setFrameworks(frameworks.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
-            return pagination(uriInfo, page, searchResultsNumber, search);
+            return pagination(uriInfo, page == null ? 1 : postsPage, searchResultsNumber, search);
         }
         /* -------------------------------------------------- */
         /* --------------------- POSTS --------------------- */
@@ -239,7 +239,7 @@ public class ExploreController {
 
             search.setPosts(posts.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
             search.setPostsAmount(searchResultsNumber);
-            return pagination(uriInfo, postsPage, searchResultsNumber, search);
+            return pagination(uriInfo, postsPage == null ? 1 : postsPage, searchResultsNumber, search);
         }
         /* -------------------------------------------------- */
     }
