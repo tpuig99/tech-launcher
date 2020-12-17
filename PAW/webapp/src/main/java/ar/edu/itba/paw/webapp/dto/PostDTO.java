@@ -15,7 +15,6 @@ public class PostDTO {
     private String ownerLocation;
     private Date timestamp;
     private List<PostTagDTO> postTags;
-    private List<PostCommentDTO> postComments;
     private long votesUp, votesDown;
     private String comments;
     private String location;
@@ -113,13 +112,5 @@ public class PostDTO {
 
     public void setVotesDown(long votesDown) {
         this.votesDown = votesDown;
-    }
-
-    public List<PostCommentDTO> getPostComments() {
-        return postComments;
-    }
-
-    public void setPostComments(List<PostCommentDTO> postComments) {
-        this.postComments = postComments;
     }
 }
