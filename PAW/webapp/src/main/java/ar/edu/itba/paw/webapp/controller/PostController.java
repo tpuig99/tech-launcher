@@ -81,13 +81,22 @@ public class PostController {
     }
 
     @GET
+    @Path("/{id}/answer")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response postComments(@PathParam("id") long id, @QueryParam(value = "page") @DefaultValue(START_PAGE) Long commentsPage ) {
+        List<PostComment> commentsList = commentService.getByPost(id, commentsPage);
+        List<PostCommentDTO> dto = commentsList.stream().map((comment) -> PostCommentDTO.fromComment(comment, uriInfo)).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<PostCommentDTO>>(dto){}).build();
+    }
+
+    @GET
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response post(@PathParam("id") long id, @QueryParam(value = "page") @DefaultValue(START_PAGE) Long commentsPage) {
+    public Response post(@PathParam("id") long id) {
         Optional<Post> post = ps.findById(id);
         if(post.isPresent()) {
             LOGGER.info("Post {}: Requested and found, retrieving data", id);
-            PostDTO dto = PostDTO.fromPost(post.get());
+            PostDTO dto = PostDTO.fromPost(post.get(), uriInfo);
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()){
@@ -112,7 +121,7 @@ public class PostController {
             long amount = post.get().getAnswersAmount();
             int pages = (int) Math.ceil((double) amount/COMMENTS_PAGE_SIZE);
             List<PostCommentDTO> dto = commentService.getByPost(id, page).stream()
-                    .map(PostCommentDTO::fromComment).collect(Collectors.toList());
+                    .map((PostComment comment) -> PostCommentDTO.fromComment(comment, uriInfo)).collect(Collectors.toList());
             return pagination(uriInfo,page,pages,new GenericEntity<List<PostCommentDTO>>(dto){});
         }
         LOGGER.error("Tech {}: Requested and not found", id);
@@ -251,7 +260,7 @@ public class PostController {
             if( user.isPresent() ){
                 ps.vote(postId, user.get().getId(), UP_VOTE_VALUE);
                 LOGGER.info("Post {}: User {} voted up post",postId, user.get().getId());
-                PostDTO postDTO = PostDTO.fromPost(post.get());
+                PostDTO postDTO = PostDTO.fromPost(post.get(), uriInfo);
                 postDTO.setVotesUp(postDTO.getVotesUp() + 1);
                 return Response.ok(postDTO).build();
             }
@@ -271,7 +280,7 @@ public class PostController {
             if( user.isPresent() ){
                 ps.vote(postId, user.get().getId(), DOWN_VOTE_VALUE);
                 LOGGER.info("Post {}: User {} voted down post", postId, user.get().getId());
-                PostDTO postDTO = PostDTO.fromPost(post.get());
+                PostDTO postDTO = PostDTO.fromPost(post.get(), uriInfo);
                 postDTO.setVotesUp(postDTO.getVotesDown() + 1);
                 return Response.ok(postDTO).build();
             }
@@ -345,7 +354,7 @@ public class PostController {
         if( post.isPresent() ){
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( user.isPresent() ){
-                commentService.insertPostComment(form.getPostId(), user.get().getId(), form.getDescription(), null);
+                commentService.insertPostComment(postId, user.get().getId(), form.getDescription(), null);
                 return Response.ok(form).build();
             }
             LOGGER.error("Post {}: Unauthorized user tried to insert a comment", postId);

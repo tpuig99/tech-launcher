@@ -35,10 +35,10 @@ define([], function() {
     BUTTON_PROFILE: 'Perfil',
     BUTTON_MODERATE: 'Moderar',
 
-    SEARCH_TITLE: 'Buscar',
+    EXPLORE_SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
     EXPLORE_CATEGORIES: 'Categorías',
-    EXPLORE_TYPE_: 'Tipos',
+    EXPLORE_TYPES: 'Tipos',
     EXPLORE_RATING: 'Puntaje',
     EXPLORE_COMMENTS: 'Cantidad de comentarios',
     EXPLORE_COMMENTS_FROM: 'Más de {{ amount }} comentarios',

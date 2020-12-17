@@ -13,10 +13,13 @@ public class PostDTO {
     private String postTitle;
     private String postDescription;
     private SimpleUserDTO postOwner;
+    private String ownerLocation;
     private Date timestamp;
     private List<PostTagDTO> postTags;
     private List<PostCommentDTO> postComments;
     private long votesUp, votesDown;
+    private String comments;
+    private String location;
     private int loggedVote;
 
     public static PostDTO fromPost(Post post, UriInfo uriInfo) {
@@ -25,10 +28,37 @@ public class PostDTO {
         dto.postDescription = post.getDescription();
         dto.postOwner = SimpleUserDTO.fromUser(post.getUser(),uriInfo);
         dto.timestamp = post.getTimestamp();
+        dto.comments = uriInfo.getAbsolutePathBuilder().path("answers").build().toString();
         dto.postTags = post.getPostTags().stream().map(PostTagDTO::fromPostTag).collect(Collectors.toList());
+        dto.ownerLocation = uriInfo.getBaseUriBuilder().path("users/"+post.getUser().getId()).build().toString();
         dto.votesUp = post.getVotesUp();
         dto.votesDown = post.getVotesDown();
+        dto.location = uriInfo.getBaseUriBuilder().path("posts/"+post.getPostId()).build().toString();
         return dto;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getOwnerLocation() {
+        return ownerLocation;
+    }
+
+    public void setOwnerLocation(String ownerLocation) {
+        this.ownerLocation = ownerLocation;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public String getPostTitle() {

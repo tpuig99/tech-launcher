@@ -237,7 +237,7 @@ public class ExploreController {
             searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order);
             LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
 
-            search.setPosts(posts.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
+            search.setPosts(posts.stream().map((Post post ) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList()));
             search.setPostsAmount(searchResultsNumber);
             return pagination(uriInfo, postsPage == null ? 1 : postsPage, searchResultsNumber, search);
         }
