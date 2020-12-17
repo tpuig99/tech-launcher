@@ -49,10 +49,11 @@ public class ModController {
     private final long pageStart=1;
     private final long PAGE_SIZE=5;
     private final String START_PAGE="1";
+    private final String PAGE = "page";
 
     private static final String MOD_VIEW = "/mod?tabs=";
 
-    private Response.ResponseBuilder addPaginationLinks (Response.ResponseBuilder responseBuilder, String parameterName, double currentPage, double pages) {
+    private Response.ResponseBuilder addPaginationLinks (Response.ResponseBuilder responseBuilder, String parameterName, long currentPage, long pages) {
         responseBuilder
                 .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName,1).build(),"first")
                 .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName,pages).build(),"last");
@@ -82,7 +83,7 @@ public class ModController {
     @GET
     @Path("/moderators")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response moderators (@QueryParam("modsPage") @DefaultValue(START_PAGE) Long modsPage) {
+    public Response moderators (@QueryParam("page") @DefaultValue(START_PAGE) Long modsPage) {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -106,9 +107,9 @@ public class ModController {
 
             if( userList.size() > 0) {
                 verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
-                double pages = Math.ceil(((double) modsAmount) / PAGE_SIZE);
+                long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList){});
-                return addPaginationLinks(response, "modsPage", modsPage, pages).build();
+                return addPaginationLinks(response, PAGE, modsPage, pages).build();
             }
 
             return Response.noContent().build();
@@ -119,7 +120,7 @@ public class ModController {
     @GET
     @Path("/applicants")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response applicants (@QueryParam("applicantsPage") @DefaultValue(START_PAGE) Long applicantsPage) {
+    public Response applicants (@QueryParam("page") @DefaultValue(START_PAGE) Long applicantsPage) {
         Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -143,9 +144,9 @@ public class ModController {
 
             if( userList.size() > 0) {
                 verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
-                double pages = Math.ceil(((double) modsAmount) / PAGE_SIZE);
+                long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList){});
-                return addPaginationLinks(response, "applicantsPage", applicantsPage, pages).build();
+                return addPaginationLinks(response, PAGE, applicantsPage, pages).build();
             }
 
             return Response.noContent().build();
@@ -180,9 +181,9 @@ public class ModController {
 
             if( userList.size() > 0) {
                 verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
-                double pages = Math.ceil(((double) modsAmount) / PAGE_SIZE);
+                long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList){});
-                return addPaginationLinks(response, "verifyPage", verifyPage, pages).build();
+                return addPaginationLinks(response, PAGE, verifyPage, pages).build();
             }
 
             return Response.noContent().build();
@@ -217,9 +218,9 @@ public class ModController {
 
             if( commentList.size() > 0) {
                 reportDTOList = commentList.stream().map(ReportDTO::fromReportComment).collect(Collectors.toList());
-                double pages = Math.ceil(((double) reportsAmount) / PAGE_SIZE);
+                long pages = (long) Math.ceil(((double) reportsAmount) / PAGE_SIZE);
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOList){});
-                return addPaginationLinks(response, "rComPage", rComPage, pages).build();
+                return addPaginationLinks(response, PAGE, rComPage, pages).build();
             }
 
             return Response.noContent().build();
@@ -254,9 +255,9 @@ public class ModController {
 
             if( contentList.size() > 0) {
                 reportDTOList = contentList.stream().map(ReportDTO::fromReportContent).collect(Collectors.toList());
-                double pages = Math.ceil(((double) reportsAmount) / PAGE_SIZE);
+                long pages = (long) Math.ceil(((double) reportsAmount) / PAGE_SIZE);
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOList){});
-                return addPaginationLinks(response, "rConPage", rConPage, pages).build();
+                return addPaginationLinks(response, PAGE, rConPage, pages).build();
             }
 
             return Response.noContent().build();
@@ -269,29 +270,45 @@ public class ModController {
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response demoteMod (@PathParam("id") Long verificationId) {
+        Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         Optional<VerifyUser> vu = us.getVerifyById(verificationId);
-        if( vu.isPresent() && !vu.get().isPending() ){
-            us.deleteVerification(verificationId);
-            LOGGER.info("User: Demoted user according to Verification {}", verificationId);
-            return Response.ok().build();
+
+        if (user.isPresent()) {
+            if (user.get().isAdmin() || ! user.get().getOwnedFrameworks().isEmpty()) {
+                if (vu.isPresent()) {
+                    if (vu.get().isPending()) {
+                        us.deleteVerification(verificationId);
+                        LOGGER.info("User: Demoted user according to Verification {}", verificationId);
+                        return Response.ok().build();
+                    }
+                    return Response.notModified().build();
+                }
+            }
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
-        LOGGER.error("User: Attempting to demote a non promoted user");
-        return Response.notModified().build();
+        return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
     @POST
     @Path("/pending/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response acceptMod (@PathParam("id") Long verificationId) {
+        Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         Optional<VerifyUser> vu= us.getVerifyById(verificationId);
-        if(vu.isPresent()) {
-            if (vu.get().isPending()) {
-                us.verify(verificationId);
-                Optional<User> user = us.findById(vu.get().getUserId());
-                user.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
-                return Response.ok().build();
+
+        if (user.isPresent()) {
+            if (user.get().isAdmin() || ! user.get().getOwnedFrameworks().isEmpty()) {
+                if (vu.isPresent()) {
+                    if (vu.get().isPending()) {
+                        us.verify(verificationId);
+                        Optional<User> u = us.findById(vu.get().getUserId());
+                        u.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
+                        return Response.ok().build();
+                    }
+                    return Response.notModified().build();
+                }
             }
-            return Response.notModified().build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -300,12 +317,20 @@ public class ModController {
     @Path("/pending/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response rejectMod (@PathParam("id") Long verificationId) {
-        Optional<VerifyUser> vu= us.getVerifyById(verificationId);
-        if(vu.isPresent() && vu.get().isPending()) {
-            if(vu.get().isPending()) {
-                us.deleteVerification(verificationId);
+        Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+        Optional<VerifyUser> vu = us.getVerifyById(verificationId);
+
+        if (user.isPresent()) {
+            if (user.get().isAdmin() || ! user.get().getOwnedFrameworks().isEmpty()) {
+                if (vu.isPresent() && vu.get().isPending()) {
+                    if (vu.get().isPending()) {
+                        us.deleteVerification(verificationId);
+                        return Response.ok().build();
+                    }
+                    return Response.notModified().build();
+                }
             }
-            return Response.notModified().build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -346,10 +371,10 @@ public class ModController {
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    @POST
+    @DELETE
     @Path("/reports/comment/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response acceptCommentReport(@PathParam("id") Long commentId) {
+    public Response deleteCommentReport(@PathParam("id") Long commentId) {
         final Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
@@ -365,10 +390,10 @@ public class ModController {
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    @DELETE
+    @POST
     @Path("/reports/comment/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response deleteCommentReport(@PathParam("id") Long commentId) {
+    public Response acceptCommentReport(@PathParam("id") Long commentId) {
         final Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
@@ -389,10 +414,10 @@ public class ModController {
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    @POST
+    @DELETE
     @Path("/reports/content/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response acceptContentReport(@PathParam("id") Long contentId) {
+    public Response deleteContentReport(@PathParam("id") Long contentId) {
         final Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
@@ -409,10 +434,10 @@ public class ModController {
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    @DELETE
+    @POST
     @Path("/reports/content/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response deleteContentReport(@PathParam("id") Long contentId) {
+    public Response acceptContentReport(@PathParam("id") Long contentId) {
         final Optional<User> userOptional = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if(userOptional.isPresent()){
             User user = userOptional.get();
