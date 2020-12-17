@@ -2,7 +2,22 @@
 define([], function() {
 
 	return {
-		WELCOME_MESSAGE: 'Always a pleasure scaffolding your apps',
+	  NAVBAR_TITLE: 'Tech Launcher',
+    HOME_TITLE: 'Welcome to Tech Launcher!',
+    HOME_SUBTITLE: 'Starting a project is hard, we know it. That\'s why we created Tech Launcher. Here, you will be able to gather information from a large amount of technologies useful in the world of development.',
+    HOME_TECHS_TITLE: 'Techs',
+    HOME_TECHS_DESCRIPTION: 'Here you can see a wide number of technologies that you may be interested in',
+    HOME_FORUM_TITLE: 'Forum',
+    HOME_TECHS_BUTTON: 'Visit Techs',
+    HOME_FORUM_BUTTON: 'Visit Forum',
+    HOME_FORUM_DESCRIPTION: 'Do you have an specific question? In the Forum section you can ask questions to other users, or reply theirs',
+
+    TECHS_BEST_RATED: 'Best rated',
+    TECHS_TASTES: 'Based on your tastes',
+    TECHS_ADD_NEW: 'Add a new Tech!',
+    BUTTON_ADD_TECH: 'Add Tech',
+    TECH_PICTURE: 'Image of the Tech',
+    WELCOME_MESSAGE: 'Always a pleasure scaffolding your apps',
 
 		WELCOME_CONTROLLER: 'A new and shiny controller has been made!',
 		WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
@@ -12,7 +27,13 @@ define([], function() {
     BUTTON_SEND_EMAIL: 'Send Email',
     BUTTON_CANCEL: 'Cancel',
     BUTTON_SUBMIT: 'Submit',
+    BUTTON_LOGIN: 'Login',
+    BUTTON_LOGOUT: 'Logout',
+    BUTTON_SIGN_UP: 'Sign Up',
+    BUTTON_PROFILE: 'Profile',
+    BUTTON_MODERATE: 'Moderate',
 
+    SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
     EXPLORE_CATEGORIES: 'Categories',
     EXPLORE_TYPES: 'Types',
@@ -82,6 +103,12 @@ define([], function() {
     POST_TECH_NAMES: 'Tech Names',
     POST_DELETE: 'Delete Post',
     POST_DELETE_MESSAGE: 'Are you sure you want to delete this Post?',
+
+    FORUM_TITLE: 'Forum',
+    FORUM_WREF:  'Tech Launcher - Forum',
+    FORUM_ADD_POST: 'Add a new Question to our Forum!',
+    FORUM_SHOWING_RESULTS: 'results of',
+    FORUM_EMPTY_POSTS: 'There are no posts here yet!',
 
     FORM_ERROR_LENGTH: 'Must be between {{ min }} and {{ max }} characters',
     FORM_ERROR_EMPTY: 'Must not be empty',
