@@ -1,16 +1,15 @@
 'use strict';
-define(['frontend'], function(frontend) {
+define(['frontend','services/postService'], function(frontend) {
 
-  frontend.controller('PostsCtrl', function($scope) {
+  frontend.controller('PostsCtrl', function($scope, $location, $window, $routeParams, postService, Restangular) {
     $scope.isAdmin = true;
-    $scope.isEnable = false;
+    $scope.isEnable = true;
     $scope.isPresent = true;
+    $scope.username = 'pepe';
     $scope.pageSize = 7;
-    $scope.currPage = 1;
-    $scope.posts = [{title: 'post1',description: 'description',votesUp: 2, votesDown: 3, user: {name: 'user1',isAuthor: true,vote: 0}, location: '/post/1', tags: [{tag: 'OO', type: 'category'},{tag: 'tag2', type: 'tech_name'}],time: '10-feb-2020 19:00'},
-      {title: 'post2',description: 'description',votesUp: 2, votesDown: 3, user: {name: 'user2',isAuthor: true,vote: 1}, location: '/post/1', tags: [{tag: 'OO', type: 'category'},{tag: 'tag2', type: 'tech_name'}],time: '10-feb-2020 19:00'},
-      {title: 'post3',description: 'description',votesUp: 2, votesDown: 3, user: {name: 'user3',isAuthor: true,vote: -1}, location: '/post/1', tags: [{tag: 'Artificial_Intelligence', type: 'category'},{tag: 'tag2', type: 'tech_name'}],time: '10-feb-2020 19:00'}];
-    $scope.postAmount = 20;
+    postService.getPosts().then(function (posts) {
+      $scope.posts = posts;
+    });
   });
 
 });

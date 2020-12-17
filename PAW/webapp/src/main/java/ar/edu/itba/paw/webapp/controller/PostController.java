@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -65,11 +66,19 @@ public class PostController {
         final double pages = Math.ceil(((double)ps.getPostsAmount())/POSTS_PAGE_SIZE);
         List<Post> postsList = ps.getAll(postsPage, POSTS_PAGE_SIZE);
         PostsDTO list = new PostsDTO();
-        list.setPosts(postsList.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
-
+        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<PostDTO> posts = new ArrayList<>();
+        for (Post post:postsList) {
+            PostDTO postDTO = PostDTO.fromPost(post);
+            user.ifPresent(value -> postDTO.setLoggedVote(value.getVoteForPost(post.getPostId())));
+            posts.add(postDTO);
+        }
+        list.setPosts(posts);
+        list.setPageSize((int)POSTS_PAGE_SIZE);
+        list.setAmount(ps.getPostsAmount());
+        list.setCurrentPage(postsPage);
         return pagination(uriInfo, postsPage, (int)pages, list);
     }
-
 
     @GET
     @Path("/{id}")

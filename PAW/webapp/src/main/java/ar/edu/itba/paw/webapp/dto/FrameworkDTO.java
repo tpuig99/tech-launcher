@@ -1,12 +1,15 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.User;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.awt.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class FrameworkDTO {
     private String name;
@@ -26,7 +29,7 @@ public class FrameworkDTO {
     private String tutorial;
     private String course;
     private String location;
-
+    private int loggedStars;
 
     public static FrameworkDTO fromFramework(Framework framework, UriInfo uriInfo) {
         final FrameworkDTO dto = new FrameworkDTO();
@@ -42,7 +45,7 @@ public class FrameworkDTO {
         dto.votes_cant = framework.getVotesCant();
         dto.stars = framework.getStars();
         dto.comments_amount = framework.getCommentsAmount();
-        dto.comments = uriInfo.getAbsolutePathBuilder().path("comments").build().toString();
+        dto.comments = uriInfo.getAbsolutePathBuilder().path("comment").build().toString();
         dto.book = uriInfo.getAbsolutePathBuilder().path("content").build().toString()+"?type=book";
         dto.course = uriInfo.getAbsolutePathBuilder().path("content").build().toString()+"?type=course";
         dto.tutorial = uriInfo.getAbsolutePathBuilder().path("content").build().toString()+"?type=tutorial";
@@ -189,5 +192,13 @@ public class FrameworkDTO {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public int getLoggedStars() {
+        return loggedStars;
+    }
+
+    public void setLoggedStars(int loggedStars) {
+        this.loggedStars = loggedStars;
     }
 }

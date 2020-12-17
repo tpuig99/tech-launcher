@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.PostComment;
 
+import javax.ws.rs.core.UriInfo;
 import java.util.Date;
 
 public class PostCommentDTO {
@@ -14,14 +15,14 @@ public class PostCommentDTO {
     private Long votesUp;
     private Long votesDown;
 
-    public static PostCommentDTO fromComment(PostComment comment){
+    public static PostCommentDTO fromComment(PostComment comment, UriInfo uriInfo){
         final PostCommentDTO postComment = new PostCommentDTO();
         postComment.postCommentId = comment.getPostCommentId();
         postComment.postId = comment.getPost().getPostId();
         postComment.description = comment.getDescription();
         postComment.timestamp = comment.getTimestamp();
         postComment.reference = comment.getReference();
-        postComment.user = SimpleUserDTO.fromUser(comment.getUser());
+        postComment.user = SimpleUserDTO.fromUser(comment.getUser(),uriInfo);
         postComment.votesUp = comment.getVotesUp();
         postComment.votesDown = comment.getVotesDown();
         return postComment;

@@ -3,24 +3,29 @@ package ar.edu.itba.paw.webapp.dto;
 import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.User;
 
+import javax.ws.rs.core.UriInfo;
+
 public class SimpleUserDTO {
     private String username;
     private Boolean admin;
     private Boolean verify;
     private Boolean author;
-    public static SimpleUserDTO fromUser(User user, Framework framework) {
+    private String location;
+    public static SimpleUserDTO fromUser(User user, Framework framework, UriInfo uriInfo) {
         SimpleUserDTO dto = new SimpleUserDTO();
         dto.username=user.getUsername();
         dto.admin = user.isAdmin();
         dto.verify = user.isVerifyForFramework(framework.getId());
         dto.author = framework.getAuthor().getId().equals(user.getId());
+        dto.location = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()).build().toString();
         return dto;
     }
 
-    public static SimpleUserDTO fromUser(User user ) {
+    public static SimpleUserDTO fromUser(User user,UriInfo uriInfo ) {
         SimpleUserDTO dto = new SimpleUserDTO();
         dto.username=user.getUsername();
         dto.admin = user.isAdmin();
+        dto.location = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()).build().toString();
         dto.verify = false;
         dto.author = false;
         return dto;
@@ -56,5 +61,13 @@ public class SimpleUserDTO {
 
     public void setAuthor(Boolean author) {
         this.author = author;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

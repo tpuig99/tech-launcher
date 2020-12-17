@@ -17,7 +17,7 @@ public class ContentDTO {
         final ContentDTO dto = new ContentDTO();
         dto.date = content.getTimestamp();
         dto.link = content.getLink();
-        dto.user = SimpleUserDTO.fromUser(content.getUser(), content.getFramework());
+        dto.user = SimpleUserDTO.fromUser(content.getUser(), content.getFramework(),uriInfo);
         dto.title = content.getTitle();
         dto.type = content.getType().name();
         dto.location = uriInfo.getBaseUriBuilder().path("/techs/"+content.getFrameworkId()+"/content/"+content.getContentId()).build().toString();

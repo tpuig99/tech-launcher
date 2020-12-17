@@ -150,6 +150,11 @@ public class FrameworkController {
         if (framework.isPresent()) {
             LOGGER.info("Tech {}: Requested and found, retrieving data", id);
             FrameworkDTO dto = FrameworkDTO.fromFramework(framework.get(),uriInfo);
+            Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            if(user.isPresent()){
+                Optional<FrameworkVote> vote = user.get().getVoteForFramework(id);
+                vote.ifPresent(frameworkVote -> dto.setLoggedStars(frameworkVote.getStars()));
+            }
             return Response.ok(dto).build();
         }
         LOGGER.error("Tech {}: Requested and not found", id);

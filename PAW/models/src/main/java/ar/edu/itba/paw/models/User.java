@@ -304,4 +304,40 @@ public class User {
     public Optional<FrameworkVote> getVoteForFramework(long id){
         return frameworkVotes.stream().filter((x)->x.getFramework().getId() == id).findFirst();
     }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<PostVote> getPostVotes() {
+        return postVotes;
+    }
+
+    public void setPostVotes(List<PostVote> postVotes) {
+        this.postVotes = postVotes;
+    }
+
+    public List<PostComment> getPostComments() {
+        return postComments;
+    }
+
+    public void setPostComments(List<PostComment> postComments) {
+        this.postComments = postComments;
+    }
+
+    public List<PostCommentVote> getPostCommentVotes() {
+        return postCommentVotes;
+    }
+
+    public void setPostCommentVotes(List<PostCommentVote> postCommentVotes) {
+        this.postCommentVotes = postCommentVotes;
+    }
+    public int getVoteForPost(long id){
+        Optional<PostVote> vote =postVotes.stream().filter((x)->x.getPost().getPostId() == id).findFirst();
+        return vote.isPresent() ? vote.get().getVote() : 0;
+    }
 }

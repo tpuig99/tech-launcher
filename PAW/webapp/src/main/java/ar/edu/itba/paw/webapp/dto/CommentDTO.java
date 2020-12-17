@@ -25,7 +25,7 @@ public class CommentDTO {
         dto.description = comment.getDescription();
         dto.date = comment.getTimestamp();
         dto.referenceId = comment.getReference();
-        dto.user = SimpleUserDTO.fromUser(comment.getUser(), comment.getFramework());
+        dto.user = SimpleUserDTO.fromUser(comment.getUser(), comment.getFramework(),uriInfo);
         dto.votes_up = comment.getVotesUp();
         dto.votes_down = comment.getVotesDown();
         if(comment.getReplies() != null)

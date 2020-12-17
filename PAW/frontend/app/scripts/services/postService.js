@@ -29,9 +29,12 @@ define(['frontend'], function(frontend) {
       return post.get();
     };
 
-    this.deletePost = function(id){
+    this.deletePost = function(id) {
       return Restangular.one('posts',id).remove();
-    }
+    };
 
+    this.getPosts = function() {
+      return Restangular.one('posts').get();
+    };
 	});
 });

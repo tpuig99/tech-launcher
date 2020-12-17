@@ -3,6 +3,8 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Post;
 import ar.edu.itba.paw.models.PostTag;
+
+import javax.ws.rs.core.UriInfo;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,12 +17,13 @@ public class PostDTO {
     private List<PostTagDTO> postTags;
     private List<PostCommentDTO> postComments;
     private long votesUp, votesDown;
+    private int loggedVote;
 
-    public static PostDTO fromPost(Post post) {
+    public static PostDTO fromPost(Post post, UriInfo uriInfo) {
         final PostDTO dto = new PostDTO();
         dto.postTitle = post.getTitle();
         dto.postDescription = post.getDescription();
-        dto.postOwner = SimpleUserDTO.fromUser(post.getUser());
+        dto.postOwner = SimpleUserDTO.fromUser(post.getUser(),uriInfo);
         dto.timestamp = post.getTimestamp();
         dto.postTags = post.getPostTags().stream().map(PostTagDTO::fromPostTag).collect(Collectors.toList());
         dto.votesUp = post.getVotesUp();
@@ -90,5 +93,13 @@ public class PostDTO {
 
     public void setPostComments(List<PostCommentDTO> postComments) {
         this.postComments = postComments;
+    }
+
+    public int getLoggedVote() {
+        return loggedVote;
+    }
+
+    public void setLoggedVote(int loggedVote) {
+        this.loggedVote = loggedVote;
     }
 }
