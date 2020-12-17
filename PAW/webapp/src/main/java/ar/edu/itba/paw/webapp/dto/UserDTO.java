@@ -22,12 +22,15 @@ public class UserDTO {
     private String votes;
 
 
+
     public static UserDTO fromUser (User user, UriInfo uriInfo) {
         UserDTO dto = new UserDTO();
         dto.username = user.getUsername();
         dto.description = user.getDescription();
         dto.mail = user.getMail();
-        dto.verificationNames = user.getVerifications().stream().map(VerifyUser::getFrameworkName).collect(Collectors.toList());
+        if (user.getVerifications() != null && !user.getVerifications().isEmpty()) {
+            dto.verificationNames = user.getVerifications().stream().map(VerifyUser::getFrameworkName).collect(Collectors.toList());
+        }
         dto.enabled = user.isEnable();
         dto.allowedModeration = user.isAllowMod();
         dto.admin = user.isAdmin();

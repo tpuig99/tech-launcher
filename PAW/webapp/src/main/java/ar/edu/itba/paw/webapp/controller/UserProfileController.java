@@ -243,7 +243,7 @@ public class UserProfileController {
                 us.updatePassword(userId, form.getPassword());
                 LOGGER.info("Register: User {} updated its password successfully", userId);
 
-                return Response.ok(form).build();
+                return Response.ok().build();
             }
             LOGGER.error("User Profile: User {} does not have enough privileges to update profile", userId);
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -255,17 +255,22 @@ public class UserProfileController {
     @POST
     @Path("password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response changePasswordWithToken(@QueryParam("token") String token, final UserAddDTO form) {
-        String[] strings = token.split("-a_d-ss-");
+    public Response changePasswordWithToken(PasswordDTO passwordDTO) {
+
+        String[] strings = passwordDTO.getToken().split("-a_d-ss-");
         Long userId = Long.valueOf(strings[strings.length - 1]);
 
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
-            if (form.getPassword() == null) {
+            if (passwordDTO.getPassword() == null) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
-            return changePassword(userId, form);
+
+            us.updatePassword(userId, passwordDTO.getPassword());
+            LOGGER.info("Register: User {} updated its password successfully", userId);
+
+            return Response.ok().build();
         }
 
         LOGGER.error("User Profile: User {} not found", userId);

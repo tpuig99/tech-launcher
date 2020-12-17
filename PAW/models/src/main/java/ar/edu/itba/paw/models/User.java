@@ -192,8 +192,12 @@ public class User {
         return false;
     }
     public List<VerifyUser> getVerifications(){
-        return applications.stream().filter((x)-> !x.isPending()).collect(Collectors.toList());
+        if (applications != null) {
+            return applications.stream().filter((x)-> !x.isPending()).collect(Collectors.toList());
+        }
+        return null;
     }
+
     public boolean hasAppliedToFramework(long frameworkId){
         for (VerifyUser v: applications) {
             if(v.getFrameworkId()==frameworkId){
