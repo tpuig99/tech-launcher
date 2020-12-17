@@ -71,7 +71,7 @@ public class PostController {
     }
 
     @GET
-    @Path("/{id}/comments")
+    @Path("/{id}/answers")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response postComments(@PathParam("id") long id, @QueryParam(value = "page") @DefaultValue(START_PAGE) Long commentsPage ) {
         List<PostComment> commentsList = commentService.getByPost(id, commentsPage);

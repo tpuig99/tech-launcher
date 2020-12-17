@@ -26,7 +26,7 @@ public class PostDTO {
         dto.postDescription = post.getDescription();
         dto.postOwner = SimpleUserDTO.fromUser(post.getUser());
         dto.timestamp = post.getTimestamp();
-        dto.comments = uriInfo.getAbsolutePathBuilder().path("comments").build().toString();
+        dto.comments = uriInfo.getAbsolutePathBuilder().path("answers").build().toString();
         dto.postTags = post.getPostTags().stream().map(PostTagDTO::fromPostTag).collect(Collectors.toList());
         dto.ownerLocation = uriInfo.getBaseUriBuilder().path("users/"+post.getUser().getId()).build().toString();
         dto.votesUp = post.getVotesUp();

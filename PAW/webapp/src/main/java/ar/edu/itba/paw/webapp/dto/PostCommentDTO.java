@@ -11,14 +11,12 @@ public class PostCommentDTO {
     private Long reference;
     private SimpleUserDTO user;
     private String userLocation;
-    private Long postId;
     private Long votesUp;
     private Long votesDown;
     private String location;
 
     public static PostCommentDTO fromComment(PostComment comment, UriInfo uriInfo){
         final PostCommentDTO postComment = new PostCommentDTO();
-        postComment.postId = comment.getPost().getPostId();
         postComment.description = comment.getDescription();
         postComment.timestamp = comment.getTimestamp();
         postComment.reference = comment.getReference();
@@ -76,14 +74,6 @@ public class PostCommentDTO {
 
     public void setUser(SimpleUserDTO user) {
         this.user = user;
-    }
-
-    public Long getPostId() {
-        return postId;
-    }
-
-    public void setPostId(Long postId) {
-        this.postId = postId;
     }
 
     public Long getVotesUp() {
