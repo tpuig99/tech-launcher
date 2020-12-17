@@ -4,3 +4,4 @@ frontend/node/node_modules
 frontend/node/node.exe
 frontend/package-lock.json
 frontend/dist
+frontend/.tmp
