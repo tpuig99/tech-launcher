@@ -2,7 +2,9 @@
   "name": "frontend",
   "version": "0.0.0",
   "dependencies": {
-    "grunt-google-cdn2": "^0.6.0"
+    "grunt-google-cdn2": "^0.6.0",
+    "lodash": "^4.17.20",
+    "restangular": "^1.6.1"
   },
   "devDependencies": {
     "bower": "^1.3.12",
