@@ -4,11 +4,15 @@ define(['frontend'], function(frontend) {
 	frontend.service('postService', function(Restangular) {
 
     this.getPost = function(id) {
-      var post = Restangular.one('posts',id);
+      let post = Restangular.one('posts',id);
       return post.get();
     };
 
-    this.deletePost = function(id) {
+    this.getAnswers = function(id) {
+      return Restangular.one('posts',id).getList('answers');
+    };
+
+    this.deletePost = function(id){
       return Restangular.one('posts',id).remove();
     };
 
