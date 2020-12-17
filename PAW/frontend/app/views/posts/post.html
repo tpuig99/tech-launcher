@@ -2,13 +2,13 @@
   <div class="content-no-sidebar-left">
 
     <!--Questions Section -->
-    <div class="ml-4 mr-1 description-text"><h1><c:out value="${post.title}"/></h1></div>
+    <div class="ml-4 mr-1 description-text"><h1>{{post.postTitle}}</h1></div>
 
     <div ng-if="isAdmin || isOwner">
       <div class="row d-flex my-1 justify-content-end">
         <div class="row d-flex">
           <div class="mb-4 mx-2">
-            <a href="/posts/edit_post/${post.postId}" >
+            <a href="/posts/edit_post/{{post.postId}}" >
             <button class="btn btn-info btn-block text-nowrap" type="button">
               <i class="fa fa-edit fa-sm mr-1"></i>
               {{'BUTTON_EDIT_POST' | translate}}
@@ -16,7 +16,7 @@
             </a>
           </div>
           <div class="mx-2">
-            <button class="btn btn-danger btn-block text-nowrap" type="button" onclick="openDeletePostModal(${post.postId})" data-toggle="modal" data-target="#deletePostModal">
+            <button class="btn btn-danger btn-block text-nowrap" type="button" data-toggle="modal" data-target="#deletePostModal">
               <i class="fas fa-trash-alt fa-sm mr-1"></i>
               {{'BUTTON_DELETE_POST' | translate}}
             </button>
@@ -41,7 +41,7 @@
                 <div ng-if="!isEnabled">
                   <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                   <div>
-                    <h4>${post.votesUp - post.votesDown}</h4>
+                    <h4>{{post.votesUp - post.votesDown}}</h4>
                   </div>
                   <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
                 </div>
@@ -52,7 +52,7 @@
                         <i ng-if="post.getUserAuthVote(user.name) <= 0" class="fa fa-2x fa-arrow-up"></i>
                       </button>
                       <div>
-                        <h4>${post.votesUp - post.votesDown}</h4>
+                        <h4>{{post.votesUp - post.votesDown}}</h4>
                       </div>
                     </div>
 
@@ -67,21 +67,21 @@
         </div>
         <div class="col-9">
           <div class="row post-description description-text">
-            {{post.description}}
+            {{post.postDescription}}
           </div>
           <div class="row extra-info">
             <!-- Tags section -->
             <div class="col-9 tags">
-                <button ng-repeat="tag in post.postTags" class="badge badge-color ml-1" onclick="goToExplore('${tag.tagName}','${tag.type.name()}')">
+                <button ng-repeat="tag in post.postTags" class="badge badge-color ml-1" ng-click="redirect('/explore')">
                       <span ng-switch="tag.type.name()">
                           <span ng-switch-when="tech_name">
                               {{tag.tagName}}
                           </span>
                           <span ng-switch-when="tech_type">
-                              <spring:message code="type.${tag.tagName}"/>
+                              {{tag.tagName}}
                           </span>
                           <span ng-switch-default>
-                              <spring:message code="category.${tag.tagName}"/>
+                              {{tag.tagName}}
                           </span>
                       </span>
                 </button>
@@ -91,7 +91,7 @@
                 {{post.timestamp.toLocaleString()}}
               </div>
               <div class="row d-flex secondary-color text-right">
-                <a ng-href="/users/{{post.user.id}}">{{post.user.username}}</a>
+                <a ng-href="/#/users/{{post.postOwner.id}}">{{post.postOwner.username}}</a>
               </div>
             </div>
           </div>
@@ -107,14 +107,14 @@
 
       <div ng-if="!answers.isEmpty()">
 
-          <div ng-repeat="answer in answers" class="post-cards">
+          <div ng-repeat="answer in post.postComments" class="post-cards">
             <div class="card mb-3 post-card-answer">
               <div class="card-body">
                 <!-- Delete comment -->
                 <div ng-if="isAdmin || isOwner || answer.user.username == user.name">
                   <div class="row">
                       <span class="col d-flex justify-content-end align-items-end">
-                          <button class="btn btn-link" onclick="openDeleteCommentModal(${answer.postCommentId})"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
+                          <button class="btn btn-link" ng-click="openDeleteCommentModal()"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                       </span>
                   </div>
                 </div>
@@ -161,16 +161,16 @@
                   </div>
                   <div class="col-10">
                     <div class="row post-description align-items-center description-text">
-                      <c:out value="${answer.description}"/>
+                      {{answer.description}}
                     </div>
                     <div class="row extra-info">
                       <div class="col-9 tags"></div>
                       <div class="col">
                         <div class="row d-flex secondary-color text-right post-date">
-                          <c:out value="${answer.timestamp.toLocaleString()}"/>
+                          {{answer.timestamp.toLocaleString()}}
                         </div>
                         <div class="row d-flex secondary-color text-right">
-                          <a ng-href="/users/${answer.user.username}">${answer.user.username}</a>
+                          <a ng-href="/users/${answer.user.username}">{{answer.user.username}}</a>
                         </div>
                       </div>
                     </div>
@@ -188,15 +188,7 @@
         </div>
 
   </div>
-  <!-- Answers pagination -->
-  <jsp:include page="../components/pagination.jsp">
-    <jsp:param name="total" value="${post.answersAmount}"/>
-    <jsp:param name="page" value="${page}"/>
-    <jsp:param name="page_size" value="${page_size}"/>
-    <jsp:param name="origin" value='post_comment'/>
-    <jsp:param name="post_id" value='${post.postId}'/>
-    <jsp:param name="comments_page" value="${page}"/>
-  </jsp:include>
+
 
   <div class="answers">
     <div class="title">
@@ -222,6 +214,28 @@
       </div>
     </div>
 
+  </div>
+
+  <div class="modal fade" id="deletePostModal" tabindex="-1" role="dialog" aria-labelledby="deletePostModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deletePostModalLabel">{{'POST_DELETE' | translate}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row  justify-content-center align-items-center margin-top">
+            <div>{{'POST_DELETE_MESSAGE' | translate}}</div>
+          </div>
+          <div class="row justify-content-center align-items-center margin-top">
+              <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close">{{'BUTTON_CANCEL' | translate}}</button>
+              <button type="submit" class="btn btn-danger ml-4">{{'BUTTON_DELETE' | translate}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
