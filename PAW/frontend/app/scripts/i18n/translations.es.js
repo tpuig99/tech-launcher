@@ -2,6 +2,7 @@
 define([], function() {
 
 	return {
+    NAVBAR_TITLE: 'Tech Launcher',
     HOME_TITLE: '¡Bienvenido a Tech Launcher!',
     HOME_SUBTITLE: 'Empezar un proyecto es difícil, lo sabemos. Por eso creamos Tech Launcher. Aquí podrás recolectar una gran cantidad de información relativa a tecnologías útiles en el mundo del desarrollo.',
     HOME_TECHS_TITLE: 'Techs',
@@ -28,7 +29,13 @@ define([], function() {
     BUTTON_SEND_EMAIL: 'Enviar Mail',
     BUTTON_CANCEL: 'Cancelar',
     BUTTON_SUBMIT: 'Enviar',
+    BUTTON_LOGIN: 'Iniciar Sesión',
+    BUTTON_LOGOUT: 'Cerrar Sesión',
+    BUTTON_SIGN_UP: 'Registrarse',
+    BUTTON_PROFILE: 'Perfil',
+    BUTTON_MODERATE: 'Moderar',
 
+    SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
     EXPLORE_CATEGORIES: 'Categorías',
     EXPLORE_TYPE_: 'Tipos',

@@ -2,6 +2,7 @@
 define([], function() {
 
 	return {
+	  NAVBAR_TITLE: 'Tech Launcher',
     HOME_TITLE: 'Welcome to Tech Launcher!',
     HOME_SUBTITLE: 'Starting a project is hard, we know it. That\'s why we created Tech Launcher. Here, you will be able to gather information from a large amount of technologies useful in the world of development.',
     HOME_TECHS_TITLE: 'Techs',
@@ -26,7 +27,13 @@ define([], function() {
     BUTTON_SEND_EMAIL: 'Send Email',
     BUTTON_CANCEL: 'Cancel',
     BUTTON_SUBMIT: 'Submit',
+    BUTTON_LOGIN: 'Login',
+    BUTTON_LOGOUT: 'Logout',
+    BUTTON_SIGN_UP: 'Sign Up',
+    BUTTON_PROFILE: 'Profile',
+    BUTTON_MODERATE: 'Moderate',
 
+    SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
     EXPLORE_CATEGORIES: 'Categories',
     EXPLORE_TYPES: 'Types',
