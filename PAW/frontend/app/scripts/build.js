@@ -25,7 +25,8 @@ require.config({
         tooltip: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip',
         transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition',
         lodash: '../../bower_components/lodash/lodash',
-        restangular: '../../bower_components/restangular/dist/restangular'
+        restangular: '../../bower_components/restangular/dist/restangular',
+        karma: '../../bower_components/karma/lib/karma'
     },
     shim: {
         angular: {

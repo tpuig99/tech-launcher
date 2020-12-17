@@ -1,0 +1,143 @@
+<div ng-controller="PostsCtrl">
+  <div class="content-no-sidebar-left">
+    <div class="title"><h1>{{'FORUM_TITLE' | translate}}</h1></div>
+    <div class="post-cards">
+      <div class="d-flex flex-row-reverse">
+        <div ng-if=" !isPresent">
+          <button class="btn btn-info mt-2 mb-4" data-toggle="modal" data-target="#loginModal">
+            {{'FORUM_ADD_POST' | translate}}
+          </button>
+        </div>
+        <div ng-if="isPresent">
+          <button class="btn btn-info mt-2 mb-4" href="#/add-post">
+            {{'FORUM_ADD_POST' | translate}}
+          </button>
+        </div>
+      </div>
+      <div class="row showing-results">
+        <div class="col-9"></div>
+        <div class="col showing-results data">
+          {{page_size * (curr_page - 1) + 1}}- <a ng-if="posts.length < page_size">{{page_size * (curr_page - 1) + posts.length}}</a>
+          <div ng-if="posts.length >= page_size">{{page_size * (curr_page)}}</div>
+          {{'FORUM_SHOWING_RESULTS' | translate}} {{postAmount}}
+        </div>
+      </div>
+      <div ng-if="posts.length > 0">
+        <div ng-repeat="post in posts">
+          <div class="card mb-3 post-card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-1 net-votes">
+                  <div ng-if="!isPresent">
+                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal"
+                                                     data-target="#loginModal"></i></button>
+                    <div>
+                      <h4>{{post.votesUp - post.votesDown}}</h4>
+                    </div>
+                    <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal"
+                                                     data-target="#loginModal"></i></button>
+                  </div>
+                  <div ng-if="isPresent">
+                    <div ng-if="!isEnable">
+                      <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal"
+                                                       data-target="#confirmMailModal"></i></button>
+                      <div>
+                        <h4>{{post.votesUp - post.votesDown}}</h4>
+                      </div>
+                      <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal"
+                                                       data-target="#confirmMailModal"></i></button>
+                    </div>
+                    <div ng-if="isEnable">
+                      <div class="net-votes">
+                        <button class="btn pt-0 pb-0" type="submit">
+                          <div ng-if="post.user.vote > 0">
+                            <i class="fa fa-2x fa-arrow-up votedUp"></i>
+                          </div>
+                          <div ng-if="post.user.vote <= 0">
+                            <i class="fa fa-2x fa-arrow-up"></i>
+                          </div>
+                        </button>
+                        <div>
+                          <h4>{{post.votesUp - post.votesDown}}</h4>
+                        </div>
+                      </div>
+                      <div class="net-votes">
+                        <button class="btn pt-0 pb-0" type="submit">
+                          <div ng-if="post.user.vote < 0">
+                            <i class="fa fa-2x fa-arrow-up votedDown"></i>
+                          </div>
+                          <div ng-if="post.user.vote >= 0">
+                            <i class="fa fa-2x fa-arrow-down"></i>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="row post-title">
+                    <a href={{post.location}}>
+                      {{post.title}}
+                    </a>
+                  </div>
+                  <div class="row posts-description">
+                    {{post.description}}
+                  </div>
+                  <div class="row extra-info">
+                    <div class="col-9 tags">
+                      <div ng-repeat="tag in post.tags">
+                        <button class="badge badge-color ml-1"
+                                onclick="goToExplore('${tag.tagName}','${tag.type.name()}' )">
+                          <span>
+                                  <div ng-if="tag.type == 'tech_name'">
+                                      {{tag.tag}}
+                                  </div>
+                                  <div ng-if="tag.type == 'type'">
+                                      {{'TYPE_' + tag.tag | translate}}
+                                  </div>
+                                  <div ng-if="tag.type == 'category'">
+                                      {{ "CATEGORY_"+ tag.tag | translate}}
+                                  </div>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="row d-flex secondary-color text-right post-date">
+                        {{post.time}}
+                      </div>
+                      <div class="row d-flex secondary-color text-right">
+                        <a href={{'user/'+post.user.name}}>{{post.user.name}}</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row d-flex my-1 justify-content-end">
+                    <div class="col-3">
+                      <div ng-if="isAdmin || post.user.isAuthor">
+                        <div class="row d-flex">
+                          <div>
+                            <button class="btn btn-danger text-nowrap" type="button"
+                                    onclick="openDeletePostModal(${post.postId})" data-toggle="modal"
+                                    data-target="#deletePostModal">
+                              <i class="fas fa-trash-alt fa-sm mr-1"></i>
+                              {{'POST_DELETE' | translate}}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div ng-if="posts.length == 0">
+        {{'FORUM_EMPTY_POSTS' | translate}}
+      </div>
+    </div>
+    <!-- paginacion -->
+  </div>
+</div>

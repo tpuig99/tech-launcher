@@ -2,7 +2,23 @@
 define([], function() {
 
 	return {
-		WELCOME_MESSAGE: 'Always a pleasure scaffolding your apps',
+    HOME_TITLE: '¡Bienvenido a Tech Launcher!',
+    HOME_SUBTITLE: 'Empezar un proyecto es difícil, lo sabemos. Por eso creamos Tech Launcher. Aquí podrás recolectar una gran cantidad de información relativa a tecnologías útiles en el mundo del desarrollo.',
+    HOME_TECHS_TITLE: 'Techs',
+    HOME_TECHS_DESCRIPTION: 'Aquí encontrarás un gran número de tecnologías que podrían interesarte',
+    HOME_TECHS_BUTTON: 'Visitar Techs',
+    HOME_FORUM_TITLE: 'Foro',
+    HOME_FORUM_BUTTON: 'Visitar Foro',
+    HOME_FORUM_DESCRIPTION:  '¿Tenes una pregunta en específico? En el foro podes hacer consultas o responder las de otros usuarios.',
+
+    TECHS_BEST_RATED: 'Mejor puntuados',
+    TECHS_TASTES: 'Basado en tus gustos',
+    TECHS_ADD_NEW: '¡Añade una nueva Tech!',
+    TECH_PICTURE: 'Imagen de Tech',
+    BUTTON_ADD_TECH: 'Añadir Tech',
+
+
+    WELCOME_MESSAGE: 'Always a pleasure scaffolding your apps',
 
 		WELCOME_CONTROLLER: 'A new and shiny controller has been made!',
 		WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
@@ -15,7 +31,7 @@ define([], function() {
 
     EXPLORE_WREF: 'Tech Launcher - Explorar',
     EXPLORE_CATEGORIES: 'Categorías',
-    EXPLORE_TYPES: 'Tipos',
+    EXPLORE_TYPE_: 'Tipos',
     EXPLORE_RATING: 'Puntaje',
     EXPLORE_COMMENTS: 'Cantidad de comentarios',
     EXPLORE_COMMENTS_FROM: 'Más de {{ amount }} comentarios',
@@ -83,8 +99,49 @@ define([], function() {
     POST_DELETE: 'Eliminar Pregunta',
     POST_DELETE_MESSAGE: 'Estás seguro que deseas eliminar esta Pregunta?',
 
+    FORUM_TITLE: 'Foro',
+    FORUM_WREF:  'Tech Launcher - Foro',
+    FORUM_ADD_POST: '¡Añade una nueva pregunta a nuestro foro!',
+    FORUM_SHOWING_RESULTS: 'resultados de',
+    FORUM_EMPTY_POSTS: 'No hay post para mostrar aún!',
+
     FORM_ERROR_LENGTH: 'Debe tener entre {{ min }} y {{ max }} caracteres',
     FORM_ERROR_EMPTY: 'No debe estar vacío',
-    FORM_ERROR_EMAIL_FORMAT: 'Mail inválido'
+    FORM_ERROR_EMAIL_FORMAT: 'Mail inválido',
+
+    CATEGORY_Artificial_Intelligence: 'Artificial Intelligence',
+    CATEGORY_Back_End_Development: 'Back-End Development',
+    CATEGORY_Big_Data: 'Big Data',
+    CATEGORY_Business: 'Business',
+    CATEGORY_Databases: 'Databases',
+    CATEGORY_Development_Environment: 'Development Environment',
+    CATEGORY_Editors: 'Editors',
+    CATEGORY_Front_End_Development: 'Front-End Development',
+    CATEGORY_Functional: 'Functional Programming',
+    CATEGORY_Gaming: 'Gaming',
+    CATEGORY_Imperative: 'Imperative Programming',
+    CATEGORY_Media: 'Media',
+    CATEGORY_Networking: 'Networking',
+    CATEGORY_OO: 'Object Oriented Programing',
+    CATEGORY_Platforms: 'Platforms',
+    CATEGORY_Security: 'Security',
+
+    TYPE_Online_Platform: 'Online Platform',
+    TYPE_Framework: 'Framework',
+    TYPE_Service: 'Service',
+    TYPE_Database_System: 'Database System',
+    TYPE_Programming_Languages: 'Programming Languages',
+    TYPE_Operating_System: 'Operating Systems',
+    TYPE_Runtime_Platform: 'Runtime Platform',
+    TYPE_Libraries: 'Libraries',
+    TYPE_Engine: 'Engine',
+    TYPE_Shell: 'Shell',
+    TYPE_Terminal: 'Terminal',
+    TYPE_Application: 'Application',
+    TYPE_Text_Editor: 'Text Editor',
+    TYPE_CSS_Modifier: 'CSS Modifier',
+    TYPE_API: 'API',
+    TYPE_Toolkit: 'Toolkit',
+    TYPE_IDE: 'IDE',
 	};
 });
