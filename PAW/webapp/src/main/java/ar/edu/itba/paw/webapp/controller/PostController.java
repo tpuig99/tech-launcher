@@ -344,7 +344,7 @@ public class PostController {
         if( post.isPresent() ){
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( user.isPresent() ){
-                commentService.insertPostComment(form.getPostId(), user.get().getId(), form.getDescription(), null);
+                commentService.insertPostComment(postId, user.get().getId(), form.getDescription(), null);
                 return Response.ok(form).build();
             }
             LOGGER.error("Post {}: Unauthorized user tried to insert a comment", postId);
