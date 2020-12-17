@@ -6,12 +6,14 @@ public class VerifyUserDTO {
     private String username;
     private Boolean admin;
     private Boolean pending;
+    private String frameworkName;
 
     public static VerifyUserDTO fromVerifyUser(VerifyUser verifyUser) {
         VerifyUserDTO dto = new VerifyUserDTO();
         dto.username= verifyUser.getUser().getUsername();
         dto.admin = verifyUser.getUser().isAdmin();
         dto.pending = verifyUser.isPending();
+        dto.frameworkName = verifyUser.getFrameworkName();
         return dto;
     }
 
@@ -37,5 +39,13 @@ public class VerifyUserDTO {
 
     public void setPending(Boolean pending) {
         this.pending = pending;
+    }
+
+    public String getFrameworkName() {
+        return frameworkName;
+    }
+
+    public void setFrameworkName(String frameworkName) {
+        this.frameworkName = frameworkName;
     }
 }
