@@ -116,14 +116,6 @@ public class PostDTO {
         this.votesDown = votesDown;
     }
 
-    public List<PostCommentDTO> getPostComments() {
-        return postComments;
-    }
-
-    public void setPostComments(List<PostCommentDTO> postComments) {
-        this.postComments = postComments;
-    }
-
     public int getLoggedVote() {
         return loggedVote;
     }
@@ -131,4 +123,6 @@ public class PostDTO {
     public void setLoggedVote(int loggedVote) {
         this.loggedVote = loggedVote;
     }
+
+
 }
