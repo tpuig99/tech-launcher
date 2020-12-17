@@ -65,7 +65,7 @@ public class PostController {
         final double pages = Math.ceil(((double)ps.getPostsAmount())/POSTS_PAGE_SIZE);
         List<Post> postsList = ps.getAll(postsPage, POSTS_PAGE_SIZE);
         PostsDTO list = new PostsDTO();
-        list.setPosts(postsList.stream().map(PostDTO::fromPost).collect(Collectors.toList()));
+        list.setPosts(postsList.stream().map((Post post ) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList()));
 
         return pagination(uriInfo, postsPage, (int)pages, list);
     }
@@ -78,7 +78,7 @@ public class PostController {
         Optional<Post> post = ps.findById(id);
         if(post.isPresent()) {
             LOGGER.info("Post {}: Requested and found, retrieving data", id);
-            PostDTO dto = PostDTO.fromPost(post.get());
+            PostDTO dto = PostDTO.fromPost(post.get(), uriInfo);
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()){
@@ -103,7 +103,7 @@ public class PostController {
             long amount = post.get().getAnswersAmount();
             int pages = (int) Math.ceil((double) amount/COMMENTS_PAGE_SIZE);
             List<PostCommentDTO> dto = commentService.getByPost(id, page).stream()
-                    .map(PostCommentDTO::fromComment).collect(Collectors.toList());
+                    .map((PostComment comment) -> PostCommentDTO.fromComment(comment, uriInfo)).collect(Collectors.toList());
             return pagination(uriInfo,page,pages,new GenericEntity<List<PostCommentDTO>>(dto){});
         }
         LOGGER.error("Tech {}: Requested and not found", id);
@@ -242,7 +242,7 @@ public class PostController {
             if( user.isPresent() ){
                 ps.vote(postId, user.get().getId(), UP_VOTE_VALUE);
                 LOGGER.info("Post {}: User {} voted up post",postId, user.get().getId());
-                PostDTO postDTO = PostDTO.fromPost(post.get());
+                PostDTO postDTO = PostDTO.fromPost(post.get(), uriInfo);
                 postDTO.setVotesUp(postDTO.getVotesUp() + 1);
                 return Response.ok(postDTO).build();
             }
@@ -262,7 +262,7 @@ public class PostController {
             if( user.isPresent() ){
                 ps.vote(postId, user.get().getId(), DOWN_VOTE_VALUE);
                 LOGGER.info("Post {}: User {} voted down post", postId, user.get().getId());
-                PostDTO postDTO = PostDTO.fromPost(post.get());
+                PostDTO postDTO = PostDTO.fromPost(post.get(), uriInfo);
                 postDTO.setVotesUp(postDTO.getVotesDown() + 1);
                 return Response.ok(postDTO).build();
             }

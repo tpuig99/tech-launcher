@@ -150,7 +150,7 @@ public class UserProfileController {
             final Optional<Integer> postsAmount = postService.getPostsCountByUser(userId);
 
             if(postsList.size() > 0) {
-                List<PostDTO> postDTOList = postsList.stream().map(PostDTO::fromPost).collect(Collectors.toList());
+                List<PostDTO> postDTOList = postsList.stream().map((Post post ) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList());
                 long pages = 0;
                 if (postsAmount.isPresent()) {
                     pages = (long) Math.ceil((double) postsAmount.get() / PAGE_SIZE);

@@ -2,21 +2,22 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.PostComment;
 
+import javax.ws.rs.core.UriInfo;
 import java.util.Date;
 
 public class PostCommentDTO {
-    private long postCommentId;
     private String description;
     private Date timestamp;
     private Long reference;
     private SimpleUserDTO user;
+    private String userLocation;
     private Long postId;
     private Long votesUp;
     private Long votesDown;
+    private String location;
 
-    public static PostCommentDTO fromComment(PostComment comment){
+    public static PostCommentDTO fromComment(PostComment comment, UriInfo uriInfo){
         final PostCommentDTO postComment = new PostCommentDTO();
-        postComment.postCommentId = comment.getPostCommentId();
         postComment.postId = comment.getPost().getPostId();
         postComment.description = comment.getDescription();
         postComment.timestamp = comment.getTimestamp();
@@ -24,16 +25,25 @@ public class PostCommentDTO {
         postComment.user = SimpleUserDTO.fromUser(comment.getUser());
         postComment.votesUp = comment.getVotesUp();
         postComment.votesDown = comment.getVotesDown();
+        postComment.userLocation = uriInfo.getBaseUriBuilder().path("users/"+comment.getUser().getId()).build().toString();
+        postComment.location = uriInfo.getBaseUriBuilder().path("/posts/" + comment.getPost().getPostId()).build().toString();
         return postComment;
     }
 
-    public long getPostCommentId() {
-        return postCommentId;
+    public String getLocation() {
+        return location;
     }
 
-    public void setPostCommentId(long postCommentId) {
-        this.postCommentId = postCommentId;
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
+    public String getUserLocation() {
+        return userLocation;
+    }
+
+    public void setUserLocation(String userLocation) {
+        this.userLocation = userLocation;
     }
 
     public String getDescription() {

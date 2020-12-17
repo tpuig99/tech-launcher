@@ -2,7 +2,8 @@ package ar.edu.itba.paw.webapp.dto;
 
 
 import ar.edu.itba.paw.models.Post;
-import ar.edu.itba.paw.models.PostTag;
+
+import javax.ws.rs.core.UriInfo;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,21 +12,51 @@ public class PostDTO {
     private String postTitle;
     private String postDescription;
     private SimpleUserDTO postOwner;
+    private String ownerLocation;
     private Date timestamp;
     private List<PostTagDTO> postTags;
     private List<PostCommentDTO> postComments;
     private long votesUp, votesDown;
+    private String comments;
+    private String location;
 
-    public static PostDTO fromPost(Post post) {
+    public static PostDTO fromPost(Post post, UriInfo uriInfo) {
         final PostDTO dto = new PostDTO();
         dto.postTitle = post.getTitle();
         dto.postDescription = post.getDescription();
         dto.postOwner = SimpleUserDTO.fromUser(post.getUser());
         dto.timestamp = post.getTimestamp();
+        dto.comments = uriInfo.getAbsolutePathBuilder().path("comments").build().toString();
         dto.postTags = post.getPostTags().stream().map(PostTagDTO::fromPostTag).collect(Collectors.toList());
+        dto.ownerLocation = uriInfo.getBaseUriBuilder().path("users/"+post.getUser().getId()).build().toString();
         dto.votesUp = post.getVotesUp();
         dto.votesDown = post.getVotesDown();
+        dto.location = uriInfo.getBaseUriBuilder().path("posts/"+post.getPostId()).build().toString();
         return dto;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getOwnerLocation() {
+        return ownerLocation;
+    }
+
+    public void setOwnerLocation(String ownerLocation) {
+        this.ownerLocation = ownerLocation;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public String getPostTitle() {
