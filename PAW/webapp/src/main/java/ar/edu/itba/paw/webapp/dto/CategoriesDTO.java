@@ -8,11 +8,20 @@ import java.util.stream.Collectors;
 
 public class CategoriesDTO {
     private List<FrameworkDTO> techs;
-    private int amount;
+    private Integer amount;
+    private String category;
+    private String location;
+
     public static CategoriesDTO fromCategories(List<Framework> frameworks, int size, UriInfo uriInfo) {
         final CategoriesDTO dto = new CategoriesDTO();
         dto.amount = size;
         dto.techs = frameworks.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList());
+        return dto;
+    }
+    public static CategoriesDTO fromSideBar(String category, UriInfo uriInfo){
+        final CategoriesDTO dto = new CategoriesDTO();
+        dto.category = category;
+        dto.location = uriInfo.getAbsolutePathBuilder().path(category).build().toString();
         return dto;
     }
 
@@ -24,12 +33,27 @@ public class CategoriesDTO {
         this.techs = techs;
     }
 
-    public int getAmount() {
+    public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }

@@ -26,7 +26,9 @@ require.config({
         tab: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab',
         tooltip: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip',
         transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition',
-        karma: '../../bower_components/karma/lib/karma'
+        karma: '../../bower_components/karma/lib/karma',
+        bower: '../../bower_components/bower/atom-full-compiled',
+        install: '../../bower_components/install/detect-zoom'
     },
     shim: {
         angular: {

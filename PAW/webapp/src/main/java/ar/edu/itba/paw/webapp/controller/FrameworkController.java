@@ -13,6 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,7 +57,14 @@ public class FrameworkController {
         });
         return Response.ok(dto).build();
     }
-
+    @GET
+    @Path("/category")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getCategories() {
+        final List<String> enumCategory = Arrays.stream(FrameworkCategories.values()).map(Enum::name).collect(Collectors.toList());
+        List<CategoriesDTO> dto = enumCategory.stream().map(x->CategoriesDTO.fromSideBar(x,uriInfo)).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<CategoriesDTO>>(dto){}).build();
+    }
     @GET
     @Path("/category/{category}")
     @Produces(value = {MediaType.APPLICATION_JSON,})

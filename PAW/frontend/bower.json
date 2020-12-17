@@ -11,7 +11,12 @@
     "moment": "~2.8.3",
     "requirejs": "~2.1.11",
     "lodash": "^4.17.10",
-    "restangular": "^1.6.1"
+    "restangular": "^1.6.1",
+    "karma": "^0.4.6",
+    "font-awesome": "^5.15.1",
+    "bower": "*",
+    "install": "^1.0.4",
+    "components-font-awesome": "^5.15.1"
   },
   "devDependencies": {
     "bootstrap": "~3.3.1"
