@@ -69,7 +69,7 @@ public class PostController {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         List<PostDTO> posts = new ArrayList<>();
         for (Post post:postsList) {
-            PostDTO postDTO = PostDTO.fromPost(post);
+            PostDTO postDTO = PostDTO.fromPost(post,uriInfo);
             user.ifPresent(value -> postDTO.setLoggedVote(value.getVoteForPost(post.getPostId())));
             posts.add(postDTO);
         }
