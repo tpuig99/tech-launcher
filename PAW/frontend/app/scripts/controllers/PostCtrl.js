@@ -7,6 +7,7 @@ define(['frontend', 'services/postService'], function(frontend) {
       $scope.isEnable = false;
 
 
+
       postService.getPost($routeParams.id).then(function(response){
         $scope.post = response;
       })
@@ -17,6 +18,14 @@ define(['frontend', 'services/postService'], function(frontend) {
 
       $scope.deletePost = function(){
         postService.deletePost($routeParams.id);
+      }
+
+      $scope.upVote = function(post){
+        postService.upVote(post);
+      }
+
+      $scope.downVote = function(post){
+        postService.downVote(post);
       }
 
 
