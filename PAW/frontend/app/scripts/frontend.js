@@ -5,11 +5,12 @@ define(['routes',
 	'angular',
 	'angular-route',
 	'bootstrap',
-	'angular-translate'],
+	'angular-translate',
+  'restangular'],
 	function(config, dependencyResolverFor, i18n) {
 		var frontend = angular.module('frontend', [
 			'ngRoute',
-      //'restangular',
+      'restangular',
 			'pascalprecht.translate'
 		]);
 		frontend
@@ -20,8 +21,8 @@ define(['routes',
 				'$filterProvider',
 				'$provide',
 				'$translateProvider',
-				//'RestangularProvider',
-				function($routeProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $translateProvider/*, RestangularProvider*/) {
+				'RestangularProvider',
+				function($routeProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $translateProvider, RestangularProvider) {
 
 					frontend.controller = $controllerProvider.register;
 					frontend.directive = $compileProvider.directive;
@@ -42,7 +43,7 @@ define(['routes',
 					$translateProvider.preferredLanguage('preferredLanguage');
           $translateProvider.useSanitizeValueStrategy('escape');
 
-           //RestangularProvider.setBaseUrl('/');
+           RestangularProvider.setBaseUrl('/');
 				}]);
 		return frontend;
 	}

@@ -16,22 +16,23 @@ require.config({
         'es5-shim': '../../bower_components/es5-shim/es5-shim',
         jquery: '../../bower_components/jquery/dist/jquery',
         json3: '../../bower_components/json3/lib/json3',
+        lodash: '../../bower_components/lodash/lodash',
         modal: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal',
         moment: '../../bower_components/moment/moment',
         popover: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover',
         requirejs: '../../bower_components/requirejs/require',
+        restangular: '../../bower_components/restangular/dist/restangular',
         scrollspy: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy',
         tab: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab',
         tooltip: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip',
-        transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition',
-        lodash: '../../bower_components/lodash/lodash',
-        restangular: '../../bower_components/restangular/dist/restangular'
+        transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition'
     },
     shim: {
         angular: {
             deps: [
                 'jquery'
-            ]
+            ],
+            exports: 'angular'
         },
         'angular-route': {
             deps: [
@@ -58,15 +59,6 @@ require.config({
             deps: [
                 'angular'
             ]
-        },
-        lodash: {
-            exports: '_'
-        },
-        restangular: {
-            deps: [
-                'angular',
-                'lodash'
-            ]
         }
     },
     packages: [
@@ -82,7 +74,6 @@ if (paths) {
 
 require([
         'angular',
-        'restangular',
         'frontend',
         'controllers/IndexCtrl'
     ],
