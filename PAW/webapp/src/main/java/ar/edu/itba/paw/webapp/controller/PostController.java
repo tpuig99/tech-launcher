@@ -70,11 +70,19 @@ public class PostController {
         return pagination(uriInfo, postsPage, (int)pages, list);
     }
 
+    @GET
+    @Path("/{id}/comments")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response postComments(@PathParam("id") long id, @QueryParam(value = "page") @DefaultValue(START_PAGE) Long commentsPage ) {
+        List<PostComment> commentsList = commentService.getByPost(id, commentsPage);
+        List<PostCommentDTO> dto = commentsList.stream().map((comment) -> PostCommentDTO.fromComment(comment, uriInfo)).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<PostCommentDTO>>(dto){}).build();
+    }
 
     @GET
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response post(@PathParam("id") long id, @QueryParam(value = "page") @DefaultValue(START_PAGE) Long commentsPage) {
+    public Response post(@PathParam("id") long id) {
         Optional<Post> post = ps.findById(id);
         if(post.isPresent()) {
             LOGGER.info("Post {}: Requested and found, retrieving data", id);
