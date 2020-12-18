@@ -36,6 +36,10 @@ define([], function() {
               templateUrl: '/views/techs/techs.html',
               controller: 'TechsCtrl'
             },
+            '/tech/:id': {
+              templateUrl: '/views/techs/tech.html',
+              controller: 'TechCtrl'
+            },
             '/posts': {
               templateUrl: '/views/posts/posts.html',
               controller: 'PostsCtrl'
