@@ -2,7 +2,7 @@
   <div class="content-search">
     <div class="sidebar-search">
       <div class="d-flex justify-content-center">
-        <button class="btn btn-width my-2 my-sm-0 primary-button" type="button" onclick="search()">{{'EXPLORE_FILTER' | translate}}</button>
+        <button class="btn btn-width my-2 my-sm-0 primary-button" type="button" ng-click="search()">{{'EXPLORE_FILTER' | translate}}</button>
       </div>
 
       <!-- Filter By Categories -->
@@ -74,7 +74,7 @@
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_UPDATE_DATE' | translate}}</h4></div>
 
       <span>
-        <select ng-model="lastUpdate" id="update-date-dropdown">
+        <select ng-model="lastUpdate" id="update-date-dropdown" ng-click="search()">
           <option value="0">{{'EXPLORE_ANY_DATE' | translate}}</option>
           <option value="1">{{'EXPLORE_LAST_DAYS' | translate}}</option>
           <option value="2">{{'EXPLORE_LAST_WEEK' | translate}}</option>
@@ -89,8 +89,8 @@
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_COMMENT_DATE' | translate}}</h4></div>
 
       <span>
-        <select ng-model="lastComment" id="comments-date-dropdown">
-          <option value="0">{{'EXPLORE_ANY_DATE' | translate}}</option>
+        <select ng-model="lastComment" id="comments-date-dropdown" ng-click="search()">
+          <option value="0" name="hola">{{'EXPLORE_ANY_DATE' | translate}}</option>
           <option value="1">{{'EXPLORE_LAST_DAYS' | translate}}</option>
           <option value="2">{{'EXPLORE_LAST_WEEK' | translate}}</option>
           <option value="3">{{'EXPLORE_LAST_MONTH' | translate}}</option>
@@ -105,7 +105,7 @@
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_COMMENTS' | translate}}</h4></div>
 
       <span>
-        <select ng-model="commentAmount" id="comments-dropdown">
+        <select ng-model="commentAmount" id="comments-dropdown" ng-click="search()">
           <option value="0">{{'EXPLORE_COMMENTS_ALL' | translate}}</option>
           <option value="1">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:1}' }}</option>
           <option value="5">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:5}' }}</option>
@@ -122,7 +122,7 @@
 
         <span>{{'EXPLORE_FROM' | translate}}</span>
         <span>
-          <select ng-model="starsLeft" id="stars-dropdown-1">
+          <select ng-model="starsLeft" id="stars-dropdown-1" ng-click="search()">
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -133,7 +133,7 @@
         </span>
         <span>{{'EXPLORE_TO_5_STARS' | translate}}</span>
         <span>
-          <select ng-model="starsRight" id="stars-dropdown-2">
+          <select ng-model="starsRight" id="stars-dropdown-2" ng-click="search()">
             <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -149,8 +149,8 @@
 
     <!-- Search Bar -->
     <div class="search-bar sidebar-title">
-      <form class="form-inline my-2 my-lg-0" id="search">
-        <input ng-model="toSearch" id="searchInput" class="form-control mr-sm-2" type="text" value="{{techNameQuery}}" placeholder="{{'SEARCH_TITLE' | translate}}" aria-label="Search" size="80">
+      <form class="form-inline my-2 my-lg-0">
+        <input ng-model="toSearch"  class="form-control mr-sm-2" type="text" placeholder="{{'SEARCH_TITLE' | translate}}" aria-label="Search" size="80">
         <button class="btn my-2 my-sm-0 primary-button" type="button" ng-click="search()">{{'SEARCH_TITLE' | translate}}</button>
       </form>
       <div class="form-check" id="searchByNameCheckbox">
@@ -164,7 +164,7 @@
       <div class="d-flex flex-row justify-content-end">
         <div class="mx-2">
           <label class="subtitle" for="sortSelect">{{'EXPLORE_SORT_BY' | translate}}</label>
-          <select class="form-control" id="sortSelect" oninput="sort()">
+          <select ng-model="groupBy" class="form-control" id="sortSelect" ng-click="search()">
             <option value="0">{{'EXPLORE_SORT_BY_NONE' | translate}}</option>
             <option value="1">{{'EXPLORE_SORT_BY_RATING' | translate}}</option>
             <option value="2">{{'EXPLORE_SORT_BY_COMMENTS_AMOUNT' | translate}}</option>
@@ -174,7 +174,7 @@
         </div>
         <div class="mx-2">
           <label class="subtitle" for="orderSelect">{{'EXPLORE_ORDER_BY' | translate}}</label>
-          <select class="form-control" id="orderSelect" oninput="sort()">
+          <select ng-model="orderValue" class="form-control" id="orderSelect" ng-click="search()">
             <option value="1">{{'EXPLORE_ORDER_BY_DESCENDANT' | translate}}</option>
             <option value="-1">{{'EXPLORE_ORDER_BY_ASCENDANT' | translate}}</option>
           </select>
@@ -187,7 +187,7 @@
     <div class="page-description"></div>
     <div class="page-title">
 
-      <div ng-switch="empty techNameQuery and empty starsQuery1 and empty starsQuery2 and empty categoriesQuery and empty typesQuery and empty orderValue and empty commentAmount and empty dateUpdate and empty dateComment and empty sortValue">
+      <div ng-switch="true">
         <div ng-switch-when="true">
           <h2>{{'EXPLORE_TITLE' | translate}}</h2>
         </div>
@@ -212,13 +212,16 @@
               <span ng-repeat="typeQuery in typesQuery" id="name{{typeQuery}}" class="badge badge-pill secondary-badge">{{type}}</span>
           </span>
 
-          <span ng-if="!starsQuery1.isEmpty()" id="stars" class="badge badge-pill secondary-badge">{{'EXPLORE_STARS_QUERY' | translate : '{left: starsQuery1, right:starsQuery2}' }}</span>
+          <span ng-if="starsLeft !== undefined && starsRight !== undefined " class="badge badge-pill secondary-badge"> {{'EXPLORE_FROM' | translate }} {{starsLeft}} {{'EXPLORE_TO_5_STARS' | translate }} {{starsRight}} {{'EXPLORE_STARS' | translate }}</span>
+          <span ng-if="starsLeft !== undefined && starsRight === undefined " class="badge badge-pill secondary-badge"> {{'EXPLORE_FROM' | translate }} {{starsLeft}} {{'EXPLORE_TO_5_STARS' | translate }} 5 {{'EXPLORE_STARS' | translate }}</span>
+          <span ng-if="starsLeft === undefined && starsRight !== undefined " class="badge badge-pill secondary-badge"> {{'EXPLORE_FROM' | translate }} 0 {{'EXPLORE_TO_5_STARS' | translate }} {{starsRight}} {{'EXPLORE_STARS' | translate }}</span>
 
-          <span ng-if="!commentAmount.isEmpty() && commentAmount!=0" id="commentsAmount" class="badge badge-pill secondary-badge">{{'EXPLORE_COMMENTS_QUERY' | translate : '{amount: commentAmount}' }}</span>
 
-          <span ng-if="!dateUpdate.isEmpty() && dateUpdate!=0" id="dateUpdate" class="badge badge-pill secondary-badge">{{'EXPLORE_UPDATE_DATE_QUERY' | translate : '{amount: dateUpdateTranslation}' }}</span>
+          <span ng-if="commentAmount !== undefined" class="badge badge-pill secondary-badge">{{'EXPLORE_COMMENTS_QUERY' | translate}} {{commentAmount}}</span>
 
-          <span ng-if="!dateComment.isEmpty() && dateComment!=0" id="dateComment" class="badge badge-pill secondary-badge">{{'EXPLORE_COMMENTS_DATE_QUERY' | translate : '{amount: dateCommentTranslation}' }}</span>
+          <span ng-if="lastUpdate !== undefined" class="badge badge-pill secondary-badge">{{'EXPLORE_UPDATE_DATE_QUERY' | translate}} {{lastUpdate}}</span>
+
+          <span ng-if="lastComment !== undefined" id="dateComment" class="badge badge-pill secondary-badge">{{'EXPLORE_COMMENTS_DATE_QUERY' | translate}} {{lastComment}}</span>
 
         </div>
       </div>

@@ -12,21 +12,33 @@ define(['frontend'], function(frontend) {
       return Restangular.one('explore?posts_page=1&is_post=true').get();
     };
 
-    this.search = function(toSearch,starsLeft, starsRight,nameFlag, commentAmount, lastComment, lastUpdate){
+    this.search = function(toSearch,starsLeft, starsRight,nameFlag, commentAmount, lastComment, lastUpdate, groupBy, orderBy) {
 
-      var to_search = toSearch === undefined ? '' : toSearch;
-      var stars_left = starsLeft === undefined ? '0' : starsLeft;
-      var stars_right = starsRight === undefined ? '5' : starsRight;
-      var comment_amount = commentAmount === undefined ? '' : commentAmount;
-      var last_comment = lastComment === undefined ? '' : lastComment;
-      var last_update = lastUpdate === undefined ? '' : lastUpdate;
+      var toSearchQ = toSearch === undefined ? '' : toSearch;
+      var starsLeftQ = starsLeft === undefined ? '0' : starsLeft;
+      var starsRightQ = starsRight === undefined ? '5' : starsRight;
+      var commentAmountQ = commentAmount === undefined ? '' : commentAmount;
+      var lastCommentQ = lastComment === undefined ? '' : lastComment;
+      var lastUpdateQ = lastUpdate === undefined ? '' : lastUpdate;
+      var order;
+
+      console.log(groupBy);
+      console.log(orderBy);
+
+      if (groupBy !== undefined && orderBy === undefined) {
+        order = groupBy;
+      } else if (groupBy !== undefined && orderBy !== undefined) {
+        order = groupBy * orderBy;
+      } else {
+        order = '0';
+      }
 
 
-      var url = 'explore?to_search='+to_search+'&stars_left='+stars_left+'&stars_right='+stars_right+'&name_flag='+nameFlag+'&comment_amount='+comment_amount+'&last_comment='+last_comment+'&last_update='+last_update+'&techs_page=1'
+      var url = 'explore?to_search=' + toSearchQ + '&stars_left=' + starsLeftQ + '&stars_right=' + starsRightQ + '&name_flag=' + nameFlag + '&oder=' + order + '&comment_amount=' + commentAmountQ + '&last_comment=' + lastCommentQ + '&last_update=' + lastUpdateQ + '&techs_page=1';
 
       console.log(url);
       return Restangular.one(url).get();
-    }
+    };
 
 
 

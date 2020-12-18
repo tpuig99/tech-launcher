@@ -16,13 +16,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       });
 
 
-      $scope.search = function(){
-        exploreService.search($scope.toSearch, $scope.starsLeft, $scope.starsRight,$scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate ).then(function(response) {
+      $scope.search = function() {
+        exploreService.search($scope.toSearch, $scope.starsLeft, $scope.starsRight,$scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function(response) {
           $scope.matchingTechs = response;
         });
-      }
+      };
 
 
     });
-
 });
