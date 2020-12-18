@@ -32,6 +32,7 @@ define([], function() {
     BUTTON_SIGN_UP: 'Sign Up',
     BUTTON_PROFILE: 'Profile',
     BUTTON_MODERATE: 'Moderate',
+    BUTTON_BACK_TO_HOME: 'Back to Home',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
@@ -73,6 +74,8 @@ define([], function() {
     EXPLORE_FILTER: 'Filter',
     EXPLORE_TECHS: 'TECHS',
     EXPLORE_POSTS: 'POSTS',
+
+    ERROR_DESCRIPTION: 'Ooops, an error occurred',
 
     LOGIN_WREF: 'Tech Launcher - Login',
     LOGIN_TITLE: 'Login',

@@ -73,7 +73,7 @@ public class ExploreController {
                                    @QueryParam("stars_right") final Integer starsRight,
                                    @QueryParam("name_flag") final boolean nameFlag,
                                    @QueryParam("order") final Integer order,
-                                   @QueryParam("comment_ammount") final Integer commentAmount,
+                                   @QueryParam("comment_amount") final Integer commentAmount,
                                    @QueryParam("last_comment") final Integer lastComment,
                                    @QueryParam("last_update") final Integer lastUpdate,
                                    @QueryParam("techs_page") final Integer page,
