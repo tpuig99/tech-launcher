@@ -1,0 +1,246 @@
+<div ng-controller="userCtrl">
+  <div class="content-profile row mx-2">
+    <div class="col border-right">
+      <div class="sticky-top-row">
+        <div class="page-title mb-4">
+          <h2>{{'PROFILE_TITLE' | translate}}</h2>
+        </div>
+        <div>
+          <div class="row mx-2 justify-content-center">
+            <div>
+              <div class="row justify-content-end">
+                <div ng-if="profile.username == username">
+                  <button class="btn btn-info" type="button" data-toggle="modal" data-target="#editProfileModal">
+                    <i class="far fa-edit fa-sm"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="row justify-content-center">
+                <div ng-if="profile.picture != undefined">
+                  <div class="max-logo d-flex align-items-center justify-content-center">
+                    <img src="{{profile.picture}}" alt={{'IMAGE_PROFILE'|translate}} class="rounded-circle img-slot"/>
+                  </div>
+                </div>
+                <div ng-if="profile.picture == undefined">
+                  <div class="max-logo d-flex align-items-center justify-content-center">
+                    <img src="../../images/user_picture_default.jpg" alt={{'IMAGE_PROFILE_RANDOM'|translate}}
+                         class="rounded-circle img-slot"/>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row justify-content-center">
+                <h2>{{profile.username}}</h2>
+                <div ng-if="profile.admin">
+                  <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color-admin" data-toggle="tooltip"
+                     title="{{'TOOLTIP_ADMIN'|translate}}"></i>
+                </div>
+                <div ng-if="profile.verify">
+                  <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip"
+                     title="{{'TOOLTIP_MODERATOR'|translate}}"></i>
+                </div>
+              </div>
+              <p><strong>{{'PROFILE_EMAIL' | translate}}</strong> {{profile.mail}}</p>
+              <div ng-if="profile.description != undefined">
+                <p><strong>{{'PROFILE_DESCRIPTION' | translate}}</strong> {{profile.description}}</p>
+              </div>
+              <div ng-if="profile.username == username && !profile.isAdmin">
+                <div class="custom-control custom-checkbox mb-2">
+                  <input type="checkbox" class="custom-control-input" onclick="openStopBeingAModModal()"
+                         id="modCheckbox">
+                  <label class="custom-control-label"
+                         for="modCheckbox"><strong>{{'BUTTON_MODERATE' | translate}}</strong></label>
+                </div>
+              </div>
+              <div ng-if="profile.verify">
+                <p>
+                  <strong>{{'PROFILE_MODERATOR' | translate}}</strong>
+                <div ng-repeat="verifyTech in profile.verifications">
+                  <a class="tags" href="{{'#/'+verifyTech.location}}">{{verifyTech.name}}</a>
+                </div>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-2 justify-content-center">
+            <div class="col emphasis">
+              <h2><strong>{{profile.content.amount}}</strong></h2>
+              <p><small>{{'PROFILE_UPLOADED_CONTENTS' | translate}}</small></p>
+            </div>
+            <div class="col emphasis">
+              <h2><strong>{{profile.comments.amount}}</strong></h2>
+              <p><small>{{'PROFILE_COMMENTS' | translate}}</small></p>
+            </div>
+            <div class="col emphasis">
+              <h2><strong>{{profile.votes.amount}} </strong></h2>
+              <p><small>{{'PROFILE_VOTES_GIVEN' | translate}}</small></p>
+            </div>
+
+            <div class="col emphasis">
+              <h2><strong>{{profile.techs.amount}} </strong></h2>
+              <p><small>{{'PROFILE_TECHS' | translate}}</small></p>
+            </div>
+
+            <div class="col emphasis">
+              <h2><strong>{{profile.posts.amount}} </strong></h2>
+              <p><small>{{'PROFILE_POSTS' | translate}}</small></p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+      <!-- Comments -->
+      <div class="page-title mb-4 ml-2 text-left">
+        <h2>{{'PROFILE_COMMENTS' | translate}}</h2>
+      </div>
+      <div ng-if="profile.comments.amount != 0">
+        <div class="container d-flex justify-content-center">
+          <div ng-repeat="comment in profile.comments.comments">
+            <div class="card emphasis emph-comment row mb-2">
+              <div class="card-body row mt-1">
+                <div class="col-3 secondary-font">
+                  <a href="{{'#/'+comment.location}}">
+                    {{comment.techName}}
+                  </a>
+                </div>
+                <div class="col-6 text-left"> {{comment.description}}</div>
+                <div class="col third-font text-right"> {{comment.date}}</div>
+              </div>
+            </div>
+          </div>
+          <!-- Comment pagination -->
+        </div>
+      </div>
+      <div ng-if="profile.commentAmount == 0">
+        <div>
+          {{'PROFILE_EMPTY_COMMENTS' | translate}}
+        </div>
+      </div>
+
+      <!-- Contents -->
+      <div class="page-title mb-4 ml-2 text-left">
+        {{'PROFILE_CONTENTS' | translate}}
+      </div>
+      <div ng-if="profile.contentAmount != 0">
+        <div class="container d-flex justify-content-center">
+          <div ng-repeat="content in profile.contents">
+            <div class="card emphasis emph-content row mb-2">
+              <div class="card-body row mt-1">
+                <div class="col-3 secondary-font">
+                  <a href="{{'#/'+content.location}}">
+                    {{content.techName}}
+                  </a>
+                </div>
+
+                <div class="col-6 text-left">
+                  {{'PROFILE_CONTENT' + content.type | translate }}
+                  {{content.title}}
+                </div>
+
+                <div class="col third-font text-right"> {{content.date}}</div>
+              </div>
+            </div>
+          </div>
+          <!-- Content pagination -->
+        </div>
+      </div>
+      <div ng-if="profile.contentAmount == 0">
+        {{'PROFILE_EMPTY_CONTENTS' | translate}}
+      </div>
+
+      <!-- Votes -->
+      <div class="page-title mb-4 ml-2 text-left">
+        <h2>{{'PROFILE_VOTES' | translate}}</h2>
+      </div>
+      <div ng-if="profile.votesAmount">
+        <div class="container row equal justify-content-center">
+          <div ng-repeat="vote in profile.votes">
+            <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
+              <div class="card-body row mt-1">
+                <div class="col secondary-font">
+                  <a href="{{'#/'+vote.location}}">
+                    {{vote.techName}}
+                  </a>
+                </div>
+                <div class="col">
+                  {{'PROFILE_VOTES_OVER_5' | translate: '{stars:' + vote.vote + '}'}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Votes pagination -->
+      </div>
+      <div ng-if="profile.votesAmount == 0">
+        {{'PROFILE_EMPTY_VOTES' | translate}}
+      </div>
+
+      <!-- Frameworks -->
+      <div ng-if="profile.techsAmount != 0">
+        <div class="page-title mb-4 ml-2 text-left">
+          <h2>{{'PROFILE_TECHS' | translate}}</h2>
+        </div>
+        <div class="container row equal justify-content-center">
+          <div ng-repeat="tech in profile.techs">
+            <div class="card mx-4 mb-4">
+              <a href="{{'#/'+tech.location}}">
+                <div class="card-body">
+                  <div ng-if="tech.picture != undefined">
+                    <div class="max-logo d-flex align-items-center justify-content-center">
+                      <img src="{{tech.picture}}" alt="{{'TECH_PICTURE'|translate}}"/>
+                    </div>
+                  </div>
+                  <div ng-if="tech.picture == undefined">
+                    <div class="max-logo d-flex align-items-center justify-content-center">
+                      <img src="../../images/tech_picture_default.png" alt="{{'TECH_PICTURE'|translate}}"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer text-dark">
+                  <span>{{tech.name}} | </span>
+                  <span class="fa fa-star fa-sm"></span>
+                  <span>{{tech.stars}}</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <!-- Tech pagination -->
+      </div>
+
+      <!-- Posts -->
+      <div class="page-title mb-4 ml-2 text-left">
+        <h2>{{'PROFILE_POSTS' | translate}}</h2>
+      </div>
+      <div ng-if="profile.postsAmount != 0">
+        <div class="container d-flex justify-content-center">
+          <div ng-repeat="post in profile.posts">
+            <div class="card emphasis emph-post row mb-2">
+              <div class="card-body row mt-1">
+                <div class="col-3 secondary-font">
+                  <a href="{{'#/'+post.location}}">
+                    {{post.title}}
+                  </a>
+                </div>
+                <div class="col-6 text-left">
+                  {{post.description}}
+                </div>
+                <div class="col third-font text-right">
+                  {{post.timestamp}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content pagination -->
+        </div>
+      </div>
+      <div ng-if="profile.postsAmount == 0">
+        {{'PROFILE_EMPTY_POSTS' | translate}}
+      </div>
+    </div>
+  </div>
+</div>

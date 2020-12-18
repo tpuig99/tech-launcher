@@ -9,5 +9,8 @@ define(['frontend'], function(frontend) {
     this.getCategories = function() {
       return Restangular.one('techs/category').get();
     };
+    this.getTypes = function() {
+      return Restangular.one('techs/types').get();
+    };
   });
 });

@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.service.UserService;
 import ar.edu.itba.paw.webapp.auth.JwtTokenUtil;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
 import ar.edu.itba.paw.webapp.dto.JwtRequestDTO;
@@ -12,11 +14,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.html.Option;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Optional;
 
 @Path("login")
 @Component
@@ -31,6 +35,9 @@ public class AuthController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private UserService us;
+
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response login(JwtRequestDTO jwtRequestDTO) {
@@ -44,8 +51,8 @@ public class AuthController {
                 .loadUserByUsername(jwtRequestDTO.getUsername());
 
         final String token = jwtTokenUtil.generateToken(userDetails);
-
-        return Response.ok(new JwtResponseDTO(token)).build();
+        Optional<User> user = us.findByUsername(jwtRequestDTO.getUsername());
+        return Response.ok(new JwtResponseDTO(token,user.get())).build();
 
     }
     private void authenticate(String username, String password) throws Exception {

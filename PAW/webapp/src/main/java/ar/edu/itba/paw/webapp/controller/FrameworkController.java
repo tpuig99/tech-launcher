@@ -70,9 +70,8 @@ public class FrameworkController {
     @Path("/types")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response getTypes() {
-        final List<String> enumType = Arrays.stream(FrameworkCategories.values()).map(Enum::name).collect(Collectors.toList());
-        List<TypesDTO> dto = enumType.stream().map(x->TypesDTO.fromTypes(x,uriInfo)).collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<TypesDTO>>(dto){}).build();
+        List<TypesDTO> types = fs.getAllTypes().stream().map(TypesDTO::fromTypes).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<TypesDTO>>(types){}).build();
     }
 
     @GET

@@ -1,8 +1,8 @@
 'use strict';
-define([], function() {
+define([], function () {
 
-	return {
-	  NAVBAR_TITLE: 'Tech Launcher',
+  return {
+    NAVBAR_TITLE: 'Tech Launcher',
     HOME_TITLE: 'Welcome to Tech Launcher!',
     HOME_SUBTITLE: 'Starting a project is hard, we know it. That\'s why we created Tech Launcher. Here, you will be able to gather information from a large amount of technologies useful in the world of development.',
     HOME_TECHS_TITLE: 'Techs',
@@ -19,8 +19,8 @@ define([], function() {
     TECH_PICTURE: 'Image of the Tech',
     WELCOME_MESSAGE: 'Always a pleasure scaffolding your apps',
 
-		WELCOME_CONTROLLER: 'A new and shiny controller has been made!',
-		WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
+    WELCOME_CONTROLLER: 'A new and shiny controller has been made!',
+    WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
 
     BUTTON_DELETE_POST: 'Delete Post',
     BUTTON_EDIT_POST: 'Edit Post',
@@ -117,6 +117,34 @@ define([], function() {
     FORM_ERROR_EMPTY: 'Must not be empty',
     FORM_ERROR_EMAIL_FORMAT: 'This email format is not valid',
 
+    PROFILE_WREF: 'Tech Launcher - User Profile',
+    PROFILE_TITLE: 'User Profile',
+    PROFILE_DESCRIPTION: 'Description:',
+    PROFILE_EMAIL: 'Email:',
+    PROFILE_MODERATOR: 'Moderator:',
+    PROFILE_UPLOADED_CONTENTS: 'Uploaded Contents',
+    PROFILE_VOTES_GIVEN: 'Votes Given',
+    PROFILE_EDIT_TITLE: 'Edit Your Profile',
+    PROFILE_COMMENTS: 'Comments',
+    PROFILE_CONTENTS: 'Contents',
+    PROFILE_TECHS: 'Techs',
+    PROFILE_VOTES: 'Votes',
+    PROFILE_UPDATED: 'Your profile has been updated!',
+    PROFILE_VOTES_OVER_5: '{{stars} / 5 stars',
+    PROFILE_CHANGE_PASS: 'Change my password',
+    PROFILE_EMPTY_VOTES: 'There are no votes here yet!',
+    PROFILE_EMPTY_COMMENTS: 'There are no comments here yet!',
+    PROFILE_EMPTY_CONTENT: 'There are no contents here yet!',
+    PROFILE_EMPTY_POSTS: 'There are no posts here yet!',
+    PROFILE_CHANGE_PICTURE: 'Change profile picture',
+    PROFILE_ALLOW_MOD: 'I don\'t want to be a moderator anymore',
+    PROFILE_SURE_STOP_MOD: 'Are you sure you want to stop being a moderator?',
+    PROFILE_STOP_MOD_DESCRIPTION: 'You will no longer be able to moderate content on all the techs you are moderating now.',
+    PROFILE_POSTS: 'Posts',
+
+    IMAGE_PROFILE: 'This is your picture!',
+    IMAGE_PROFILE_RANDOM: 'This is a random picture!',
+
     CATEGORY_ARTIFICIAL_INTELLIGENCE: 'Artificial Intelligence',
     CATEGORY_BACK_END_DEVELOPMENT: 'Back-End Development',
     CATEGORY_BIG_DATA: 'Big Data',
@@ -151,5 +179,5 @@ define([], function() {
     TYPE_API: 'API',
     TYPE_TOOLKIT: 'Toolkit',
     TYPE_IDE: 'IDE'
-	};
+  };
 });

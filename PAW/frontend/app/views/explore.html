@@ -27,7 +27,7 @@
             <div ng-if="$index >= 6">
               <input class="form-check-input" type="checkbox" value="" >
               <label class="form-check-label" for="check{{category}}">
-                {{category}}
+                {{ "CATEGORY_" + category.category | uppercase | translate}}
               </label>
             </div>
           </div>
@@ -44,7 +44,7 @@
           <div ng-if="$index <= 5">
             <input class="form-check-input" type="checkbox" value="">
             <label class="form-check-label" for="check{{type}}">
-              {{type}}
+              {{'TYPE_'+type.type | uppercase | translate}}
             </label>
           </div>
         </div>
@@ -58,7 +58,7 @@
             <div ng-if="$index >= 6">
               <input class="form-check-input" type="checkbox" value="" id="check{{type}}">
               <label class="form-check-label" for="check{{type}}">
-                {{type}}
+                {{'TYPE_'+type.type | uppercase | translate}}
               </label>
             </div>
           </div>

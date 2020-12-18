@@ -14,7 +14,10 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       techsService.getCategories().then(function (response) {
         $scope.categories = response;
       });
-
+      techsService.getTypes().then(function (response) {
+        $scope.types = response;
+        console.log(response);
+      });
 
       $scope.search = function() {
         exploreService.search($scope.toSearch, $scope.starsLeft, $scope.starsRight,$scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function(response) {
