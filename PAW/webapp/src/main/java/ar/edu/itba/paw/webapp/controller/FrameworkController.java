@@ -65,6 +65,16 @@ public class FrameworkController {
         List<CategoriesDTO> dto = enumCategory.stream().map(x->CategoriesDTO.fromSideBar(x,uriInfo)).collect(Collectors.toList());
         return Response.ok(new GenericEntity<List<CategoriesDTO>>(dto){}).build();
     }
+
+    @GET
+    @Path("/types")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getTypes() {
+        final List<String> enumType = Arrays.stream(FrameworkCategories.values()).map(Enum::name).collect(Collectors.toList());
+        List<TypesDTO> dto = enumType.stream().map(x->TypesDTO.fromTypes(x,uriInfo)).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<TypesDTO>>(dto){}).build();
+    }
+
     @GET
     @Path("/category/{category}")
     @Produces(value = {MediaType.APPLICATION_JSON,})

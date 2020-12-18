@@ -134,11 +134,11 @@
         <span>{{'EXPLORE_TO_5_STARS' | translate}}</span>
         <span>
           <select ng-model="starsRight" id="stars-dropdown-2" ng-click="search()">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
+            <option ng-if="starsLeft==0" value="0">0</option>
+            <option ng-if="starsLeft<=1" value="1">1</option>
+            <option ng-if="starsLeft<=2" value="2">2</option>
+            <option ng-if="starsLeft<=3" value="3">3</option>
+            <option ng-if="starsLeft<=4" value="4">4</option>
             <option value="5">5</option>
           </select>
         </span>
@@ -165,7 +165,7 @@
         <div class="mx-2">
           <label class="subtitle" for="sortSelect">{{'EXPLORE_SORT_BY' | translate}}</label>
           <select ng-model="groupBy" class="form-control" id="sortSelect" ng-click="search()">
-            <option value="0">{{'EXPLORE_SORT_BY_NONE' | translate}}</option>
+            <option selected value="0">{{'EXPLORE_SORT_BY_NONE' | translate}}</option>
             <option value="1">{{'EXPLORE_SORT_BY_RATING' | translate}}</option>
             <option value="2">{{'EXPLORE_SORT_BY_COMMENTS_AMOUNT' | translate}}</option>
             <option value="3">{{'EXPLORE_SORT_BY_TECH_UPDATED' | translate}}</option>
