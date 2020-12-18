@@ -5,3 +5,4 @@ frontend/node/node.exe
 frontend/package-lock.json
 frontend/dist
 frontend/.tmp
+frontend/.sass-cache

@@ -56,6 +56,7 @@ module.exports = function (grunt) {
         }
       }
     },
+
     watch: {
        bower: {
          files: ['bower.json'],
@@ -470,6 +471,9 @@ module.exports = function (grunt) {
 
 
     grunt.task.run('filerev:paths');
+    grunt.loadNpmTasks('grunt-contrib-sass');
+
+    grunt.registerTask('default', ['sass']);
 
     // if the outFile is revved, respect that
     if (assets[outFile]) {
