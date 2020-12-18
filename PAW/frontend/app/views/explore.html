@@ -20,9 +20,9 @@
         </div>
 
       <div>
-        <button id="showMoreCategories" class="btn btn-link" onclick="showMore('Categories')">{{'EXPLORE_SHOW_MORE' | translate}}</button>
+        <button ng-hide="categoriesShowMoreBtnVisible" class="btn btn-link" ng-click="showMore('Categories')">{{'EXPLORE_SHOW_MORE' | translate}}</button>
       </div>
-      <div class="hide" id="hiddenCategories">
+      <div ng-show="categoriesVisible" id="hiddenCategories">
           <div ng-repeat="category in categories" class="form-check">
             <div ng-if="$index >= 6">
               <input class="form-check-input" type="checkbox" ng-model="category.selected"  value="{{category.category}}" >
@@ -32,7 +32,7 @@
             </div>
           </div>
         <div>
-          <button id="showLessCategories" class="btn btn-link" onclick="showLess('Categories')">{{'EXPLORE_SHOW_LESS' | translate}}</button>
+          <button ng-show="categoriesShowLessBtnVisible" class="btn btn-link" ng-click="showLess('Categories')">{{'EXPLORE_SHOW_LESS' | translate}}</button>
         </div>
       </div>
 
@@ -50,9 +50,9 @@
         </div>
 
       <div>
-        <button id="showMoreTypes" class="btn btn-link" onclick="showMore('Types')">{{'EXPLORE_SHOW_MORE' | translate}}</button>
+        <button ng-hide="typesShowMoreBtnVisible" class="btn btn-link" ng-click="showMore('Types')">{{'EXPLORE_SHOW_MORE' | translate}}</button>
       </div>
-      <div class="hide" id="hiddenTypes">
+      <div ng-show="typesVisible" id="hiddenTypes">
 
           <div ng-repeat="type in types" class="form-check">
             <div ng-if="$index >= 6">
@@ -64,7 +64,7 @@
           </div>
 
         <div>
-          <button id="showLessTypes" class="btn btn-link" onclick="showLess('Types')">{{'EXPLORE_SHOW_LESS' | translate}}</button>
+          <button ng-show="typesShowLessBtnVisible" class="btn btn-link" ng-click="showLess('Types')">{{'EXPLORE_SHOW_LESS' | translate}}</button>
         </div>
       </div>
 
@@ -205,9 +205,9 @@
           <span id="name" class="badge badge-pill secondary-badge">{{nameToSearch}}</span>
 
 
-          <span ng-repeat="category in categories" class="badge badge-pill secondary-badge"> <span ng-if="category.selected"> {{ "CATEGORY_" + category.category | uppercase | translate}} </span></span>
+          <span ng-repeat="category in categories" > <span ng-if="category.selected" class="badge badge-pill secondary-badge"> {{ "CATEGORY_" + category.category | uppercase | translate}} </span></span>
 
-          <span ng-repeat="type in types" class="badge badge-pill secondary-badge"> <span ng-if="type.selected"> {{ "TYPE_" + type.type | uppercase | translate}} </span></span>
+          <span ng-repeat="type in types" > <span ng-if="type.selected" class="badge badge-pill secondary-badge"> {{ "TYPE_" + type.type | uppercase | translate}} </span></span>
 
 
           <span ng-if="starsLeft !== undefined && starsRight !== undefined " class="badge badge-pill secondary-badge"> {{'EXPLORE_FROM' | translate }} {{starsLeft}} {{'EXPLORE_TO_5_STARS' | translate }} {{starsRight}} {{'EXPLORE_STARS' | translate }}</span>
