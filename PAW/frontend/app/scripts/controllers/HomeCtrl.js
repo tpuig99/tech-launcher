@@ -5,5 +5,6 @@ define(['frontend'], function(frontend) {
 		$scope.homePageText = 'This is your homepage';
 
 		$scope.currentUser = $localStorage.currentUser.location;
+		$scope.token =  $localStorage.currentUser.token;
 	});
 });

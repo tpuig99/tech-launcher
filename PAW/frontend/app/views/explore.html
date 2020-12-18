@@ -12,8 +12,8 @@
         <div ng-repeat="category in categories" class="form-check">
 
           <div ng-if="$index <= 5 ">
-            <input class="form-check-input" type="checkbox" value="" id="check{{category}}">
-            <label class="form-check-label" for="check{{category}}">
+            <input class="form-check-input" type="checkbox" ng-model="category.selected"  value="{{category.category}}">
+            <label class="form-check-label">
               {{ "CATEGORY_" + category.category | uppercase | translate}}
             </label>
           </div>
@@ -25,8 +25,8 @@
       <div class="hide" id="hiddenCategories">
           <div ng-repeat="category in categories" class="form-check">
             <div ng-if="$index >= 6">
-              <input class="form-check-input" type="checkbox" value="" >
-              <label class="form-check-label" for="check{{category}}">
+              <input class="form-check-input" type="checkbox" ng-model="category.selected"  value="{{category.category}}" >
+              <label class="form-check-label">
                 {{ "CATEGORY_" + category.category | uppercase | translate}}
               </label>
             </div>
@@ -42,8 +42,8 @@
 
         <div ng-repeat="type in types" class="form-check">
           <div ng-if="$index <= 5">
-            <input class="form-check-input" type="checkbox" value="">
-            <label class="form-check-label" for="check{{type}}">
+            <input class="form-check-input" type="checkbox" ng-model="type.selected"  value="{{type.type}}">
+            <label class="form-check-label">
               {{'TYPE_'+type.type | uppercase | translate}}
             </label>
           </div>
@@ -56,8 +56,8 @@
 
           <div ng-repeat="type in types" class="form-check">
             <div ng-if="$index >= 6">
-              <input class="form-check-input" type="checkbox" value="" id="check{{type}}">
-              <label class="form-check-label" for="check{{type}}">
+              <input class="form-check-input" type="checkbox" ng-model="type.selected"  value="{{type.type}}">
+              <label class="form-check-label">
                 {{'TYPE_'+type.type | uppercase | translate}}
               </label>
             </div>
@@ -150,7 +150,7 @@
     <!-- Search Bar -->
     <div class="search-bar sidebar-title">
       <form class="form-inline my-2 my-lg-0">
-        <input ng-model="toSearch"  class="form-control mr-sm-2" type="text" placeholder="{{'SEARCH_TITLE' | translate}}" aria-label="Search" size="80">
+        <input ng-model="nameToSearch"  class="form-control mr-sm-2" type="text" placeholder="{{'SEARCH_TITLE' | translate}}" aria-label="Search" size="80">
         <button class="btn my-2 my-sm-0 primary-button" type="button" ng-click="search()">{{'SEARCH_TITLE' | translate}}</button>
       </form>
       <div class="form-check" id="searchByNameCheckbox">
@@ -202,15 +202,13 @@
       <div class="col-8">
         <div class="margin-top">
 
-          <span id="name" class="badge badge-pill secondary-badge">{{toSearch}}</span>
+          <span id="name" class="badge badge-pill secondary-badge">{{nameToSearch}}</span>
 
-          <span ng-if="!categoriesQuery.isEmpty()">
-              <span ng-repeat="categoryQuery in categoriesQuery" id="name{{categoryQuery}}" class="badge badge-pill secondary-badge">{{category}}</span>
-          </span>
 
-          <span ng-if="!typesQuery.isEmpty()">
-              <span ng-repeat="typeQuery in typesQuery" id="name{{typeQuery}}" class="badge badge-pill secondary-badge">{{type}}</span>
-          </span>
+          <span ng-repeat="category in categories" class="badge badge-pill secondary-badge"> <span ng-if="category.selected"> {{ "CATEGORY_" + category.category | uppercase | translate}} </span></span>
+
+          <span ng-repeat="type in types" class="badge badge-pill secondary-badge"> <span ng-if="type.selected"> {{ "TYPE_" + type.type | uppercase | translate}} </span></span>
+
 
           <span ng-if="starsLeft !== undefined && starsRight !== undefined " class="badge badge-pill secondary-badge"> {{'EXPLORE_FROM' | translate }} {{starsLeft}} {{'EXPLORE_TO_5_STARS' | translate }} {{starsRight}} {{'EXPLORE_STARS' | translate }}</span>
           <span ng-if="starsLeft !== undefined && starsRight === undefined " class="badge badge-pill secondary-badge"> {{'EXPLORE_FROM' | translate }} {{starsLeft}} {{'EXPLORE_TO_5_STARS' | translate }} 5 {{'EXPLORE_STARS' | translate }}</span>

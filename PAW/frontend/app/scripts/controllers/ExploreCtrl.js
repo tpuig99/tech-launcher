@@ -16,14 +16,14 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       });
       techsService.getTypes().then(function (response) {
         $scope.types = response;
-        console.log(response);
       });
 
       $scope.search = function() {
-        exploreService.search($scope.toSearch, $scope.starsLeft, $scope.starsRight,$scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function(response) {
+        exploreService.search($scope.nameToSearch, $scope.categories, $scope.types , $scope.starsLeft, $scope.starsRight,$scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function(response) {
           $scope.matchingTechs = response;
         });
       };
+
 
 
     });

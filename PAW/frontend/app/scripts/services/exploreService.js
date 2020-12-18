@@ -5,25 +5,38 @@ define(['frontend'], function(frontend) {
 
 
     this.getTechs = function() {
-      return Restangular.one('explore?techs_page=1').get();
+      return Restangular.one('explore').get();
     };
 
     this.getPosts = function() {
-      return Restangular.one('explore?posts_page=1&is_post=true').get();
+      return Restangular.one('explore?is_post=true').get();
     };
 
-    this.search = function(toSearch,starsLeft, starsRight,nameFlag, commentAmount, lastComment, lastUpdate, groupBy, orderBy) {
+    this.search = function(toSearch, categories, types, starsLeft, starsRight,nameFlag, commentAmount, lastComment, lastUpdate, groupBy, orderBy) {
 
-      var toSearchQ = toSearch === undefined ? '' : toSearch;
+      var toSearchQ = (toSearch === undefined ? '' : toSearch);
       var starsLeftQ = starsLeft === undefined ? '0' : starsLeft;
       var starsRightQ = starsRight === undefined ? '5' : starsRight;
       var commentAmountQ = commentAmount === undefined ? '' : commentAmount;
       var lastCommentQ = lastComment === undefined ? '' : lastComment;
       var lastUpdateQ = lastUpdate === undefined ? '' : lastUpdate;
       var order;
+      var categoriesQ = '';
+      var typesQ = '';
 
-      console.log(groupBy);
-      console.log(orderBy);
+      angular.forEach(categories, function(category) {
+        if (category.selected) {
+          categoriesQ = categoriesQ.concat('&categories='+category.category);
+        }
+      });
+
+      angular.forEach(types, function(type) {
+        if (type.selected) {
+          typesQ = typesQ.concat('&types='+type.type);
+        }
+      });
+
+      console.log(categoriesQ);
 
       if (groupBy !== undefined && orderBy === undefined) {
         order = groupBy;
@@ -34,7 +47,7 @@ define(['frontend'], function(frontend) {
       }
 
 
-      var url = 'explore?to_search=' + toSearchQ + '&stars_left=' + starsLeftQ + '&stars_right=' + starsRightQ + '&name_flag=' + nameFlag + '&oder=' + order + '&comment_amount=' + commentAmountQ + '&last_comment=' + lastCommentQ + '&last_update=' + lastUpdateQ + '&techs_page=1';
+      var url = 'explore?to_search=' + toSearchQ + categoriesQ + typesQ +  '&stars_left=' + starsLeftQ + '&stars_right=' + starsRightQ + '&name_flag=' + nameFlag + '&order=' + order + '&comment_amount=' + commentAmountQ + '&last_comment=' + lastCommentQ + '&last_update=' + lastUpdateQ;
 
       console.log(url);
       return Restangular.one(url).get();

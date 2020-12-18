@@ -10,7 +10,8 @@ define(['frontend'], function(frontend) {
     $scope.searchPage = false;
     $scope.username = 'pepe';
     $scope.toSearch = function(toSearch) {
-      $window.location.href = '#/explore?toSearch=' + toSearch;
+      var to_search = (toSearch === undefined || toSearch === 0) ? '' : toSearch;
+      $window.location.href = '#/explore?to_search=' + to_search;
     };
 	});
 });
