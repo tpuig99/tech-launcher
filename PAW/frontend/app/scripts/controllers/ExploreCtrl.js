@@ -16,6 +16,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       });
 
 
+      $scope.search = function(){
+        exploreService.search($scope.toSearch, $scope.starsLeft, $scope.starsRight,$scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate ).then(function(response) {
+          $scope.matchingTechs = response;
+        });
+      }
+
 
     });
 

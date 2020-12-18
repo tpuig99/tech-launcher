@@ -74,13 +74,13 @@
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_UPDATE_DATE' | translate}}</h4></div>
 
       <span>
-        <select id="update-date-dropdown">
-          <option value="0" selected="dateUpdate == 0 ? selected : null">{{'EXPLORE_ANY_DATE' | translate}}</option>
-          <option value="1" selected="dateUpdate == 1 ? selected : null">{{'EXPLORE_LAST_DAYS' | translate}}</option>
-          <option value="2" selected="dateUpdate == 2 ? selected : null">{{'EXPLORE_LAST_WEEK' | translate}}</option>
-          <option value="3" selected="dateUpdate == 3 ? selected : null">{{'EXPLORE_LAST_MONTH' | translate}}</option>
-          <option value="4" selected="dateUpdate == 4 ? selected : null">{{'EXPLORE_LAST_MONTHS' | translate}}</option>
-          <option value="5" selected="dateUpdate == 5 ? selected : null">{{'EXPLORE_LAST_YEAR' | translate}}</option>
+        <select ng-model="lastUpdate" id="update-date-dropdown">
+          <option value="0">{{'EXPLORE_ANY_DATE' | translate}}</option>
+          <option value="1">{{'EXPLORE_LAST_DAYS' | translate}}</option>
+          <option value="2">{{'EXPLORE_LAST_WEEK' | translate}}</option>
+          <option value="3">{{'EXPLORE_LAST_MONTH' | translate}}</option>
+          <option value="4">{{'EXPLORE_LAST_MONTHS' | translate}}</option>
+          <option value="5" selected>{{'EXPLORE_LAST_YEAR' | translate}}</option>
         </select>
       </span>
 
@@ -89,13 +89,13 @@
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_COMMENT_DATE' | translate}}</h4></div>
 
       <span>
-        <select id="comments-date-dropdown">
-          <option value="0" selected="dateComment == 0 ? selected : null">{{'EXPLORE_ANY_DATE' | translate}}</option>
-          <option value="1" selected="dateComment == 1 ? selected : null">{{'EXPLORE_LAST_DAYS' | translate}}</option>
-          <option value="2" selected="dateComment == 2 ? selected : null">{{'EXPLORE_LAST_WEEK' | translate}}</option>
-          <option value="3" selected="dateComment == 3 ? selected : null">{{'EXPLORE_LAST_MONTH' | translate}}</option>
-          <option value="4" selected="dateComment == 4 ? selected : null">{{'EXPLORE_LAST_MONTHS' | translate}}</option>
-          <option value="5" selected="dateComment == 5 ? selected : null">{{'EXPLORE_LAST_YEAR' | translate}}</option>
+        <select ng-model="lastComment" id="comments-date-dropdown">
+          <option value="0">{{'EXPLORE_ANY_DATE' | translate}}</option>
+          <option value="1">{{'EXPLORE_LAST_DAYS' | translate}}</option>
+          <option value="2">{{'EXPLORE_LAST_WEEK' | translate}}</option>
+          <option value="3">{{'EXPLORE_LAST_MONTH' | translate}}</option>
+          <option value="4">{{'EXPLORE_LAST_MONTHS' | translate}}</option>
+          <option value="5">{{'EXPLORE_LAST_YEAR' | translate}}</option>
         </select>
       </span>
 
@@ -105,13 +105,13 @@
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_COMMENTS' | translate}}</h4></div>
 
       <span>
-        <select id="comments-dropdown">
-          <option value="0" selected="commentAmount == 0 ? selected : null">{{'EXPLORE_COMMENTS_ALL' | translate}}</option>
-          <option value="1" selected="commentAmount == 1 ? selected : null">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:1}' }}</option>
-          <option value="5" selected="commentAmount == 2 ? selected : null">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:5}' }}</option>
-          <option value="10" selected="commentAmount == 3 ? selected : null">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:10}' }}</option>
-          <option value="20" selected="commentAmount == 4 ? selected : null">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:20}' }}</option>
-          <option value="50" selected="commentAmount == 5 ? selected : null">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:50}' }}</option>
+        <select ng-model="commentAmount" id="comments-dropdown">
+          <option value="0">{{'EXPLORE_COMMENTS_ALL' | translate}}</option>
+          <option value="1">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:1}' }}</option>
+          <option value="5">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:5}' }}</option>
+          <option value="10">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:10}' }}</option>
+          <option value="20">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:20}' }}</option>
+          <option value="50">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:50}' }}</option>
         </select>
       </span>
 
@@ -122,24 +122,24 @@
 
         <span>{{'EXPLORE_FROM' | translate}}</span>
         <span>
-          <select id="stars-dropdown-1">
-            <option value="0" selected="starsQuery1 == 0 ? selected : null">0</option>
-            <option value="1" selected="starsQuery1 == 1 ? selected : null">1</option>
-            <option value="2" selected="starsQuery1 == 2 ? selected : null">2</option>
-            <option value="3" selected="starsQuery1 == 3 ? selected : null">3</option>
-            <option value="4" selected="starsQuery1 == 4 ? selected : null">4</option>
-            <option value="5" selected="starsQuery1 == 5 ? selected : null">5</option>
+          <select ng-model="starsLeft" id="stars-dropdown-1">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
           </select>
         </span>
         <span>{{'EXPLORE_TO_5_STARS' | translate}}</span>
         <span>
-          <select id="stars-dropdown-2">
-            <option value="0" selected="starsQuery2 == 0 ? selected : null">0</option>
-            <option value="1" selected="starsQuery2 == 1 ? selected : null">1</option>
-            <option value="2" selected="starsQuery2 == 2 ? selected : null">2</option>
-            <option value="3" selected="starsQuery2 == 3 ? selected : null">3</option>
-            <option value="4" selected="starsQuery2 == 4 ? selected : null">4</option>
-            <option value="5" selected="starsQuery2 == 5 || starsQuery2==null ? selected : null">5</option>
+          <select ng-model="starsRight" id="stars-dropdown-2">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
           </select>
         </span>
       </div>
@@ -149,12 +149,12 @@
 
     <!-- Search Bar -->
     <div class="search-bar sidebar-title">
-      <form class="form-inline my-2 my-lg-0" method="post" onsubmit="search()" id="search">
-        <input id="searchInput" class="form-control mr-sm-2" type="text" value="{{techNameQuery}}" placeholder="{{'SEARCH_TITLE' | translate}}" aria-label="Search" size="80">
-        <button class="btn my-2 my-sm-0 primary-button" type="button" onclick="search()">{{'SEARCH_TITLE' | translate}}</button>
+      <form class="form-inline my-2 my-lg-0" id="search">
+        <input ng-model="toSearch" id="searchInput" class="form-control mr-sm-2" type="text" value="{{techNameQuery}}" placeholder="{{'SEARCH_TITLE' | translate}}" aria-label="Search" size="80">
+        <button class="btn my-2 my-sm-0 primary-button" type="button" ng-click="search()">{{'SEARCH_TITLE' | translate}}</button>
       </form>
       <div class="form-check" id="searchByNameCheckbox">
-        <input class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
+        <input ng-model="nameFlag.selected" class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
         <label class="form-check-label" for="searchOnlyByName">
           {{'EXPLORE_SEARCH_ONLY_BY_NAME' | translate}}
         </label>
@@ -165,18 +165,18 @@
         <div class="mx-2">
           <label class="subtitle" for="sortSelect">{{'EXPLORE_SORT_BY' | translate}}</label>
           <select class="form-control" id="sortSelect" oninput="sort()">
-            <option value="0" selected="sortValue  == 0 ? selected : null">{{'EXPLORE_SORT_BY_NONE' | translate}}</option>
-            <option value="1" selected="sortValue  == 1 ? selected : null">{{'EXPLORE_SORT_BY_RATING' | translate}}</option>
-            <option value="2" selected="sortValue  == 2 ? selected : null">{{'EXPLORE_SORT_BY_COMMENTS_AMOUNT' | translate}}</option>
-            <option value="3" selected="sortValue  == 3 ? selected : null">{{'EXPLORE_SORT_BY_TECH_UPDATED' | translate}}</option>
-            <option value="4" selected="sortValue  == 4 ? selected : null">{{'EXPLORE_SORT_BY_RECENTLY_COMMENTED' | translate}}</option>
+            <option value="0">{{'EXPLORE_SORT_BY_NONE' | translate}}</option>
+            <option value="1">{{'EXPLORE_SORT_BY_RATING' | translate}}</option>
+            <option value="2">{{'EXPLORE_SORT_BY_COMMENTS_AMOUNT' | translate}}</option>
+            <option value="3">{{'EXPLORE_SORT_BY_TECH_UPDATED' | translate}}</option>
+            <option value="4">{{'EXPLORE_SORT_BY_RECENTLY_COMMENTED' | translate}}</option>
           </select>
         </div>
         <div class="mx-2">
           <label class="subtitle" for="orderSelect">{{'EXPLORE_ORDER_BY' | translate}}</label>
           <select class="form-control" id="orderSelect" oninput="sort()">
-            <option value="1" selected="orderValue  == 1 ? selected : null">{{'EXPLORE_ORDER_BY_DESCENDANT' | translate}}</option>
-            <option value="-1" selected="orderValue  == -1 ? selected : null">{{'EXPLORE_ORDER_BY_ASCENDANT' | translate}}</option>
+            <option value="1">{{'EXPLORE_ORDER_BY_DESCENDANT' | translate}}</option>
+            <option value="-1">{{'EXPLORE_ORDER_BY_ASCENDANT' | translate}}</option>
           </select>
         </div>
       </div>
@@ -202,7 +202,7 @@
       <div class="col-8">
         <div class="margin-top">
 
-          <span ng-if="!techNameQuery.isEmpty()" id="name" class="badge badge-pill secondary-badge">{{techNameQuery}}"</span>
+          <span id="name" class="badge badge-pill secondary-badge">{{toSearch}}</span>
 
           <span ng-if="!categoriesQuery.isEmpty()">
               <span ng-repeat="categoryQuery in categoriesQuery" id="name{{categoryQuery}}" class="badge badge-pill secondary-badge">{{category}}</span>
@@ -225,6 +225,8 @@
     </div>
 
     <div class="page-description"></div>
+
+    <!-- TABS -->
 
     <ul class="nav nav-tabs" id="searchTabs">
       <li class="nav-item">
