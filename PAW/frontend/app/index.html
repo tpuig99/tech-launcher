@@ -46,10 +46,10 @@
             </ul>
             <div>
               <div ng-if="!searchPage">
-                <form class="form-inline my-2 my-lg-0" method="post" onsubmit="searchFrameworks()" id="search">
-                  <input id="searchInput" class="form-control mr-sm-2" type="search" placeholder={{'SEARCH_TITLE'|translate}} aria-label="Search">
-                  <button class="btn my-2 my-sm-0" type="button" onclick="searchFrameworks()"><i class="fas fa-search"></i></button>
-                </form>
+                <div class="form-inline my-2 my-lg-0">
+                  <input ng-model="searchInput" placeholder={{'SEARCH_TITLE'|translate}}>
+                  <button class="btn my-2 my-sm-0"  ng-click="toSearch(searchInput)"><i class="fas fa-search"></i></button>
+                </div>
               </div>
             </div>
             <div class="nav-item dropdown" id="profile-settings">
