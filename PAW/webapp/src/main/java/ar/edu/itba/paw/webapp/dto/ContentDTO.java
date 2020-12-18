@@ -13,6 +13,8 @@ public class ContentDTO {
     private String title;
     private String link;
     private String type;
+    private String techName;
+
     public static ContentDTO fromContent(Content content, UriInfo uriInfo) {
         final ContentDTO dto = new ContentDTO();
         dto.date = content.getTimestamp();
@@ -21,6 +23,16 @@ public class ContentDTO {
         dto.title = content.getTitle();
         dto.type = content.getType().name();
         dto.location = uriInfo.getBaseUriBuilder().path("/techs/"+content.getFrameworkId()+"/content/"+content.getContentId()).build().toString();
+        return dto;
+    }
+    public static ContentDTO fromProfile(Content content) {
+        final ContentDTO dto = new ContentDTO();
+        dto.date = content.getTimestamp();
+        dto.link = content.getLink();
+        dto.title = content.getTitle();
+        dto.type = content.getType().name();
+        dto.location = "/techs/"+content.getFrameworkId();
+        dto.techName = content.getFrameworkName();
         return dto;
     }
 
@@ -70,6 +82,14 @@ public class ContentDTO {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getTechName() {
+        return techName;
+    }
+
+    public void setTechName(String techName) {
+        this.techName = techName;
     }
 }
 

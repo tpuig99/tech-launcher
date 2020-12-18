@@ -141,6 +141,9 @@ define([], function () {
     PROFILE_SURE_STOP_MOD: 'Are you sure you want to stop being a moderator?',
     PROFILE_STOP_MOD_DESCRIPTION: 'You will no longer be able to moderate content on all the techs you are moderating now.',
     PROFILE_POSTS: 'Posts',
+    PROFILE_CONTENT_BOOK: 'Bibliography:',
+    PROFILE_CONTENT_COURSE: 'Course:',
+    PROFILE_CONTENT_TUTORIAL: 'Tutorial:',
 
     IMAGE_PROFILE: 'This is your picture!',
     IMAGE_PROFILE_RANDOM: 'This is a random picture!',

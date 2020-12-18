@@ -12,7 +12,7 @@ public class UserDTO {
     private String mail;
     private String password;
     private String description;
-    private List<String> verificationNames;
+    private List<String> verifications;
     private Boolean enabled;
     private Boolean allowedModeration;
     private Boolean admin;
@@ -20,7 +20,14 @@ public class UserDTO {
     private String content;
     private String techs;
     private String votes;
-
+    private String posts;
+    private Boolean verify;
+    private int commentAmount;
+    private int contentAmount;
+    private int votesAmount;
+    private int techsAmount;
+    private int postsAmount;
+    private String image;
 
 
     public static UserDTO fromUser (User user, UriInfo uriInfo) {
@@ -28,17 +35,26 @@ public class UserDTO {
         dto.username = user.getUsername();
         dto.description = user.getDescription();
         dto.mail = user.getMail();
+        dto.verify = false;
         if (user.getVerifications() != null && !user.getVerifications().isEmpty()) {
-            dto.verificationNames = user.getVerifications().stream().map(VerifyUser::getFrameworkName).collect(Collectors.toList());
+            dto.verifications = user.getVerifications().stream().map(VerifyUser::getFrameworkName).collect(Collectors.toList());
+            dto.verify = true;
         }
         dto.enabled = user.isEnable();
         dto.allowedModeration = user.isAllowMod();
         dto.admin = user.isAdmin();
-        dto.comments = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/comments").build().toString();
-        dto.content = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/contents").build().toString();
-        dto.votes = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/votes").build().toString();
-        dto.techs = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/techs").build().toString();
+//        dto.comments = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/comments").build().toString();
+//        dto.content = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/contents").build().toString();
+//        dto.votes = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/votes").build().toString();
+//        dto.techs = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/techs").build().toString();
 
+        dto.comments = "users/"+user.getId()+"/comments";
+        dto.content = "users/"+user.getId()+"/contents";
+        dto.votes = "users/"+user.getId()+"/votes";
+        dto.techs = "users/"+user.getId()+"/techs";
+        dto.posts = "users/"+user.getId()+"/posts";
+
+        dto.image = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/image").build().toString();
         return dto;
     }
 
@@ -66,12 +82,8 @@ public class UserDTO {
         this.description = description;
     }
 
-    public void setVerifications(List<VerifyUser> verifyUserList) {
-        this.verificationNames = verifyUserList.stream().map(VerifyUser::getFrameworkName).collect(Collectors.toList());
-    }
-
     public List<String> getVerifications() {
-        return verificationNames;
+        return verifications;
     }
 
     public String getPassword() {
@@ -106,14 +118,13 @@ public class UserDTO {
         this.admin = admin;
     }
 
-    public List<String> getVerificationNames() {
-        return verificationNames;
+    public void setVerifications(List<String> verifications) {
+        this.verifications = verifications;
     }
 
-    public void setVerificationNames(List<String> verificationNames) {
-        this.verificationNames = verificationNames;
+    public void setVerificationsName(List<VerifyUser> verifyUserList) {
+        this.verifications = verifyUserList.stream().map(VerifyUser::getFrameworkName).collect(Collectors.toList());
     }
-
     public String getComments() {
         return comments;
     }
@@ -144,5 +155,69 @@ public class UserDTO {
 
     public void setVotes(String votes) {
         this.votes = votes;
+    }
+
+    public String getPosts() {
+        return posts;
+    }
+
+    public void setPosts(String posts) {
+        this.posts = posts;
+    }
+
+    public Boolean getVerify() {
+        return verify;
+    }
+
+    public void setVerify(Boolean verify) {
+        this.verify = verify;
+    }
+
+    public int getCommentAmount() {
+        return commentAmount;
+    }
+
+    public void setCommentAmount(int commentAmount) {
+        this.commentAmount = commentAmount;
+    }
+
+    public int getContentAmount() {
+        return contentAmount;
+    }
+
+    public void setContentAmount(int contentAmount) {
+        this.contentAmount = contentAmount;
+    }
+
+    public int getVotesAmount() {
+        return votesAmount;
+    }
+
+    public void setVotesAmount(int votesAmount) {
+        this.votesAmount = votesAmount;
+    }
+
+    public int getTechsAmount() {
+        return techsAmount;
+    }
+
+    public void setTechsAmount(int techsAmount) {
+        this.techsAmount = techsAmount;
+    }
+
+    public int getPostsAmount() {
+        return postsAmount;
+    }
+
+    public void setPostsAmount(int postsAmount) {
+        this.postsAmount = postsAmount;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

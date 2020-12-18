@@ -19,6 +19,7 @@ public class CommentDTO {
     private List<CommentDTO> replies;
     private Long frameworkId;
     private String location;
+    private String techName;
 
     public static CommentDTO fromComment(Comment comment, UriInfo uriInfo) {
         final CommentDTO dto = new CommentDTO();
@@ -33,7 +34,14 @@ public class CommentDTO {
         dto.location = uriInfo.getBaseUriBuilder().path("/techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId()).build().toString();
         return dto;
     }
-
+    public static CommentDTO fromProfile(Comment comment){
+        final CommentDTO dto = new CommentDTO();
+        dto.description = comment.getDescription();
+        dto.date = comment.getTimestamp();
+        dto.location = "/techs/"+comment.getFrameworkId();
+        dto.techName = comment.getFrameworkName();
+        return dto;
+    }
     public String getDescription() {
         return description;
     }
@@ -103,5 +111,13 @@ public class CommentDTO {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getTechName() {
+        return techName;
+    }
+
+    public void setTechName(String techName) {
+        this.techName = techName;
     }
 }

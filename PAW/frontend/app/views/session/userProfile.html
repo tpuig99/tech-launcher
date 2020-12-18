@@ -56,34 +56,34 @@
               <div ng-if="profile.verify">
                 <p>
                   <strong>{{'PROFILE_MODERATOR' | translate}}</strong>
-                <div ng-repeat="verifyTech in profile.verifications">
-                  <a class="tags" href="{{'#/'+verifyTech.location}}">{{verifyTech.name}}</a>
-                </div>
+                  <div ng-repeat="verifyTech in profile.verifications">
+                    <a class="tags" href="{{'#/'+verifyTech.location}}">{{verifyTech.name}}</a>
+                  </div>
                 </p>
               </div>
             </div>
           </div>
           <div class="row mx-2 justify-content-center">
             <div class="col emphasis">
-              <h2><strong>{{profile.content.amount}}</strong></h2>
+              <h2><strong>{{profile.contentAmount}}</strong></h2>
               <p><small>{{'PROFILE_UPLOADED_CONTENTS' | translate}}</small></p>
             </div>
             <div class="col emphasis">
-              <h2><strong>{{profile.comments.amount}}</strong></h2>
+              <h2><strong>{{profile.commentAmount}}</strong></h2>
               <p><small>{{'PROFILE_COMMENTS' | translate}}</small></p>
             </div>
             <div class="col emphasis">
-              <h2><strong>{{profile.votes.amount}} </strong></h2>
+              <h2><strong>{{profile.votesAmount}} </strong></h2>
               <p><small>{{'PROFILE_VOTES_GIVEN' | translate}}</small></p>
             </div>
 
             <div class="col emphasis">
-              <h2><strong>{{profile.techs.amount}} </strong></h2>
+              <h2><strong>{{profile.techsAmount}} </strong></h2>
               <p><small>{{'PROFILE_TECHS' | translate}}</small></p>
             </div>
 
             <div class="col emphasis">
-              <h2><strong>{{profile.posts.amount}} </strong></h2>
+              <h2><strong>{{profile.postsAmount}} </strong></h2>
               <p><small>{{'PROFILE_POSTS' | translate}}</small></p>
             </div>
           </div>
@@ -96,9 +96,9 @@
       <div class="page-title mb-4 ml-2 text-left">
         <h2>{{'PROFILE_COMMENTS' | translate}}</h2>
       </div>
-      <div ng-if="profile.comments.amount != 0">
+      <div ng-if="profile.commentAmount != 0">
         <div class="container d-flex justify-content-center">
-          <div ng-repeat="comment in profile.comments.comments">
+          <div ng-repeat="comment in profile.comments track by $index">
             <div class="card emphasis emph-comment row mb-2">
               <div class="card-body row mt-1">
                 <div class="col-3 secondary-font">
@@ -122,11 +122,11 @@
 
       <!-- Contents -->
       <div class="page-title mb-4 ml-2 text-left">
-        {{'PROFILE_CONTENTS' | translate}}
+        <h2>{{'PROFILE_CONTENTS' | translate}}</h2>
       </div>
       <div ng-if="profile.contentAmount != 0">
         <div class="container d-flex justify-content-center">
-          <div ng-repeat="content in profile.contents">
+          <div ng-repeat="content in profile.content track by $index">
             <div class="card emphasis emph-content row mb-2">
               <div class="card-body row mt-1">
                 <div class="col-3 secondary-font">
@@ -136,7 +136,7 @@
                 </div>
 
                 <div class="col-6 text-left">
-                  {{'PROFILE_CONTENT' + content.type | translate }}
+                  {{'PROFILE_CONTENT_' + content.type |uppercase | translate }}
                   {{content.title}}
                 </div>
 
@@ -157,7 +157,7 @@
       </div>
       <div ng-if="profile.votesAmount">
         <div class="container row equal justify-content-center">
-          <div ng-repeat="vote in profile.votes">
+          <div ng-repeat="vote in profile.votes track by $index">
             <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
               <div class="card-body row mt-1">
                 <div class="col secondary-font">
@@ -184,7 +184,7 @@
           <h2>{{'PROFILE_TECHS' | translate}}</h2>
         </div>
         <div class="container row equal justify-content-center">
-          <div ng-repeat="tech in profile.techs">
+          <div ng-repeat="tech in profile.techs track by $index">
             <div class="card mx-4 mb-4">
               <a href="{{'#/'+tech.location}}">
                 <div class="card-body">
@@ -217,16 +217,16 @@
       </div>
       <div ng-if="profile.postsAmount != 0">
         <div class="container d-flex justify-content-center">
-          <div ng-repeat="post in profile.posts">
+          <div ng-repeat="post in profile.posts track by $index">
             <div class="card emphasis emph-post row mb-2">
               <div class="card-body row mt-1">
                 <div class="col-3 secondary-font">
                   <a href="{{'#/'+post.location}}">
-                    {{post.title}}
+                    {{post.postTitle}}
                   </a>
                 </div>
                 <div class="col-6 text-left">
-                  {{post.description}}
+                  {{post.postDescription}}
                 </div>
                 <div class="col third-font text-right">
                   {{post.timestamp}}

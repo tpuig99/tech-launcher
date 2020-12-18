@@ -143,6 +143,9 @@ define([], function() {
     PROFILE_SURE_STOP_MOD: '¿Estás seguro que querés dejar de ser moderador?',
     PROFILE_STOP_MOD_DESCRIPTION: 'Vas a dejar de moderar el contenido de todas las tecnologías que moderás ahora.',
     PROFILE_POSTS: 'Posts',
+    PROFILE_CONTENT_BOOK: 'Bibliografía:',
+    PROFILE_CONTENT_COURSE: 'Curso:',
+    PROFILE_CONTENT_TUTORIAL: 'Tutorial:',
 
     IMAGE_PROFILE: 'Esta es tu imagen de perfil!',
     IMAGE_PROFILE_RANDOM: 'Esta es una imagen aleatoria!',

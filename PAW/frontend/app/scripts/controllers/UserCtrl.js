@@ -11,13 +11,34 @@ define(['frontend','services/userService'], function(frontend) {
 
     userService.getUser($routeParams.id).then(function (user) {
       $scope.profile = user;
-      console.log($scope.profile)
+      if (user.commentAmount !== 0) {
+        userService.getData($scope.profile.comments).then(function (comments) {
+          $scope.profile.comments = comments;
+        });
+      }
+      if (user.contentAmount !== 0) {
+        userService.getData($scope.profile.content).then(function (content) {
+          $scope.profile.content = content;
+          console.log($scope.profile.content);
+        });
+      }
+      if (user.postsAmount !== 0) {
+        userService.getData($scope.profile.posts).then(function (posts) {
+          $scope.profile.posts = posts;
+        });
+      }
+      if (user.techsAmount !== 0) {
+        userService.getData($scope.profile.techs).then(function (techs) {
+          $scope.profile.techs = techs;
+        });
+      }
+      if (user.votesAmount !== 0) {
+        userService.getData($scope.profile.votes).then(function (votes) {
+          $scope.profile.votes = votes;
+        });
+      }
     });
 
-    userService.getData($scope.profile.comments).then(function (comments) {
-      $scope.profile.comments = comments;
-      console.log($scope.profile.comments);
-    });
 
   });
 });

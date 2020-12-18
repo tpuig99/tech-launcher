@@ -6,19 +6,26 @@ import javax.ws.rs.core.UriInfo;
 
 public class VoteDTO {
     private String techLocation;
-    private String frameworkName;
+    private String techName;
     private String frameworkCategory;
     private Double count;
+    private Integer vote;
 
     public static VoteDTO fromFrameworkVote (FrameworkVote vote, UriInfo uriInfo) {
         VoteDTO dto = new VoteDTO();
-        dto.count = (double) vote.getStars();
-        dto.frameworkName = vote.getFrameworkName();
+        dto.count =  (double) vote.getStars();
+        dto.techName = vote.getFrameworkName();
         dto.frameworkCategory = vote.getCategory();
         dto.techLocation = uriInfo.getBaseUriBuilder().path("/techs/"+vote.getFrameworkId()).build().toString();
         return dto;
     }
-
+    public static VoteDTO fromProfile (FrameworkVote vote) {
+        VoteDTO dto = new VoteDTO();
+        dto.vote =  vote.getStars();
+        dto.techName = vote.getFrameworkName();
+        dto.techLocation = "/techs/"+vote.getFrameworkId();
+        return dto;
+    }
     public Double getCount() {
         return count;
     }
@@ -35,12 +42,12 @@ public class VoteDTO {
         this.techLocation = techLocation;
     }
 
-    public String getFrameworkName() {
-        return frameworkName;
+    public String getTechName() {
+        return techName;
     }
 
-    public void setFrameworkName(String frameworkName) {
-        this.frameworkName = frameworkName;
+    public void setTechName(String techName) {
+        this.techName = techName;
     }
 
     public String getFrameworkCategory() {
@@ -49,5 +56,13 @@ public class VoteDTO {
 
     public void setFrameworkCategory(String frameworkCategory) {
         this.frameworkCategory = frameworkCategory;
+    }
+
+    public Integer getVote() {
+        return vote;
+    }
+
+    public void setVote(Integer vote) {
+        this.vote = vote;
     }
 }

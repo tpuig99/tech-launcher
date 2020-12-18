@@ -55,7 +55,8 @@ public class FrameworkDTO {
         final FrameworkDTO dto = new FrameworkDTO();
         dto.name = framework.getName();
         dto.picture = framework.getPicture();
-        dto.location = uriInfo.getBaseUriBuilder().path("techs/"+framework.getId()).build().toString();
+        dto.location = "techs/"+framework.getId();
+        dto.stars = framework.getStars();
         return dto;
     }
 
