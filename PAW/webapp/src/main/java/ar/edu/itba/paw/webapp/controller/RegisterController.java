@@ -68,7 +68,7 @@ public class RegisterController {
             return login(new JwtRequestDTO(userDTO.getUsername(), userDTO.getPassword()));
         }
         catch (UserAlreadyExistException uaeEx) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.CONFLICT).build();
         }
     }
 

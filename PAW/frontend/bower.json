@@ -16,7 +16,8 @@
     "font-awesome": "^5.15.1",
     "bower": "*",
     "install": "^1.0.4",
-    "components-font-awesome": "^5.15.1"
+    "components-font-awesome": "^5.15.1",
+    "ngstorage": "^0.3.11"
   },
   "devDependencies": {
     "bootstrap": "~3.3.1"

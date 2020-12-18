@@ -6,10 +6,12 @@ define(['routes',
 	'angular-route',
 	'bootstrap',
 	'angular-translate',
+  'ngstorage',
   'restangular'],
 	function(config, dependencyResolverFor, i18n) {
 		var frontend = angular.module('frontend', [
 			'ngRoute',
+      'ngStorage',
       'restangular',
 			'pascalprecht.translate'
 		]);

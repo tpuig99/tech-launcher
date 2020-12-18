@@ -14,6 +14,7 @@ define(['frontend'], function(frontend) {
     };
 
     this.login = function (username, password) {
+
       var user = {
         'username': username,
         'password': password

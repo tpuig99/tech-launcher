@@ -28,7 +28,8 @@ require.config({
         transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition',
         karma: '../../bower_components/karma/lib/karma',
         bower: '../../bower_components/bower/atom-full-compiled',
-        install: '../../bower_components/install/detect-zoom'
+        install: '../../bower_components/install/detect-zoom',
+        ngstorage: '../../bower_components/ngstorage/ngStorage'
     },
     shim: {
         angular: {
