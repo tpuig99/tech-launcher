@@ -6,6 +6,10 @@ define(['frontend'], function(frontend) {
       return Restangular.one('techs').get();
     };
 
+    this.getByCategory = function (category) {
+      return Restangular.all('techs/category/' + category).get();
+    };
+
     this.getCategories = function() {
       return Restangular.one('techs/category').get();
     };
