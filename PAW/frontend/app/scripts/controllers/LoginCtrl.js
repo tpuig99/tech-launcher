@@ -1,7 +1,11 @@
 'use strict';
-define(['frontend'], function(frontend) {
+define(['frontend', 'services/sessionService'], function(frontend) {
 
-    frontend.controller('LoginCtrl', function($scope) {
+    frontend.controller('LoginCtrl', function($scope, sessionService) {
+
+      $scope.login = function() {
+        sessionService.login($scope.usernameInput, $scope.passwordInput);
+      };
 
     });
 

@@ -7,7 +7,7 @@
 
     <div class="page-description"></div>
 
-    <form name="registerForm" action="/create" method="post">
+    <form name="registerForm">
       <div class="form-group">
 
         <label for="username"> {{'LOGIN_USERNAME' | translate}}</label>
@@ -40,8 +40,11 @@
         <div ng-show="registerForm.emailInput.$dirty && registerForm.emailInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
         <div ng-show="registerForm.emailInput.$error.email ">{{ 'FORM_ERROR_EMAIL_FORMAT' | translate}}</div>
       </div>
+
+
       <div class="d-flex justify-content-center">
-        <input class="btn primary-button" type="submit" value="{{'REGISTER_TITLE' | translate}}" ng-click="registerForm.$valid"/>
+        <button ng-if="registerForm.$valid" class="btn primary-button" type="submit"  ng-click="register()">{{'REGISTER_TITLE' | translate}}</button>
+        <button ng-if="registerForm.$invalid"  disabled class="btn primary-button" type="submit" >{{'REGISTER_TITLE' | translate}}</button>
       </div>
     </form>
   </div>
