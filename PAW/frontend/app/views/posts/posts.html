@@ -9,15 +9,18 @@
           </button>
         </div>
         <div ng-if="isPresent">
-          <button class="btn btn-info mt-2 mb-4" href="#/addPost">
-            {{'FORUM_ADD_POST' | translate}}
-          </button>
+          <a href="#/add_post">
+            <button class="btn btn-info mt-2 mb-4" href='#/addPost'>
+              {{'FORUM_ADD_POST' | translate}}
+            </button>
+          </a>
         </div>
       </div>
       <div class="row showing-results">
         <div class="col-9"></div>
         <div class="col showing-results data">
-          {{posts.pageSize * (posts.currentPage - 1) + 1}}- <a ng-if="posts.posts.length < posts.pageSize">{{posts.pageSize * (posts.currentPage - 1) + posts.posts.length}}</a>
+          {{posts.pageSize * (posts.currentPage - 1) + 1}}- <a
+          ng-if="posts.posts.length < posts.pageSize">{{posts.pageSize * (posts.currentPage - 1) + posts.posts.length}}</a>
           <a ng-if="posts.posts.length >= posts.pageSize">{{posts.pageSize * (posts.currentPage)}}</a>
           {{'FORUM_SHOWING_RESULTS' | translate}} {{posts.amount}}
         </div>
@@ -76,7 +79,7 @@
                 </div>
                 <div class="col">
                   <div class="row post-title">
-                    <a href={{post.location}}>
+                    <a href="#/{{post.location}}">
                       {{post.postTitle}}
                     </a>
                   </div>
@@ -96,7 +99,7 @@
                                       {{'TYPE_' + tag.tagName | uppercase | translate}}
                                   </div>
                                   <div ng-if="tag.type == 'tech_category'">
-                                      {{ "CATEGORY_"+tag.tagName | uppercase | translate}}
+                                      {{ "CATEGORY_" + tag.tagName | uppercase | translate}}
                                   </div>
                           </span>
                         </button>
@@ -107,7 +110,7 @@
                         {{post.timestamp}}
                       </div>
                       <div class="row d-flex secondary-color text-right">
-                        <a href={{post.postOwner.location}}>{{post.postOwner.username}}</a>
+                        <a href="#/{{post.postOwner.location}}">{{post.postOwner.username}}</a>
                       </div>
                     </div>
                   </div>
@@ -117,7 +120,8 @@
                         <div class="row d-flex">
                           <div>
                             <button class="btn btn-danger text-nowrap" type="button"
-                                    onclick="openDeletePostModal(${post.postId})" data-toggle="modal"
+                                    onclick="openDeletePostModal(${post.postId})" ng-click="deletePost(post.location)"
+                                    data-toggle="modal"
                                     data-target="#deletePostModal">
                               <i class="fas fa-trash-alt fa-sm mr-1"></i>
                               {{'POST_DELETE' | translate}}

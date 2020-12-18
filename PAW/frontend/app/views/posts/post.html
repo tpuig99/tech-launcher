@@ -16,7 +16,7 @@
             </a>
           </div>
           <div class="mx-2">
-            <button class="btn btn-danger btn-block text-nowrap" type="button" data-toggle="modal" data-target="#deletePostModal">
+            <button class="btn btn-danger btn-block text-nowrap" type="button" data-toggle="modal" ng-click="deletePost(post.location)" data-target="#deletePostModal">
               <i class="fas fa-trash-alt fa-sm mr-1"></i>
               {{'BUTTON_DELETE_POST' | translate}}
             </button>
@@ -90,7 +90,7 @@
                 {{post.timestamp.toLocaleString()}}
               </div>
               <div class="row d-flex secondary-color text-right">
-                <a ng-href="/#/users/{{post.postOwner.id}}">{{post.postOwner.username}}</a>
+                <a ng-href="#/{{post.postOwner.location}}">{{post.postOwner.username}}</a>
               </div>
             </div>
           </div>

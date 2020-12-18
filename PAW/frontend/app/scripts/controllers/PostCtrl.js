@@ -8,27 +8,27 @@ define(['frontend', 'services/postService'], function(frontend) {
 
 
 
-      postService.getPost($routeParams.id).then(function(response){
+      postService.getPost($routeParams.id).then(function(response) {
         $scope.post = response;
       });
 
-      postService.getAnswers($routeParams.id).then(function(response){
+      postService.getAnswers($routeParams.id).then(function(response) {
         $scope.answers = response;
       });
 
-      $scope.redirect = function(url){
+      $scope.redirect = function(url) {
         $location.path(url);
       };
 
-      $scope.deletePost = function(){
-        postService.deletePost($routeParams.id);
+      $scope.deletePost = function(post) {
+        post.remove();
       };
 
-      $scope.upVote = function(post){
+      $scope.upVote = function(post) {
         postService.upVote(post);
       };
 
-      $scope.downVote = function(post){
+      $scope.downVote = function(post) {
         postService.downVote(post);
       };
 

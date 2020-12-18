@@ -16,6 +16,9 @@ define(['frontend'], function(frontend) {
       return Restangular.one('posts',id).remove();
     };
 
+    this.deletePost = function(url){
+      return Restangular.one(url).remove();
+    };
     this.upVote = function(post){
       post.votesUp += 1;
       post.post();

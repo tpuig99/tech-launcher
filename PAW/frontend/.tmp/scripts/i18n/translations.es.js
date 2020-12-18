@@ -35,7 +35,7 @@ define([], function() {
     BUTTON_PROFILE: 'Perfil',
     BUTTON_MODERATE: 'Moderar',
 
-    EXPLORE_SEARCH_TITLE: 'Buscar',
+    SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
     EXPLORE_CATEGORIES: 'Categorías',
     EXPLORE_TYPES: 'Tipos',

@@ -10,6 +10,9 @@ define(['frontend','services/postService'], function(frontend) {
     postService.getPosts().then(function (posts) {
       $scope.posts = posts;
     });
+    $scope.deletePost = function(url){
+      postService.deletePost(url);
+    };
   }]);
 
 });

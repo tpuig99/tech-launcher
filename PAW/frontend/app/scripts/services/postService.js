@@ -12,10 +12,9 @@ define(['frontend'], function(frontend) {
       return Restangular.one('posts',id).getList('answers');
     };
 
-    this.deletePost = function(id){
-      return Restangular.one('posts',id).remove();
+    this.deletePost = function(post){
+      return Restangular.one(post).remove();
     };
-
     this.upVote = function(post){
       post.votesUp += 1;
       post.post();
