@@ -94,6 +94,7 @@ define([], function () {
     LOGIN_FORGOT_PASSWORD: 'Recover your password',
     LOGIN_CHANGE_PASSWORD: 'Change Password',
 
+    REGISTER_UAE: 'We are sorry ! This user already exists',
     REGISTER_WREF: 'Tech Launcher - Sign Up',
     REGISTER_TITLE: 'Sign Up',
 
@@ -116,6 +117,7 @@ define([], function () {
     FORM_ERROR_LENGTH: 'Must be between {{ min }} and {{ max }} characters',
     FORM_ERROR_EMPTY: 'Must not be empty',
     FORM_ERROR_EMAIL_FORMAT: 'This email format is not valid',
+    FORM_ERROR_PASSWORDS_MATCHING: 'Passwords do not match',
 
     PROFILE_WREF: 'Tech Launcher - User Profile',
     PROFILE_TITLE: 'User Profile',
