@@ -96,6 +96,7 @@ define([], function() {
     LOGIN_FORGOT_PASSWORD: 'Recuperar Contraseña',
     LOGIN_CHANGE_PASSWORD: 'Cambiar Contraseña',
 
+    REGISTER_UAE: 'Lo sentimos ! Este usuario ya existe',
     REGISTER_WREF: 'Tech Launcher - Registro',
     REGISTER_TITLE: 'Registrarse',
 
@@ -118,6 +119,7 @@ define([], function() {
     FORM_ERROR_LENGTH: 'Debe tener entre {{ min }} y {{ max }} caracteres',
     FORM_ERROR_EMPTY: 'No debe estar vacío',
     FORM_ERROR_EMAIL_FORMAT: 'Mail inválido',
+    FORM_ERROR_PASSWORDS_MATCHING: 'Las contraseñas deben ser iguales',
 
     PROFILE_WREF: 'Tech Launcher - Perfil',
     PROFILE_TITLE: 'Perfil de usuario',
