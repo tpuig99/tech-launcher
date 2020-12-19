@@ -100,9 +100,10 @@ define([], function () {
     LOGIN_PASSWORD_CHANGED: 'Your password has been changed successfully !',
     LOGIN_GO_LOGIN: 'Go to Log In',
 
-    REGISTER_UAE: 'We are sorry ! This user already exists',
+    REGISTER_UAE: 'We are sorry ! This user already exists. Try another username or email',
     REGISTER_WREF: 'Tech Launcher - Sign Up',
     REGISTER_TITLE: 'Sign Up',
+    REGISTER_SUCCESS: 'Registered successfully! Please check your inbox in order to verify your user',
 
     POST_TITLE: 'Post',
     POST_NO_ANSWERS_YET: 'There are no answers yet',

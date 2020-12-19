@@ -102,9 +102,10 @@ define([], function() {
     LOGIN_PASSWORD_CHANGED: '¡ Tu contranseña fue cambiada correctamente !',
     LOGIN_GO_LOGIN: 'Incia sesión',
 
-    REGISTER_UAE: 'Lo sentimos ! Este usuario ya existe',
+    REGISTER_UAE: 'Lo sentimos ! Este usuario ya existe. Intenta ingresar otro nombre u otro mail',
     REGISTER_WREF: 'Tech Launcher - Registro',
     REGISTER_TITLE: 'Registrarse',
+    REGISTER_SUCCESS: '¡Te registraste correctamente! Por favor ingresa a tu mail para verificar tu usuario',
 
     POST_TITLE: 'Pregunta',
     POST_NO_ANSWERS_YET: 'No hay respuestas aún',

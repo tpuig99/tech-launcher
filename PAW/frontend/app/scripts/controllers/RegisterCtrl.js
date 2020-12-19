@@ -5,13 +5,15 @@ define(['frontend','services/sessionService'], function(frontend) {
     frontend.controller('RegisterCtrl', function($scope, sessionService) {
 
       $scope.userAlreadyExists = false;
+      $scope.registered = false;
 
-      $scope.register = function() {
-        sessionService.createUser($scope.emailInput, $scope.usernameInput, $scope.passwordInput).then(function(response) {
-          if (response.status === 409) {
-            $scope.userAlreadyExists = true;
-            console.log($scope.userAlreadyExists);
-          }
+      $scope.register = function(email, username, password) {
+        sessionService.createUser(email, username, password).then(function(response) {
+          $scope.userAlreadyExists = false;
+          $scope.registered =  true;
+        }, function (response){
+          $scope.registered =  false;
+          $scope.userAlreadyExists = true;
         });
       };
 
