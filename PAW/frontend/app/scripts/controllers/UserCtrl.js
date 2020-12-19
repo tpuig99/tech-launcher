@@ -1,13 +1,14 @@
 'use strict';
-define(['frontend','services/userService'], function(frontend) {
+define(['frontend','services/userService','services/sessionService'], function(frontend) {
 
-  frontend.controller('userCtrl', function($scope, $location, $window, $routeParams, userService, Restangular) {
-    $scope.isAdmin = true;
-    $scope.isOwner = true;
-    $scope.isEnable = false;
-    $scope.isMod = true;
-    $scope.isPresent = true;
-    $scope.username = 'pepe';
+  frontend.controller('userCtrl', function($scope, $routeParams, userService,sessionService,$localStorage) {
+
+    if ($scope.$parent.username !== undefined) {
+      $scope.username = $scope.$parent.username;
+      sessionService.getCurrentUser($localStorage.currentUser.location).then(function (response) {
+        $scope.allowMod = response.data.allowedModeration;
+      });
+    }
 
     userService.getUser($routeParams.id).then(function (user) {
       $scope.profile = user.data;

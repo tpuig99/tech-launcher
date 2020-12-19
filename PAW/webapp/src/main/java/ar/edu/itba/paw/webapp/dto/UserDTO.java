@@ -12,7 +12,7 @@ public class UserDTO {
     private String mail;
     private String password;
     private String description;
-    private List<String> verifications;
+    private List<VerifyUserDTO> verifications;
     private Boolean enabled;
     private Boolean allowedModeration;
     private Boolean admin;
@@ -37,7 +37,7 @@ public class UserDTO {
         dto.mail = user.getMail();
         dto.verify = false;
         if (user.getVerifications() != null && !user.getVerifications().isEmpty()) {
-            dto.verifications = user.getVerifications().stream().map(VerifyUser::getFrameworkName).collect(Collectors.toList());
+            dto.verifications = user.getVerifications().stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());
             dto.verify = true;
         }
         dto.enabled = user.isEnable();
@@ -82,10 +82,6 @@ public class UserDTO {
         this.description = description;
     }
 
-    public List<String> getVerifications() {
-        return verifications;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -118,12 +114,16 @@ public class UserDTO {
         this.admin = admin;
     }
 
-    public void setVerifications(List<String> verifications) {
+    public List<VerifyUserDTO> getVerifications() {
+        return verifications;
+    }
+
+    public void setVerifications(List<VerifyUserDTO> verifications) {
         this.verifications = verifications;
     }
 
     public void setVerificationsName(List<VerifyUser> verifyUserList) {
-        this.verifications = verifyUserList.stream().map(VerifyUser::getFrameworkName).collect(Collectors.toList());
+        this.verifications = verifyUserList.stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());
     }
     public String getComments() {
         return comments;

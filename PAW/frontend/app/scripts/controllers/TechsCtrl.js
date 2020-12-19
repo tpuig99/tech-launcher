@@ -1,13 +1,17 @@
 'use strict';
-define(['frontend','services/techsService'], function(frontend) {
+define(['frontend','services/techsService','services/sessionService'], function(frontend) {
 
-  frontend.controller('TechsCtrl', function($scope, $location, $window, $routeParams, techsService, Restangular) {
-    $scope.isAdmin = true;
-    $scope.isOwner = true;
-    $scope.isEnable = false;
-    $scope.isMod = true;
-    $scope.isPresent = true;
-
+  frontend.controller('TechsCtrl', function($scope, $localStorage, sessionService,techsService) {
+    $scope.isAdmin = false;
+    $scope.isMod = false;
+    $scope.isPresent = false;
+    if ($localStorage.currentUser !== undefined) {
+      sessionService.getCurrentUser($localStorage.currentUser.location).then(function (response) {
+        $scope.isMod = response.data.verify;
+        $scope.isAdmin = response.data.admin;
+        $scope.isPresent = true;
+      });
+    }
     techsService.getCategories().then(function (cats) {
       $scope.categories = cats.data;
     });

@@ -7,6 +7,7 @@ public class VerifyUserDTO {
     private Boolean admin;
     private Boolean pending;
     private String frameworkName;
+    private String location;
 
     public static VerifyUserDTO fromVerifyUser(VerifyUser verifyUser) {
         VerifyUserDTO dto = new VerifyUserDTO();
@@ -16,7 +17,12 @@ public class VerifyUserDTO {
         dto.frameworkName = verifyUser.getFrameworkName();
         return dto;
     }
-
+    public static VerifyUserDTO fromProfile(VerifyUser verifyUser) {
+        VerifyUserDTO dto = new VerifyUserDTO();
+        dto.frameworkName = verifyUser.getFrameworkName();
+        dto.location = "techs/"+verifyUser.getFrameworkId();
+        return dto;
+    }
     public String getUsername() {
         return username;
     }
@@ -47,5 +53,13 @@ public class VerifyUserDTO {
 
     public void setFrameworkName(String frameworkName) {
         this.frameworkName = frameworkName;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

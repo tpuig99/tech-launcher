@@ -1,17 +1,25 @@
 'use strict';
-define(['frontend','services/postService'], function(frontend) {
+define(['frontend','services/postService','services/sessionService'], function(frontend) {
 
-  frontend.controller('PostsCtrl', function($scope, $location, $window, $routeParams, postService, Restangular) {
-    $scope.isAdmin = true;
-    $scope.isEnable = true;
-    $scope.isPresent = true;
-    $scope.username = 'pepe';
-    $scope.pageSize = 7;
-    postService.getPosts().then(function (posts) {
-      $scope.posts = posts.data;
-    });
+  frontend.controller('PostsCtrl', function($scope, sessionService, $window, $routeParams, postService, $localStorage) {
+    $scope.isPresent = false;
+    if ($localStorage.currentUser !== undefined) {
+      sessionService.getCurrentUser($localStorage.currentUser.location).then(function (response) {
+        $scope.username = response.data.username;
+        $scope.isMod = response.data.verify;
+        $scope.isAdmin = response.data.admin;
+        $scope.isEnable = response.data.enabled;
+        $scope.isPresent = true;
+      });
+    }
+    $scope.getPosts = function() {
+      postService.getPosts().then(function (posts) {
+        $scope.posts = posts.data;
+      });
+    };
+    $scope.getPosts();
     $scope.deletePost = function(url) {
-      url.remove();
+      postService.deletePost(url).then($scope.getPosts());
     };
   });
 

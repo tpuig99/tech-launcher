@@ -2,13 +2,14 @@
 
 define(['frontend','services/sessionService'], function(frontend) {
 
-	frontend.controller('IndexCtrl', function($scope,$location, $window, $localStorage,$http, $routeParams,$route,sessionService) {
-		$scope.welcomeText = 'Welcome to your frontend page';
+	frontend.controller('IndexCtrl', function($scope,$location, $window, $localStorage,Restangular, $routeParams,$route,sessionService) {
 		var user = $localStorage.currentUser;
     $scope.searchPage = false;
     $scope.checkUser = function() {
       if (user !== undefined) {
         sessionService.getCurrentUser(user.location).then(function (response) {
+          var code = 'Bearer ' + user.token;
+          Restangular.setDefaultHeaders({'Authorization': code});
           $scope.username = response.data.username;
           $scope.isMod = response.data.verify;
           $scope.isAdmin = response.data.admin;
@@ -21,7 +22,7 @@ define(['frontend','services/sessionService'], function(frontend) {
     $scope.navbarSearch = undefined;
     $scope.logout = function () {
       $localStorage.currentUser = undefined;
-      $http.defaults.headers.common.Authorization = undefined;
+      Restangular.setDefaultHeaders({'Authorization': undefined});
       $scope.username = undefined;
       $scope.isMod = undefined;
       $scope.isAdmin = undefined;
