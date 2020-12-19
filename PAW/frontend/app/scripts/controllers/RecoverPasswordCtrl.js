@@ -6,11 +6,11 @@ define(['frontend', 'services/sessionService'], function(frontend) {
 
       $scope.emailSent = false;
 
-      $scope.sendEmail = function(mail){
+      $scope.sendEmail = function(mail) {
         sessionService.setPasswordToken(mail).then(function (response) {
           $scope.emailSent = true;
         });
-      }
+      };
 
     });
 

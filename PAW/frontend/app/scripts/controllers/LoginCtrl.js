@@ -7,7 +7,7 @@ define(['frontend', 'services/sessionService'], function(frontend) {
       $scope.login = function() {
         sessionService.login($scope.usernameInput, $scope.passwordInput).then(function(response) {
           console.log(response.status);
-          if(response.status === 200){
+          if (response.status === 200) {
             if (response.data.token) {
               // store username and token in local storage to keep user logged in between page refreshes
               $localStorage.currentUser = {location: response.data.location, token: response.data.token};

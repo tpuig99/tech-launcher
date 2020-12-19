@@ -38,18 +38,18 @@ define(['frontend'], function(frontend) {
       };
 
       return Restangular.all('register/forgot_password').post(mail);
-    }
+    };
 
     /* Change Password */
-    this.changePassword = function(token, password){
+    this.changePassword = function(token, password) {
       console.log(token);
       console.log(password);
       var newPassword = {
         'token': token,
-        'password': password,
-      }
+        'password': password
+      };
       return Restangular.all('users/password').post(newPassword);
-    }
+    };
 
 
 	});
