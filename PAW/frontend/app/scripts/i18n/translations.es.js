@@ -76,6 +76,9 @@ define([], function() {
     EXPLORE_FILTER: 'Filtrar',
     EXPLORE_TECHS: 'TECNOLOGÍAS',
     EXPLORE_POSTS: 'PREGUNTAS',
+    EXPLORE_COMMENTS_MORE: 'Mas de',
+    EXPLORE_COMMENTS_AMOUNT: ' comentario',
+    EXPLORE_OF: 'de',
 
     ERROR_DESCRIPTION: 'Ooops, ha ocurrido un error',
 

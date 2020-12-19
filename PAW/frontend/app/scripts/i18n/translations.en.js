@@ -74,6 +74,9 @@ define([], function () {
     EXPLORE_FILTER: 'Filter',
     EXPLORE_TECHS: 'TECHS',
     EXPLORE_POSTS: 'POSTS',
+    EXPLORE_COMMENTS_MORE: 'More than',
+    EXPLORE_COMMENTS_AMOUNT: ' comment',
+    EXPLORE_OF: 'of',
 
     ERROR_DESCRIPTION: 'Ooops, an error occurred',
 
