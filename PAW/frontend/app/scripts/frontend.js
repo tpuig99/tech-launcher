@@ -7,13 +7,15 @@ define(['routes',
 	'bootstrap',
 	'angular-translate',
   'ngstorage',
-  'restangular'],
+  'restangular',
+  'directives/components'],
 	function(config, dependencyResolverFor, i18n) {
 		var frontend = angular.module('frontend', [
 			'ngRoute',
       'ngStorage',
       'restangular',
-			'pascalprecht.translate'
+			'pascalprecht.translate',
+      'components'
 		]);
 		frontend
 			.config(
