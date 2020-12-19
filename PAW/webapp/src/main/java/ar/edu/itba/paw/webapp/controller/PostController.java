@@ -183,6 +183,27 @@ public class PostController {
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
+    @GET
+    @Path("/{id}/edit")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response editPostPage(@PathParam("id") long id) {
+        Optional<Post> post = ps.findById(id);
+        if(post.isPresent()) {
+            LOGGER.info("Post {}: Requested and found, retrieving data", id);
+
+            final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            if( optionalUser.isPresent()){
+                User user = optionalUser.get();
+            }
+
+            EditPostDTO dto = EditPostDTO.fromPost(post.get(), pts.getAll());
+
+            return Response.ok(dto).build();
+        }
+        LOGGER.error("Post {}: Requested and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
     @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
