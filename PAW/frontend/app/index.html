@@ -55,21 +55,21 @@
             </div>
             <div class="nav-item dropdown" id="profile-settings">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <div ng-if="username != 'anonymousUser'">{{username}}</div>
+                <div ng-if="username !== undefined">{{username}}</div>
                 <i class="fas fa-user"></i>
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                <div ng-if="isMod">
-                  <a class="dropdown-item" href="${pageContext.request.contextPath}/mod">{{'BUTTON_MODERATE'|translate}}</a>
+                <div ng-if="isMod || isAdmin">
+                  <a class="dropdown-item" href="#/mod">{{'BUTTON_MODERATE'|translate}}</a>
                 </div>
-                <div ng-if="username != 'anonymousUser'">
-                  <a class="dropdown-item" href="${pageContext.request.contextPath}/users/${param.username}">{{'BUTTON_PROFILE'|translate}}</a>
-                  <a class="dropdown-item" href="${pageContext.request.contextPath}/logout">{{'BUTTON_LOGOUT'|translate}}</a>
+                <div ng-if="username !== undefined">
+                  <a class="dropdown-item" href="{{'#/'+userLocation}}">{{'BUTTON_PROFILE'|translate}}</a>
+                  <a class="dropdown-item" ng-click="logout()">{{'BUTTON_LOGOUT'|translate}}</a>
                 </div>
-                <div ng-if="username == 'anonymousUser'">
-                  <a class="dropdown-item" href="${pageContext.request.contextPath}/register">{{'BUTTON_SIGN_UP'|translate}}</a>
-                  <a class="dropdown-item" href="${pageContext.request.contextPath}/login">{{'BUTTON_LOGIN'|translate}}</a>
+                <div ng-if="username == undefined">
+                  <a class="dropdown-item" href="#/register">{{'BUTTON_SIGN_UP'|translate}}</a>
+                  <a class="dropdown-item" href="#/login">{{'BUTTON_LOGIN'|translate}}</a>
                 </div>
               </div>
             </div>

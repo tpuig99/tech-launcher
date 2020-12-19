@@ -23,5 +23,8 @@ define(['frontend'], function(frontend) {
       return Restangular.all('login').post(user);
     };
 
+    this.getCurrentUser = function (location) {
+      return Restangular.one(location).get();
+    };
 	});
 });

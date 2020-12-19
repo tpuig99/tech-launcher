@@ -10,7 +10,7 @@ define(['frontend','services/userService'], function(frontend) {
     $scope.username = 'pepe';
 
     userService.getUser($routeParams.id).then(function (user) {
-      $scope.profile = user;
+      $scope.profile = user.data;
       if (user.commentAmount !== 0) {
         userService.getData($scope.profile.comments).then(function (comments) {
           $scope.profile.comments = comments.data;

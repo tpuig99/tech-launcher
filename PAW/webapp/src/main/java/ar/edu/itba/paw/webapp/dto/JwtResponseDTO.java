@@ -13,7 +13,7 @@ public class JwtResponseDTO {
 
     public JwtResponseDTO(String token, User user) {
         this.token = token;
-        this.location = "/users/"+user.getId();
+        this.location = "users/"+user.getId();
     }
 
     public String getToken() {
