@@ -21,6 +21,7 @@ define(['frontend'], function(frontend) {
     };
 
     this.downVote = function(post) {
+      console.log(post);
       post.votesDown += 1;
       post.post();
     };
