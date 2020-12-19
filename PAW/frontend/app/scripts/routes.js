@@ -16,9 +16,9 @@ define([], function() {
                 templateUrl: '/views/session/login.html',
                 controller: 'LoginCtrl'
             },
-            '/login/:id/password': {
+            '/register/forget_password/:token': {
               templateUrl: '/views/session/change_password.html',
-              controller: 'LoginCtrl'
+              controller: 'ChangePasswordCtrl'
             },
             '/register': {
               templateUrl: '/views/session/register.html',
