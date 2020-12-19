@@ -301,10 +301,12 @@
                     <div class="row extra-info">
                       <div class="col-9">
                           <button ng-repeat="tag in post.postTags" class="badge badge-color ml-1">
-                            <span ng-switch="tag.type.name()">
-                              <span ng-switch-when="tech_name">{{tag.tagName}}</span>
+                            <span ng-switch="tag.type">
+                              <span ng-switch-when="tech_category">
+                                  {{'CATEGORY_' + tag.tagName | uppercase | translate}}
+                              </span>
                               <span ng-switch-when="tech_type">
-                                {{tag.tagName}}
+                                  {{'TYPE_' + tag.tagName | uppercase | translate}}
                               </span>
                               <span ng-switch-default>
                                   {{tag.tagName}}
