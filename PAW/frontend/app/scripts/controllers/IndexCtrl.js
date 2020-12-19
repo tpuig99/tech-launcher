@@ -8,10 +8,10 @@ define(['frontend'], function(frontend) {
     $scope.isOwner = true;
     $scope.isEnable = false;
     $scope.searchPage = false;
-    $scope.username = 'pepe';
+    $scope.navbarSearch = undefined;
     $scope.toSearch = function(toSearch) {
-      var to_search = (toSearch === undefined || toSearch === 0) ? '' : toSearch;
-      $window.location.href = '#/explore?to_search=' + to_search;
+      $scope.navbarSearch = (toSearch === undefined || toSearch === 0) ? '' : toSearch;
+      $window.location.href = '#/explore';
     };
 	});
 });

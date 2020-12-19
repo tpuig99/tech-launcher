@@ -36,7 +36,6 @@
         </div>
       </div>
 
-
       <!-- Filter By Types -->
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_TYPES' | translate}}</h4></div>
 
@@ -204,6 +203,7 @@
 
           <span id="name" class="badge badge-pill secondary-badge">{{nameToSearch}}</span>
 
+          <span  class="badge badge-pill secondary-badge">{{navbarNameToSearch}}</span>
 
           <span ng-repeat="category in categories" > <span ng-if="category.selected" class="badge badge-pill secondary-badge"> {{ "CATEGORY_" + category.category | uppercase | translate}} </span></span>
 

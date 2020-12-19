@@ -29,7 +29,9 @@ require.config({
         karma: '../../bower_components/karma/lib/karma',
         bower: '../../bower_components/bower/atom-full-compiled',
         install: '../../bower_components/install/detect-zoom',
-        ngstorage: '../../bower_components/ngstorage/ngStorage'
+        ngstorage: '../../bower_components/ngstorage/ngStorage',
+        'angular-bootstrap': '../../bower_components/angular-bootstrap/ui-bootstrap-tpls',
+        'angular-flot': '../../bower_components/angular-flot/angular-flot'
     },
     shim: {
         angular: {
