@@ -186,12 +186,12 @@
     <div class="page-description"></div>
     <div class="page-title">
 
-      <div ng-switch="true">
+      <div ng-switch="isExplore">
         <div ng-switch-when="true">
           <h2>{{'EXPLORE_TITLE' | translate}}</h2>
         </div>
         <div ng-switch-when="false">
-          <h2>{{'EXPLORE_SEARCH_RESULTS' | translate}} (<span id="resultsNumber"></span>)</h2>
+          <h2>{{'EXPLORE_SEARCH_RESULTS' | translate}} (<span ng-if="activeTab === 'T'">{{matchingTechs.frameworksAmount}}</span><span ng-if="activeTab === 'P'">{{posts.postsAmount}}</span>)</h2>
         </div>
       </div>
     </div>
@@ -231,10 +231,10 @@
 
     <ul class="nav nav-tabs" id="searchTabs">
       <li class="nav-item">
-        <a  class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="techs" aria-selected="true">{{'EXPLORE_TECHS' | translate}}</a>
+        <a ng-click="setActiveTab('T')"  class="nav-link" href="#techs" data-toggle="tab" role="tab" aria-controls="techs" aria-selected="true">{{'EXPLORE_TECHS' | translate}}</a>
       </li>
       <li class="nav-item">
-        <a   class="nav-link" href="#posts" data-toggle="tab" role="tab" aria-controls="posts" aria-selected="false">{{'EXPLORE_POSTS' | translate}}</a>
+        <a ng-click="setActiveTab('P')"  class="nav-link" href="#posts" data-toggle="tab" role="tab" aria-controls="posts" aria-selected="false">{{'EXPLORE_POSTS' | translate}}</a>
       </li>
     </ul>
 
@@ -282,7 +282,7 @@
                     <div class="row search-post-description ml-1">{{post.postDescription}}</div>
                     <div class="row extra-info">
                       <div class="col-9">
-                          <button ng-repeat="tag in post.postTags" class="badge badge-color ml-1" onclick="goToExplore()">
+                          <button ng-repeat="tag in post.postTags" class="badge badge-color ml-1">
                             <span ng-switch="tag.type.name()">
                               <span ng-switch-when="tech_name">{{tag.tagName}}</span>
                               <span ng-switch-when="tech_type">

@@ -12,7 +12,7 @@ define(['frontend'], function(frontend) {
       return Restangular.one('explore?is_post=true').get();
     };
 
-    this.search = function(toSearch, categories, types, starsLeft, starsRight,nameFlag, commentAmount, lastComment, lastUpdate, groupBy, orderBy) {
+    this.search = function(tab, toSearch, categories, types, starsLeft, starsRight,nameFlag, commentAmount, lastComment, lastUpdate, groupBy, orderBy) {
 
       var toSearchQ = (toSearch === undefined ? '' : toSearch);
       var starsLeftQ = starsLeft === undefined ? '0' : starsLeft;
@@ -50,6 +50,11 @@ define(['frontend'], function(frontend) {
       var url = 'explore?to_search=' + toSearchQ + categoriesQ + typesQ +  '&stars_left=' + starsLeftQ + '&stars_right=' + starsRightQ + '&name_flag=' + nameFlag + '&order=' + order + '&comment_amount=' + commentAmountQ + '&last_comment=' + lastCommentQ + '&last_update=' + lastUpdateQ;
 
       console.log(url);
+      if(tab === 'P'){
+        url = url + '&is_post=true'
+        return Restangular.one(url).get();
+      }
+
       return Restangular.one(url).get();
     };
 
