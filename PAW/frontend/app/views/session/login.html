@@ -6,7 +6,7 @@
     </div>
     <div class="page-description"></div>
 
-    <div ng-if="loginForm.$invalid" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
+    <div ng-if="failedLogin" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
 
     <form name="loginForm" enctype="application/x-www-form-urlencoded" novalidate>
       <div class="form-group">

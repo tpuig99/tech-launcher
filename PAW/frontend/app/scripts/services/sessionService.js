@@ -22,7 +22,6 @@ define(['frontend'], function(frontend) {
         'username': username,
         'password': password
       };
-      console.log(username); console.log(password);
       return Restangular.all('login').post(user);
     };
 
@@ -38,16 +37,18 @@ define(['frontend'], function(frontend) {
         'mail': email
       };
 
-      return Restangular.all('register/forgot_password').post();
+      return Restangular.all('register/forgot_password').post(mail);
     }
 
     /* Change Password */
     this.changePassword = function(token, password){
+      console.log(token);
+      console.log(password);
       var newPassword = {
         'token': token,
         'password': password,
       }
-      return Restangular.all('users/password').post();
+      return Restangular.all('users/password').post(newPassword);
     }
 
 

@@ -93,6 +93,9 @@ define([], function () {
     LOGIN_FORGOT_QUESTION: 'Forgot your password?',
     LOGIN_FORGOT_PASSWORD: 'Recover your password',
     LOGIN_CHANGE_PASSWORD: 'Change Password',
+    LOGIN_EMAIL_SENT: 'Email Sent ! Please check your inbox in order to change your password',
+    LOGIN_PASSWORD_CHANGED: 'Your password has been changed successfully !',
+    LOGIN_GO_LOGIN: 'Go to Log In',
 
     REGISTER_UAE: 'We are sorry ! This user already exists',
     REGISTER_WREF: 'Tech Launcher - Sign Up',
