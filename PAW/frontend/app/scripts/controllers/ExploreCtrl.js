@@ -2,20 +2,65 @@
 define(['frontend', 'services/exploreService', 'services/techsService'], function(frontend) {
 
     frontend.controller('ExploreCtrl', function($scope, exploreService,techsService) {
+
+      /* Hide search bar in navbar */
       $scope.$parent.searchPage = true;
+
+      /* Explore */
+
      if($scope.$parent.navbarSearch !== undefined){
-       exploreService.search($scope.$parent.navbarSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
+       $scope.isExplore = false;
+       exploreService.search('T', $scope.$parent.navbarSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
          $scope.matchingTechs = response.data;
          $scope.navbarNameToSearch = $scope.$parent.navbarSearch;
        });
      } else {
+       $scope.isExplore = true;
        exploreService.getTechs().then(function (response) {
          $scope.matchingTechs = response.data;
        });
+
+       exploreService.getPosts().then(function (response) {
+         $scope.posts = response.data;
+       });
      }
-      exploreService.getPosts().then(function (response) {
-        $scope.posts = response.data;
-      });
+
+     /* Set active tab in order to search techs or posts */
+
+      $scope.activeTab = 'T';
+      $scope.setActiveTab = function(tab){
+        $scope.isExplore = false
+       if( $scope.activeTab === 'P' && tab === 'T'){
+         $scope.activeTab = 'T';
+         exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
+           $scope.matchingTechs = response.data;
+         });
+       }else if ( $scope.activeTab === 'T' && tab === 'P') {
+         $scope.activeTab = 'P';
+         exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
+           $scope.posts = response.data;
+         });
+       }
+     }
+
+
+      /* Search Results */
+
+      $scope.search = function () {
+        $scope.isExplore = false
+        exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
+
+          if( $scope.activeTab === 'T'){
+            $scope.matchingTechs = response.data;
+          }else{
+            $scope.posts = response.data;
+          }
+
+          $scope.navbarNameToSearch = undefined;
+        });
+      };
+
+      /* Get categories and types */
 
       techsService.getCategories().then(function (response) {
         $scope.categories = response.data;
@@ -24,12 +69,7 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
         $scope.types = response.data;
       });
 
-      $scope.search = function () {
-        exploreService.search($scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
-          $scope.matchingTechs = response.data;
-          $scope.navbarNameToSearch = undefined;
-        });
-      };
+      /* Show more or less categories and types */
 
       $scope.showMore = function (element) {
         if (element === 'Types') {
@@ -55,6 +95,7 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
         }
       };
 
+    /* Show search bar when going to another page */
     $scope.$on("$destroy",function() {
        $scope.$parent.searchPage = false;
        $scope.$parent.navbarSearch = undefined;
