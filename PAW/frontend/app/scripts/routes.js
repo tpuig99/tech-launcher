@@ -38,7 +38,7 @@ define([], function() {
             },
             '/techs/category/:category': {
               templateUrl: '/views/techs/techs_cats.html',
-              controller: 'TechsCtrl'
+              controller: 'TechsCatCtrl'
             },
             '/tech/:id': {
               templateUrl: '/views/techs/tech.html',
