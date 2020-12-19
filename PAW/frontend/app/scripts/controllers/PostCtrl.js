@@ -9,11 +9,11 @@ define(['frontend', 'services/postService'], function(frontend) {
 
 
       postService.getPost($routeParams.id).then(function(response) {
-        $scope.post = response;
+        $scope.post = response.data;
       });
 
       postService.getAnswers($routeParams.id).then(function(response) {
-        $scope.answers = response;
+        $scope.answers = response.data;
       });
 
       $scope.redirect = function(url) {

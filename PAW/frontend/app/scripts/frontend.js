@@ -45,8 +45,10 @@ define(['routes',
 					$translateProvider.preferredLanguage('preferredLanguage');
           $translateProvider.useSanitizeValueStrategy('escape');
 
-           RestangularProvider.setBaseUrl('/');
-				}]);
+          RestangularProvider.setBaseUrl('/');
+          RestangularProvider.setFullResponse(true);
+
+        }]);
 		return frontend;
 	}
 );

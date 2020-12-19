@@ -5,28 +5,28 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       $scope.$parent.searchPage = true;
      if($scope.$parent.navbarSearch !== undefined){
        exploreService.search($scope.$parent.navbarSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
-         $scope.matchingTechs = response;
+         $scope.matchingTechs = response.data;
          $scope.navbarNameToSearch = $scope.$parent.navbarSearch;
        });
      } else {
        exploreService.getTechs().then(function (response) {
-         $scope.matchingTechs = response;
+         $scope.matchingTechs = response.data;
        });
      }
       exploreService.getPosts().then(function (response) {
-        $scope.posts = response;
+        $scope.posts = response.data;
       });
 
       techsService.getCategories().then(function (response) {
-        $scope.categories = response;
+        $scope.categories = response.data;
       });
       techsService.getTypes().then(function (response) {
-        $scope.types = response;
+        $scope.types = response.data;
       });
 
       $scope.search = function () {
         exploreService.search($scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
-          $scope.matchingTechs = response;
+          $scope.matchingTechs = response.data;
           $scope.navbarNameToSearch = undefined;
         });
       };

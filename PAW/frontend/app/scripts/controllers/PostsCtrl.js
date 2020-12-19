@@ -8,7 +8,7 @@ define(['frontend','services/postService'], function(frontend) {
     $scope.username = 'pepe';
     $scope.pageSize = 7;
     postService.getPosts().then(function (posts) {
-      $scope.posts = posts;
+      $scope.posts = posts.data;
     });
     $scope.deletePost = function(url) {
       url.remove();
