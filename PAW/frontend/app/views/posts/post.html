@@ -28,14 +28,15 @@
       <div class="row post-data">
         <!-- Up Vote - Down Vote section -->
         <div class=" ml-4 col-1 net-votes">
-            <div ng-if="user.name == 'anonymousUser'">
+
+            <div ng-if="username == 'anonymousUser'">
               <button ng-if="user.name == 'anonymousUser'" class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
               <div>
                 <h4>{{post.votesUp - post.votesDown}}</h4>
               </div>
               <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
             </div>
-            <div ng-if="user.name != 'anonymousUser'">
+            <div ng-if="username != 'anonymousUser'">
 
                 <div ng-if="!isEnabled">
                   <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
@@ -47,8 +48,8 @@
                 <div ng-if="isEnabled">
                     <div class="net-votes">
                       <button class="btn pt-0 pb-0" type="submit" ng-click="upVote(post)">
-                        <i ng-if="post.getUserAuthVote(user.name) > 0" class="fa fa-2x fa-arrow-up votedUp"></i>
-                        <i ng-if="post.getUserAuthVote(user.name) <= 0" class="fa fa-2x fa-arrow-up"></i>
+<!--                        <i ng-if="post.getUserAuthVote(user.name) > 0" class="fa fa-2x fa-arrow-up votedUp"></i>-->
+                        <i class="fa fa-2x fa-arrow-up"></i>
                       </button>
                       <div>
                         <h4>{{post.votesUp - post.votesDown}}</h4>
@@ -57,8 +58,8 @@
 
                     <div class="net-votes">
                       <button class="btn pt-0 pb-0" type="submit" ng-click="downVote(post)">
-                        <i ng-if="post.getUserAuthVote(user.name) < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
-                        <i ng-if="post.getUserAuthVote(user.name) >= 0" class="fa fa-2x fa-arrow-down"></i>
+                        <i ng-if="post.getUserAuthVote(username) < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
+                        <i ng-if="post.getUserAuthVote(username) >= 0" class="fa fa-2x fa-arrow-down"></i>
                       </button>
                     </div>
                 </div>
@@ -144,14 +145,14 @@
                               <i ng-if="answer.getUserAuthVote(user.name) <= 0" class="fa fa-2x fa-arrow-up"></i>
                             </button>
                             <div>
-                              <h4>${answer.votesUp - answer.votesDown}</h4>
+                              <h4>{{answer.votesUp - answer.votesDown}}</h4>
                             </div>
                           </div>
 
                           <div class="net-votes">
                             <button class="btn pt-0 pb-0" type="submit" ng-click="downVote(answer)">
-                              <i ng-if="answer.getUserAuthVote(user.name) < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
-                              <i ng-if="answer.getUserAuthVote(user.name) >= 0" class="fa fa-2x fa-arrow-down"></i>
+                              <i ng-if="answer.getUserAuthVote(username) < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
+                              <i ng-if="answer.getUserAuthVote(username) >= 0" class="fa fa-2x fa-arrow-down"></i>
                             </button>
                           </div>
                         </div>
