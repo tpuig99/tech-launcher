@@ -38,13 +38,23 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
         $location.path(url);
       };
 
-      $scope.deletePost = function(url) {
-        postService.deletePost(url)
+      $scope.setDel = function (url) {
+        $scope.toDel = url;
+      };
+      $scope.cleanDel = function () {
+        $scope.toDel = undefined;
+      };
+
+      $scope.deletePost = function() {
+        postService.deletePost($scope.toDel).then(function() {
+          $location.path('/#/posts');
+        });
+
 
       };
 
-      $scope.deleteAnswer = function(url) {
-        postService.deleteAnswer(url).then( function() {
+      $scope.deleteAnswer = function() {
+        postService.deletePost($scope.toDel).then( function() {
           $scope.getPost();
           $scope.getAnswers();
         });
