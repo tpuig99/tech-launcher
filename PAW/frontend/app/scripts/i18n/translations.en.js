@@ -34,6 +34,13 @@ define([], function () {
     BUTTON_MODERATE: 'Moderate',
     BUTTON_BACK_TO_HOME: 'Back to Home',
     BUTTON_RESEND: 'Resend',
+    BUTTON_EDIT_TECH: 'Edit Tech',
+    BUTTON_DELETE_TECH: 'Delete Tech',
+    BUTTON_ADD_CONTENT: 'Add Content',
+    BUTTON_COMMENT_REPLY: 'Reply Comment',
+    BUTTON_COMMENT_SEE_REPLIES: 'See Replies',
+    BUTTON_APPLY: 'Apply',
+    BUTTON_STOP: 'Stop',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
@@ -196,5 +203,32 @@ define([], function () {
 
     USER_NOT_LOGGED: 'You have to be logged in to do this',
     USER_CONFIRM_MAIL: 'Please confirme your email'
+
+    TECH_AUTHOR: 'Author:',
+    TOOLTIP_OWNER: 'This user is the Owner',
+    TECH_DATE: 'Date of Last Update:',
+    TECH_SEE_POSTS_RELATED: 'See posts related',
+    TECH_ADD_TECH_CATEGORY: 'Tech Category',
+    TECH_ADD_TECH_TYPE: 'Tech Type',
+    TECH_CONTENT: 'Content',
+    TECH_CONTENT_NOT_AVAILABLE: 'No content has been uploaded yet',
+    TECH_CONTENT_BIBLIOGRAPHY: 'Bibliography',
+    TECH_CONTENT_COURSES: 'Courses',
+    TECH_CONTENT_TUTORIALS: 'Tutorials',
+    TECH_COMMENTS: 'Comments',
+    TECH_TOOLTIP_OWNER: 'This user is the Owner',
+    TECH_TOOLTIP_ADMIN: 'This user is the Admin',
+    TECH_TOOLTIP_MODERATOR: 'This user is a Moderator',
+    TECH_COMMENT_NO_REPLIES: 'This Comment has no replies yet',
+    TECH_REPLY_PLACEHOLDER: 'Reply this comment here!',
+    TECH_INTERACTIONS: 'Want to give your opinion? Go ahead!',
+    TECH_INTERACTIONS_LEAVE_COMMENT: 'Leave a Comment',
+    TECH_COMMENT_PLACEHOLDER: 'Leave a comment here!',
+    TECH_INTERACTIONS_RATING: 'Rate this Tech',
+    TECH_APPLY_TITLE:'Become a Moderator',
+    TECH_APPLY_MESSAGE:'Want to help us? Be a moderator! You will be able to manage content in this tech',
+    TECH_STOP_TITLE:'Stop being a moderator',
+    TECH_STOP_MESSAGE:'Do you wanna stop being mod of this tech?',
+    TECH_COMPETITION: 'Related Techs'
   };
 });

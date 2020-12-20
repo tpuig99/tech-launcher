@@ -37,6 +37,13 @@ define([], function() {
     BUTTON_MODERATE: 'Moderar',
     BUTTON_BACK_TO_HOME: 'Volver al Inicio',
     BUTTON_RESEND: 'Reenviar',
+    BUTTON_EDIT_TECH: 'Editar Tech',
+    BUTTON_DELETE_TECH: 'Eliminar Tech',
+    BUTTON_ADD_CONTENT: 'Añadir Contenido',
+    BUTTON_COMMENT_REPLY: 'Responder Comentario',
+    BUTTON_COMMENT_SEE_REPLIES: 'Ver Respuestas',
+    BUTTON_APPLY: 'Aplicar',
+    BUTTON_STOP: 'Parar',
 
     SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
@@ -199,5 +206,32 @@ define([], function() {
 
     USER_NOT_LOGGED: 'Tienes que iniciar sesión',
     USER_CONFIRM_MAIL: 'Please confirme your email'
+
+    TECH_AUTHOR: 'Autor:',
+    TOOLTIP_OWNER: 'Este usuario es el Dueño',
+    TECH_DATE: 'Fecha de última actualización:',
+    TECH_SEE_POSTS_RELATED: 'Ver posts relacionados',
+    TECH_ADD_TECH_CATEGORY: 'Categoría de Tech',
+    TECH_ADD_TECH_TYPE: 'Tipo de Tech',
+    TECH_CONTENT: 'Contenido',
+    TECH_CONTENT_NOT_AVAILABLE: 'Todavía no hay contenido cargado',
+    TECH_CONTENT_BIBLIOGRAPHY: 'Bibliografía',
+    TECH_CONTENT_COURSES: 'Cursos',
+    TECH_CONTENT_TUTORIALS: 'Tutoriales',
+    TECH_COMMENTS: 'Commentarios',
+    TECH_TOOLTIP_OWNER: 'Este usuario es el Dueño',
+    TECH_TOOLTIP_ADMIN: 'Este usuario es un Admin',
+    TECH_TOOLTIP_MODERATOR: 'Este usuario es un Moderador',
+    TECH_COMMENT_NO_REPLIES: 'Este comentario no tiene respuestas todavía',
+    TECH_REPLY_PLACEHOLDER: '¡Responde este comentario aquí!',
+    TECH_INTERACTIONS: '¿Quieres dejar tu opinión? ¡Adelante!',
+    TECH_INTERACTIONS_LEAVE_COMMENT: 'Dejar un Comentario',
+    TECH_COMMENT_PLACEHOLDER: '¡Deja un comentario aquí!',
+    TECH_INTERACTIONS_RATING: 'Puntuar esta Tech',
+    TECH_APPLY_TITLE:'Ser un Moderador',
+    TECH_APPLY_MESSAGE:'¿Quieres ayudarnos? Vuélvete un Moderador. Podrás administrar contenido en esta Tech. ',
+    TECH_STOP_TITLE:'Dejar de ser un Moderador',
+    TECH_STOP_MESSAGE:'¿Quieres dejar de ser un Moderador?',
+    TECH_COMPETITION: 'Techs Relacionadas'
 	};
 });
