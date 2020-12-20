@@ -193,6 +193,9 @@ define([], function() {
     TYPE_CSS_MODIFIER: 'Modificador CSS',
     TYPE_API: 'API',
     TYPE_TOOLKIT: 'Herramientas',
-    TYPE_IDE: 'IDE'
+    TYPE_IDE: 'IDE',
+
+    USER_NOT_LOGGED: 'Tienes que iniciar sesión',
+    USER_CONFIRM_MAIL: 'Please confirme your email'
 	};
 });

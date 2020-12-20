@@ -190,6 +190,9 @@ define([], function () {
     TYPE_CSS_MODIFIER: 'CSS Modifier',
     TYPE_API: 'API',
     TYPE_TOOLKIT: 'Toolkit',
-    TYPE_IDE: 'IDE'
+    TYPE_IDE: 'IDE',
+
+    USER_NOT_LOGGED: 'You have to be logged in to do this',
+    USER_CONFIRM_MAIL: 'Please confirme your email'
   };
 });
