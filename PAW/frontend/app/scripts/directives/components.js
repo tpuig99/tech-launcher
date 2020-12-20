@@ -79,11 +79,6 @@ define(['angular'], function(angular) {
   mod.directive('modalLogin', function() {
     return {
       restrict: 'E',
-      scope: {
-        del: '=',
-        clean: '='
-      },
-      controller: 'PostsCtrl',
       templateUrl: '../../views/components/login_modal.html'
     };
   });
@@ -91,11 +86,6 @@ define(['angular'], function(angular) {
   mod.directive('mailModal', function() {
     return {
       restrict: 'E',
-      scope: {
-        del: '=',
-        clean: '='
-      },
-      controller: 'PostsCtrl',
       templateUrl: '../../views/components/confirm_mail_modal.html'
     };
   });

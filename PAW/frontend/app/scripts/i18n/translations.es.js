@@ -36,6 +36,7 @@ define([], function() {
     BUTTON_PROFILE: 'Perfil',
     BUTTON_MODERATE: 'Moderar',
     BUTTON_BACK_TO_HOME: 'Volver al Inicio',
+    BUTTON_RESEND: 'Reenviar',
 
     SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
@@ -107,7 +108,8 @@ define([], function() {
     REGISTER_WREF: 'Tech Launcher - Registro',
     REGISTER_TITLE: 'Registrarse',
     REGISTER_SUCCESS: '¡Te registraste correctamente! Por favor ingresa a tu mail para verificar tu usuario',
-
+    REGISTER_ERROR_EMAIL_STATUS: 'Tu mail no está confirmado',
+    REGISTER_ERROR_CONFIRM_EMAIL: 'Por favor, confirme su mail para continuar.',
     POST_TITLE: 'Pregunta',
     POST_NO_ANSWERS_YET: 'No hay respuestas aún',
     POST_ANSWER_YOURSELF: 'Añade una respuesta !',

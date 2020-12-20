@@ -12,7 +12,9 @@
           <img src="../../images/logo.png" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">
         </div>
         <div class="row justify-content-center align-items-center margin-top">
-          <button type="button" class="btn btn-info" ng-click="window.location.href = '#/login'">{{'LOGIN_TITLE' | translate}}</button>
+          <a ng-href="#/login">
+          <button type="button" class="btn btn-info">{{'LOGIN_TITLE' | translate}}</button>
+          </a>
         </div>
         <div class="row  justify-content-center align-items-center margin-top">
           <div>{{'LOGIN_SIGN_UP_QUESTION' | translate}} <a ng-href="#/register">{{'LOGIN_SIGN_UP' | translate}}</a>
