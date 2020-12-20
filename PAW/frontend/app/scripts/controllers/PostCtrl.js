@@ -1,35 +1,81 @@
 'use strict';
-define(['frontend', 'services/postService'], function(frontend) {
+define(['frontend', 'services/postService', 'services/sessionService'], function(frontend) {
 
-    frontend.controller('PostCtrl', function($scope, $location, $window, $routeParams, postService, Restangular) {
+    frontend.controller('PostCtrl', function($scope, $location, $window, $routeParams, postService, Restangular, sessionService, $localStorage) {
       $scope.isAdmin = true;
       $scope.isOwner = true;
       $scope.isEnabled = true;
-      $scope.username = 'pepe';
+      $scope.username = 'tami';
+
+      if ($scope.$parent.username !== undefined) {
+        $scope.username = $scope.$parent.username;
+        sessionService.getCurrentUser($localStorage.currentUser.location).then(function (response) {
+          $scope.allowMod = response.data.allowedModeration;
+        });
+      }
 
 
-      postService.getPost($routeParams.id).then(function(response) {
-        $scope.post = response.data;
-      });
+      $scope.getPost = function() {
+          postService.getPost($routeParams.id).then(function(response) {
+          $scope.post = response.data;
+        });
+      }
 
-      postService.getAnswers($routeParams.id).then(function(response) {
+
+      $scope.getAnswers = function() {
+       postService.getAnswers($routeParams.id).then(function(response) {
         $scope.answers = response.data;
+        console.log(response);
       });
+
+      }
+
+      $scope.getPost();
+      $scope.getAnswers();
+
 
       $scope.redirect = function(url) {
         $location.path(url);
       };
 
-      $scope.deletePost = function(post) {
-        post.remove();
+      $scope.deletePost = function(url) {
+        postService.deletePost(url)
+
       };
 
-      $scope.upVote = function(post) {
-        postService.upVote(post);
+      $scope.deleteAnswer = function(url) {
+        postService.deleteAnswer(url).then( function() {
+          $scope.getPost();
+          $scope.getAnswers();
+        });
       };
 
-      $scope.downVote = function(post) {
-        postService.downVote(post);
+      $scope.upVote = function() {
+        postService.upVote($routeParams.id).then($scope.getPost());
+      };
+
+      $scope.downVote = function() {
+        postService.downVote($routeParams.id).then($scope.getPost());
+      };
+
+      $scope.upVoteAnswer = function(location) {
+        postService.upVoteAnswer(location).then($scope.getAnswers());
+      };
+
+      $scope.downVoteAnswer = function(location) {
+        postService.downVoteAnswer(location).then($scope.getAnswers());
+      };
+
+      $scope.commentPost = function(answer) {
+        postService.commentPost($routeParams.id, answer).then( function () {
+          $scope.getPost();
+          $scope.getAnswers();
+        });
+      }
+
+      $scope.setData = function(response) {
+        $scope.post = response.data;
+        $scope.pagingLinks = response.headers('link');
       };
 
 

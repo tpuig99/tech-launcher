@@ -285,6 +285,12 @@
 
             </div>
 
+        <!-- Techs Pagination -->
+
+        <div ng-if="techsPaging != undefined">
+          <pagination paging="{{techsPaging}}" id="{{'tech'}}"></pagination>
+        </div>
+
       </div>
       <!-- POSTS TAB -->
       <div class="tab-pane" id="posts">
@@ -329,7 +335,11 @@
             </div>
             <div ng-if="posts.postsAmount == 0">{{'EXPLORE_NOT_FOUND' | translate}}</div>
 
+        <!-- Posts Pagination -->
 
+        <div ng-if="postsPaging != undefined">
+          <pagination paging="{{postsPaging}}" id="{{'post'}}"></pagination>
+        </div>
       </div>
     </div>
 

@@ -101,5 +101,24 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
        $scope.$parent.navbarSearch = undefined;
     });
 
+
+    /* Pagination */
+      $scope.setData = function(response,id) {
+        switch (id) {
+          case 'tech':
+            $scope.matchingTechs = response.data;
+            $scope.techsPaging = response.headers('link');
+            break;
+          case 'content':
+            console.log('post');
+            $scope.posts = response.data;
+            $scope.postsPaging = response.headers('link');
+            break;
+          default:
+            console.log(id);
+            break;
+        }
+      };
+
     });
 });

@@ -15,15 +15,31 @@ define(['frontend'], function(frontend) {
       return Restangular.one(post).remove();
     };
 
-    this.upVote = function(post) {
-      post.votesUp += 1;
-      post.post();
+    this.deleteAnswer = function(location) {
+      return Restangular.oneUrl('routeName', location).remove();
     };
 
-    this.downVote = function(post) {
-      console.log(post);
-      post.votesDown += 1;
-      post.post();
+    this.upVote = function(id) {
+      return Restangular.all('posts/'+ id + '/up_vote').post();
+    };
+
+    this.downVote = function(id) {
+      return Restangular.all('posts/'+ id + '/down_vote').post();
+    };
+
+    this.upVoteAnswer = function(location) {
+      return Restangular.oneUrl('routeName', location + '/up_vote').post();
+    };
+
+    this.downVoteAnswer = function(location) {
+      return Restangular.oneUrl('routeName', location + '/down_vote').post();
+    };
+
+    this.commentPost = function(id, answer) {
+      var newAnswer = {
+        'description': answer
+      };
+      return Restangular.all('posts/' + id + '/answers').post(newAnswer);
     };
 
     this.getPosts = function() {
