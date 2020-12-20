@@ -195,7 +195,7 @@ define([], function () {
     TYPE_IDE: 'IDE',
 
     USER_NOT_LOGGED: 'You have to be logged in to do this',
-    USER_CONFIRM_MAIL: 'Please confirme your email'
+    USER_CONFIRM_MAIL: 'Please confirme your email',
 
     TECH_AUTHOR: 'Author:',
     TOOLTIP_OWNER: 'This user is the Owner',

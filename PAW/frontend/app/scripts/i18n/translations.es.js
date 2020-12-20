@@ -205,7 +205,7 @@ define([], function() {
     TYPE_IDE: 'IDE',
 
     USER_NOT_LOGGED: 'Tienes que iniciar sesión',
-    USER_CONFIRM_MAIL: 'Please confirme your email'
+    USER_CONFIRM_MAIL: 'Please confirme your email',
 
     TECH_AUTHOR: 'Autor:',
     TOOLTIP_OWNER: 'Este usuario es el Dueño',
