@@ -1,4 +1,4 @@
-<div ng-controller="userCtrl">
+<div ng-controller="userCtrl" ng-cloak>
   <div class="content-profile row mx-2">
     <div class="col border-right">
       <div class="sticky-top-row" ng-if="profile != undefined">
@@ -47,18 +47,17 @@
               </div>
               <div ng-if="profile.username == username && !profile.admin">
                 <div class="custom-control custom-checkbox mb-2">
-                  <input type="checkbox" checked="{{allowMod}}" class="custom-control-input" onclick="openStopBeingAModModal()"
-                         id="modCheckbox">
+                  <input type="checkbox" class="custom-control-input"
+                         ng-model="modValue" ng-click="changeMod()" id="modCheckbox">
                   <label class="custom-control-label"
                          for="modCheckbox"><strong>{{'BUTTON_MODERATE' | translate}}</strong></label>
+
                 </div>
               </div>
               <div ng-if="profile.verify">
                 <p>
                   <strong>{{'PROFILE_MODERATOR' | translate}}</strong>
-                  <div ng-repeat="verifyTech in profile.verifications">
-                    <a class="tags" href="{{'#/'+verifyTech.location}}">{{verifyTech.frameworkName}}</a>
-                  </div>
+                  <div ng-repeat="verifyTech in profile.verifications"><a class="tags" href="{{'#/'+verifyTech.location}}">{{verifyTech.frameworkName}}</a></div>
                 </p>
               </div>
             </div>
@@ -139,7 +138,7 @@
                 </div>
 
                 <div class="col-6 text-left">
-                  {{'PROFILE_CONTENT_' + content.type |uppercase | translate }}
+                  {{'PROFILE_CONTENT_' + content.type | uppercase | translate }}
                   {{content.title}}
                 </div>
 
@@ -258,4 +257,85 @@
       </div>
     </div>
   </div>
-</div>
+
+  <!--Edit Profile Modal -->
+
+  <!--  <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">-->
+  <!--    <div class="modal-dialog" role="document">-->
+  <!--      <div class="modal-content">-->
+  <!--        <div class="modal-header container">-->
+
+  <!--          <h5 class="modal-title" id="editProfileLabel">{{'PROFILE_EDIT_TITLE'|translate}}</h5>-->
+
+  <!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+  <!--          </button>-->
+  <!--          <span aria-hidden="true">&times;</span>-->
+  <!--        </div>-->
+  <!--        <div class="modal-body container">-->
+  <!--          &lt;!&ndash; Change Picture and Description&ndash;&gt;-->
+  <!--          <form:form id="editProfileForm" modelAttribute="profileForm" action="${path}" method="post" enctype="multipart/form-data">-->
+  <!--            <form:errors cssClass="formError" element="p"/>-->
+  <!--            <form:input type="hidden"  path="userId"/>-->
+  <!--            <div class="form-group">-->
+  <!--              <form:label path="picture"><spring:message code="profile.change_picture"/></form:label>-->
+  <!--              <div class="text-center">-->
+  <!--                <form:input path="picture" class="form-control" type="file" accept="image/*" />-->
+  <!--              </div>-->
+  <!--              <form:errors path="picture" element="p" cssClass="formError"/>-->
+  <!--            </div>-->
+
+  <!--            <div class="form-group">-->
+  <!--              <form:label path="description"><spring:message code="user.description"/></form:label>-->
+  <!--              <form:textarea path="description"  class="form-control" type="textarea" />-->
+  <!--              <form:errors path="description" element="p" cssError="formError"/>-->
+  <!--            </div>-->
+
+  <!--            <div class="d-flex justify-content-center">-->
+  <!--              <input class="btn btn-info" id="editProfileButton" type="submit" value="<spring:message code="button.submit"/>"/>-->
+  <!--              <div class="btn btn-info disabled" id="editProfileLoading" hidden>-->
+  <!--                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>-->
+  <!--                <spring:message code="button.loading"/>-->
+  <!--              </div>-->
+  <!--            </div>-->
+  <!--          </form:form>-->
+
+  <!--          &lt;!&ndash; Change Password &ndash;&gt;-->
+  <!--          <div>-->
+  <!--            <span><a ng-href="#/change_password">{{'PROFILE_CHANGE_PASSWORD'|translate}}</a></span>-->
+  <!--          </div>-->
+
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+
+  <!-- Stop being a mod Modal -->
+
+  <div class="modal fade" id="stopBeingAModModal" tabindex="-1" role="dialog" aria-labelledby="stopBeingAModModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="stopBeingAModModalLabel"><strong>{{'PROFILE_ALLOW_MOD' | translate}}</strong></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row padding-left justify-content-center align-items-center">
+            <div><h4>{{'PROFILE_SURE_STOP_MOD' | translate}}</h4> </div>
+              <div>{{'PROFILE_STOP_MOD_DESCRIPTION' | translate}}</div>
+            </div>
+            <div class="row justify-content-center align-items-center margin-top">
+              <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close">{{'BUTTON_CANCEL' | translate}}
+              </button>
+              <button class="btn btn-danger ml-4" ng-click="updateMod(false)">{{'BUTTON_STOP_BEING_MOD' | translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <!--  <div id="snackbar"><spring:message code="profile.updated"/></div>-->
+  </div>

@@ -36,6 +36,7 @@ define([], function() {
     BUTTON_PROFILE: 'Perfil',
     BUTTON_MODERATE: 'Moderar',
     BUTTON_BACK_TO_HOME: 'Volver al Inicio',
+    BUTTON_STOP_BEING_MOD: 'Dejar de ser mod',
     BUTTON_RESEND: 'Reenviar',
 
     SEARCH_TITLE: 'Buscar',

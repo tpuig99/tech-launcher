@@ -33,8 +33,12 @@ define(['frontend','services/postService','services/sessionService'], function(f
       postService.deletePost($scope.toDel).then(function() {
         $scope.getPosts();
         $scope.cleanDel();
+        $('#deletePostModal').modal('hide');
       });
     };
+    $('#deletePostModal').on('hide.bs.modal',function () {
+      $scope.cleanDel();
+    });
   });
 
 });

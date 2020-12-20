@@ -34,7 +34,7 @@ define([], function () {
     BUTTON_MODERATE: 'Moderate',
     BUTTON_BACK_TO_HOME: 'Back to Home',
     BUTTON_RESEND: 'Resend',
-
+    BUTTON_STOP_BEING_MOD: 'Stop being a mod',
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
     EXPLORE_CATEGORIES: 'Categories',

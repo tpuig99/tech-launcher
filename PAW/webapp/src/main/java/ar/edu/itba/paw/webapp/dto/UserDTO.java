@@ -28,7 +28,7 @@ public class UserDTO {
     private int techsAmount;
     private int postsAmount;
     private String image;
-
+    private String modLocation;
 
     public static UserDTO fromUser (User user, UriInfo uriInfo) {
         UserDTO dto = new UserDTO();
@@ -53,6 +53,7 @@ public class UserDTO {
         dto.votes = "users/"+user.getId()+"/votes";
         dto.techs = "users/"+user.getId()+"/techs";
         dto.posts = "users/"+user.getId()+"/posts";
+        dto.modLocation = "users/"+user.getId()+"/enable_modding/";
         if(user.getPicture() != null)
             dto.image = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/image").build().toString();
         return dto;
@@ -219,5 +220,13 @@ public class UserDTO {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getModLocation() {
+        return modLocation;
+    }
+
+    public void setModLocation(String modLocation) {
+        this.modLocation = modLocation;
     }
 }
