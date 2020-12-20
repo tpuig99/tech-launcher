@@ -81,15 +81,6 @@ public class PostController {
     }
 
     @GET
-    @Path("/{id}/answer")
-    @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response postComments(@PathParam("id") long id, @QueryParam(value = "page") @DefaultValue(START_PAGE) Long commentsPage ) {
-        List<PostComment> commentsList = commentService.getByPost(id, commentsPage);
-        List<PostCommentDTO> dto = commentsList.stream().map((comment) -> PostCommentDTO.fromComment(comment, uriInfo)).collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<PostCommentDTO>>(dto){}).build();
-    }
-
-    @GET
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response post(@PathParam("id") long id) {
@@ -311,7 +302,7 @@ public class PostController {
     }
 
     @POST
-    @Path("/{id}/answer/{commentId}/up_vote")
+    @Path("/{id}/answers/{commentId}/up_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response voteUpComment(@PathParam("id") long postId, @PathParam("commentId") long commentId) {
         final Optional<Post> post = ps.findById(postId);
@@ -334,7 +325,7 @@ public class PostController {
     }
 
     @POST
-    @Path("/{id}/answer/{commentId}/down_vote")
+    @Path("/{id}/answers/{commentId}/down_vote")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response voteDownComment( @PathParam("id") long postId, @PathParam("commentId") long commentId){
         final Optional<Post> post = ps.findById(postId);
@@ -368,9 +359,9 @@ public class PostController {
 
 
     @POST
-    @Path("/{id}/answer")
+    @Path("/{id}/answers")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response commentPost(final PostCommentDTO form, @PathParam("id") long postId){
+    public Response commentPost(final PostCommentAddDTO form, @PathParam("id") long postId){
         final Optional<Post> post = ps.findById(postId);
         if( post.isPresent() ){
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -385,7 +376,7 @@ public class PostController {
     }
 
     @DELETE
-    @Path("/{id}/answer/{commentId}")
+    @Path("/{id}/answers/{commentId}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response deletePostComment(@PathParam("id") final long postId, @PathParam("commentId") final long commentId) {
         final Optional<Post> post = ps.findById(postId);
