@@ -34,13 +34,6 @@ define([], function () {
     BUTTON_MODERATE: 'Moderate',
     BUTTON_BACK_TO_HOME: 'Back to Home',
     BUTTON_RESEND: 'Resend',
-    BUTTON_EDIT_TECH: 'Edit Tech',
-    BUTTON_DELETE_TECH: 'Delete Tech',
-    BUTTON_ADD_CONTENT: 'Add Content',
-    BUTTON_COMMENT_REPLY: 'Reply Comment',
-    BUTTON_COMMENT_SEE_REPLIES: 'See Replies',
-    BUTTON_APPLY: 'Apply',
-    BUTTON_STOP: 'Stop',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
