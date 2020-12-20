@@ -1,10 +1,8 @@
-<div>
-  <div class="pagination justify-content-center mt-2" data-pjax="" data-html-cleaner-suppress-children="">
-    <div ng-if="prev!=undefined || next != undefined">
-      <button ng-if="prev != undefined" class="btn btn-paging" ng-click="getPrev()"><</button>
-      <button ng-if="prev == undefined" class="btn btn-paging" disabled><</button>
-      <button ng-if="next != undefined" class="btn btn-paging" ng-click="getNext()">></button>
-      <button ng-if="next == undefined" class="btn btn-paging" disabled>></button>
-    </div>
+<div class="pagination">
+  <div ng-if="prev!=undefined || next != undefined">
+    <button ng-if="next != undefined" class="btn btn-paging" ng-click="getNext()">></button>
+    <button ng-if="next == undefined" class="btn btn-paging" disabled>></button>
+    <button ng-if="prev != undefined" class="btn btn-paging" ng-click="getPrev()"><</button>
+    <button ng-if="prev == undefined" class="btn btn-paging" disabled><</button>
   </div>
 </div>

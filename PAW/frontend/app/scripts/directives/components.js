@@ -4,8 +4,8 @@ define(['angular'], function(angular) {
   mod.controller('PagingCtrl', function($scope,Restangular) {
     $scope.data = $scope.paging;
     $scope.refreshData = function () {
-        $scope.next = undefined;
         $scope.prev = undefined;
+        $scope.next = undefined;
         let parts = $scope.data.split(',').reduce((acc, link) => {
         let match = link.match(/<(.*)>; rel="(\w*)"/)
         let url = match[1]
@@ -13,11 +13,12 @@ define(['angular'], function(angular) {
         acc[rel] = url
         return acc;
       }, {});
-      if (parts.prev !== undefined) {
-        $scope.prev = parts.prev;
-      }
+
       if (parts.next !== undefined) {
         $scope.next = parts.next;
+      }
+      if (parts.prev !== undefined) {
+        $scope.prev = parts.prev;
       }
     };
     $scope.refreshData();

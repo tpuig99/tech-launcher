@@ -142,9 +142,7 @@
         {{'FORUM_EMPTY_POSTS' | translate}}
       </div>
     </div>
-    <!-- paginacion -->
-    <div ng-if="pagingLinks != undefined">
-      <pagination paging="{{pagingLinks}}"></pagination>
-    </div>
   </div>
+  <!-- paginacion -->
+      <pagination ng-if="pagingLinks != undefined" class="d-flex justify-content-center mt-2" paging="{{pagingLinks}}"></pagination>
 </div>
