@@ -53,8 +53,8 @@ public class UserDTO {
         dto.votes = "users/"+user.getId()+"/votes";
         dto.techs = "users/"+user.getId()+"/techs";
         dto.posts = "users/"+user.getId()+"/posts";
-
-        dto.image = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/image").build().toString();
+        if(user.getPicture() != null)
+            dto.image = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/image").build().toString();
         return dto;
     }
 

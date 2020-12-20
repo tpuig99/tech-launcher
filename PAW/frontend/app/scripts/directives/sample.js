@@ -1,10 +1,10 @@
 'use strict';
-define(['frontend'], function(frontend) {
+define(['angular'], function(angular) {
 
-	frontend.directive('sample', function() {
+	angular.module('unicorn').directive('sample', function() {
 		return {
 			restrict: 'E',
-			template: '<span>Sample</span>'
+			template: '<a>This is Sample</a>'
 		};
 	});
 });

@@ -1,7 +1,7 @@
 <div ng-controller="userCtrl">
   <div class="content-profile row mx-2">
     <div class="col border-right">
-      <div class="sticky-top-row">
+      <div class="sticky-top-row" ng-if="profile != undefined">
         <div class="page-title mb-4">
           <h2>{{'PROFILE_TITLE' | translate}}</h2>
         </div>
@@ -17,12 +17,12 @@
               </div>
 
               <div class="row justify-content-center">
-                <div ng-if="profile.picture != undefined">
+                <div ng-if="profile.image != undefined">
                   <div class="max-logo d-flex align-items-center justify-content-center">
-                    <img src="{{profile.picture}}" alt={{'IMAGE_PROFILE'|translate}} class="rounded-circle img-slot"/>
+                    <img ng-src="{{profile.image}}" alt={{'IMAGE_PROFILE'|translate}} class="rounded-circle img-slot"/>
                   </div>
                 </div>
-                <div ng-if="profile.picture == undefined">
+                <div ng-if="profile.image == undefined">
                   <div class="max-logo d-flex align-items-center justify-content-center">
                     <img src="../../images/user_picture_default.jpg" alt={{'IMAGE_PROFILE_RANDOM'|translate}}
                          class="rounded-circle img-slot"/>
@@ -111,7 +111,10 @@
               </div>
             </div>
           </div>
-          <!-- Comment pagination -->
+        </div>
+        <!-- Comment pagination -->
+        <div ng-if="commentPaging != undefined">
+          <pagination paging="{{commentPaging}}" id="{{'comments'}}"></pagination>
         </div>
       </div>
       <div ng-if="profile.commentAmount == 0">
@@ -144,7 +147,10 @@
               </div>
             </div>
           </div>
-          <!-- Content pagination -->
+        </div>
+        <!-- Content pagination -->
+        <div ng-if="contentPaging != undefined">
+          <pagination paging="{{contentPaging}}" id="{{'content'}}"></pagination>
         </div>
       </div>
       <div ng-if="profile.contentAmount == 0">
@@ -165,14 +171,17 @@
                     {{vote.techName}}
                   </a>
                 </div>
-                <div class="col">
-                  {{'PROFILE_VOTES_OVER_5' | translate: '{stars:' + vote.vote + '}'}}
+                <div class="col" ng-if="vote.vote!=undefined">
+                  {{'PROFILE_VOTES_OVER_5' | translate: ("{stars:" + vote.vote + "}")}}
                 </div>
               </div>
             </div>
           </div>
         </div>
         <!-- Votes pagination -->
+      </div>
+      <div ng-if="votesPaging != undefined">
+        <pagination paging="{{votesPaging}}" id="{{'votes'}}"></pagination>
       </div>
       <div ng-if="profile.votesAmount == 0">
         {{'PROFILE_EMPTY_VOTES' | translate}}
@@ -190,7 +199,7 @@
                 <div class="card-body">
                   <div ng-if="tech.picture != undefined">
                     <div class="max-logo d-flex align-items-center justify-content-center">
-                      <img src="{{tech.picture}}" alt="{{'TECH_PICTURE'|translate}}"/>
+                      <img src="" alt="{{'TECH_PICTURE'|translate}}"/>
                     </div>
                   </div>
                   <div ng-if="tech.picture == undefined">
@@ -209,6 +218,9 @@
           </div>
         </div>
         <!-- Tech pagination -->
+        <div ng-if="techsPaging != undefined">
+          <pagination paging="{{techsPaging}}" id="{{'techs'}}"></pagination>
+        </div>
       </div>
 
       <!-- Posts -->
@@ -236,6 +248,9 @@
           </div>
 
           <!-- Content pagination -->
+        </div>
+        <div ng-if="postsPaging != undefined">
+          <pagination paging="{{postsPaging}}" id="{{'posts'}}"></pagination>
         </div>
       </div>
       <div ng-if="profile.postsAmount == 0">
