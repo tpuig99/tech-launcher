@@ -34,14 +34,12 @@ define(['frontend','services/sessionService'], function(frontend) {
     };
 
 
+    window.addEventListener('beforeunload', (event) => {
+      if (!$localStorage.rememberMe.rememberMe) {
+        localStorage.clear();
+      }
+    });
 
-    $window.onbeforeunload = function() {
-
-      if (!$localStorage.rememberMe) {
-        $localStorage.currentUser = undefined;
-        $localStorage.rememberMe = undefined;
-      };
-    }
 
 
 
