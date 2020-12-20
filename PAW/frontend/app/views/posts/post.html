@@ -8,7 +8,7 @@
       <div class="row d-flex my-1 justify-content-end">
         <div class="row d-flex">
           <div class="mb-4 mx-2">
-            <a href="post.Editlocation" >
+            <a href="post.editLocation" >
             <button class="btn btn-info btn-block text-nowrap" type="button">
               <i class="fa fa-edit fa-sm mr-1"></i>
               {{'BUTTON_EDIT_POST' | translate}}
@@ -16,7 +16,7 @@
             </a>
           </div>
           <div class="mx-2">
-            <button class="btn btn-danger btn-block text-nowrap" type="button" data-toggle="modal" ng-click="deletePost(post.location)" data-target="#deletePostModal">
+            <button class="btn btn-danger btn-block text-nowrap" type="button" data-toggle="modal" ng-click="setDel(post.location)" data-target="#deletePostModal">
               <i class="fas fa-trash-alt fa-sm mr-1"></i>
               {{'BUTTON_DELETE_POST' | translate}}
             </button>
@@ -114,7 +114,7 @@
                 <div ng-if="isAdmin || isOwner || answer.user.username == username">
                   <div class="row">
                       <span class="col d-flex justify-content-end align-items-end">
-                          <button class="btn btn-link" ng-click="deleteAnswer(answer.location)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
+                          <button class="btn btn-link" ng-click="setDel(answer.location)"  data-toggle="modal" data-target="#deletePostModal"><i class="fa fa-trash"></i></button>
                       </span>
                   </div>
                 </div>
@@ -205,12 +205,15 @@
 
           <form name="postCommentForm">
 
-            <textarea id="comment" name="commentInput" ng-model="commentInput" class="form-control" aria-label="With textarea" rows="5" cols="100"></textarea>
+            <textarea id="comment" name="commentInput" required ng-model="commentInput" class="form-control" aria-label="With textarea" rows="5" cols="100"></textarea>
+
             <!-- Not enabled to post Comment -->
-            <button ng-if="username != 'anonymousUser' && !isEnabled" type="button"  disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal">{{'BUTTON_SUBMIT' | translate}}</button>
-            <button ng-if="username == 'anonymousUser'" type="button"  disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">{{'BUTTON_SUBMIT' | translate}}</button>
+            <button ng-if=" postCommentForm.$valid && isPresent && !isEnabled" type="button"  class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal">{{'BUTTON_SUBMIT' | translate}}</button>
+            <button ng-if="postCommentForm.$valid && !isPresent" type="button" class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">{{'BUTTON_SUBMIT' | translate}}</button>
+            <button ng-if=" postCommentForm.$invalid" disabled class="btn btn-info margin-top d-flex justify-content-flex-end">{{'BUTTON_SUBMIT' | translate}}</button>
+
             <!-- Can post Comment -->
-            <button ng-if="username != 'anonymousUser' && isEnabled" type="submit" ng-click="commentPost(commentInput)" id="commentButton" class="btn btn-info margin-top d-flex justify-content-flex-end">{{'BUTTON_SUBMIT' | translate}}</button>
+            <button ng-if=" postCommentForm.$valid && isPresent && isEnabled" type="submit" ng-click="commentPost(commentInput)" id="commentButton" class="btn btn-info margin-top d-flex justify-content-flex-end">{{'BUTTON_SUBMIT' | translate}}</button>
 
           </form>
         </div>
@@ -219,27 +222,11 @@
 
   </div>
 
-  <div class="modal fade" id="deletePostModal" tabindex="-1" role="dialog" aria-labelledby="deletePostModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deletePostModalLabel">{{'POST_DELETE' | translate}}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="row  justify-content-center align-items-center margin-top">
-            <div>{{'POST_DELETE_MESSAGE' | translate}}</div>
-          </div>
-          <div class="row justify-content-center align-items-center margin-top">
-              <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close">{{'BUTTON_CANCEL' | translate}}</button>
-              <button type="submit" class="btn btn-danger ml-4">{{'BUTTON_DELETE' | translate}}</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+
+  <modal-delete-post del="deleteAnswer" clean="cleanDel"></modal-delete-post>
+  <delete-comment-modal del="deleteAnswer" clean="cleanDel"></delete-comment-modal>
+  <modal-login></modal-login>
+  <mail-modal></mail-modal>
 
 </div>
 

@@ -71,7 +71,6 @@ define(['angular'], function(angular) {
         del: '=',
         clean: '='
       },
-      controller: 'PostsCtrl',
       templateUrl: '../../views/components/post_modal.html'
     };
   });
@@ -87,6 +86,17 @@ define(['angular'], function(angular) {
     return {
       restrict: 'E',
       templateUrl: '../../views/components/confirm_mail_modal.html'
+    };
+  });
+
+  mod.directive('deleteCommentModal', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        del: '=',
+        clean: '='
+      },
+      templateUrl: '../../views/components/delete_comment_modal.html'
     };
   });
 

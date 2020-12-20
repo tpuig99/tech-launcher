@@ -15,10 +15,6 @@ define(['frontend'], function(frontend) {
       return Restangular.one(post).remove();
     };
 
-    this.deleteAnswer = function(location) {
-      return Restangular.oneUrl('routeName', location).remove();
-    };
-
     this.upVote = function(id) {
       return Restangular.all('posts/'+ id + '/up_vote').post();
     };
