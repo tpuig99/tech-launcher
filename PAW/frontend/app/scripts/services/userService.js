@@ -11,6 +11,5 @@ define(['frontend'], function(frontend) {
     this.getData = function(url) {
       return Restangular.one(url).get();
     };
-
   });
 });

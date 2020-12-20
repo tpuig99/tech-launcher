@@ -15,12 +15,19 @@ define(['frontend','services/postService','services/sessionService'], function(f
     $scope.getPosts = function() {
       postService.getPosts().then(function (posts) {
         $scope.posts = posts.data;
+        $scope.pagingLinks = posts.headers('link');
       });
+    };
+    $scope.setData = function(response) {
+        $scope.posts = response.data;
+        $scope.pagingLinks = response.headers('link');
     };
     $scope.getPosts();
     $scope.deletePost = function(url) {
       postService.deletePost(url).then($scope.getPosts());
     };
+
+
   });
 
 });
