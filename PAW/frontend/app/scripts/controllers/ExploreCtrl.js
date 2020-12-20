@@ -12,16 +12,19 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
        $scope.isExplore = false;
        exploreService.search('T', $scope.$parent.navbarSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
          $scope.matchingTechs = response.data;
+         $scope.techsPaging = response.headers('link');
          $scope.navbarNameToSearch = $scope.$parent.navbarSearch;
        });
      } else {
        $scope.isExplore = true;
        exploreService.getTechs().then(function (response) {
          $scope.matchingTechs = response.data;
+         $scope.techsPaging = response.headers('link');
        });
 
        exploreService.getPosts().then(function (response) {
          $scope.posts = response.data;
+         $scope.postsPaging = response.headers('link');
        });
      }
 
@@ -34,11 +37,13 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
          $scope.activeTab = 'T';
          exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
            $scope.matchingTechs = response.data;
+           $scope.techsPaging = response.headers('link');
          });
        } else if ($scope.activeTab === 'T' && tab === 'P') {
          $scope.activeTab = 'P';
          exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
            $scope.posts = response.data;
+           $scope.postsPaging = response.headers('link');
          });
        }
      };
@@ -52,8 +57,10 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
 
           if ($scope.activeTab === 'T') {
             $scope.matchingTechs = response.data;
+            $scope.techsPaging = response.headers('link');
           } else {
             $scope.posts = response.data;
+            $scope.postsPaging = response.headers('link');
           }
 
           $scope.navbarNameToSearch = undefined;
@@ -95,22 +102,23 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
         }
       };
 
-    /* Show search bar when going to another page */
-    $scope.$on('$destroy',function() {
-       $scope.$parent.searchPage = false;
-       $scope.$parent.navbarSearch = undefined;
-    });
+      /* Show search bar when going to another page */
+      $scope.$on('$destroy',function() {
+         $scope.$parent.searchPage = false;
+         $scope.$parent.navbarSearch = undefined;
+      });
 
 
-    /* Pagination */
+      /* Pagination */
       $scope.setData = function(response,id) {
         switch (id) {
           case 'tech':
+            console.log(response.data);
             $scope.matchingTechs = response.data;
             $scope.techsPaging = response.headers('link');
             break;
-          case 'content':
-            console.log('post');
+          case 'post':
+            console.log('post pagination ');
             $scope.posts = response.data;
             $scope.postsPaging = response.headers('link');
             break;

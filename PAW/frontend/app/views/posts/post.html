@@ -48,8 +48,8 @@
                 <div ng-if="isEnabled">
                     <div class="net-votes">
                       <button class="btn pt-0 pb-0" type="submit" ng-click="upVote()">
-<!--                        <i ng-if="post.getUserAuthVote(user.name) > 0" class="fa fa-2x fa-arrow-up votedUp"></i>-->
-                        <i class="fa fa-2x fa-arrow-up"></i>
+                        <i ng-if="post.loggedVote > 0" class="fa fa-2x fa-arrow-up votedUp"></i>
+                        <i ng-if="post.loggedVote <= 0" class="fa fa-2x fa-arrow-up"></i>
                       </button>
                       <div>
                         <h4>{{post.votesUp - post.votesDown}}</h4>
@@ -58,8 +58,8 @@
 
                     <div class="net-votes">
                       <button class="btn pt-0 pb-0" type="submit" ng-click="downVote()">
-                        <i ng-if="post.getUserAuthVote(username) < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
-                        <i ng-if="post.getUserAuthVote(username) >= 0" class="fa fa-2x fa-arrow-down"></i>
+                        <i ng-if="post.loggedVote < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
+                        <i ng-if="post.loggedVote >= 0" class="fa fa-2x fa-arrow-down"></i>
                       </button>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
             <div class="card mb-3 post-card-answer">
               <div class="card-body">
                 <!-- Delete comment -->
-                <div ng-if="isAdmin || isOwner || answer.user.username == user.name">
+                <div ng-if="isAdmin || isOwner || answer.user.username == username">
                   <div class="row">
                       <span class="col d-flex justify-content-end align-items-end">
                           <button class="btn btn-link" ng-click="deleteAnswer(answer.location)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
@@ -141,8 +141,8 @@
                         <div ng-if="isEnabled">
                           <div class="net-votes">
                             <button class="btn pt-0 pb-0" type="submit" ng-click="upVoteAnswer(answer.location)">
-<!--                              <i ng-if="answer.getUserAuthVote(user.name) > 0" class="fa fa-2x fa-arrow-up votedUp"></i>-->
-                              <i class="fa fa-2x fa-arrow-up"></i>
+                              <i ng-if="post.loggedVote > 0" class="fa fa-2x fa-arrow-up votedUp"></i>
+                              <i ng-if="post.loggedVote <= 0" class="fa fa-2x fa-arrow-up"></i>
                             </button>
                             <div>
                               <h4>{{answer.votesUp - answer.votesDown}}</h4>
@@ -151,8 +151,8 @@
 
                           <div class="net-votes">
                             <button class="btn pt-0 pb-0" type="submit" ng-click="downVoteAnswer(answer.location)">
-<!--                              <i ng-if="answer.getUserAuthVote(username) < 0" class="fa fa-2x fa-arrow-down votedDown"></i>-->
-                              <i class="fa fa-2x fa-arrow-down"></i>
+                              <i ng-if="post.loggedVote <= 0" class="fa fa-2x fa-arrow-down votedDown"></i>
+                              <i ng-if="post.loggedVote > 0" class="fa fa-2x fa-arrow-down"></i>
                             </button>
                           </div>
                         </div>

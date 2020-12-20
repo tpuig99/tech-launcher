@@ -2,15 +2,15 @@
 define(['frontend', 'services/postService', 'services/sessionService'], function(frontend) {
 
     frontend.controller('PostCtrl', function($scope, $location, $window, $routeParams, postService, Restangular, sessionService, $localStorage) {
-      $scope.isAdmin = true;
-      $scope.isOwner = true;
-      $scope.isEnabled = true;
-      $scope.username = 'tami';
 
-      if ($scope.$parent.username !== undefined) {
-        $scope.username = $scope.$parent.username;
+      $scope.isPresent = false;
+      if ($localStorage.currentUser !== undefined) {
         sessionService.getCurrentUser($localStorage.currentUser.location).then(function (response) {
-          $scope.allowMod = response.data.allowedModeration;
+          $scope.username = response.data.username;
+          $scope.isMod = response.data.verify;
+          $scope.isAdmin = response.data.admin;
+          $scope.isEnabled = response.data.enabled;
+          $scope.isPresent = true;
         });
       }
 
@@ -25,7 +25,7 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       $scope.getAnswers = function() {
        postService.getAnswers($routeParams.id).then(function(response) {
         $scope.answers = response.data;
-        console.log(response);
+        $scope.pagingLinks = response.headers('link');
       });
 
       }
@@ -74,7 +74,7 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       }
 
       $scope.setData = function(response) {
-        $scope.post = response.data;
+        $scope.answers = response.data;
         $scope.pagingLinks = response.headers('link');
       };
 
