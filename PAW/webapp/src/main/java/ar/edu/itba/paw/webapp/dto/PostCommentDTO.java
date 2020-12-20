@@ -24,7 +24,7 @@ public class PostCommentDTO {
         postComment.votesUp = comment.getVotesUp();
         postComment.votesDown = comment.getVotesDown();
         postComment.userLocation = uriInfo.getBaseUriBuilder().path("users/"+comment.getUser().getId()).build().toString();
-        postComment.location = uriInfo.getBaseUriBuilder().path("/posts/" + comment.getPost().getPostId()).build().toString();
+        postComment.location = uriInfo.getBaseUriBuilder().path("/posts/" + comment.getPost().getPostId() + "/answers/" + comment.getPostCommentId()).build().toString();
         return postComment;
     }
 
