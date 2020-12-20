@@ -33,5 +33,17 @@ define(['frontend','services/sessionService'], function(frontend) {
       $window.location.href = '#/explore';
     };
 
+
+
+    $window.onbeforeunload = function() {
+
+      if (!$localStorage.rememberMe) {
+        $localStorage.currentUser = undefined;
+        $localStorage.rememberMe = undefined;
+      };
+    }
+
+
+
 	});
 });

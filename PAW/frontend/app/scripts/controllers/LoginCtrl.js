@@ -4,6 +4,7 @@ define(['frontend', 'services/sessionService'], function(frontend) {
     frontend.controller('LoginCtrl', function($scope, $http, $location, $localStorage, sessionService,Restangular) {
 
       $scope.failedLogin = false;
+      $scope.rememberMe = false;
       $scope.login = function() {
         sessionService.login($scope.usernameInput, $scope.passwordInput).then(function(response) {
             if (response.data.token) {
@@ -13,11 +14,7 @@ define(['frontend', 'services/sessionService'], function(frontend) {
               // $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
               $scope.$parent.checkUser();
 
-              if($scope.rememberMe){
-                console.log("selected");
-              }else{
-                console.log("not selected");
-              }
+              $localStorage.rememberMe = {rememberMe: $scope.rememberMe};
 
               $location.path('/');
             }
