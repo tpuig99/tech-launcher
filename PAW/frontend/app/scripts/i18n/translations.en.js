@@ -33,6 +33,7 @@ define([], function () {
     BUTTON_PROFILE: 'Profile',
     BUTTON_MODERATE: 'Moderate',
     BUTTON_BACK_TO_HOME: 'Back to Home',
+    BUTTON_RESEND: 'Resend',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
@@ -104,7 +105,8 @@ define([], function () {
     REGISTER_WREF: 'Tech Launcher - Sign Up',
     REGISTER_TITLE: 'Sign Up',
     REGISTER_SUCCESS: 'Registered successfully! Please check your inbox in order to verify your user',
-
+    REGISTER_ERROR_EMAIL_STATUS: 'Your email is not confirmed',
+    REGISTER_ERROR_CONFIRM_EMAIL: 'Please, confirm your email to continue',
     POST_TITLE: 'Post',
     POST_NO_ANSWERS_YET: 'There are no answers yet',
     POST_ANSWER_YOURSELF: 'Answer yourself !',
@@ -190,6 +192,9 @@ define([], function () {
     TYPE_CSS_MODIFIER: 'CSS Modifier',
     TYPE_API: 'API',
     TYPE_TOOLKIT: 'Toolkit',
-    TYPE_IDE: 'IDE'
+    TYPE_IDE: 'IDE',
+
+    USER_NOT_LOGGED: 'You have to be logged in to do this',
+    USER_CONFIRM_MAIL: 'Please confirme your email'
   };
 });

@@ -9,11 +9,18 @@
           </button>
         </div>
         <div ng-if="isPresent">
-          <a href="#/add_post">
-            <button class="btn btn-info mt-2 mb-4" href='#/addPost'>
+          <div ng-if="!isEnable">
+            <button class="btn btn-info mt-2 mb-4" data-toggle="modal" data-target="#confirmMailModal">
               {{'FORUM_ADD_POST' | translate}}
             </button>
-          </a>
+          </div>
+          <div ng-if="isEnable">
+            <a href="#/add_post">
+              <button class="btn btn-info mt-2 mb-4" href='#/addPost'>
+                {{'FORUM_ADD_POST' | translate}}
+              </button>
+            </a>
+          </div>
         </div>
       </div>
       <div class="row showing-results">
@@ -119,11 +126,8 @@
                       <div ng-if="isAdmin || post.postOwner.username == username">
                         <div class="row d-flex">
                           <div>
-                            <button class="btn btn-danger text-nowrap" type="button"
-                                    onclick="openDeletePostModal(${post.postId})" ng-click="deletePost(post.location)"
-                                    data-toggle="modal"
-                                    data-target="#deletePostModal">
-                              <i class="fas fa-trash-alt fa-sm mr-1"></i>
+                            <button class="btn btn-danger btn-block text-nowrap" type="button" data-toggle="modal" ng-click="setDel(post.location)" data-target="#deletePostModal">
+                            <i class="fas fa-trash-alt fa-sm mr-1"></i>
                               {{'POST_DELETE' | translate}}
                             </button>
                           </div>
@@ -143,6 +147,9 @@
       </div>
     </div>
   </div>
-  <!-- paginacion -->
+  <!-- Pagination -->
       <pagination ng-if="pagingLinks != undefined" class="d-flex justify-content-center mt-2" paging="{{pagingLinks}}"></pagination>
+  <modal-delete-post del="deletePost" clean="cleanDel"></modal-delete-post>
+  <modal-login></modal-login>
+  <mail-modal></mail-modal>
 </div>

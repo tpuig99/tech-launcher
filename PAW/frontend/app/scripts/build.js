@@ -17,7 +17,6 @@ require.config({
         jquery: '../../bower_components/jquery/dist/jquery',
         json3: '../../bower_components/json3/lib/json3',
         lodash: '../../bower_components/lodash/lodash',
-        modal: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal',
         moment: '../../bower_components/moment/moment',
         popover: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover',
         requirejs: '../../bower_components/requirejs/require',
@@ -44,12 +43,6 @@ require.config({
             ]
         },
         bootstrap: {
-            deps: [
-                'jquery',
-                'modal'
-            ]
-        },
-        modal: {
             deps: [
                 'jquery'
             ]

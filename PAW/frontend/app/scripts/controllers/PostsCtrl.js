@@ -23,11 +23,18 @@ define(['frontend','services/postService','services/sessionService'], function(f
         $scope.pagingLinks = response.headers('link');
     };
     $scope.getPosts();
-    $scope.deletePost = function(url) {
-      postService.deletePost(url).then($scope.getPosts());
+    $scope.setDel = function (url) {
+      $scope.toDel = url;
     };
-
-
+    $scope.cleanDel = function () {
+      $scope.toDel = undefined;
+    };
+    $scope.deletePost = function () {
+      postService.deletePost($scope.toDel).then(function() {
+        $scope.getPosts();
+        $scope.cleanDel();
+      });
+    };
   });
 
 });

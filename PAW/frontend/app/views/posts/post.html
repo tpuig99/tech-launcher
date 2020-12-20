@@ -8,7 +8,7 @@
       <div class="row d-flex my-1 justify-content-end">
         <div class="row d-flex">
           <div class="mb-4 mx-2">
-            <a href="/posts/edit_post/{{post.postId}}" >
+            <a href="post.Editlocation" >
             <button class="btn btn-info btn-block text-nowrap" type="button">
               <i class="fa fa-edit fa-sm mr-1"></i>
               {{'BUTTON_EDIT_POST' | translate}}
@@ -30,7 +30,7 @@
         <div class=" ml-4 col-1 net-votes">
 
             <div ng-if="username == 'anonymousUser'">
-              <button ng-if="user.name == 'anonymousUser'" class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+              <button ng-if="username == 'anonymousUser'" class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
               <div>
                 <h4>{{post.votesUp - post.votesDown}}</h4>
               </div>
@@ -47,9 +47,9 @@
                 </div>
                 <div ng-if="isEnabled">
                     <div class="net-votes">
-                      <button class="btn pt-0 pb-0" type="submit" ng-click="upVote(post)">
-<!--                        <i ng-if="post.getUserAuthVote(user.name) > 0" class="fa fa-2x fa-arrow-up votedUp"></i>-->
-                        <i class="fa fa-2x fa-arrow-up"></i>
+                      <button class="btn pt-0 pb-0" type="submit" ng-click="upVote()">
+                        <i ng-if="post.loggedVote > 0" class="fa fa-2x fa-arrow-up votedUp"></i>
+                        <i ng-if="post.loggedVote <= 0" class="fa fa-2x fa-arrow-up"></i>
                       </button>
                       <div>
                         <h4>{{post.votesUp - post.votesDown}}</h4>
@@ -57,9 +57,9 @@
                     </div>
 
                     <div class="net-votes">
-                      <button class="btn pt-0 pb-0" type="submit" ng-click="downVote(post)">
-                        <i ng-if="post.getUserAuthVote(username) < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
-                        <i ng-if="post.getUserAuthVote(username) >= 0" class="fa fa-2x fa-arrow-down"></i>
+                      <button class="btn pt-0 pb-0" type="submit" ng-click="downVote()">
+                        <i ng-if="post.loggedVote < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
+                        <i ng-if="post.loggedVote >= 0" class="fa fa-2x fa-arrow-down"></i>
                       </button>
                     </div>
                 </div>
@@ -111,10 +111,10 @@
             <div class="card mb-3 post-card-answer">
               <div class="card-body">
                 <!-- Delete comment -->
-                <div ng-if="isAdmin || isOwner || answer.user.username == user.name">
+                <div ng-if="isAdmin || isOwner || answer.user.username == username">
                   <div class="row">
                       <span class="col d-flex justify-content-end align-items-end">
-                          <button class="btn btn-link" ng-click="openDeleteCommentModal()"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
+                          <button class="btn btn-link" ng-click="deleteAnswer(answer.location)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                       </span>
                   </div>
                 </div>
@@ -122,14 +122,14 @@
                   <!-- Up Vote - Down Vote section -->
                   <div class="col-1 net-votes">
 
-                      <div ng-if="user.name == 'anonymousUser'">
-                        <button ng-if="user.name == 'anonymousUser'" class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                      <div ng-if="username == 'anonymousUser'">
+                        <button ng-if="username == 'anonymousUser'" class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
                         <div>
                           <h4>{{answer.votesUp - answer.votesDown}}</h4>
                         </div>
                         <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
                       </div>
-                      <div ng-if="user.name != 'anonymousUser'">
+                      <div ng-if="username != 'anonymousUser'">
 
                         <div ng-if="!isEnabled">
                           <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
@@ -140,9 +140,9 @@
                         </div>
                         <div ng-if="isEnabled">
                           <div class="net-votes">
-                            <button class="btn pt-0 pb-0" type="submit" ng-click="upVote(answer)">
-                              <i ng-if="answer.getUserAuthVote(user.name) > 0" class="fa fa-2x fa-arrow-up votedUp"></i>
-                              <i ng-if="answer.getUserAuthVote(user.name) <= 0" class="fa fa-2x fa-arrow-up"></i>
+                            <button class="btn pt-0 pb-0" type="submit" ng-click="upVoteAnswer(answer.location)">
+                              <i ng-if="post.loggedVote > 0" class="fa fa-2x fa-arrow-up votedUp"></i>
+                              <i ng-if="post.loggedVote <= 0" class="fa fa-2x fa-arrow-up"></i>
                             </button>
                             <div>
                               <h4>{{answer.votesUp - answer.votesDown}}</h4>
@@ -150,9 +150,9 @@
                           </div>
 
                           <div class="net-votes">
-                            <button class="btn pt-0 pb-0" type="submit" ng-click="downVote(answer)">
-                              <i ng-if="answer.getUserAuthVote(username) < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
-                              <i ng-if="answer.getUserAuthVote(username) >= 0" class="fa fa-2x fa-arrow-down"></i>
+                            <button class="btn pt-0 pb-0" type="submit" ng-click="downVoteAnswer(answer.location)">
+                              <i ng-if="post.loggedVote <= 0" class="fa fa-2x fa-arrow-down votedDown"></i>
+                              <i ng-if="post.loggedVote > 0" class="fa fa-2x fa-arrow-down"></i>
                             </button>
                           </div>
                         </div>
@@ -189,6 +189,9 @@
 
   </div>
 
+  <!-- Pagination -->
+  <pagination ng-if="pagingLinks != undefined" class="d-flex justify-content-center mt-2" paging="{{pagingLinks}}"></pagination>
+
 
   <div class="answers">
     <div class="title">
@@ -200,14 +203,14 @@
       <div class="row comment-yourself">
         <div>
 
-          <form name="postCommentForm" action="/posts/comment" method="post">
+          <form name="postCommentForm">
 
-            <textarea id="comment" name="commentInput" class="form-control" aria-label="With textarea" rows="5" cols="100"></textarea>
+            <textarea id="comment" name="commentInput" ng-model="commentInput" class="form-control" aria-label="With textarea" rows="5" cols="100"></textarea>
             <!-- Not enabled to post Comment -->
-            <button ng-if="user.name != 'anonymousUser' && !isEnable" type="button"  disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal">{{'BUTTON_SUBMIT' | translate}}</button>
-            <button ng-if="user.name == 'anonymousUser'" type="button"  disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">{{'BUTTON_SUBMIT' | translate}}</button>
+            <button ng-if="username != 'anonymousUser' && !isEnabled" type="button"  disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal">{{'BUTTON_SUBMIT' | translate}}</button>
+            <button ng-if="username == 'anonymousUser'" type="button"  disabled class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#loginModal">{{'BUTTON_SUBMIT' | translate}}</button>
             <!-- Can post Comment -->
-            <button ng-if="user.name != 'anonymousUser' && isEnable" type="submit" ng-click="commentPost(post)" id="commentButton" disabled class="btn btn-info margin-top d-flex justify-content-flex-end">{{'BUTTON_SUBMIT' | translate}}</button>
+            <button ng-if="username != 'anonymousUser' && isEnabled" type="submit" ng-click="commentPost(commentInput)" id="commentButton" class="btn btn-info margin-top d-flex justify-content-flex-end">{{'BUTTON_SUBMIT' | translate}}</button>
 
           </form>
         </div>

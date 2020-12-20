@@ -263,12 +263,11 @@
 
             <div class="row equal">
                 <div ng-repeat="tech in matchingTechs.frameworks" class="card mx-4 mb-4">
-                  {{tech.name}}
                   <a ng-href="{{tech.location}}">
                     <div class="card-body">
                       <div ng-if="tech.picture != undefined">
                         <div class="max-logo d-flex align-items-center justify-content-center">
-                          <img src="{{tech.picture}}" alt="{{'TECH_PICTURE' | translate }}"/>
+                          <img ng-src="data:image/jpeg;data:image/png;data:image/gif; base64, {{tech.picture}}" alt="{{'TECH_PICTURE' | translate }}"/>
                         </div>
                       </div>
                       <div ng-if="tech.picture == undefined">
@@ -284,6 +283,12 @@
                 </div>
 
             </div>
+
+        <!-- Techs Pagination -->
+
+        <div ng-if="techsPaging != undefined" class="d-flex justify-content-center align-items-center">
+          <pagination paging="{{techsPaging}}" id="{{'tech'}}"></pagination>
+        </div>
 
       </div>
       <!-- POSTS TAB -->
@@ -329,7 +334,11 @@
             </div>
             <div ng-if="posts.postsAmount == 0">{{'EXPLORE_NOT_FOUND' | translate}}</div>
 
+        <!-- Posts Pagination -->
 
+        <div ng-if="postsPaging != undefined" class="d-flex justify-content-center align-items-center">
+          <pagination paging="{{postsPaging}}" id="{{'post'}}"></pagination>
+        </div>
       </div>
     </div>
 

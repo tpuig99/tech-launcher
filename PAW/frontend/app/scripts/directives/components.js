@@ -64,5 +64,30 @@ define(['angular'], function(angular) {
       templateUrl: '../../views/components/pagination.html'
     };
   });
+  mod.directive('modalDeletePost', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        del: '=',
+        clean: '='
+      },
+      controller: 'PostsCtrl',
+      templateUrl: '../../views/components/post_modal.html'
+    };
+  });
+
+  mod.directive('modalLogin', function() {
+    return {
+      restrict: 'E',
+      templateUrl: '../../views/components/login_modal.html'
+    };
+  });
+
+  mod.directive('mailModal', function() {
+    return {
+      restrict: 'E',
+      templateUrl: '../../views/components/confirm_mail_modal.html'
+    };
+  });
 
 });

@@ -25,6 +25,7 @@ define([], function() {
 		WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
 
     BUTTON_DELETE_POST: 'Eliminar Pregunta',
+    BUTTON_DELETE: 'Eliminar',
     BUTTON_EDIT_POST: 'Editar Pregunta',
     BUTTON_SEND_EMAIL: 'Enviar Mail',
     BUTTON_CANCEL: 'Cancelar',
@@ -35,6 +36,7 @@ define([], function() {
     BUTTON_PROFILE: 'Perfil',
     BUTTON_MODERATE: 'Moderar',
     BUTTON_BACK_TO_HOME: 'Volver al Inicio',
+    BUTTON_RESEND: 'Reenviar',
 
     SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
@@ -106,7 +108,8 @@ define([], function() {
     REGISTER_WREF: 'Tech Launcher - Registro',
     REGISTER_TITLE: 'Registrarse',
     REGISTER_SUCCESS: '¡Te registraste correctamente! Por favor ingresa a tu mail para verificar tu usuario',
-
+    REGISTER_ERROR_EMAIL_STATUS: 'Tu mail no está confirmado',
+    REGISTER_ERROR_CONFIRM_EMAIL: 'Por favor, confirme su mail para continuar.',
     POST_TITLE: 'Pregunta',
     POST_NO_ANSWERS_YET: 'No hay respuestas aún',
     POST_ANSWER_YOURSELF: 'Añade una respuesta !',
@@ -192,6 +195,9 @@ define([], function() {
     TYPE_CSS_MODIFIER: 'Modificador CSS',
     TYPE_API: 'API',
     TYPE_TOOLKIT: 'Herramientas',
-    TYPE_IDE: 'IDE'
+    TYPE_IDE: 'IDE',
+
+    USER_NOT_LOGGED: 'Tienes que iniciar sesión',
+    USER_CONFIRM_MAIL: 'Please confirme your email'
 	};
 });
