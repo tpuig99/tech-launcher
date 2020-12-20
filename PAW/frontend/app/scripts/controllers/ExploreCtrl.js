@@ -8,7 +8,7 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
 
       /* Explore */
 
-     if($scope.$parent.navbarSearch !== undefined){
+     if ($scope.$parent.navbarSearch !== undefined) {
        $scope.isExplore = false;
        exploreService.search('T', $scope.$parent.navbarSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
          $scope.matchingTechs = response.data;
@@ -28,31 +28,31 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
      /* Set active tab in order to search techs or posts */
 
       $scope.activeTab = 'T';
-      $scope.setActiveTab = function(tab){
-        $scope.isExplore = false
-       if( $scope.activeTab === 'P' && tab === 'T'){
+      $scope.setActiveTab = function(tab) {
+        $scope.isExplore = false;
+       if ($scope.activeTab === 'P' && tab === 'T') {
          $scope.activeTab = 'T';
          exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
            $scope.matchingTechs = response.data;
          });
-       }else if ( $scope.activeTab === 'T' && tab === 'P') {
+       } else if ($scope.activeTab === 'T' && tab === 'P') {
          $scope.activeTab = 'P';
          exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
            $scope.posts = response.data;
          });
        }
-     }
+     };
 
 
       /* Search Results */
 
       $scope.search = function () {
-        $scope.isExplore = false
+        $scope.isExplore = false;
         exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
 
-          if( $scope.activeTab === 'T'){
+          if ($scope.activeTab === 'T') {
             $scope.matchingTechs = response.data;
-          }else{
+          } else {
             $scope.posts = response.data;
           }
 
@@ -84,7 +84,7 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       };
 
       $scope.showLess = function(element) {
-        if ( element === 'Types'){
+        if (element === 'Types') {
           $scope.typesVisible = false;
           $scope.typesShowMoreBtnVisible = true;
           $scope.typesShowLessBtnVisible = true;
@@ -96,7 +96,7 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       };
 
     /* Show search bar when going to another page */
-    $scope.$on("$destroy",function() {
+    $scope.$on('$destroy',function() {
        $scope.$parent.searchPage = false;
        $scope.$parent.navbarSearch = undefined;
     });

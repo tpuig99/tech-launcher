@@ -76,6 +76,9 @@ define([], function() {
     EXPLORE_FILTER: 'Filtrar',
     EXPLORE_TECHS: 'TECNOLOGÍAS',
     EXPLORE_POSTS: 'PREGUNTAS',
+    EXPLORE_COMMENTS_MORE: 'Mas de',
+    EXPLORE_COMMENTS_AMOUNT: ' comentario',
+    EXPLORE_OF: 'de',
 
     ERROR_DESCRIPTION: 'Ooops, ha ocurrido un error',
 
@@ -95,9 +98,14 @@ define([], function() {
     LOGIN_FORGOT_QUESTION: '¿Olvidaste tu contraseña?',
     LOGIN_FORGOT_PASSWORD: 'Recuperar Contraseña',
     LOGIN_CHANGE_PASSWORD: 'Cambiar Contraseña',
+    LOGIN_EMAIL_SENT: '¡ El mail fue enviado ! Por favor verifica tu casilla de mensajes para cambiar tu contraseña',
+    LOGIN_PASSWORD_CHANGED: '¡ Tu contranseña fue cambiada correctamente !',
+    LOGIN_GO_LOGIN: 'Incia sesión',
 
+    REGISTER_UAE: 'Lo sentimos ! Este usuario ya existe. Intenta ingresar otro nombre u otro mail',
     REGISTER_WREF: 'Tech Launcher - Registro',
     REGISTER_TITLE: 'Registrarse',
+    REGISTER_SUCCESS: '¡Te registraste correctamente! Por favor ingresa a tu mail para verificar tu usuario',
 
     POST_TITLE: 'Pregunta',
     POST_NO_ANSWERS_YET: 'No hay respuestas aún',
@@ -118,6 +126,7 @@ define([], function() {
     FORM_ERROR_LENGTH: 'Debe tener entre {{ min }} y {{ max }} caracteres',
     FORM_ERROR_EMPTY: 'No debe estar vacío',
     FORM_ERROR_EMAIL_FORMAT: 'Mail inválido',
+    FORM_ERROR_PASSWORDS_MATCHING: 'Las contraseñas deben ser iguales',
 
     PROFILE_WREF: 'Tech Launcher - Perfil',
     PROFILE_TITLE: 'Perfil de usuario',

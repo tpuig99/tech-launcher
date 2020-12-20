@@ -89,7 +89,7 @@
 
       <span>
         <select ng-model="lastComment" id="comments-date-dropdown" ng-click="search()">
-          <option value="0" name="hola">{{'EXPLORE_ANY_DATE' | translate}}</option>
+          <option value="0">{{'EXPLORE_ANY_DATE' | translate}}</option>
           <option value="1">{{'EXPLORE_LAST_DAYS' | translate}}</option>
           <option value="2">{{'EXPLORE_LAST_WEEK' | translate}}</option>
           <option value="3">{{'EXPLORE_LAST_MONTH' | translate}}</option>
@@ -209,17 +209,35 @@
 
           <span ng-repeat="type in types" > <span ng-if="type.selected" class="badge badge-pill secondary-badge"> {{ "TYPE_" + type.type | uppercase | translate}} </span></span>
 
-
           <span ng-if="starsLeft !== undefined && starsRight !== undefined " class="badge badge-pill secondary-badge"> {{'EXPLORE_FROM' | translate }} {{starsLeft}} {{'EXPLORE_TO_5_STARS' | translate }} {{starsRight}} {{'EXPLORE_STARS' | translate }}</span>
           <span ng-if="starsLeft !== undefined && starsRight === undefined " class="badge badge-pill secondary-badge"> {{'EXPLORE_FROM' | translate }} {{starsLeft}} {{'EXPLORE_TO_5_STARS' | translate }} 5 {{'EXPLORE_STARS' | translate }}</span>
           <span ng-if="starsLeft === undefined && starsRight !== undefined " class="badge badge-pill secondary-badge"> {{'EXPLORE_FROM' | translate }} 0 {{'EXPLORE_TO_5_STARS' | translate }} {{starsRight}} {{'EXPLORE_STARS' | translate }}</span>
 
+          <span ng-if="commentAmount !== undefined" ng-switch="commentAmount" class="badge badge-pill secondary-badge">
+            <span ng-switch-when="0">{{'EXPLORE_COMMENTS_ALL' | translate}} {{'EXPLORE_OF' | translate}} {{'EXPLORE_COMMENTS_AMOUNT' | translate}}s</span>
+            <span ng-switch-when="1"> {{'EXPLORE_COMMENTS_MORE' | translate}} {{commentAmount}} {{'EXPLORE_COMMENTS_AMOUNT' | translate}} </span>
+            <span ng-switch-default>{{'EXPLORE_COMMENTS_MORE' | translate}} {{commentAmount}} {{'EXPLORE_COMMENTS_AMOUNT' | translate}}s</span>
+          </span>
 
-          <span ng-if="commentAmount !== undefined" class="badge badge-pill secondary-badge">{{'EXPLORE_COMMENTS_QUERY' | translate}} {{commentAmount}}</span>
+          <span ng-if="lastUpdate !== undefined" ng-switch="lastUpdate" class="badge badge-pill secondary-badge">
+            {{'EXPLORE_UPDATE_DATE_QUERY' | translate}}
+            <span ng-switch-when="0">{{'EXPLORE_ANY_DATE' | translate | lowercase }}</span>
+            <span ng-switch-when="1">{{'EXPLORE_LAST_DAYS' | translate | lowercase}}</span>
+            <span ng-switch-when="2">{{'EXPLORE_LAST_WEEK' | translate | lowercase}}</span>
+            <span ng-switch-when="3">{{'EXPLORE_LAST_MONTH' | translate | lowercase}}</span>
+            <span ng-switch-when="4">{{'EXPLORE_LAST_MONTHS' | translate | lowercase}}</span>
+            <span ng-switch-when="5">{{'EXPLORE_LAST_YEAR' | translate | lowercase}}</span>
+          </span>
 
-          <span ng-if="lastUpdate !== undefined" class="badge badge-pill secondary-badge">{{'EXPLORE_UPDATE_DATE_QUERY' | translate}} {{lastUpdate}}</span>
-
-          <span ng-if="lastComment !== undefined" id="dateComment" class="badge badge-pill secondary-badge">{{'EXPLORE_COMMENTS_DATE_QUERY' | translate}} {{lastComment}}</span>
+          <span ng-if="lastComment !== undefined" ng-switch="lastComment" class="badge badge-pill secondary-badge">
+            {{'EXPLORE_COMMENTS_DATE_QUERY' | translate}}
+            <span ng-switch-when="0">{{'EXPLORE_ANY_DATE' | translate | lowercase}}</span>
+            <span ng-switch-when="1">{{'EXPLORE_LAST_DAYS' | translate | lowercase}}</span>
+            <span ng-switch-when="2">{{'EXPLORE_LAST_WEEK' | translate | lowercase}}</span>
+            <span ng-switch-when="3">{{'EXPLORE_LAST_MONTH' | translate | lowercase}}</span>
+            <span ng-switch-when="4">{{'EXPLORE_LAST_MONTHS' | translate | lowercase}}</span>
+            <span ng-switch-when="5">{{'EXPLORE_LAST_YEAR' | translate | lowercase}}</span>
+          </span>
 
         </div>
       </div>
@@ -283,10 +301,12 @@
                     <div class="row extra-info">
                       <div class="col-9">
                           <button ng-repeat="tag in post.postTags" class="badge badge-color ml-1">
-                            <span ng-switch="tag.type.name()">
-                              <span ng-switch-when="tech_name">{{tag.tagName}}</span>
+                            <span ng-switch="tag.type">
+                              <span ng-switch-when="tech_category">
+                                  {{'CATEGORY_' + tag.tagName | uppercase | translate}}
+                              </span>
                               <span ng-switch-when="tech_type">
-                                {{tag.tagName}}
+                                  {{'TYPE_' + tag.tagName | uppercase | translate}}
                               </span>
                               <span ng-switch-default>
                                   {{tag.tagName}}

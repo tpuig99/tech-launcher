@@ -74,6 +74,9 @@ define([], function () {
     EXPLORE_FILTER: 'Filter',
     EXPLORE_TECHS: 'TECHS',
     EXPLORE_POSTS: 'POSTS',
+    EXPLORE_COMMENTS_MORE: 'More than',
+    EXPLORE_COMMENTS_AMOUNT: ' comment',
+    EXPLORE_OF: 'of',
 
     ERROR_DESCRIPTION: 'Ooops, an error occurred',
 
@@ -93,9 +96,14 @@ define([], function () {
     LOGIN_FORGOT_QUESTION: 'Forgot your password?',
     LOGIN_FORGOT_PASSWORD: 'Recover your password',
     LOGIN_CHANGE_PASSWORD: 'Change Password',
+    LOGIN_EMAIL_SENT: 'Email Sent ! Please check your inbox in order to change your password',
+    LOGIN_PASSWORD_CHANGED: 'Your password has been changed successfully !',
+    LOGIN_GO_LOGIN: 'Go to Log In',
 
+    REGISTER_UAE: 'We are sorry ! This user already exists. Try another username or email',
     REGISTER_WREF: 'Tech Launcher - Sign Up',
     REGISTER_TITLE: 'Sign Up',
+    REGISTER_SUCCESS: 'Registered successfully! Please check your inbox in order to verify your user',
 
     POST_TITLE: 'Post',
     POST_NO_ANSWERS_YET: 'There are no answers yet',
@@ -116,6 +124,7 @@ define([], function () {
     FORM_ERROR_LENGTH: 'Must be between {{ min }} and {{ max }} characters',
     FORM_ERROR_EMPTY: 'Must not be empty',
     FORM_ERROR_EMAIL_FORMAT: 'This email format is not valid',
+    FORM_ERROR_PASSWORDS_MATCHING: 'Passwords do not match',
 
     PROFILE_WREF: 'Tech Launcher - User Profile',
     PROFILE_TITLE: 'User Profile',

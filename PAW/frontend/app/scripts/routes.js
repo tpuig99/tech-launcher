@@ -16,9 +16,9 @@ define([], function() {
                 templateUrl: '/views/session/login.html',
                 controller: 'LoginCtrl'
             },
-            '/login/:id/password': {
+            '/register/forgot_password/:token': {
               templateUrl: '/views/session/change_password.html',
-              controller: 'LoginCtrl'
+              controller: 'ChangePasswordCtrl'
             },
             '/register': {
               templateUrl: '/views/session/register.html',
@@ -38,7 +38,7 @@ define([], function() {
             },
             '/techs/category/:category': {
               templateUrl: '/views/techs/techs_cats.html',
-              controller: 'TechsCtrl'
+              controller: 'TechsCatCtrl'
             },
             '/tech/:id': {
               templateUrl: '/views/techs/tech.html',

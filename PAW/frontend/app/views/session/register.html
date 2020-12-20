@@ -6,8 +6,9 @@
     </div>
 
     <div class="page-description"></div>
+    <div ng-if="userAlreadyExists">{{'REGISTER_UAE' | translate}}</div>
 
-    <form name="registerForm">
+    <form ng-if="!registered" name="registerForm">
       <div class="form-group">
 
         <label for="username"> {{'LOGIN_USERNAME' | translate}}</label>
@@ -19,19 +20,18 @@
       <div class="form-group">
 
         <label for="password"> {{'LOGIN_PASSWORD' | translate}}</label>
-        <input class="form-control" type="password" ng-model="passwordInput" name="passwordInput" required ng-minlength="6" ng-maxlength="100" id="password" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
+        <input class="form-control" type="password" ng-model="passwordInput" id="password" name="passwordInput" required ng-minlength="6" ng-maxlength="100" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
         <div ng-show="registerForm.passwordInput.$dirty && registerForm.passwordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
-        <div ng-show="registerForm.passwordInput.$error.minlength || loginForm.passwordInput.$error.maxlength">
-          {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
+        <div ng-show="registerForm.passwordInput.$error.minlength || loginForm.passwordInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
 
       </div>
       <div class="form-group">
 
         <label for="repeatPassword"> {{'LOGIN_PASSWORD_REPEAT' | translate}}</label>
-        <input class="form-control" type="password" id="repeatPassword"  ng-model="repeatPasswordInput" name="repeatPasswordInput" required ng-minlength="6" ng-maxlength="100" id="password"  placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
+        <input class="form-control" type="password" id="repeatPassword" ng-model="repeatPasswordInput" name="repeatPasswordInput" value-matches="passwordInput" required ng-minlength="6" ng-maxlength="100" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
         <div ng-show="registerForm.repeatPasswordInput.$dirty && registerForm.repeatPasswordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
-        <div ng-show="registerForm.repeatPasswordInput.$error.minlength|| registerForm.repeatPasswordInput.$error.maxlength">
-          {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
+        <div ng-show="registerForm.repeatPasswordInput.$error.minlength|| registerForm.repeatPasswordInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
+        <div ng-show="registerForm.repeatPasswordInput.$dirty && registerForm.repeatPasswordInput.$invalid">{{ 'FORM_ERROR_PASSWORDS_MATCHING' | translate}}</div>
       </div>
       <div class="form-group">
 
@@ -43,10 +43,17 @@
 
 
       <div class="d-flex justify-content-center">
-        <button ng-if="registerForm.$valid" class="btn primary-button" type="submit"  ng-click="register()">{{'REGISTER_TITLE' | translate}}</button>
+        <button ng-if="registerForm.$valid" class="btn primary-button" type="submit"  ng-click="register(emailInput, usernameInput, passwordInput)">{{'REGISTER_TITLE' | translate}}</button>
         <button ng-if="registerForm.$invalid"  disabled class="btn primary-button" type="submit" >{{'REGISTER_TITLE' | translate}}</button>
       </div>
     </form>
+
+
+    <div ng-if="registered">
+
+      <div>{{'REGISTER_SUCCESS' | translate}} </div>
+      <div><a ng-href="#/login">{{'LOGIN_GO_LOGIN' | translate}}</a></div>
+    </div>
   </div>
 </div>
 

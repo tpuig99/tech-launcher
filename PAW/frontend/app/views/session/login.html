@@ -6,7 +6,7 @@
     </div>
     <div class="page-description"></div>
 
-    <div ng-if="loginForm.$invalid" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
+    <div ng-if="failedLogin" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
 
     <form name="loginForm" enctype="application/x-www-form-urlencoded" novalidate>
       <div class="form-group">
@@ -25,7 +25,7 @@
       </div>
 
       <div class="form-group">
-        <label><input name="remembermeInput" type="checkbox"/>{{'LOGIN_REMEMBER_ME' | translate}}</label>
+        <label><input ng-model="rememberMe" type="checkbox"/>{{'LOGIN_REMEMBER_ME' | translate}}</label>
       </div>
       <div class="d-flex justify-content-center">
         <input ng-if="loginForm.$valid" class="btn primary-button" type="submit" value="{{'LOGIN_TITLE' | translate}}" ng-click="login()"/>

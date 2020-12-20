@@ -251,7 +251,7 @@ public class UserServiceImpl implements UserService {
         String recipientAddress = user.getMail();
 
         String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
-        String confirmationUrl = "/forgot_password?token=" + token;
+        String confirmationUrl = "/forgot_password/" + token;
 
         String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
         String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());
