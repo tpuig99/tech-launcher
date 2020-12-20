@@ -25,6 +25,7 @@ define([], function() {
 		WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
 
     BUTTON_DELETE_POST: 'Eliminar Pregunta',
+    BUTTON_DELETE: 'Eliminar',
     BUTTON_EDIT_POST: 'Editar Pregunta',
     BUTTON_SEND_EMAIL: 'Enviar Mail',
     BUTTON_CANCEL: 'Cancelar',

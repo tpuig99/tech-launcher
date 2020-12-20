@@ -47,32 +47,26 @@ define(['frontend','services/userService','services/sessionService'], function(f
     $scope.setData = function(response,id) {
       switch (id) {
         case 'comments':
-          console.log('comment');
           $scope.profile.comments = response.data;
           $scope.commentPaging = response.headers('link');
           break;
         case 'content':
-          console.log('content');
           $scope.profile.content = response.data;
           $scope.contentPaging = response.headers('link');
           break;
         case 'techs':
-          console.log('tech');
           $scope.profile.techs = response.data;
           $scope.techsPaging = response.headers('link');
           break;
         case 'posts':
-          console.log('post');
           $scope.profile.posts = response.data;
           $scope.postsPaging = response.headers('link');
           break;
         case 'votes':
-          console.log('vote');
           $scope.profile.votes = response.data;
           $scope.votesPaging = response.headers('link');
           break;
         default:
-          console.log(id);
           break;
       }
     };
