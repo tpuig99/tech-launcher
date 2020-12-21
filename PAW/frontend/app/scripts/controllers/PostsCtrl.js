@@ -1,10 +1,12 @@
 'use strict';
 define(['frontend','services/postService','services/sessionService'], function(frontend) {
 
-  frontend.controller('PostsCtrl', function($scope, sessionService, $window, $routeParams, postService, $localStorage) {
+  frontend.controller('PostsCtrl', function($scope, sessionService, $window, $routeParams, $sessionStorage,postService, $localStorage) {
     $scope.isPresent = false;
-    if ($localStorage.currentUser !== undefined) {
-      sessionService.getCurrentUser($localStorage.currentUser.location).then(function (response) {
+    var user = sessionService.getStorageUser();
+
+    if (user !== undefined) {
+      sessionService.getCurrentUser(user.location).then(function (response) {
         $scope.username = response.data.username;
         $scope.isMod = response.data.verify;
         $scope.isAdmin = response.data.admin;

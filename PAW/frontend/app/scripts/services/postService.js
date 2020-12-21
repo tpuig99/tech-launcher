@@ -16,11 +16,11 @@ define(['frontend'], function(frontend) {
     };
 
     this.upVote = function(id) {
-      return Restangular.all('posts/'+ id + '/up_vote').post();
+      return Restangular.all('posts/' + id + '/up_vote').post();
     };
 
     this.downVote = function(id) {
-      return Restangular.all('posts/'+ id + '/down_vote').post();
+      return Restangular.all('posts/' + id + '/down_vote').post();
     };
 
     this.upVoteAnswer = function(location) {

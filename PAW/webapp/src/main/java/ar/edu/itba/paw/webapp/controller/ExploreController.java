@@ -76,8 +76,8 @@ public class ExploreController {
                                    @QueryParam("comment_amount") final Integer commentAmount,
                                    @QueryParam("last_comment") final Integer lastComment,
                                    @QueryParam("last_update") final Integer lastUpdate,
-                                   @QueryParam("techs_page") final Integer page,
-                                   @QueryParam("posts_page") final Integer postsPage,
+                                   @QueryParam("techs_page") final int page,
+                                   @QueryParam("posts_page") final int postsPage,
                                    @QueryParam("is_post") final boolean isPost){
 
         List<FrameworkCategories> categoriesList = new ArrayList<>();
@@ -218,29 +218,27 @@ public class ExploreController {
 
        /* --------------------- TECHS --------------------- */
         if( !isPost ) {
-            List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == null ? START_PAGE : page);
+            List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == 0 ? 1 : page);
             searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated);
             LOGGER.info("Explore: Found {} matching techs", searchResultsNumber);
 
             search.setFrameworksAmount(searchResultsNumber);
             search.setFrameworks(frameworks.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
-            return pagination(uriInfo, page == null ? 1 : postsPage, searchResultsNumber, search);
+            return pagination(uriInfo, page == 0 ? 1 : page, searchResultsNumber, search);
         }
         /* -------------------------------------------------- */
         /* --------------------- POSTS --------------------- */
-        else {
-            List<String> tags = new ArrayList<>();
-            tags.addAll(categories);
-            tags.addAll(types);
+        List<String> tags = new ArrayList<>();
+        tags.addAll(categories);
+        tags.addAll(types);
 
-            List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, postsPage == null ? START_PAGE : postsPage, POSTS_PAGE_SIZE);
-            searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order);
-            LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
+        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, postsPage == 0 ? 1 : postsPage, POSTS_PAGE_SIZE);
+        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order);
+        LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
 
-            search.setPosts(posts.stream().map((Post post ) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList()));
-            search.setPostsAmount(searchResultsNumber);
-            return pagination(uriInfo, postsPage == null ? 1 : postsPage, searchResultsNumber, search);
-        }
+        search.setPosts(posts.stream().map((Post post ) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList()));
+        search.setPostsAmount(searchResultsNumber);
+        return pagination(uriInfo, postsPage == 0 ? 1 : postsPage, searchResultsNumber, search);
         /* -------------------------------------------------- */
     }
 }
