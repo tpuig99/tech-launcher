@@ -8,6 +8,8 @@ define(['frontend','services/userService','services/sessionService'], function(f
       $scope.username = $scope.$parent.username;
       sessionService.getCurrentUser(user.location).then(function (response) {
         $scope.allowMod = response.data.allowedModeration;
+        $scope.modValue = $scope.allowMod;
+        $scope.username = response.data.username;
       });
     }
 
@@ -71,5 +73,33 @@ define(['frontend','services/userService','services/sessionService'], function(f
           break;
       }
     };
+    $scope.updateMod = function(set) {
+      userService.setMod($scope.profile.modLocation,set).then(function (response) {
+        if (response.status === 200) {
+          userService.getUser($routeParams.id).then(function (user) {
+            $scope.profile = user.data;
+            $scope.allowMod = user.data.allowedModeration;
+            $scope.modValue = $scope.allowMod;
+            if (set === false) {
+              $('#stopBeingAModModal').modal('hide');
+            }
+          });
+
+        }
+      });
+    };
+    $scope.changeMod = function() {
+      if ($scope.allowMod === true) {
+        $('#stopBeingAModModal').modal('show');
+      } else {
+        $scope.updateMod(true);
+      }
+    };
+
+    $('#stopBeingAModModal').on('hide.bs.modal',function () {
+      $scope.modValue = $scope.allowMod;
+      $('#modCheckbox').prop('checked',$scope.allowMod);
+    });
+
   });
 });
