@@ -51,7 +51,7 @@ define(['frontend'], function(frontend) {
       return Restangular.all('users/password').post(newPassword);
     };
 
-    this.getStorageUser = function(){
+    this.getStorageUser = function() {
       var user;
       if ($localStorage.remember.me) {
         user = $localStorage.currentUser;
@@ -59,7 +59,7 @@ define(['frontend'], function(frontend) {
         user = $sessionStorage.currentUser;
       }
       return user;
-    }
+    };
 
 
 	});

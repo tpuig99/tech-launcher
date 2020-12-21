@@ -3,10 +3,10 @@
 define(['frontend','services/sessionService'], function(frontend) {
 
 	frontend.controller('IndexCtrl', function($scope,$location, $window, $localStorage, $sessionStorage, Restangular, $routeParams,$route,sessionService) {
-    if($localStorage.remember === undefined){
+    if ($localStorage.remember === undefined) {
       $localStorage.remember = {me: false};
     }
-	  if($sessionStorage.remember === undefined){
+	  if ($sessionStorage.remember === undefined) {
       $sessionStorage.remember = {me: false};
     }
 

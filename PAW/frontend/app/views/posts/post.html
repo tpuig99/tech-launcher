@@ -29,14 +29,14 @@
         <!-- Up Vote - Down Vote section -->
         <div class=" ml-4 col-1 net-votes">
 
-            <div ng-if="username == 'anonymousUser'">
-              <button ng-if="username == 'anonymousUser'" class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+            <div ng-if="isPresent">
+              <button ng-if="isPresent" class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
               <div>
                 <h4>{{post.votesUp - post.votesDown}}</h4>
               </div>
               <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
             </div>
-            <div ng-if="username != 'anonymousUser'">
+            <div ng-if="!isPresent">
 
                 <div ng-if="!isEnabled">
                   <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
