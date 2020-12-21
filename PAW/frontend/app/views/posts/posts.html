@@ -1,9 +1,9 @@
-<div ng-controller="PostsCtrl">
+<div ng-controller="PostsCtrl" ng-cloak>
   <div class="content-no-sidebar-left">
     <div class="title"><h1>{{'FORUM_TITLE' | translate}}</h1></div>
     <div class="post-cards">
       <div class="d-flex flex-row-reverse">
-        <div ng-if=" !isPresent">
+        <div ng-if=" !isPresent" ng-cloak>
           <button class="btn btn-info mt-2 mb-4" data-toggle="modal" data-target="#loginModal">
             {{'FORUM_ADD_POST' | translate}}
           </button>
@@ -57,13 +57,13 @@
                       <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal"
                                                        data-target="#confirmMailModal"></i></button>
                     </div>
-                    <div ng-if="isEnable">
+                    <div ng-if="isEnable" ng-cloak>
                       <div class="net-votes">
-                        <button class="btn pt-0 pb-0" type="submit">
-                          <div ng-if="post.loggedVote > 0">
+                        <button class="btn pt-0 pb-0" ng-click="upVote(post.location)" type="submit">
+                          <div ng-if="post.loggedVote > 0" ng-cloak>
                             <i class="fa fa-2x fa-arrow-up votedUp"></i>
                           </div>
-                          <div ng-if="post.loggedVote <= 0">
+                          <div ng-if="post.loggedVote <= 0" ng-cloak>
                             <i class="fa fa-2x fa-arrow-up"></i>
                           </div>
                         </button>
@@ -72,11 +72,11 @@
                         </div>
                       </div>
                       <div class="net-votes">
-                        <button class="btn pt-0 pb-0" type="submit">
-                          <div ng-if="post.loggedVote < 0">
-                            <i class="fa fa-2x fa-arrow-up votedDown"></i>
+                        <button class="btn pt-0 pb-0" type="submit" ng-click="downVote(post.location)">
+                          <div ng-if="post.loggedVote < 0" ng-cloak>
+                            <i class="fa fa-2x fa-arrow-down votedDown"></i>
                           </div>
-                          <div ng-if="post.loggedVote >= 0">
+                          <div ng-if="post.loggedVote >= 0" ng-cloak>
                             <i class="fa fa-2x fa-arrow-down"></i>
                           </div>
                         </button>
