@@ -11,7 +11,6 @@ define(['frontend'], function(frontend) {
         'mail': email,
         'password': password
       };
-      console.log(username); console.log(password); console.log(email);
       return Restangular.all('register').post(user);
     };
 

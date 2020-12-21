@@ -45,6 +45,7 @@ define([], function() {
     BUTTON_COMMENT_SEE_REPLIES: 'Ver Respuestas',
     BUTTON_APPLY: 'Aplicar',
     BUTTON_STOP: 'Parar',
+    BUTTON_LOADING: 'Cargando',
 
     SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',

@@ -9,7 +9,7 @@ define(['frontend','services/userService','services/sessionService'], function(f
         $scope.username = response.data.username;
       });
     }
-
+    $scope.image;
     userService.getUser($routeParams.id).then(function (user) {
       $scope.profile = user.data;
       if (user.commentAmount !== 0) {
@@ -98,5 +98,16 @@ define(['frontend','services/userService','services/sessionService'], function(f
       $('#modCheckbox').prop('checked',$scope.allowMod);
     });
 
+    $scope.picUpload = function (e){
+      console.log(e);
+    };
+    $scope.updateProfile = function () {
+      userService.update($scope.update.picture,$scope.update.description,$routeParams.id).then(function (response) {
+        $scope.profile = response.data;
+      });
+    };
+    $('#image').onchange(function () {
+      console.log('yes');
+    });
   });
 });

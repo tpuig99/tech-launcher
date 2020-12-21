@@ -96,8 +96,8 @@
                   <div class="row extra-info">
                     <div class="col-9 tags">
                       <div ng-repeat="tag in post.postTags">
-                        <button class="badge badge-color ml-1"
-                                onclick="goToExplore('${tag.tagName}','${tag.type.name()}' )">
+                        <a ng-href="#/explore">
+                        <button class="badge badge-color ml-1" >
                           <span>
                                   <div ng-if="tag.type == 'tech_name'">
                                       {{tag.tagName}}
@@ -110,6 +110,7 @@
                                   </div>
                           </span>
                         </button>
+                        </a>
                       </div>
                     </div>
                     <div class="col">

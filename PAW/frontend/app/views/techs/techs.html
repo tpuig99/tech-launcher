@@ -28,7 +28,7 @@
       <div class="row equal">
         <div ng-repeat="hot in home.hots">
           <div class="card mx-4 mb-4">
-            <a href={{hot.location}}>
+            <a href={{'#/'+hot.location}}>
               <div class="card-body">
                 <div ng-if="hot.picture != undefined">
                   <div class="max-logo d-flex align-items-center justify-content-center">
