@@ -28,7 +28,9 @@ require.config({
         karma: '../../bower_components/karma/lib/karma',
         bower: '../../bower_components/bower/atom-full-compiled',
         install: '../../bower_components/install/detect-zoom',
-        ngstorage: '../../bower_components/ngstorage/ngStorage'
+        ngstorage: '../../bower_components/ngstorage/ngStorage',
+        'ng-file-upload': '../../bower_components/ng-file-upload/ng-file-upload',
+        'ng-file-upload-shim': '../../bower_components/ng-file-upload-shim/ng-file-upload-shim'
     },
     shim: {
         angular: {
@@ -53,6 +55,11 @@ require.config({
             ]
         },
         'angular-translate': {
+            deps: [
+                'angular'
+            ]
+        },
+        'ng-file-upload': {
             deps: [
                 'angular'
             ]

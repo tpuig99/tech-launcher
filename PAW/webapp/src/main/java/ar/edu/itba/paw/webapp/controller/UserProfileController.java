@@ -3,14 +3,18 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -285,25 +289,25 @@ public class UserProfileController {
     @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response updateProfile(@PathParam("id") Long userId, final UserAddDTO dto) {
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    public Response updateProfile(@PathParam("id") Long userId, @FormDataParam("description") final String description, @FormDataParam("picture") final byte[] picture) throws IOException {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
             if (SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
 
-                if (dto.getPicture() == null && dto.getDescription() == null) {
+                if (picture == null && description == null) {
                     return Response.status(Response.Status.BAD_REQUEST).build();
                 }
 
-                if (dto.getPicture() != null) {
-                    byte[] picture = dto.getPicture();
-                    us.updateInformation(userId, dto.getDescription() == null ? user.get().getDescription() : dto.getDescription(), picture, true);
+                if (picture != null) {
+                    us.updateInformation(userId, description == null ? user.get().getDescription() :description, picture, true);
                 } else {
-                    us.updateInformation(userId, dto.getDescription() == null ? user.get().getDescription() : dto.getDescription(), user.get().getPicture(), false);
+                    us.updateInformation(userId, description == null ? user.get().getDescription() :description, user.get().getPicture(), false);
                 }
 
                 LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
-                return Response.ok(dto).build();
+                return Response.ok().build();
             }
             LOGGER.error("User Profile: User {} does not have enough privileges to update profile", userId);
             return Response.status(Response.Status.UNAUTHORIZED).build();
