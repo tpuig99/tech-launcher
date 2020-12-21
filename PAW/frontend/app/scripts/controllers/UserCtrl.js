@@ -1,7 +1,7 @@
 'use strict';
-define(['frontend','services/userService','services/sessionService'], function(frontend) {
+define(['frontend','services/userService','services/sessionService','ng-file-upload'], function(frontend) {
 
-  frontend.controller('userCtrl', function($scope, $routeParams, userService,sessionService,$localStorage) {
+  frontend.controller('userCtrl', function($scope, $routeParams, userService,sessionService,$localStorage,Restangular) {
 
     var user = sessionService.getStorageUser();
     if ($scope.$parent.username !== undefined) {
@@ -12,7 +12,7 @@ define(['frontend','services/userService','services/sessionService'], function(f
         $scope.username = response.data.username;
       });
     }
-    $scope.image;
+
     userService.getUser($routeParams.id).then(function (user) {
       $scope.profile = user.data;
       if (user.commentAmount !== 0) {
@@ -100,17 +100,24 @@ define(['frontend','services/userService','services/sessionService'], function(f
       $scope.modValue = $scope.allowMod;
       $('#modCheckbox').prop('checked',$scope.allowMod);
     });
-
-    $scope.picUpload = function (e){
-      console.log(e);
+    $('#editProfileModal').on('hide.bs.modal',function () {
+      $scope.update = undefined;
+    });
+    $scope.setPic = function(file) {
+      $scope.update.picture = file;
     };
+
     $scope.updateProfile = function () {
       userService.update($scope.update.picture,$scope.update.description,$routeParams.id).then(function (response) {
-        $scope.profile = response.data;
+        if (response.status === 200) {
+          userService.getUser($routeParams.id).then(function (user) {
+            $scope.profile.description = user.data.description;
+            $scope.profile.image = user.data.image + '?t='+new Date().getTime();
+            $('profilePicture').get();
+          });
+          $('#editProfileModal').modal('hide');
+        }
       });
     };
-    $('#image').onchange(function () {
-      console.log('yes');
-    });
   });
 });

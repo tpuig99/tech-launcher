@@ -8,14 +8,16 @@ define(['routes',
 	'angular-translate',
   'ngstorage',
   'restangular',
-  'directives/components'],
+  'directives/components',
+  'ng-file-upload'],
 	function(config, dependencyResolverFor, i18n) {
 		var frontend = angular.module('frontend', [
 			'ngRoute',
       'ngStorage',
       'restangular',
 			'pascalprecht.translate',
-      'components'
+      'components',
+      'ngFileUpload'
 		]);
 		frontend
 			.config(

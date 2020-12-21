@@ -19,7 +19,7 @@
               <div class="row justify-content-center">
                 <div ng-if="profile.image != undefined">
                   <div class="max-logo d-flex align-items-center justify-content-center">
-                    <img ng-src="{{profile.image}}" alt={{'IMAGE_PROFILE'|translate}} class="rounded-circle img-slot"/>
+                    <img ng-src="{{profile.image}}" id="profilePicture" alt={{'IMAGE_PROFILE'|translate}} class="rounded-circle img-slot"/>
                   </div>
                 </div>
                 <div ng-if="profile.image == undefined">
@@ -277,7 +277,7 @@
               <div class="form-group">
                 <label for="image">{{'PROFILE_CHANGE_PICTURE'|translate}}</label>
                 <div class="text-center">
-                  <input ng-model="update.image" id="image" class="form-control" type="file" accept="image/*" name="image"/>
+                  <input ng-model="update.image" id="image" class="form-control" type="file" ngf-select="setPic($file)" accept="image/*" name="image"/>
 
                 </div>
               </div>
@@ -288,7 +288,7 @@
               </div>
 
               <div class="d-flex justify-content-center">
-                <input class="btn btn-info" id="editProfileButton" type="submit" value="{{'BUTTON_SUBMIT'|translate}}"/>
+                <input class="btn btn-info" ng-disabled="(update.description == undefined || update.description.replaceAll(' ','') == '') && update.picture == undefined" id="editProfileButton" type="submit" value="{{'BUTTON_SUBMIT'|translate}}"/>
                 <div class="btn btn-info disabled" id="editProfileLoading" hidden>
                   <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   {{'BUTTON_LOADING'|translate}}
