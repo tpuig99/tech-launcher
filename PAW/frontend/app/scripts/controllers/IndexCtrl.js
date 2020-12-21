@@ -2,8 +2,16 @@
 
 define(['frontend','services/sessionService'], function(frontend) {
 
-	frontend.controller('IndexCtrl', function($scope,$location, $window, $localStorage,Restangular, $routeParams,$route,sessionService) {
-		var user = $localStorage.currentUser;
+	frontend.controller('IndexCtrl', function($scope,$location, $window, $localStorage, $sessionStorage, Restangular, $routeParams,$route,sessionService) {
+    if($localStorage.remember === undefined){
+      $localStorage.remember = {me: false};
+    }
+	  if($sessionStorage.remember === undefined){
+      $sessionStorage.remember = {me: false};
+    }
+
+	  var user = sessionService.getStorageUser();
+
     $scope.searchPage = false;
     $scope.checkUser = function() {
       if (user !== undefined) {
@@ -22,6 +30,7 @@ define(['frontend','services/sessionService'], function(frontend) {
     $scope.navbarSearch = undefined;
     $scope.logout = function () {
       $localStorage.currentUser = undefined;
+      $sessionStorage.currentUser = undefined;
       Restangular.setDefaultHeaders({'Authorization': undefined});
       $scope.username = undefined;
       $scope.isMod = undefined;
@@ -32,16 +41,5 @@ define(['frontend','services/sessionService'], function(frontend) {
       $scope.navbarSearch = (toSearch === undefined || toSearch === 0) ? '' : toSearch;
       $window.location.href = '#/explore';
     };
-
-
-    window.addEventListener('beforeunload', (event) => {
-      if (!$localStorage.rememberMe.rememberMe) {
-        localStorage.clear();
-      }
-    });
-
-
-
-
 	});
 });

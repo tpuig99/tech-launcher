@@ -3,9 +3,10 @@ define(['frontend','services/userService','services/sessionService'], function(f
 
   frontend.controller('userCtrl', function($scope, $routeParams, userService,sessionService,$localStorage) {
 
+    var user = sessionService.getStorageUser();
     if ($scope.$parent.username !== undefined) {
       $scope.username = $scope.$parent.username;
-      sessionService.getCurrentUser($localStorage.currentUser.location).then(function (response) {
+      sessionService.getCurrentUser(user.location).then(function (response) {
         $scope.allowMod = response.data.allowedModeration;
       });
     }
