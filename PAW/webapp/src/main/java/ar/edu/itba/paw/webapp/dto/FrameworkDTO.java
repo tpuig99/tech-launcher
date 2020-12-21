@@ -1,15 +1,9 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.User;
-import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-import java.awt.*;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 public class FrameworkDTO {
     private String name;
@@ -20,7 +14,6 @@ public class FrameworkDTO {
     private String author_location;
     private String type;
     private Date date;
-    private byte[] picture;
     private Integer votes_cant;
     private Double stars;
     private Integer comments_amount;
@@ -29,6 +22,7 @@ public class FrameworkDTO {
     private String tutorial;
     private String course;
     private String location;
+    private String picture;
     private int loggedStars;
 
     public static FrameworkDTO fromFramework(Framework framework, UriInfo uriInfo) {
@@ -41,20 +35,21 @@ public class FrameworkDTO {
         dto.author_location = uriInfo.getBaseUriBuilder().path("users/"+framework.getAuthor().getId()).build().toString();
         dto.type = framework.getType().name();
         dto.date = framework.getPublishDate();
-        dto.picture = framework.getPicture();
         dto.votes_cant = framework.getVotesCant();
         dto.stars = framework.getStars();
         dto.comments_amount = framework.getCommentsAmount();
+        dto.picture = "techs/"+framework.getId()+"/image";
         dto.comments = uriInfo.getAbsolutePathBuilder().path("comment").build().toString();
         dto.book = uriInfo.getAbsolutePathBuilder().path("content").build().toString()+"?type=book";
         dto.course = uriInfo.getAbsolutePathBuilder().path("content").build().toString()+"?type=course";
         dto.tutorial = uriInfo.getAbsolutePathBuilder().path("content").build().toString()+"?type=tutorial";
         return dto;
     }
+
     public static FrameworkDTO fromExtern(Framework framework,UriInfo uriInfo) {
         final FrameworkDTO dto = new FrameworkDTO();
         dto.name = framework.getName();
-        dto.picture = framework.getPicture();
+        dto.picture = "techs/"+framework.getId()+"/image";
         dto.location = "techs/"+framework.getId();
         dto.stars = framework.getStars();
         return dto;
@@ -92,7 +87,7 @@ public class FrameworkDTO {
         return date;
     }
 
-    public byte[] getPicture() {
+    public String getPicture() {
         return picture;
     }
 
@@ -147,7 +142,7 @@ public class FrameworkDTO {
         this.type = type;
     }
 
-    public void setPicture(byte[] picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
 

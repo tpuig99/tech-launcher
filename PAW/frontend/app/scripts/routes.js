@@ -40,7 +40,7 @@ define([], function() {
               templateUrl: '/views/techs/techs_cats.html',
               controller: 'TechsCatCtrl'
             },
-            '/tech/:id': {
+            '/techs/:id': {
               templateUrl: '/views/techs/tech.html',
               controller: 'TechCtrl'
             },

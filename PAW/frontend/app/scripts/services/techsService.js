@@ -16,5 +16,9 @@ define(['frontend'], function(frontend) {
     this.getTypes = function() {
       return Restangular.one('techs/types').get();
     };
+
+    this.getTech = function(id) {
+      return Restangular.one('techs',id).get();
+    };
   });
 });
