@@ -1,9 +1,12 @@
 'use strict';
-define(['frontend','services/userService','services/sessionService'], function(frontend) {
+define(['frontend','services/userService','services/sessionService','ng-file-upload'], function(frontend) {
 
-  frontend.controller('userCtrl', function($scope, $routeParams, userService,sessionService,$localStorage) {
-    if ($localStorage.currentUser !== undefined) {
-        sessionService.getCurrentUser($localStorage.currentUser.location).then(function (response) {
+  frontend.controller('userCtrl', function($scope, $routeParams, userService,sessionService,$localStorage,Restangular) {
+
+    var user = sessionService.getStorageUser();
+    if ($scope.$parent.username !== undefined) {
+      $scope.username = $scope.$parent.username;
+      sessionService.getCurrentUser(user.location).then(function (response) {
         $scope.allowMod = response.data.allowedModeration;
         $scope.modValue = $scope.allowMod;
         $scope.username = response.data.username;
@@ -97,6 +100,24 @@ define(['frontend','services/userService','services/sessionService'], function(f
       $scope.modValue = $scope.allowMod;
       $('#modCheckbox').prop('checked',$scope.allowMod);
     });
+    $('#editProfileModal').on('hide.bs.modal',function () {
+      $scope.update = undefined;
+    });
+    $scope.setPic = function(file) {
+      $scope.update.picture = file;
+    };
 
+    $scope.updateProfile = function () {
+      userService.update($scope.update.picture,$scope.update.description,$routeParams.id).then(function (response) {
+        if (response.status === 200) {
+          userService.getUser($routeParams.id).then(function (user) {
+            $scope.profile.description = user.data.description;
+            $scope.profile.image = user.data.image + '?t='+new Date().getTime();
+            $('profilePicture').get();
+          });
+          $('#editProfileModal').modal('hide');
+        }
+      });
+    };
   });
 });

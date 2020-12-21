@@ -1,11 +1,13 @@
 'use strict';
 define(['frontend', 'services/postService', 'services/sessionService'], function(frontend) {
 
-    frontend.controller('PostCtrl', function($scope, $location, $window, $routeParams, postService, Restangular, sessionService, $localStorage) {
+    frontend.controller('PostCtrl', function($scope, $location, $window, $routeParams, postService, $sessionStorage,Restangular, sessionService, $localStorage) {
 
       $scope.isPresent = false;
-      if ($localStorage.currentUser !== undefined) {
-        sessionService.getCurrentUser($localStorage.currentUser.location).then(function (response) {
+      var user = sessionService.getStorageUser();
+
+      if (user !== undefined) {
+        sessionService.getCurrentUser(user.location).then(function (response) {
           $scope.username = response.data.username;
           $scope.isMod = response.data.verify;
           $scope.isAdmin = response.data.admin;
@@ -19,16 +21,16 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
           postService.getPost($routeParams.id).then(function(response) {
           $scope.post = response.data;
         });
-      }
+      };
 
 
       $scope.getAnswers = function() {
        postService.getAnswers($routeParams.id).then(function(response) {
-        $scope.answers = response.data;
-        $scope.pagingLinks = response.headers('link');
-      });
+          $scope.answers = response.data;
+          $scope.pagingLinks = response.headers('link');
+       });
 
-      }
+      };
 
       $scope.getPost();
       $scope.getAnswers();
@@ -47,6 +49,7 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
 
       $scope.deletePost = function() {
         postService.deletePost($scope.toDel).then(function() {
+          $('#deletePostModal').modal('hide');
           $location.path('/#/posts');
         });
 
@@ -54,18 +57,20 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       };
 
       $scope.deleteAnswer = function() {
-        postService.deletePost($scope.toDel).then( function() {
+        postService.deletePost($scope.toDel).then(function() {
           $scope.getPost();
           $scope.getAnswers();
+          $scope.cleanDel();
+          $('#deleteCommentModal').modal('hide');
         });
       };
 
       $scope.upVote = function() {
-        postService.upVote($routeParams.id).then($scope.getPost());
+        postService.upVote($scope.post.location).then($scope.getPost());
       };
 
-      $scope.downVote = function() {
-        postService.downVote($routeParams.id).then($scope.getPost());
+      $scope.downVote = function(location) {
+        postService.downVote($scope.post.location).then($scope.getPost());
       };
 
       $scope.upVoteAnswer = function(location) {
@@ -77,16 +82,24 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       };
 
       $scope.commentPost = function(answer) {
-        postService.commentPost($routeParams.id, answer).then( function () {
+        postService.commentPost($routeParams.id, answer).then(function () {
           $scope.getPost();
           $scope.getAnswers();
         });
-      }
+      };
 
       $scope.setData = function(response) {
         $scope.answers = response.data;
         $scope.pagingLinks = response.headers('link');
       };
+
+      $('#deletePostModal').on('hide.bs.modal',function () {
+        $scope.cleanDel();
+      });
+
+      $('#deleteCommentModal').on('hide.bs.modal',function () {
+        $scope.cleanDel();
+      });
 
 
     });

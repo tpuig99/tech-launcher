@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend', 'services/sessionService'], function(frontend) {
 
-    frontend.controller('LoginCtrl', function($scope, $http, $location, $localStorage, sessionService,Restangular) {
+    frontend.controller('LoginCtrl', function($scope, $http, $location, $localStorage, $sessionStorage, sessionService,Restangular) {
 
       $scope.failedLogin = false;
       $scope.rememberMe = false;
@@ -9,16 +9,19 @@ define(['frontend', 'services/sessionService'], function(frontend) {
         sessionService.login($scope.usernameInput, $scope.passwordInput).then(function(response) {
             if (response.data.token) {
               // store username and token in local storage to keep user logged in between page refreshes
-              $localStorage.currentUser = {location: response.data.location, token: response.data.token};
+              $localStorage.remember = {me: $scope.rememberMe};
+              if ($localStorage.remember.me) {
+                $localStorage.currentUser = {location: response.data.location, token: response.data.token};
+              } else {
+                $sessionStorage.currentUser = {location: response.data.location, token: response.data.token};
+              }
               // add jwt token to auth header for all requests made by the $http service
               // $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
               $scope.$parent.checkUser();
 
-              $localStorage.rememberMe = {rememberMe: $scope.rememberMe};
-
               $location.path('/');
             }
-        }, function(response){
+        }, function(response) {
           $scope.failedLogin = true;
         });
       };

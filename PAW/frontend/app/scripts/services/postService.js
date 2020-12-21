@@ -15,12 +15,12 @@ define(['frontend'], function(frontend) {
       return Restangular.one(post).remove();
     };
 
-    this.upVote = function(id) {
-      return Restangular.all('posts/'+ id + '/up_vote').post();
+    this.upVote = function(location) {
+      return Restangular.one(location + '/up_vote').post();
     };
 
-    this.downVote = function(id) {
-      return Restangular.all('posts/'+ id + '/down_vote').post();
+    this.downVote = function(location) {
+      return Restangular.one(location + '/down_vote').post();
     };
 
     this.upVoteAnswer = function(location) {

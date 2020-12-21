@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend'], function(frontend) {
 
-	frontend.service('sessionService', function(Restangular) {
+	frontend.service('sessionService', function(Restangular, $localStorage, $sessionStorage) {
 
 
     /* Register */
@@ -11,7 +11,6 @@ define(['frontend'], function(frontend) {
         'mail': email,
         'password': password
       };
-      console.log(username); console.log(password); console.log(email);
       return Restangular.all('register').post(user);
     };
 
@@ -49,6 +48,16 @@ define(['frontend'], function(frontend) {
         'password': password
       };
       return Restangular.all('users/password').post(newPassword);
+    };
+
+    this.getStorageUser = function() {
+      var user;
+      if ($localStorage.remember.me) {
+        user = $localStorage.currentUser;
+      } else {
+        user = $sessionStorage.currentUser;
+      }
+      return user;
     };
 
 

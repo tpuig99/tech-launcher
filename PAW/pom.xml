@@ -100,7 +100,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
             <!-- Java 10 compatible -->
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
