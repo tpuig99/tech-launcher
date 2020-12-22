@@ -1,3 +1,10 @@
+<div ng-controller="TechCtrl">
+  <div class="sidenav overflow-auto">
+    <div ng-repeat="category in categories">
+      <a href="#/{{category.location}}">{{ "CATEGORY_" + category.category | uppercase | translate}}</a>
+    </div>
+  </div>
+
 <div class="content">
 
   <div class="container d-flex">
@@ -6,7 +13,7 @@
 
         <div ng-if="tech.picture != undefined">
           <div class="max-logo d-flex align-items-center justify-content-center">
-            <img src="{{tech.picture}}" alt="{{'TECH_PICTURE' | translate }}"/>
+            <img ng-src="{{tech.picture}}" alt="{{'TECH_PICTURE' | translate }}"/>
           </div>
         </div>
         <div ng-if="tech.picture == undefined">
@@ -20,22 +27,22 @@
         <div class="row">
           <div class="col">
             <span class="framework-title"><h2>{{tech.name}}</h2></span>
-            <div>{{'TECH_AUTHOR' | translate }}:&nbsp;<a href="/users/{{framework.author.username}}"/>{{tech.author}}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="{{'TOOLTIP_OWNER' | translate }}" ></i></div>
-            <div>{{'TECH_DATE' | translate }}: {{tech.publishDate}}</div>
-            <div><a href="/search?toSearch={{framework.name}}&isPost=true">{{'TECH_SEE_POSTS_RELATED' | translate }}</a></div>
+            <div>{{'TECH_AUTHOR' | translate }}:&nbsp;<a href="#">{{tech.author}}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="{{'TOOLTIP_OWNER' | translate }}" ></i></div>
+            <div>{{'TECH_DATE' | translate }}: {{tech.date}}</div>
+            <div><a href="/search?toSearch={{tech.name}}&isPost=true">{{'TECH_SEE_POSTS_RELATED' | translate }}</a></div>
 
             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="{{'TECH_ADD_TECH_CATEGORY' | translate }}">{{ "CATEGORY_" + tech.category | uppercase | translate}}</span>
             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="{{'TECH_ADD_TECH_TYPE' | translate }}">{{ "TYPE_" + tech.type | uppercase | translate}}</span>
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             <span class="fa fa-star color-star"></span>
-            <span> {{tech.starsFormated}} | {{tech.votesCant}}</span>
+            <span> {{tech.stars}} | {{tech.votes_cant}}</span>
             <span class="fa fa-user"></span>
           </div>
           <div class="d-flex flex-column my-auto">
             <div ng-if="isAdmin || isOwner">
               <div class="mb-4">
-                <a href="/update_tech?id={{framework.id}}" >
+                <a href="/#" >
                   <button class="btn btn-info btn-block text-nowrap" type="button">
                     <i class="fa fa-edit fa-sm mr-1"></i>
                     {{'BUTTON_EDIT_TECH' | translate }}
@@ -101,12 +108,12 @@
             <div class="col-10">
               <a target="_blank" href="{{book.link}}">{{book.title}}</a>
             </div>
-            <div ng-if="isAdmin || verifyForFramework || user.name == book.userName || isOwner">
+            <div ng-if="isAdmin || verifyForFramework || user.name == book.user.name || isOwner">
               <div class="col d-flex justify-content-end align-items-end">
                 <button class="btn btn-link" onclick="openDeleteContentModal(book.contentId)" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
               </div>
             </div>
-            <div ng-if="user.name != 'anonymousUser' && book.userName!=user.name && !book.isReporter(user.name) && isEnable">
+            <div ng-if="user.name != 'anonymousUser' && book.user.name!=user.name && !book.isReporter(user.name) && isEnable">
               <div class="col d-flex justify-content-end align-items-end">
                 <button class="btn btn-link" onclick="getContentId(book.contentId)" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
               </div>
@@ -129,12 +136,12 @@
             <div class="col-10">
               <a target="_blank" href="{{course.link}}">{{course.title}}</a>
             </div>
-            <div ng-if="isAdmin || verifyForFramework || user.name == course.userName || isOwner">
+            <div ng-if="isAdmin || verifyForFramework || user.name == course.user.name || isOwner">
               <div class="col d-flex justify-content-end align-items-end">
                 <button class="btn btn-link" onclick="openDeleteContentModal(course.contentId)" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
               </div>
             </div>
-            <div ng-if="user.name != 'anonymousUser' && course.userName!=user.name && !course.isReporter(user.name) && isEnable">
+            <div ng-if="user.name != 'anonymousUser' && course.user.name!=user.name && !course.isReporter(user.name) && isEnable">
               <div class="col d-flex justify-content-end align-items-end">
                 <button class="btn btn-link" onclick="getContentId(course.contentId)" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
               </div>
@@ -157,12 +164,12 @@
               <a target="_blank" href="{{tutorial.link}}">{{tutorial.title}}</a>
             </div>
 
-            <div ng-if="isAdmin || verifyForFramework || user.name == tutorial.userName || isOwner">
+            <div ng-if="isAdmin || verifyForFramework || user.name == tutorial.user.name || isOwner">
               <div class="col d-flex justify-content-end align-items-end">
                 <button class="btn btn-link" onclick="openDeleteContentModal(tutorial.contentId)" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
               </div>
             </div>
-            <div ng-if="user.name != 'anonymousUser' && tutorial.userName!=user.name && !tutorial.isReporter(user.name) && isEnable">
+            <div ng-if="user.name != 'anonymousUser' && tutorial.user.name!=user.name && !tutorial.isReporter(user.name) && isEnable">
               <div class="col d-flex justify-content-end align-items-end">
                 <button class="btn btn-link" onclick="getContentId(tutorial.contentId)" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
               </div>
@@ -216,8 +223,8 @@
               <div ng-if="isEnable">
 
                 <button class="btn upVote btn-link" type="submit" ng-click="downVote(comment)">
-                  <i ng-if="comment.getUserAuthVote(user.name) > 0" class="fa fa-arrow-up arrow votedUp">{{comment.votesDown}}</i>
-                  <i ng-if="comment.getUserAuthVote(user.name) <= 0" class="fa fa-arrow-up arrow">{{comment.votesDown}}</i>
+                  <i ng-if="comment.getUserAuthVote(user.name) > 0" class="fa fa-arrow-down arrow votedDown">{{comment.votesDown}}</i>
+                  <i ng-if="comment.getUserAuthVote(user.name) <= 0" class="fa fa-arrow-down arrow">{{comment.votesDown}}</i>
                 </button>
               </div>
             </div>
@@ -231,21 +238,21 @@
         <div class="col">
           <div class="row">
             <div class="col secondary-font">
-              <a href="/users/{{comment.userName}}">
-                <div ng-if="comment.userName == framework.author.username">
+              <a href="/users/{{comment.user.name}}">
+                <div ng-if="comment.user.username == tech.author">
                   <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="{{'TECH_TOOLTIP_OWNER' | translate }}"></i>
                 </div>
-                <div ng-if="comment.userName != framework.author.username && comment.user.admin">
+                <div ng-if="comment.user.username != tech.author && comment.user.admin">
                   <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-admin" data-toggle="tooltip" title="{{'TECH_TOOLTIP_ADMIN' | translate }}"></i>
                 </div>
-                <div ng-if="comment.userName != framework.author.username && !comment.user.admin && isVerifyForFramework">
+                <div ng-if="comment.user.username != tech.author && !comment.user.admin && isVerifyForFramework">
                   <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="{{'TECH_TOOLTIP_MODERATOR' | translate }}"></i>
                 </div>
-                {{comment.userName}}
+                {{comment.user.username}}
               </a>
             </div>
             <div class="col third-font d-flex justify-content-flex-end">
-              {{comment.timestamp}}
+              {{comment.date}}
             </div>
           </div>
           <div class="row">
@@ -253,12 +260,12 @@
               {{comment.description}}
             </div>
 
-            <div ng-if="user.name != 'anonymousUser' && user.name != comment.userName && !comment.isReporter(user.name) && !isAdmin && !isOwner && isEnable">
+            <div ng-if="user.name != 'anonymousUser' && user.name != comment.user.username && !comment.isReporter(user.name) && !isAdmin && !isOwner && isEnable">
               <div class="col d-flex justify-content-end align-items-end">
                 <button class="btn btn-link" onclick="getCommentId(comment.commentId)" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
               </div>
             </div>
-            <div ng-if="isAdmin || isOwner || comment.userName == user.name">
+            <div ng-if="isAdmin || isOwner || comment.user.username == user.name">
                 <span class="col d-flex justify-content-end align-items-end">
                   <button class="btn btn-link" onclick="openDeleteCommentModal(comment.commentId)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                 </span>
@@ -302,10 +309,10 @@
                     <div class="vertical-divider margin-left">
                       <div class="padding-left">
                         <span class="secondary-font medium-font ">
-                          {{reply.userName}}
+                          {{reply.user.name}}
                         </span>
                         <span class="third-font">
-                          {{reply.timestamp}}
+                          {{reply.date}}
                         </span>
                       </div>
                     </div>
@@ -316,12 +323,12 @@
                         {{reply.description}}
                       </div>
                     </div>
-                    <div ng-if="isAdmin || isOwner || reply.userName == user.name">
+                    <div ng-if="isAdmin || isOwner || reply.user.name == user.name">
                       <span class="col d-flex justify-content-end align-items-end">
                         <button class="btn btn-link" onclick="openDeleteCommentModal(reply.commentId)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                       </span>
                     </div>
-                    <div ng-if="user.name != 'anonymousUser' && user.name != reply.userName && !reply.isReporter(user.name) && !isAdmin && !isOwner && isEnable">
+                    <div ng-if="user.name != 'anonymousUser' && user.name != reply.user.name && !reply.isReporter(user.name) && !isAdmin && !isOwner && isEnable">
                       <div class="col d-flex justify-content-end align-items-end">
                         <button class="btn btn-link" onclick="getCommentId(reply.commentId)" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
                       </div>
@@ -429,7 +436,7 @@
           <div class="card-body d-flex align-items-center justify-content-center">
             <div ng-if="competitor.picture != undefined" >
                 <div class="mini-logo d-flex align-items-center justify-content-center">
-                  <img src="/techs/{{competitor.category}}/{{competitor.id}}/image" alt="{{'TECH_PICTURE' | translate }}"/>
+                  <img ng-src="{{competitor.picture}}" alt="{{'TECH_PICTURE' | translate }}"/>
                 </div>
               </div>
               <div ng-if="competitor.picture == undefined">
@@ -682,4 +689,6 @@
 <!--    </div>-->
 <!--  </div>-->
 <!--</div>-->
+</div>
+
 </div>

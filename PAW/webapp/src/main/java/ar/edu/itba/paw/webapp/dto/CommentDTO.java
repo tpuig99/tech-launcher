@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Framework;
-import org.eclipse.persistence.internal.sessions.CommitOrderDependencyNode;
 
 import javax.ws.rs.core.UriInfo;
 import java.util.Date;
@@ -13,8 +11,8 @@ public class CommentDTO {
     private String description;
     private Date date;
     private SimpleUserDTO user;
-    private Long votes_up;
-    private Long votes_down;
+    private Long votesUp;
+    private Long votesDown;
     private Long referenceId;
     private List<CommentDTO> replies;
     private Long frameworkId;
@@ -27,8 +25,8 @@ public class CommentDTO {
         dto.date = comment.getTimestamp();
         dto.referenceId = comment.getReference();
         dto.user = SimpleUserDTO.fromUser(comment.getUser(), comment.getFramework(),uriInfo);
-        dto.votes_up = comment.getVotesUp();
-        dto.votes_down = comment.getVotesDown();
+        dto.votesUp = comment.getVotesUp();
+        dto.votesDown = comment.getVotesDown();
         if(comment.getReplies() != null)
             dto.replies = comment.getReplies().stream().map((Comment comment1) -> fromComment(comment1,uriInfo)).collect(Collectors.toList());
         dto.location = uriInfo.getBaseUriBuilder().path("/techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId()).build().toString();
@@ -66,20 +64,20 @@ public class CommentDTO {
         this.user = user;
     }
 
-    public Long getVotes_up() {
-        return votes_up;
+    public Long getVotesUp() {
+        return votesUp;
     }
 
-    public void setVotes_up(Long votes_up) {
-        this.votes_up = votes_up;
+    public void setVotesUp(Long votesUp) {
+        this.votesUp = votesUp;
     }
 
-    public Long getVotes_down() {
-        return votes_down;
+    public Long getVotesDown() {
+        return votesDown;
     }
 
-    public void setVotes_down(Long votes_down) {
-        this.votes_down = votes_down;
+    public void setVotesDown(Long votesDown) {
+        this.votesDown = votesDown;
     }
 
     public Long getReferenceId() {

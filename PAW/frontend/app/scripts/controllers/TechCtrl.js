@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend', 'services/techsService', 'services/sessionService'], function(frontend) {
 
-  frontend.controller('TechCtrl', function($scope, $location, $window, $routeParams, postService, $sessionStorage,Restangular, sessionService, $localStorage) {
+  frontend.controller('TechCtrl', function($scope, $location, $window, $routeParams, techsService, $sessionStorage,Restangular, sessionService, $localStorage) {
 
     $scope.isPresent = false;
 
@@ -17,89 +17,97 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       });
     }
 
+    techsService.getTech($routeParams.id).then(function (tech) {
+      $scope.tech = tech.data;
 
-    $scope.getTech = function() {
-      techsService.getTech($routeParams.id).then(function(response) {
-        $scope.tech = response.data;
+      techsService.getData($scope.tech.comments).then(function (comments) {
+        $scope.tech.comments = comments.data;
+        $scope.commentsPaging = comments.headers('link');
       });
-    };
 
-    $scope.getBibliography = function() {
-      techsService.getBibliography($routeParams.id).then(function(response) {
-        $scope.bibligraphy = response.data;
-        $scope.bibliographyPagingLinks = response.headers('link');
+      techsService.getData($scope.tech.books).then(function (books) {
+        $scope.tech.books = books.data;
+        $scope.booksPaging = books.headers('link');
       });
-    };
 
-    $scope.getTutorials = function() {
-      techsService.getTutorials($routeParams.id).then(function(response) {
-        $scope.tutorials = response.data;
-        $scope.tutorialsPagingLinks = response.headers('link');
+      techsService.getData($scope.tech.courses).then(function (courses) {
+        $scope.tech.courses = courses.data;
+        $scope.coursesPaging = courses.headers('link');
       });
-    };
 
-    $scope.getCourses = function() {
-      techsService.getCourses($routeParams.id).then(function(response) {
-        $scope.courses = response.data;
-        $scope.coursesPagingLinks = response.headers('link');
+      techsService.getData($scope.tech.tutorials).then(function (tutorials) {
+        $scope.tech.tutorials = tutorials.data;
+        $scope.tutorialsPaging = tutorials.headers('link');
       });
-    };
 
-    $scope.getComments = function() {
-      techsService.getComments($routeParams.id).then(function(response) {
-        $scope.comments = response.data;
-        $scope.commentsPagingLinks = response.headers('link');
-      });
-    };
+    });
 
-    $scope.getTech();
-    $scope.getBibliography();
-    $scope.getCourses();
-    $scope.getTutorials();
-    $scope.getComments();
+
+    $scope.setData = function(response,id) {
+      switch (id) {
+        case 'comments':
+          $scope.tech.comments = response.data;
+          $scope.commentsPaging = response.headers('link');
+          break;
+        case 'books':
+          $scope.tech.books = response.data;
+          $scope.booksPaging = response.headers('link');
+          break;
+        case 'courses':
+          $scope.tech.courses = response.data;
+          $scope.coursesPaging = response.headers('link');
+          break;
+        case 'tutorials':
+          $scope.tech.tutorials = response.data;
+          $scope.tutorialsPaging = response.headers('link');
+          break;
+        default:
+          break;
+      }
+    };
 
 
     $scope.redirect = function(url) {
       $location.path(url);
     };
 
-    $scope.deleteTech = function() {
-      techsService.deleteTech($scope.toDel).then(function() {
-        $('#deleteTechModal').modal('hide');
-        $location.path('/#/techs');
-      });
-    };
-
-    $scope.rate = function(stars) {
-      techsService.rate($scope.post.location, stars).then($scope.getTech());
-    };
-
-    $scope.upVoteComment = function(location) {
-      techsService.upVoteComment(location).then($scope.getComments());
-    };
-
-    $scope.downVoteComment = function(location) {
-      techsService.downVoteComment(location).then($scope.getComments());
-    };
-
-    $scope.commentTech = function(answer) {
-      techsService.commentTech($routeParams.id, answer).then(function () {
-        $scope.getPost();
-        $scope.getAnswers();
-      });
-    };
-
-    $scope.addContentTech = function(title, category, link) {
-      techsService.addContentTech($routeParams.id, title, category, link).then(function () {
-        $scope.getTech();
-        switch (category) {
-          case 'bibliography': $scope.getBibliography(); break;
-          case 'course': $scope.getCourses(); break;
-          case 'tutorial': $scope.getTutorials(); break;
-          default: break;
-        }
-      });
-    };
+    // $scope.deleteTech = function() {
+    //   techsService.deleteTech($scope.toDel).then(function() {
+    //     $('#deleteTechModal').modal('hide');
+    //     $location.path('/#/techs');
+    //   });
+    // };
+    //
+    // $scope.rateTech = function(stars) {
+    //   techsService.rateTech($scope.post.location, stars).then($scope.getTech());
+    // };
+    //
+    // $scope.upVoteComment = function(location) {
+    //   techsService.upVoteComment(location).then($scope.getComments());
+    // };
+    //
+    // $scope.downVoteComment = function(location) {
+    //   techsService.downVoteComment(location).then($scope.getComments());
+    // };
+    //
+    // $scope.commentTech = function(answer) {
+    //   techsService.commentTech($routeParams.id, answer).then(function () {
+    //     $scope.getPost();
+    //     $scope.getAnswers();
+    //   });
+    // };
+    //
+    // $scope.addContentTech = function(title, category, link) {
+    //   techsService.addContentTech($routeParams.id, title, category, link).then(function () {
+    //     $scope.getTech();
+    //     switch (category) {
+    //       case 'bibliography': $scope.getBibliography(); break;
+    //       case 'course': $scope.getCourses(); break;
+    //       case 'tutorial': $scope.getTutorials(); break;
+    //       default: break;
+    //     }
+    //   });
+    // };
 
     // $scope.setData = function(response) {
     //   $scope.answers = response.data;

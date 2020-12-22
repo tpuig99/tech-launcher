@@ -20,5 +20,15 @@ define(['frontend'], function(frontend) {
     this.getTech = function(id) {
       return Restangular.one('techs',id).get();
     };
+
+    this.getPicture = function(id) {
+      return Restangular.one('techs/' + id + '/image').get();
+    };
+
+    this.getData = function(url) {
+      return Restangular.one(url).get();
+    };
+
+
   });
 });
