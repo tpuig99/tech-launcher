@@ -40,6 +40,10 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         $scope.tutorialsPaging = tutorials.headers('link');
       });
 
+      techsService.getData($scope.tech.competitors).then(function (competitors) {
+        $scope.tech.competitors = competitors.data;
+      });
+
     });
 
 
@@ -60,6 +64,9 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         case 'tutorials':
           $scope.tech.tutorials = response.data;
           $scope.tutorialsPaging = response.headers('link');
+          break;
+        case 'competitors':
+          $scope.tech.competitors = response.data;
           break;
         default:
           break;

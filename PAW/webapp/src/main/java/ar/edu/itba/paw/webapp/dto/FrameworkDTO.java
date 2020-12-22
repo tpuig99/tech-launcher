@@ -3,7 +3,6 @@ package ar.edu.itba.paw.webapp.dto;
 import ar.edu.itba.paw.models.Framework;
 
 import javax.ws.rs.core.UriInfo;
-import java.util.Date;
 
 public class FrameworkDTO {
     private String name;
@@ -13,7 +12,7 @@ public class FrameworkDTO {
     private String author;
     private String authorLocation;
     private String type;
-    private Date date;
+    private String date;
     private Integer votesCant;
     private Double stars;
     private Integer commentsAmount;
@@ -23,6 +22,9 @@ public class FrameworkDTO {
     private String courses;
     private String location;
     private String picture;
+    private String relatedPosts;
+    private Boolean hasPicture;
+    private String competitors;
     private int loggedStars;
 
     public static FrameworkDTO fromFramework(Framework framework, UriInfo uriInfo) {
@@ -32,23 +34,27 @@ public class FrameworkDTO {
         dto.introduction = framework.getIntroduction();
         dto.category = framework.getCategory().name();
         dto.author = framework.getAuthor().getUsername();
-        dto.authorLocation = uriInfo.getBaseUriBuilder().path("users/"+framework.getAuthor().getId()).build().toString();
+        dto.authorLocation = "users/"+framework.getAuthor().getId();
         dto.type = framework.getType().name();
-        dto.date = framework.getPublishDate();
+        dto.date = framework.getPublishDate().toLocaleString();
         dto.votesCant = framework.getVotesCant();
         dto.stars = framework.getStars();
         dto.commentsAmount = framework.getCommentsAmount();
+        dto.hasPicture = framework.getPicture() != null;
         dto.picture = "techs/"+framework.getId()+"/image";
         dto.comments = "techs/"+framework.getId()+"/comment";
         dto.books = "techs/"+framework.getId()+"/content?type=book";
         dto.courses = "techs/"+framework.getId()+"/content?type=course";
         dto.tutorials = "techs/"+framework.getId()+"/content?type=tutorial";
+        dto.relatedPosts = "explore?toSearch="+framework.getName()+"&isPost=true";
+        dto.competitors = "techs/"+framework.getId()+"/competitors";
         return dto;
     }
 
     public static FrameworkDTO fromExtern(Framework framework,UriInfo uriInfo) {
         final FrameworkDTO dto = new FrameworkDTO();
         dto.name = framework.getName();
+        dto.hasPicture = framework.getPicture() != null;
         dto.picture = "techs/"+framework.getId()+"/image";
         dto.location = "techs/"+framework.getId();
         dto.stars = framework.getStars();
@@ -83,7 +89,7 @@ public class FrameworkDTO {
         return type;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -154,7 +160,7 @@ public class FrameworkDTO {
         this.authorLocation = authorLocation;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -188,6 +194,30 @@ public class FrameworkDTO {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public Boolean getHasPicture() {
+        return hasPicture;
+    }
+
+    public void setHasPicture(Boolean hasPicture) {
+        this.hasPicture = hasPicture;
+    }
+
+    public String getRelatedPosts() {
+        return relatedPosts;
+    }
+
+    public void setRelatedPosts(String relatedPosts) {
+        this.relatedPosts = relatedPosts;
+    }
+
+    public String getCompetitors() {
+        return competitors;
+    }
+
+    public void setCompetitors(String competitors) {
+        this.competitors = competitors;
     }
 
     public int getLoggedStars() {

@@ -115,6 +115,26 @@ public class FrameworkController {
         LOGGER.error("Tech {}: Requested and not found", id);
         return Response.status(Response.Status.NOT_FOUND).build();
     }
+
+    @GET
+    @Path("/{id}/competitors")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response techCompetitors(@PathParam("id") Long id) {
+        Optional<Framework> framework = fs.findById(id);
+        if (framework.isPresent()) {
+            LOGGER.info("Tech {}: Requested and found, retrieving data", id);
+            List<FrameworkDTO> competitors = fs.getCompetitors(framework.get()).stream().map((f) -> FrameworkDTO.fromExtern(f, uriInfo)).collect(Collectors.toList());
+
+            if (competitors.isEmpty()) {
+                return Response.noContent().build();
+            }
+
+            return Response.ok(new GenericEntity<List<FrameworkDTO>> (competitors){}).build();
+        }
+        LOGGER.error("Tech {}: Requested and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
     @GET
     @Path("/{id}/content")
     @Produces(value = {MediaType.APPLICATION_JSON,})

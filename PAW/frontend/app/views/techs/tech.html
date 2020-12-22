@@ -11,12 +11,12 @@
     <div class="row">
       <div class="col-2">
 
-        <div ng-if="tech.picture != undefined">
+        <div ng-if="tech.hasPicture">
           <div class="max-logo d-flex align-items-center justify-content-center">
             <img ng-src="{{tech.picture}}" alt="{{'TECH_PICTURE' | translate }}"/>
           </div>
         </div>
-        <div ng-if="tech.picture == undefined">
+        <div ng-if="!tech.hasPicture">
           <div class="max-logo d-flex align-items-center justify-content-center">
             <img src="../../images/tech_picture_default.png" alt="{{'TECH_PICTURE' | translate }}"/>
           </div>
@@ -27,16 +27,16 @@
         <div class="row">
           <div class="col">
             <span class="framework-title"><h2>{{tech.name}}</h2></span>
-            <div>{{'TECH_AUTHOR' | translate }}:&nbsp;<a href="#">{{tech.author}}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="{{'TOOLTIP_OWNER' | translate }}" ></i></div>
-            <div>{{'TECH_DATE' | translate }}: {{tech.date}}</div>
-            <div><a href="/search?toSearch={{tech.name}}&isPost=true">{{'TECH_SEE_POSTS_RELATED' | translate }}</a></div>
+            <div>{{'TECH_AUTHOR' | translate }}&nbsp;<a href="#/{{tech.authorLocation}}">{{tech.author}}</a><i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="{{'TOOLTIP_OWNER' | translate }}" ></i></div>
+            <div>{{'TECH_DATE' | translate }} {{tech.date}}</div>
+            <div><a href="#/{{tech.relatedPosts}}">{{'TECH_SEE_POSTS_RELATED' | translate }}</a></div>
 
             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="{{'TECH_ADD_TECH_CATEGORY' | translate }}">{{ "CATEGORY_" + tech.category | uppercase | translate}}</span>
             <span class="badge badge-pill secondary-badge" data-toggle="tooltip" title="{{'TECH_ADD_TECH_TYPE' | translate }}">{{ "TYPE_" + tech.type | uppercase | translate}}</span>
           </div>
           <div class="col d-flex align-items-center justify-content-center">
             <span class="fa fa-star color-star"></span>
-            <span> {{tech.stars}} | {{tech.votes_cant}}</span>
+            <span> {{tech.stars}} | {{tech.votesCant}} </span>
             <span class="fa fa-user"></span>
           </div>
           <div class="d-flex flex-column my-auto">
@@ -92,14 +92,14 @@
     </div>
   </div>
 
-  <div ng-if="books.length <= 0 && courses.length  <= 0 && tutorials.length <= 0">
+  <div ng-if="tech.books.length <= 0 && tech.courses.length  <= 0 && tech.tutorials.length <= 0">
     <div class="d-flex align-items-center justify-content-center">
       {{'TECH_CONTENT_NOT_AVAILABLE' | translate }}
     </div>
   </div>
 
   <!-- Bibliography -->
-  <div ng-if="books.length > 0 || books_page != 1">
+  <div ng-if="tech.books.length > 0">
     <div class="container no-overflow-x">
       <h4 class="subtitle margin-left">{{'TECH_CONTENT_BIBLIOGRAPHY' | translate }}</h4>
       <ul class="margin-bottom list-group margin-left list-group-flush description">
@@ -125,7 +125,7 @@
   </div>
 
   <!-- Courses -->
-  <div ng-if="courses.length > 0 || courses_page != 1">
+  <div ng-if="tech.courses.length > 0">
     <div class="container no-overflow-x">
       <h4 class="subtitle margin-left ">{{'TECH_CONTENT_COURSES' | translate }}</h4>
 
@@ -154,7 +154,7 @@
   </div>
 
   <!-- Tutorials -->
-  <div ng-if="tutorials.length > 0 || tutorials_page != 1">
+  <div ng-if="tech.tutorials.length > 0">
     <div class="container no-overflow-x">
       <h4 class="subtitle margin-left">{{'TECH_CONTENT_TUTORIALS' | translate }}</h4>
       <ul class="  margin-bottom list-group margin-left list-group-flush description">
@@ -183,7 +183,7 @@
 
 
   <!-- Comments -->
-  <div ng-if="comments.length > 0 || comments_page != 1">
+  <div ng-if="tech.comments.length > 0">
     <div class="container">
       <h4 class="title">{{'TECH_COMMENTS' | translate }}</h4>
     </div>
@@ -424,33 +424,34 @@
   </div>
 
   <!-- Competition Cards -->
-  <div ng-if="competitors.length > 0">
+  <div ng-if="tech.competitors.length > 0">
     <div class="container">
       <h4 class="title">{{'TECH_COMPETITION' | translate}}</h4>
     </div>
 
-
     <div class="container d-flex">
         <div ng-repeat="competitor in tech.competitors" class="card mini-card mx-3 mb-4">
-          <a href="/techs/{{competitor.category}}/{{competitor.id}}">
+          <a href="{{competitor.location}}">
           <div class="card-body d-flex align-items-center justify-content-center">
-            <div ng-if="competitor.picture != undefined" >
+            <div ng-if="competitor.hasPicture" >
                 <div class="mini-logo d-flex align-items-center justify-content-center">
                   <img ng-src="{{competitor.picture}}" alt="{{'TECH_PICTURE' | translate }}"/>
                 </div>
               </div>
-              <div ng-if="competitor.picture == undefined">
+              <div ng-if="!competitor.hasPicture">
                 <div class="mini-logo d-flex align-items-center justify-content-center">
                   <img src="../../images/tech_picture_default.png"  alt="{{'TECH_PICTURE' | translate }}"/>
                 </div>
               </div>
           </div>
-          <div class="card-footer text-dark">${competitor.name}</div>
+          <div class="card-footer text-dark">{{competitor.name}}</div>
           </a>
         </div>
     </div>
 
   </div>
+</div>
+</div>
 
 <!--  &lt;!&ndash; Modals &ndash;&gt;-->
 
