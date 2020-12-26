@@ -41,5 +41,17 @@ define(['frontend'], function(frontend) {
     this.getPosts = function() {
       return Restangular.one('posts').get();
     };
+
+    this.getTags = function () {
+      return Restangular.one('posts/tags').get();
+    }
+
+    this.addPost = (post, location) => {
+      return Restangular.one(location).customPOST(post);
+    }
+
+    this.editPost = (post, location) => {
+      return Restangular.one(location).customPUT(post);
+    }
 	});
 });

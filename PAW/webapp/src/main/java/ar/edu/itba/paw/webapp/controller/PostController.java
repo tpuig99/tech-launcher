@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Path("posts")
@@ -138,6 +135,23 @@ public class PostController {
         return post.getTypes().isEmpty() && post.getCategories().isEmpty() && post.getNames().isEmpty();
     }
 
+    @GET
+    @Path("/tags")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getTags() {
+        TagsDTO dto = new TagsDTO();
+        for( String tag : fs.getAllCategories() ) {
+            dto.addCategory(PostTagDTO.fromString(tag,PostTagType.tech_category.name()));
+        }
+        for( String tag : fs.getAllTypes() ) {
+            dto.addType(PostTagDTO.fromString(tag, PostTagType.tech_type.name()));
+        }
+        for( String tag : fs.getFrameworkNames() ) {
+            dto.addName(PostTagDTO.fromString(tag, PostTagType.tech_name.name()));
+        }
+        return Response.ok(dto).build();
+    }
+
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response addPost(final PostAddDTO form) {
@@ -172,27 +186,6 @@ public class PostController {
 
         LOGGER.error("Posts: Unauthorized user attempted to add a new Post");
         return Response.status(Response.Status.UNAUTHORIZED).build();
-    }
-
-    @GET
-    @Path("/{id}/edit")
-    @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response editPostPage(@PathParam("id") long id) {
-        Optional<Post> post = ps.findById(id);
-        if(post.isPresent()) {
-            LOGGER.info("Post {}: Requested and found, retrieving data", id);
-
-            final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            if( optionalUser.isPresent()){
-                User user = optionalUser.get();
-            }
-
-            EditPostDTO dto = EditPostDTO.fromPost(post.get(), pts.getAll());
-
-            return Response.ok(dto).build();
-        }
-        LOGGER.error("Post {}: Requested and not found", id);
-        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @PUT

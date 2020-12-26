@@ -28,6 +28,14 @@ define([], function() {
               templateUrl: '/views/session/recover_password.html',
               controller: 'RecoverPasswordCtrl'
             },
+            '/posts/add': {
+              templateUrl: "/views/posts/add_post.html",
+              controller: 'PostsCtrl'
+            },
+            '/posts/:id/edit': {
+              templateUrl: '/views/posts/edit_post.html',
+              controller: 'PostCtrl'
+            },
             '/posts/:id': {
                 templateUrl: '/views/posts/post.html',
                 controller: 'PostCtrl'

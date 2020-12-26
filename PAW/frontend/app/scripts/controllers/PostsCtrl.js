@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend','services/postService','services/sessionService'], function(frontend) {
 
-  frontend.controller('PostsCtrl', function($scope, sessionService, $window, $routeParams, $sessionStorage,postService, $localStorage) {
+  frontend.controller('PostsCtrl', function($scope, $location, sessionService, $window, $routeParams, $sessionStorage,postService, $localStorage) {
     $scope.isPresent = false;
     $scope.$parent.$watch('username',function () {
       var user = sessionService.getStorageUser();
@@ -51,6 +51,63 @@ define(['frontend','services/postService','services/sessionService'], function(f
     $scope.downVote = function(location) {
       postService.downVote(location).then($scope.getPosts());
     };
-  });
 
+
+
+    $scope.getTags = function () {
+       postService.getTags().then((tags => {
+         $scope.names = tags.data.names;
+         $scope.categories = tags.data.categories;
+         $scope.types = tags.data.types;
+       }));
+    }
+    $scope.getTags();
+    $scope.namesChosen = [];
+    $scope.categoriesChosen = [];
+    $scope.typesChosen = [];
+
+
+
+    $scope.addName = function (name) {
+      if( !$scope.namesChosen.includes(name) ) {
+        $scope.namesChosen.push(name);
+      } else {
+        _.remove($scope.namesChosen, (value) => {
+          return value === name
+        })
+      }
+    }
+
+    $scope.addCategory = function (category) {
+      if( !$scope.categoriesChosen.includes(category) ) {
+        $scope.categoriesChosen.push(category);
+      } else {
+        _.remove($scope.categoriesChosen, (value) => {
+          return value === category;
+        })
+      }
+    }
+
+    $scope.addType = function (type) {
+      if( !$scope.typesChosen.includes(type)) {
+        $scope.typesChosen.push(type);
+      } else {
+        _.remove($scope.typesChosen,(value) => {
+          return value === type;
+        });
+      }
+    }
+
+    $scope.addPost = (title, description) => {
+      let post = {
+        'title' : title.$modelValue,
+        'description' : description.$modelValue,
+        'names' : $scope.namesChosen,
+        'categories' : $scope.categoriesChosen,
+        'types' : $scope.typesChosen
+      };
+      postService.addPost(post, 'posts');
+      $location.path('/#/posts');
+    }
+  });
 });

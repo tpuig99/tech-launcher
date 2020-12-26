@@ -12,6 +12,13 @@ public class PostTagDTO {
         return dto;
     }
 
+    public static PostTagDTO fromString( String tag, String type ){
+        PostTagDTO dto = new PostTagDTO();
+        dto.tagName = tag;
+        dto.type = type;
+        return dto;
+    }
+
     public String getTagName() {
         return tagName;
     }

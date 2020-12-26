@@ -13,13 +13,43 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
           $scope.isAdmin = response.data.admin;
           $scope.isEnabled = response.data.enabled;
           $scope.isPresent = true;
+
         });
       }
-
+      $scope.getTags = function () {
+        postService.getTags().then((tags => {
+          $scope.names = tags.data.names;
+          $scope.categories = tags.data.categories;
+          $scope.types = tags.data.types;
+        }));
+      }
 
       $scope.getPost = function() {
           postService.getPost($routeParams.id).then(function(response) {
           $scope.post = response.data;
+          $scope.namesChosen = [];
+          $scope.categoriesChosen = [];
+          $scope.typesChosen = [];
+          $scope.getTags();
+          $scope.post.postTags.forEach( tag => {
+            if( tag.type === 'tech_name') {
+              $scope.namesChosen.push(tag.tagName);
+              _.remove($scope.names, (value) => {
+                return value === tag.tagName;
+              })
+            } else if ( tag.type === 'tech_category') {
+              $scope.categoriesChosen.push(tag.tagName);
+              _.remove($scope.categories, (value) => {
+                return value === tag.tagName;
+              })
+            } else {
+              $scope.typesChosen.push(tag.tagName);
+              _.remove($scope.types, (value) => {
+                return value === tag.tagName;
+              })
+            }
+          });
+
         });
       };
 
@@ -102,6 +132,48 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       });
 
 
-    });
 
+
+      $scope.addName = function (name) {
+        if( !$scope.namesChosen.includes(name) ) {
+          $scope.namesChosen.push(name);
+        } else {
+          _.remove($scope.namesChosen, (value) => {
+            return value === name
+          })
+        }
+      }
+
+      $scope.addCategory = function (category) {
+        if( !$scope.categoriesChosen.includes(category) ) {
+          $scope.categoriesChosen.push(category);
+        } else {
+          _.remove($scope.categoriesChosen, (value) => {
+            return value === category;
+          })
+        }
+      }
+
+      $scope.addType = function (type) {
+        if( !$scope.typesChosen.includes(type)) {
+          $scope.typesChosen.push(type);
+        } else {
+          _.remove($scope.typesChosen,(value) => {
+            return value === type;
+          });
+        }
+      }
+
+      $scope.editPost = (postTitleInput, postDescriptionInput) => {
+        let post = {
+          'title' : postTitleInput.$modelValue,
+          'description' : postDescriptionInput.$modelValue,
+          'names' : $scope.namesChosen,
+          'types' : $scope.typesChosen,
+          'categories' : $scope.categoriesChosen
+        }
+        postService.editPost(post, $scope.post.location);
+        $location.path('/#/posts/' + $routeParams.id);
+      }
+    });
 });
