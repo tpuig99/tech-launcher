@@ -52,9 +52,9 @@ define([], function() {
               templateUrl: '/views/techs/add_tech.html',
               controller: 'TechCtrl'
             },
-            '/techs/edit_tech/:id': {
+            '/techs/:id/edit_tech': {
               templateUrl: '/views/techs/edit_tech.html',
-              controller: 'TechCtrl'
+              controller: 'EditTechCtrl'
             },
             '/techs/:id': {
               templateUrl: '/views/techs/tech.html',

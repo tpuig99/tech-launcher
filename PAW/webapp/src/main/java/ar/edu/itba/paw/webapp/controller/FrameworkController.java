@@ -266,7 +266,14 @@ public class FrameworkController {
     @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response updateTech(@PathParam("id") long id,final FrameworkAddDTO form) throws IOException {
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    public Response updateTech(@PathParam("id") long id,
+                               @FormDataParam("name") final String name,
+                               @FormDataParam("category") final String category,
+                               @FormDataParam("type") final String type,
+                               @FormDataParam("description") final String description,
+                               @FormDataParam("introduction") final String introduction,
+                               @FormDataParam("picture") final byte[] picture) throws IOException {
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         final Optional<Framework> framework = fs.findById(id);
@@ -274,22 +281,22 @@ public class FrameworkController {
             if (user.isPresent()) {
                 if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
 
-                    FrameworkType type;
-                    FrameworkCategories category;
-                    if(form.getTechName() == null || form.getDescription() == null || form.getIntroduction() == null || form.getCategory() == null || form.getType() == null){
+                    FrameworkType fType;
+                    FrameworkCategories fCategory;
+                    if(name == null || description == null || introduction == null || category == null || type == null){
                         return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
                     }
                     try{
-                        type = FrameworkType.valueOf(form.getType());
-                        category = FrameworkCategories.valueOf(form.getCategory());
+                        fType = FrameworkType.valueOf(type);
+                        fCategory = FrameworkCategories.valueOf(category);
                     } catch (IllegalArgumentException e){
                         return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
                     }
-                    byte[] picture = form.getPicture();
-                    if(fs.getByName(form.getTechName()).isPresent() && !framework.get().getName().equals(form.getTechName())){
+
+                    if(fs.getByName(name).isPresent() && !framework.get().getName().equals(name)){
                         return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
                     }
-                    final Optional<Framework> updatedFramework = fs.update(id,form.getTechName(),category,form.getDescription(),form.getIntroduction(),type,picture);
+                    final Optional<Framework> updatedFramework = fs.update(id, name,fCategory, description, introduction,fType,picture);
 
                     if (updatedFramework.isPresent()) {
                         LOGGER.info("Tech {}: User {} updated the Tech", id, user.get().getId());
