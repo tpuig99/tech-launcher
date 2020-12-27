@@ -24,6 +24,10 @@ define([], function() {
 		WELCOME_CONTROLLER: 'A new and shiny controller has been made!',
 		WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
 
+    BUTTON_IGNORE: 'Ignorar',
+    BUTTON_PROMOTE: 'Promover',
+    BUTTON_DEMOTE: 'Sacar del cargo',
+    BUTTON_ACCEPT: 'Aceptar',
     BUTTON_DELETE_POST: 'Eliminar Pregunta',
     BUTTON_DELETE: 'Eliminar',
     BUTTON_EDIT_POST: 'Editar Pregunta',
@@ -46,6 +50,7 @@ define([], function() {
     BUTTON_APPLY: 'Aplicar',
     BUTTON_STOP: 'Parar',
     BUTTON_LOADING: 'Cargando',
+    BUTTON_GO_HOME: 'Ir al Home',
 
     SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
@@ -262,5 +267,28 @@ define([], function() {
     CONTENT_COURSE: 'Curso',
     CONTENT_TUTORIAL: 'Tutorial'
 
+    MOD_WREF: 'Tech Launcher - Página de Mod',
+    MOD_PENDING:'Aplicantes pendientes por Comentarios',
+    MOD_EMPTY_PENDING:'No hay moderadores pendientes a verificar. Vuelve más tarde!',
+    MOD_PENDING_APPLICANTS:'Aplicantes pendientes por Petición',
+    MOD_EMPTY_APPLICANTS: 'No hay moderadores pendientes para aprobar, Vuelve más tarde!',
+    MOD_TITLE: 'Mods',
+    MOD_NO_MODS: 'Aún no hay moderadores. Promueve a alguien!',
+    MOD_COMMENT_TITLE:'Comentarios Reportados',
+    MOD_COMMENT_EMPTY:'Aún no hay comentarios reportados..',
+    MOD_COMMENT_DESCRIPTION:'Comentario',
+    MOD_CONTENT_TITLE:'Contenidos Reportados',
+    MOD_CONTENT_EMPTY:'Aún no hay contenidos reportados..',
+    MOD_CONTENT_DESCRIPTION:'Link del Contenido',
+    MOD_REPORT_COMMENT_OWNER:'Autor del comentario',
+    MOD_REPORT_CONTENT_OWNER:'Dueño del contenido',
+    MOD_REPORT_TECH:'Tech',
+    MOD_REPORT_QUANTITY:'Cantidad de Reportes',
+    MOD_REPORT_DESCRIPTION:'Razón',
+    MOD_PROMOTE_DESCRIPTION:'Aquí puedes promover personas a moderador, o ignorar la petición',
+    MOD_DEMOTE_DESCRIPTION:'Aqúi puedes remover de moderador a personas',
+    MOD_SEE_REPORTS_DESCRIPTION:'Aquí puedes ver el contenido reportado y puedes lo remover, o ignorar',
+    MOD_SEE_REPORTS:'Reportes',
+    MOD_MODERATION_PANEL:'Panel de Moderación'
 	};
 });

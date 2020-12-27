@@ -52,13 +52,17 @@ define([], function() {
               templateUrl: '/views/techs/tech.html',
               controller: 'TechCtrl'
             },
-          '/users/:id': {
-            templateUrl: '/views/session/userProfile.html',
-            controller: 'userCtrl'
-          },
+            '/users/:id': {
+              templateUrl: '/views/session/userProfile.html',
+              controller: 'userCtrl'
+            },
             '/posts': {
               templateUrl: '/views/posts/posts.html',
               controller: 'PostsCtrl'
+            },
+            '/mod': {
+              templateUrl: '/views/session/mod_page.html',
+              controller: 'ModCtrl'
             }
             /* ===== yeoman hook ===== */
             /* Do not remove these commented lines! Needed for auto-generation */

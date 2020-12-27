@@ -22,6 +22,10 @@ define([], function () {
     WELCOME_CONTROLLER: 'A new and shiny controller has been made!',
     WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
 
+    BUTTON_IGNORE: 'Ignore',
+    BUTTON_PROMOTE: 'Promote',
+    BUTTON_DEMOTE: 'Demote',
+    BUTTON_ACCEPT: 'Accept',
     BUTTON_DELETE_POST: 'Delete Post',
     BUTTON_EDIT_POST: 'Edit Post',
     BUTTON_SEND_EMAIL: 'Send Email',
@@ -36,6 +40,7 @@ define([], function () {
     BUTTON_RESEND: 'Resend',
     BUTTON_STOP_BEING_MOD: 'Stop being a mod',
     BUTTON_LOADING: 'Loading',
+    BUTTON_GO_HOME: 'Go Home',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
@@ -102,6 +107,7 @@ define([], function () {
     LOGIN_EMAIL_SENT: 'Email Sent ! Please check your inbox in order to change your password',
     LOGIN_PASSWORD_CHANGED: 'Your password has been changed successfully !',
     LOGIN_GO_LOGIN: 'Go to Log In',
+    LOGIN_CHANGE_SUCCESS: 'Success!',
 
     REGISTER_UAE: 'We are sorry ! This user already exists. Try another username or email',
     REGISTER_WREF: 'Tech Launcher - Sign Up',
@@ -251,5 +257,29 @@ define([], function () {
     CONTENT_BOOK: 'Book',
     CONTENT_COURSE: 'Course',
     CONTENT_TUTORIAL: 'Tutorial',
+
+    MOD_WREF: 'Tech Launcher - Mod Page',
+    MOD_PENDING:'Pending Applicants by Comments',
+    MOD_EMPTY_PENDING:'There are no Moderators pending to verify. Come back later!',
+    MOD_PENDING_APPLICANTS:'Pending Applicants by Petition',
+    MOD_EMPTY_APPLICANTS: 'There are no Moderators waiting for approval. Come back later!',
+    MOD_TITLE: 'Mods',
+    MOD_NO_MODS: 'There are no Mods yet. Promote someone!',
+    MOD_COMMENT_TITLE:'Reported Comments',
+    MOD_COMMENT_EMPTY:'There are no reported comments yet..',
+    MOD_COMMENT_DESCRIPTION:'Comment',
+    MOD_CONTENT_TITLE:'Reported Contents',
+    MOD_CONTENT_EMPTY:'There are no reported contents yet..',
+    MOD_CONTENT_DESCRIPTION:'Content Link',
+    MOD_REPORT_COMMENT_OWNER:'Comment Author',
+    MOD_REPORT_CONTENT_OWNER:'Content Owner',
+    MOD_REPORT_TECH:'Tech',
+    MOD_REPORT_QUANTITY:'Reports Quantity',
+    MOD_REPORT_DESCRIPTION:'Reason',
+    MOD_PROMOTE_DESCRIPTION:'Here you can promote a person to moderator or ignore the petition',
+    MOD_DEMOTE_DESCRIPTION:'Here you can demote a person from being a moderator',
+    MOD_SEE_REPORTS_DESCRIPTION:'Here you can see the content that has been reported and delete it or ignore the petition',
+    MOD_SEE_REPORTS:'Reports',
+    MOD_MODERATION_PANEL:'Moderation Panel'
   };
 });
