@@ -22,6 +22,10 @@ define([], function () {
     WELCOME_CONTROLLER: 'A new and shiny controller has been made!',
     WELCOME_CONTROLLER_FOLLOWUP: 'This is the default view for your controlller. Change it (if you want, of course)!',
 
+    BUTTON_IGNORE: 'Ignore',
+    BUTTON_PROMOTE: 'Promote',
+    BUTTON_DEMOTE: 'Demote',
+    BUTTON_ACCEPT: 'Accept',
     BUTTON_DELETE_POST: 'Delete Post',
     BUTTON_EDIT_POST: 'Edit Post',
     BUTTON_SEND_EMAIL: 'Send Email',
@@ -232,6 +236,30 @@ define([], function () {
     TECH_APPLY_MESSAGE:'Want to help us? Be a moderator! You will be able to manage content in this tech',
     TECH_STOP_TITLE:'Stop being a moderator',
     TECH_STOP_MESSAGE:'Do you wanna stop being mod of this tech?',
-    TECH_COMPETITION: 'Related Techs'
+    TECH_COMPETITION: 'Related Techs',
+
+    MOD_WREF: 'Tech Launcher - Mod Page',
+    MOD_PENDING:'Pending Applicants by Comments',
+    MOD_EMPTY_PENDING:'There are no Moderators pending to verify. Come back later!',
+    MOD_PENDING_APPLICANTS:'Pending Applicants by Petition',
+    MOD_EMPTY_APPLICANTS: 'There are no Moderators waiting for approval. Come back later!',
+    MOD_TITLE: 'Mods',
+    MOD_NO_MODS: 'There are no Mods yet. Promote someone!',
+    MOD_COMMENT_TITLE:'Reported Comments',
+    MOD_COMMENT_EMPTY:'There are no reported comments yet..',
+    MOD_COMMENT_DESCRIPTION:'Comment',
+    MOD_CONTENT_TITLE:'Reported Contents',
+    MOD_CONTENT_EMPTY:'There are no reported contents yet..',
+    MOD_CONTENT_DESCRIPTION:'Content Link',
+    MOD_REPORT_COMMENT_OWNER:'Comment Author',
+    MOD_REPORT_CONTENT_OWNER:'Content Owner',
+    MOD_REPORT_TECH:'Tech',
+    MOD_REPORT_QUANTITY:'Reports Quantity',
+    MOD_REPORT_DESCRIPTION:'Reason',
+    MOD_PROMOTE_DESCRIPTION:'Here you can promote a person to moderator or ignore the petition',
+    MOD_DEMOTE_DESCRIPTION:'Here you can demote a person from being a moderator',
+    MOD_SEE_REPORTS_DESCRIPTION:'Here you can see the content that has been reported and delete it or ignore the petition',
+    MOD_SEE_REPORTS:'SEE REPORTS',
+    MOD_MODERATION_PANEL:'Moderation Panel'
   };
 });

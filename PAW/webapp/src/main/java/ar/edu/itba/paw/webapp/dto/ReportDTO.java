@@ -3,6 +3,8 @@ package ar.edu.itba.paw.webapp.dto;
 import ar.edu.itba.paw.models.ReportComment;
 import ar.edu.itba.paw.models.ReportContent;
 
+import javax.ws.rs.core.UriInfo;
+
 public class ReportDTO {
     private String reportDescription;
     private String commentDescription;
@@ -10,25 +12,37 @@ public class ReportDTO {
     private String frameworkName;
     private String owner;
     private String reported;
+    private String location;
 
-    public static ReportDTO fromReportComment (ReportComment reportComment) {
+    public static ReportDTO fromReportComment (ReportComment reportComment, UriInfo uriInfo) {
         ReportDTO dto = new ReportDTO();
         dto.reportDescription = reportComment.getReportDescription();
         dto.commentDescription = reportComment.getCommentDescription();
         dto.frameworkName = reportComment.getFrameworkName();
         dto.owner = reportComment.getUserNameOwner();
         dto.reported = reportComment.getUserReporterName();
+        dto.location = "mod/reports/comment/" + reportComment.getCommentId();
         return dto;
     }
 
-    public static ReportDTO fromReportContent (ReportContent reportContent) {
+    public static ReportDTO fromReportContent (ReportContent reportContent, UriInfo uriInfo) {
         ReportDTO dto = new ReportDTO();
         dto.reportDescription = reportContent.getReportDescription();
         dto.contentLink = reportContent.getLink();
         dto.frameworkName = reportContent.getFrameworkName();
         dto.owner = reportContent.getUserNameOwner();
         dto.reported = reportContent.getUserReporterName();
+        dto.location = "mod/reports/content/" + reportContent.getContentId();
         return dto;
+    }
+
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getReportDescription() {

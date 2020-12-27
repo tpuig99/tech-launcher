@@ -217,7 +217,7 @@ public class ModController {
             }
 
             if( commentList.size() > 0) {
-                reportDTOList = commentList.stream().map(ReportDTO::fromReportComment).collect(Collectors.toList());
+                reportDTOList = commentList.stream().map((reportedComment) -> ReportDTO.fromReportComment(reportedComment, uriInfo)).collect(Collectors.toList());
                 long pages = (long) Math.ceil(((double) reportsAmount) / PAGE_SIZE);
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOList){});
                 return addPaginationLinks(response, PAGE, rComPage, pages).build();
@@ -254,7 +254,7 @@ public class ModController {
             }
 
             if( contentList.size() > 0) {
-                reportDTOList = contentList.stream().map(ReportDTO::fromReportContent).collect(Collectors.toList());
+                reportDTOList = contentList.stream().map((reportedContent) -> ReportDTO.fromReportContent(reportedContent, uriInfo)).collect(Collectors.toList());
                 long pages = (long) Math.ceil(((double) reportsAmount) / PAGE_SIZE);
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOList){});
                 return addPaginationLinks(response, PAGE, rConPage, pages).build();
