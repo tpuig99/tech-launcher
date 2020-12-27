@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend','services/postService','services/sessionService'], function(frontend) {
 
-  frontend.controller('PostsCtrl', function($scope, $location, sessionService, $window, $routeParams, $sessionStorage,postService, $localStorage) {
+  frontend.controller('PostsCtrl', function($scope, $location, sessionService, $window, $routeParams, $sessionStorage,postService, $rootScope) {
     $scope.isPresent = false;
     $scope.$parent.$watch('username',function () {
       var user = sessionService.getStorageUser();
@@ -69,6 +69,13 @@ define(['frontend','services/postService','services/sessionService'], function(f
     $scope.tagsEmpty = () => {
       return _.isEmpty($scope.namesChosen) && _.isEmpty($scope.categoriesChosen) && _.isEmpty($scope.typesChosen)
     }
+
+    $scope.redirectToExplore = function(tag, type) {
+
+      $rootScope.tagToSearch = tag;
+      $rootScope.tagType = type;
+      $window.location.href = '/#/explore';
+    };
 
     $scope.addName = function (name) {
       if( !$scope.namesChosen.includes(name) ) {

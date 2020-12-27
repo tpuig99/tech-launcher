@@ -19,6 +19,7 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
         }
       });
 
+
       $scope.getTags = function () {
         postService.getTags().then((tags => {
           $scope.names = tags.data.names;
@@ -64,6 +65,9 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
        });
 
       };
+
+      $scope.getPost();
+      $scope.getAnswers();
 
       $scope.redirectToExplore = function(tag, type) {
 

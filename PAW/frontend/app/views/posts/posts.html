@@ -121,7 +121,7 @@
                     <div class="col-9 tags">
                       <div ng-repeat="tag in post.postTags">
                         <a ng-href="#/explore">
-                        <button class="badge badge-color ml-1" >
+                        <button class="badge badge-color ml-1" ng-click="redirectToExplore(tag.tagName, tag.type)">
                           <span>
                                   <div ng-if="tag.type == 'tech_name'">
                                       {{tag.tagName}}

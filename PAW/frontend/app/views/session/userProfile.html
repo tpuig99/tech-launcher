@@ -97,7 +97,7 @@
       </div>
       <div ng-if="profile.commentAmount != 0">
         <div class="container d-flex justify-content-center">
-          <div ng-repeat="comment in profile.comments track by $index">
+          <div ng-repeat="comment in profile.comments track by $index" class="profile-card">
             <div class="card emphasis emph-comment row mb-2">
               <div class="card-body row mt-1">
                 <div class="col-3 secondary-font">
@@ -128,7 +128,7 @@
       </div>
       <div ng-if="profile.contentAmount != 0">
         <div class="container d-flex justify-content-center">
-          <div ng-repeat="content in profile.content track by $index">
+          <div ng-repeat="content in profile.content track by $index" class="profile-card">
             <div class="card emphasis emph-content row mb-2">
               <div class="card-body row mt-1">
                 <div class="col-3 secondary-font">
@@ -162,8 +162,8 @@
       </div>
       <div ng-if="profile.votesAmount">
         <div class="container row equal justify-content-center">
-          <div ng-repeat="vote in profile.votes track by $index">
-            <div class="card col-4 d-flex emphasis emph-votes mb-2 mx-2">
+          <div ng-repeat="vote in profile.votes track by $index" class="votes-card">
+            <div class="card col d-flex emphasis emph-votes mb-2 mx-2">
               <div class="card-body row mt-1">
                 <div class="col secondary-font">
                   <a href="{{'#/'+vote.location}}">
