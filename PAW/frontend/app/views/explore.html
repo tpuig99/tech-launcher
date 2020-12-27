@@ -300,7 +300,9 @@
                 <div ng-repeat="post in posts.posts" class="card mb-3 post-card">
                   <div class="card-body">
                     <div class="row search-post-title ml-1">
-                      <a ng-href="post.location">{{post.postTitle}}</a>
+                      <a href="#/{{post.location}}">
+                        {{post.postTitle}}
+                      </a>
                     </div>
                     <div class="row search-post-description ml-1">{{post.postDescription}}</div>
                     <div class="row extra-info">

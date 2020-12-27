@@ -4,18 +4,21 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
     frontend.controller('PostCtrl', function($scope, $location, $window, $routeParams, postService, $sessionStorage,Restangular, sessionService, $localStorage) {
 
       $scope.isPresent = false;
-      var user = sessionService.getStorageUser();
+      $scope.$parent.$watch('username',function () {
+        var user = sessionService.getStorageUser();
+        if (user !== undefined) {
+          sessionService.getCurrentUser(user.location).then(function (response) {
+            $scope.username = response.data.username;
+            $scope.isMod = response.data.verify;
+            $scope.isAdmin = response.data.admin;
+            $scope.isEnabled = response.data.enabled;
+            $scope.isPresent = true;
+          });
+          $scope.getPost();
+          $scope.getAnswers();
+        }
+      });
 
-      if (user !== undefined) {
-        sessionService.getCurrentUser(user.location).then(function (response) {
-          $scope.username = response.data.username;
-          $scope.isMod = response.data.verify;
-          $scope.isAdmin = response.data.admin;
-          $scope.isEnabled = response.data.enabled;
-          $scope.isPresent = true;
-
-        });
-      }
       $scope.getTags = function () {
         postService.getTags().then((tags => {
           $scope.names = tags.data.names;
@@ -62,10 +65,6 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
 
       };
 
-      $scope.getPost();
-      $scope.getAnswers();
-
-
       $scope.redirect = function(url) {
         $location.path(url);
       };
@@ -88,10 +87,11 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
 
       $scope.deleteAnswer = function() {
         postService.deletePost($scope.toDel).then(function() {
+          $('#deleteCommentModal').modal('hide');
           $scope.getPost();
           $scope.getAnswers();
           $scope.cleanDel();
-          $('#deleteCommentModal').modal('hide');
+
         });
       };
 
@@ -113,6 +113,7 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
 
       $scope.commentPost = function(answer) {
         postService.commentPost($routeParams.id, answer).then(function () {
+          $("#commentBox").val('');
           $scope.getPost();
           $scope.getAnswers();
         });

@@ -27,43 +27,44 @@
     <div class="post-cards">
       <div class="row post-data">
         <!-- Up Vote - Down Vote section -->
-        <div class=" ml-4 col-1 net-votes">
-
-            <div ng-if="!isPresent">
-              <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+        <div class="col-1 net-votes">
+          <div ng-if="!isPresent">
+            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal"
+                                             data-target="#loginModal"></i></button>
+            <div>
+              <h4>{{post.votesUp - post.votesDown}}</h4>
+            </div>
+            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal"
+                                             data-target="#loginModal"></i></button>
+          </div>
+          <div ng-if="isPresent">
+            <div ng-if="!isEnabled">
+              <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal"
+                                               data-target="#confirmMailModal"></i></button>
               <div>
                 <h4>{{post.votesUp - post.votesDown}}</h4>
               </div>
-              <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
+              <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal"
+                                               data-target="#confirmMailModal"></i></button>
             </div>
-            <div ng-if="isPresent">
-
-                <div ng-if="!isEnabled">
-                  <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
-                  <div>
-                    <h4>{{post.votesUp - post.votesDown}}</h4>
-                  </div>
-                  <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+            <div ng-if="isEnabled" ng-cloak>
+              <div class="net-votes">
+                <button class="btn pt-0 pb-0" ng-click="upVote()" type="submit">
+                  <i ng-if="post.loggedVote > 0" ng-cloak class="fa fa-2x fa-arrow-up votedUp"></i>
+                  <i ng-if="post.loggedVote <= 0" ng-cloak class="fa fa-2x fa-arrow-up"></i>
+                </button>
+                <div>
+                  <h4>{{post.votesUp - post.votesDown}}</h4>
                 </div>
-                <div ng-if="isEnabled">
-                    <div class="net-votes">
-                      <button class="btn pt-0 pb-0" type="submit" ng-click="upVote()">
-                        <i ng-if="post.loggedVote > 0" class="fa fa-2x fa-arrow-up votedUp"></i>
-                        <i ng-if="post.loggedVote <= 0" class="fa fa-2x fa-arrow-up"></i>
-                      </button>
-                      <div>
-                        <h4>{{post.votesUp - post.votesDown}}</h4>
-                      </div>
-                    </div>
-
-                    <div class="net-votes">
-                      <button class="btn pt-0 pb-0" type="submit" ng-click="downVote()">
-                        <i ng-if="post.loggedVote < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
-                        <i ng-if="post.loggedVote >= 0" class="fa fa-2x fa-arrow-down"></i>
-                      </button>
-                    </div>
-                </div>
+              </div>
+              <div class="net-votes">
+                <button class="btn pt-0 pb-0" type="submit" ng-click="downVote()">
+                  <i ng-if="post.loggedVote < 0" ng-cloak class="fa fa-2x fa-arrow-down votedDown"></i>
+                  <i ng-if="post.loggedVote >= 0" ng-cloak class="fa fa-2x fa-arrow-down"></i>
+                </button>
+              </div>
             </div>
+          </div>
         </div>
         <div class="col-9">
           <div class="row post-description description-text">
@@ -122,14 +123,14 @@
                   <!-- Up Vote - Down Vote section -->
                   <div class="col-1 net-votes">
 
-                      <div ng-if="username == 'anonymousUser'">
-                        <button ng-if="username == 'anonymousUser'" class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
+                      <div ng-if="!isPresent">
+                        <button ng-if="!isPresent" class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
                         <div>
                           <h4>{{answer.votesUp - answer.votesDown}}</h4>
                         </div>
                         <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
                       </div>
-                      <div ng-if="username != 'anonymousUser'">
+                      <div ng-if="isPresent">
 
                         <div ng-if="!isEnabled">
                           <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
@@ -151,8 +152,8 @@
 
                           <div class="net-votes">
                             <button class="btn pt-0 pb-0" type="submit" ng-click="downVoteAnswer(answer.location)">
-                              <i ng-if="post.loggedVote <= 0" class="fa fa-2x fa-arrow-down votedDown"></i>
-                              <i ng-if="post.loggedVote > 0" class="fa fa-2x fa-arrow-down"></i>
+                              <i ng-if="post.loggedVote < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
+                              <i ng-if="post.loggedVote >= 0" class="fa fa-2x fa-arrow-down"></i>
                             </button>
                           </div>
                         </div>
@@ -205,7 +206,7 @@
 
           <form name="postCommentForm">
 
-            <textarea id="comment" name="commentInput" required ng-model="commentInput" class="form-control" aria-label="With textarea" rows="5" cols="100"></textarea>
+            <textarea id="commentBox" name="commentInput" required ng-model="commentInput" class="form-control" aria-label="With textarea" rows="5" cols="100"></textarea>
 
             <!-- Not enabled to post Comment -->
             <button ng-if=" postCommentForm.$valid && isPresent && !isEnabled" type="button"  class="btn btn-info margin-top d-flex justify-content-flex-end" data-toggle="modal" data-target="#confirmMailModal">{{'BUTTON_SUBMIT' | translate}}</button>
