@@ -31,7 +31,9 @@ require.config({
         ngstorage: '../../bower_components/ngstorage/ngStorage',
         'ng-file-upload': '../../bower_components/ng-file-upload/ng-file-upload',
         'ng-file-upload-shim': '../../bower_components/ng-file-upload-shim/ng-file-upload-shim',
-        modal: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal'
+        modal: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal',
+        'angular-bootstrap': '../../bower_components/angular-bootstrap/ui-bootstrap-tpls',
+        'angular-flot': '../../bower_components/angular-flot/angular-flot'
     },
     shim: {
         angular: {
