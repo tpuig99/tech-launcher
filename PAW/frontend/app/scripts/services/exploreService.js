@@ -5,11 +5,11 @@ define(['frontend'], function(frontend) {
 
 
     this.getTechs = function() {
-      return Restangular.one('explore').get();
+      return Restangular.one('explore/techs').get();
     };
 
     this.getPosts = function() {
-      return Restangular.one('explore?is_post=true').get();
+      return Restangular.one('explore/posts?is_post=true').get();
     };
 
     this.search = function(tab, toSearch, categories, types, starsLeft, starsRight,nameFlag, commentAmount, lastComment, lastUpdate, groupBy, orderBy) {
