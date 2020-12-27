@@ -98,5 +98,20 @@ define(['frontend'], function(frontend) {
         .customPOST(fd, '', undefined, {'Content-Type': undefined});
     };
 
+    this.editTech = function(id, edit) {
+      var fd = new FormData();
+      fd.append('name', edit.name);
+      fd.append('category', edit.category);
+      fd.append('type', edit.type);
+      fd.append('description', edit.description);
+      fd.append('introduction', edit.introduction);
+      if (edit.picture !== undefined) {
+        fd.append('picture', edit.picture);
+      }
+
+      return Restangular.one('techs/'+id).withHttpConfig({transformRequest: angular.identity})
+        .customPUT(fd, '', undefined, {'Content-Type': undefined});
+    };
+
   });
 });
