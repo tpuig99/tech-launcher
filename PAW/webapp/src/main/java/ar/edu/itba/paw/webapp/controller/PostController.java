@@ -89,6 +89,8 @@ public class PostController {
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             if( optionalUser.isPresent()){
                 User user = optionalUser.get();
+
+                optionalUser.ifPresent(value -> dto.setLoggedVote(value.getVoteForPost(id)));
             }
 
             return Response.ok(dto).build();
