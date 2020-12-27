@@ -19,15 +19,31 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           $scope.isEnable = response.data.enabled;
           $scope.allowMod = response.data.allowedModeration;
           $scope.isPresent = true;
-          $scope.userVerifications = response.data.verifications;
-          console.log($scope.userVerifications);
+          $scope.userVerifications = response.data.applications;
+
+          if ($scope.userVerifications !== undefined && $scope.userVerifications.length > 0) {
+            let verification;
+            for (verification of $scope.userVerifications) {
+              console.log(verification);
+              if (verification.frameworkName === $scope.tech.name) {
+                if (!verification.pending) {
+                  $scope.isVerify = true;
+                  $scope.verifyPending = false;
+                } else {
+                  $scope.isVerify = false;
+                  $scope.verifyPending = true;
+                }
+              }
+
+            }
+          }
         });
       }
     }
 
-    $scope.getUser();
-
     $scope.getTech = function() {
+
+      $scope.getUser();
 
       techsService.getTech($routeParams.id).then(function (tech) {
         $scope.tech = tech.data;
@@ -36,7 +52,6 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           $scope.isOwner = true;
         }
 
-        console.log("En tech:" + $scope.userVerifications);
         if ($scope.userVerifications !== undefined && $scope.userVerifications.length > 0) {
           let verification;
           for (verification of $scope.userVerifications) {

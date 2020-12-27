@@ -13,6 +13,7 @@ public class UserDTO {
     private String password;
     private String description;
     private List<VerifyUserDTO> verifications;
+    private List<VerifyUserDTO> applications;
     private Boolean enabled;
     private Boolean allowedModeration;
     private Boolean admin;
@@ -36,9 +37,12 @@ public class UserDTO {
         dto.description = user.getDescription();
         dto.mail = user.getMail();
         dto.verify = false;
-        if (user.getApplications() != null && !user.getApplications().isEmpty()) {
-            dto.verifications = user.getApplications().stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());
+        if (user.getVerifications() != null && !user.getVerifications().isEmpty()) {
+            dto.verifications = user.getVerifications().stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());
             dto.verify = true;
+        }
+        if (user.getApplications() != null && !user.getApplications().isEmpty()) {
+            dto.applications = user.getApplications().stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());
         }
         dto.enabled = user.isEnable();
         dto.allowedModeration = user.isAllowMod();
@@ -224,5 +228,13 @@ public class UserDTO {
 
     public void setModLocation(String modLocation) {
         this.modLocation = modLocation;
+    }
+
+    public List<VerifyUserDTO> getApplications() {
+        return applications;
+    }
+
+    public void setApplications(List<VerifyUserDTO> applications) {
+        this.applications = applications;
     }
 }
