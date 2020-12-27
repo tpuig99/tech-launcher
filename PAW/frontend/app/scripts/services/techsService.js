@@ -81,5 +81,22 @@ define(['frontend'], function(frontend) {
       return Restangular.all('techs/'+id+'/stars').post(vote);
     }
 
+    this.addTech = function(add) {
+      return Restangular.all('techs').post(add);
+    };
+
+    this.addTech = function(add) {
+      var fd = new FormData();
+      fd.append('name', add.name);
+      fd.append('category', add.category);
+      fd.append('type', add.type);
+      fd.append('description', add.description);
+      fd.append('introduction', add.introduction);
+      fd.append('picture', add.picture);
+
+      return Restangular.one('techs/').withHttpConfig({transformRequest: angular.identity})
+        .customPOST(fd, '', undefined, {'Content-Type': undefined});
+    };
+
   });
 });

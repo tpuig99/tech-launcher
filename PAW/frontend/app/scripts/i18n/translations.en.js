@@ -282,6 +282,17 @@ define([], function () {
     MOD_DEMOTE_DESCRIPTION:'Here you can demote a person from being a moderator',
     MOD_SEE_REPORTS_DESCRIPTION:'Here you can see the content that has been reported and delete it or ignore the petition',
     MOD_SEE_REPORTS:'Reports',
-    MOD_MODERATION_PANEL:'Moderation Panel'
+    MOD_MODERATION_PANEL:'Moderation Panel',
+
+    ADD_TECH: 'Add Tech',
+    ADD_TECH_NAME: 'Name:',
+    ADD_TECH_NAME_PLACEHOLDER: 'Select the name of the Tech',
+    ADD_TECH_CATEGORY: 'Category:',
+    ADD_TECH_TYPE: 'Type:',
+    ADD_TECH_DESCRIPTION: 'Description:',
+    ADD_TECH_DESCRIPTION_PLACEHOLDER: 'Select the description for this Tech',
+    ADD_TECH_INTRODUCTION: 'Introduction:',
+    ADD_TECH_INTRODUCTION_PLACEHOLDER: 'Select the introduction for this Tech',
+    ADD_TECH_PICTURE: 'Picture:',
   };
 });

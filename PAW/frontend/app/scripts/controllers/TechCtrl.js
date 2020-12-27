@@ -205,6 +205,26 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       return false;
     }
 
+    techsService.getCategories().then(function (cats) {
+      $scope.categories = cats.data;
+    });
+
+    techsService.getTypes().then(function (cats) {
+      $scope.types = cats.data;
+    });
+
+    $scope.setPic = function(file) {
+      $scope.add.picture = file;
+    };
+
+    $scope.addTech = function () {
+      techsService.addTech($scope.add).then(function (response) {
+        if (response.status === 201) {
+          $location.path('/#/techs');
+        }
+      });
+    };
+
     //
     // $scope.rateTech = function(stars) {
     //   techsService.rateTech($scope.post.location, stars).then($scope.getTech());

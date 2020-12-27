@@ -291,6 +291,17 @@ define([], function() {
     MOD_DEMOTE_DESCRIPTION:'Aqúi puedes remover de moderador a personas',
     MOD_SEE_REPORTS_DESCRIPTION:'Aquí puedes ver el contenido reportado y puedes lo remover, o ignorar',
     MOD_SEE_REPORTS:'Reportes',
-    MOD_MODERATION_PANEL:'Panel de Moderación'
+    MOD_MODERATION_PANEL:'Panel de Moderación',
+
+    ADD_TECH: 'Añadir Tech',
+    ADD_TECH_NAME: 'Nombre:',
+    ADD_TECH_NAME_PLACEHOLDER: 'Selecciona el nombre de la Tech',
+    ADD_TECH_CATEGORY: 'Categoría:',
+    ADD_TECH_TYPE: 'Tipo:',
+    ADD_TECH_DESCRIPTION: 'Descripción:',
+    ADD_TECH_DESCRIPTION_PLACEHOLDER: 'Selecciona la descripción de la Tech',
+    ADD_TECH_INTRODUCTION: 'Introducción:',
+    ADD_TECH_INTRODUCTION_PLACEHOLDER: 'Selecciona la introducción de la Tech',
+    ADD_TECH_PICTURE: 'Imagen:',
 	};
 });

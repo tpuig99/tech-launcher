@@ -48,6 +48,14 @@ define([], function() {
               templateUrl: '/views/techs/techs_cats.html',
               controller: 'TechsCatCtrl'
             },
+            '/techs/add_tech': {
+              templateUrl: '/views/techs/add_tech.html',
+              controller: 'TechCtrl'
+            },
+            '/techs/edit_tech/:id': {
+              templateUrl: '/views/techs/edit_tech.html',
+              controller: 'TechCtrl'
+            },
             '/techs/:id': {
               templateUrl: '/views/techs/tech.html',
               controller: 'TechCtrl'

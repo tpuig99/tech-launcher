@@ -20,6 +20,11 @@ define(['frontend','services/techsService','services/sessionService'], function(
     techsService.getCategories().then(function (cats) {
       $scope.categories = cats.data;
     });
+
+    techsService.getTypes().then(function (cats) {
+      $scope.types = cats.data;
+    });
+
     $scope.getInfo = function() {
       techsService.getHomeInfo().then(function (techs) {
         $scope.home = techs.data;

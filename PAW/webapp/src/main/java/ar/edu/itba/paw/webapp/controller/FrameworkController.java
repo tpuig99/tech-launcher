@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -214,26 +215,34 @@ public class FrameworkController {
 
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response createTech( final FrameworkAddDTO form) throws IOException {
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    public Response createTech(
+            @FormDataParam("name") final String name,
+            @FormDataParam("category") final String category,
+            @FormDataParam("type") final String type,
+            @FormDataParam("description") final String description,
+            @FormDataParam("introduction") final String introduction,
+            @FormDataParam("picture") final byte[] picture
+    ) throws IOException {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if( user.isPresent()){
             if(user.get().isAdmin() || user.get().isVerify()) {
-                FrameworkType type;
-                FrameworkCategories category;
-                if(form.getTechName() == null || form.getDescription() == null || form.getIntroduction() == null || form.getPicture() == null || form.getCategory() == null || form.getType() == null){
+                FrameworkType fType;
+                FrameworkCategories fCategory;
+                if(name == null || description == null || introduction == null || picture == null || category == null || type == null){
                     return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
                 }
                 try{
-                    type = FrameworkType.valueOf(form.getType());
-                    category = FrameworkCategories.valueOf(form.getCategory());
+                    fType = FrameworkType.valueOf(type);
+                    fCategory = FrameworkCategories.valueOf(category);
                 } catch (IllegalArgumentException e){
                     return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
                 }
-                byte[] picture = form.getPicture();
-                if(fs.getByName(form.getTechName()).isPresent()){
+
+                if(fs.getByName(name).isPresent()){
                     return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
                 }
-                Optional<Framework> framework = fs.create(form.getTechName(), category, form.getDescription(), form.getIntroduction(), type, user.get().getId(), picture);
+                Optional<Framework> framework = fs.create(name, fCategory, description, introduction, fType, user.get().getId(), picture);
 
                 if (framework.isPresent()) {
                     LOGGER.info("Techs: User {} added a new Tech with id: {}", user.get().getId(), framework.get().getId());
