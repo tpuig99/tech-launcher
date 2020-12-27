@@ -265,7 +265,7 @@ define([], function() {
 
     CONTENT_BOOK: 'Libro',
     CONTENT_COURSE: 'Curso',
-    CONTENT_TUTORIAL: 'Tutorial'
+    CONTENT_TUTORIAL: 'Tutorial',
 
     MOD_WREF: 'Tech Launcher - Página de Mod',
     MOD_PENDING:'Aplicantes pendientes por Comentarios',
