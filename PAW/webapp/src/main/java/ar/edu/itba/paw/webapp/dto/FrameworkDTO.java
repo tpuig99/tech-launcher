@@ -41,6 +41,7 @@ public class FrameworkDTO {
         dto.stars = framework.getStars();
         dto.commentsAmount = framework.getCommentsAmount();
         dto.hasPicture = framework.getPicture() != null;
+        dto.location = "techs/"+framework.getId();
         dto.picture = "techs/"+framework.getId()+"/image";
         dto.comments = "techs/"+framework.getId()+"/comment";
         dto.books = "techs/"+framework.getId()+"/content?type=book";

@@ -228,10 +228,28 @@ define([], function () {
     TECH_INTERACTIONS_LEAVE_COMMENT: 'Leave a Comment',
     TECH_COMMENT_PLACEHOLDER: 'Leave a comment here!',
     TECH_INTERACTIONS_RATING: 'Rate this Tech',
-    TECH_APPLY_TITLE:'Become a Moderator',
-    TECH_APPLY_MESSAGE:'Want to help us? Be a moderator! You will be able to manage content in this tech',
-    TECH_STOP_TITLE:'Stop being a moderator',
-    TECH_STOP_MESSAGE:'Do you wanna stop being mod of this tech?',
-    TECH_COMPETITION: 'Related Techs'
+    TECH_APPLY_TITLE: 'Become a Moderator',
+    TECH_APPLY_MESSAGE: 'Want to help us? Be a moderator! You will be able to manage content in this tech',
+    TECH_STOP_TITLE: 'Stop being a moderator',
+    TECH_STOP_MESSAGE: 'Do you wanna stop being mod of this tech?',
+    TECH_COMPETITION: 'Related Techs',
+    TECH_DELETE: 'Delete Tech',
+    TECH_DELETE_MESSAGE: 'Are you sure you want to delete this Tech?',
+    TECH_CONTENT_DELETE: 'Content Delete',
+    TECH_CONTENT_DELETE_MESSAGE: 'Are you sure yoy want to delete this Content?',
+    TECH_REPORT_CONTENT: 'Report Content',
+    TECH_REPORT_COMMENT: 'Report Comment',
+    TECH_REPORT_DESCRIPTION: 'Why should it be deleted?',
+
+    ADD_CONTENT: 'Add Content',
+    ADD_CONTENT_TITLE: 'Content Title',
+    ADD_CONTENT_TITLE_PLACEHOLDER: 'Choose a title',
+    ADD_CONTENT_TYPE: 'Content Type',
+    ADD_CONTENT_LINK: 'Content Link',
+    ADD_CONTENT_LINK_PLACEHOLDER: 'Choose the link for the content',
+
+    CONTENT_BOOK: 'Book',
+    CONTENT_COURSE: 'Course',
+    CONTENT_TUTORIAL: 'Tutorial',
   };
 });

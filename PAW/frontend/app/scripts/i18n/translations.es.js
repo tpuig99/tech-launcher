@@ -238,10 +238,29 @@ define([], function() {
     TECH_INTERACTIONS_LEAVE_COMMENT: 'Dejar un Comentario',
     TECH_COMMENT_PLACEHOLDER: '¡Deja un comentario aquí!',
     TECH_INTERACTIONS_RATING: 'Puntuar esta Tech',
-    TECH_APPLY_TITLE:'Ser un Moderador',
-    TECH_APPLY_MESSAGE:'¿Quieres ayudarnos? Vuélvete un Moderador. Podrás administrar contenido en esta Tech. ',
-    TECH_STOP_TITLE:'Dejar de ser un Moderador',
-    TECH_STOP_MESSAGE:'¿Quieres dejar de ser un Moderador?',
-    TECH_COMPETITION: 'Techs Relacionadas'
+    TECH_APPLY_TITLE: 'Ser un Moderador',
+    TECH_APPLY_MESSAGE: '¿Quieres ayudarnos? Vuélvete un Moderador. Podrás administrar contenido en esta Tech. ',
+    TECH_STOP_TITLE: 'Dejar de ser un Moderador',
+    TECH_STOP_MESSAGE: '¿Quieres dejar de ser un Moderador?',
+    TECH_COMPETITION: 'Techs Relacionadas',
+    TECH_DELETE: 'Borrar Tech',
+    TECH_DELETE_MESSAGE: '¿Estás seguro que quieres borrar esta Tech?',
+    TECH_CONTENT_DELETE: 'Borrar Contenido',
+    TECH_CONTENT_DELETE_MESSAGE: '¿Estás seguro que quieres borrar este Contenido?',
+    TECH_REPORT_CONTENT: 'Reportar Contenido',
+    TECH_REPORT_COMMENT: 'Reportar Comentario',
+    TECH_REPORT_DESCRIPTION: '¿Por qué debería ser eliminado?',
+
+    ADD_CONTENT: 'Añadir Contenido',
+    ADD_CONTENT_TITLE: 'Título del Contenido',
+    ADD_CONTENT_TITLE_PLACEHOLDER: 'Elija un título',
+    ADD_CONTENT_TYPE: 'Tipo de Contenido',
+    ADD_CONTENT_LINK: 'Link del Contenido',
+    ADD_CONTENT_LINK_PLACEHOLDER: 'Seleccione el título del contenido',
+
+    CONTENT_BOOK: 'Libro',
+    CONTENT_COURSE: 'Curso',
+    CONTENT_TUTORIAL: 'Tutorial'
+
 	};
 });

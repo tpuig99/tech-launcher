@@ -17,7 +17,9 @@ public class CommentDTO {
     private List<CommentDTO> replies;
     private Long frameworkId;
     private String location;
+    private String reportLocation;
     private String techName;
+    private List<ReportDTO> reports;
 
     public static CommentDTO fromComment(Comment comment, UriInfo uriInfo) {
         final CommentDTO dto = new CommentDTO();
@@ -29,14 +31,18 @@ public class CommentDTO {
         dto.votesDown = comment.getVotesDown();
         if(comment.getReplies() != null)
             dto.replies = comment.getReplies().stream().map((Comment comment1) -> fromComment(comment1,uriInfo)).collect(Collectors.toList());
-        dto.location = uriInfo.getBaseUriBuilder().path("/techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId()).build().toString();
+        dto.location = "techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId();
+        dto.reportLocation = dto.location + "/report";
+        if (comment.getReports() != null) {
+            dto.reports = comment.getReports().stream().map(ReportDTO::fromReportComment).collect(Collectors.toList());
+        }
         return dto;
     }
     public static CommentDTO fromProfile(Comment comment){
         final CommentDTO dto = new CommentDTO();
         dto.description = comment.getDescription();
         dto.date = comment.getTimestamp();
-        dto.location = "/techs/"+comment.getFrameworkId();
+        dto.location = "techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId();
         dto.techName = comment.getFrameworkName();
         return dto;
     }
@@ -117,5 +123,21 @@ public class CommentDTO {
 
     public void setTechName(String techName) {
         this.techName = techName;
+    }
+
+    public List<ReportDTO> getReports() {
+        return reports;
+    }
+
+    public void setReports(List<ReportDTO> reports) {
+        this.reports = reports;
+    }
+
+    public String getReportLocation() {
+        return reportLocation;
+    }
+
+    public void setReportLocation(String reportLocation) {
+        this.reportLocation = reportLocation;
     }
 }

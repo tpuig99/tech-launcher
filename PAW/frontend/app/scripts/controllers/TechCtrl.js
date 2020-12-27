@@ -4,6 +4,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
   frontend.controller('TechCtrl', function($scope, $location, $window, $routeParams, techsService, $sessionStorage,Restangular, sessionService, $localStorage) {
 
     $scope.isPresent = false;
+    $scope.isVerify = false;
+    $scope.isOwner = false;
 
     var user = sessionService.getStorageUser();
 
@@ -12,40 +14,59 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         $scope.username = response.data.username;
         $scope.isMod = response.data.verify;
         $scope.isAdmin = response.data.admin;
-        $scope.isEnabled = response.data.enabled;
+        $scope.isEnable = response.data.enabled;
         $scope.isPresent = true;
+        $scope.userVerifications = response.data.verifications;
       });
     }
 
-    techsService.getTech($routeParams.id).then(function (tech) {
-      $scope.tech = tech.data;
+    $scope.getTech = function() {
 
-      techsService.getData($scope.tech.comments).then(function (comments) {
-        $scope.tech.comments = comments.data;
-        $scope.commentsPaging = comments.headers('link');
+      techsService.getTech($routeParams.id).then(function (tech) {
+        $scope.tech = tech.data;
+
+        if ($scope.tech.author === $scope.username) {
+          $scope.isOwner = true;
+        }
+
+        if ($scope.userVerifications !== undefined && $scope.userVerifications.length > 0) {
+          let verification;
+          for (verification of $scope.userVerifications) {
+            console.log("verification:" + verification);
+            if (!verification.pending && verification.frameworkName === $scope.tech.name) {
+              $scope.isVerify = true;
+            }
+          }
+        }
+
+        techsService.getData($scope.tech.comments).then(function (comments) {
+          $scope.tech.comments = comments.data;
+          $scope.commentsPaging = comments.headers('link');
+        });
+
+        techsService.getData($scope.tech.books).then(function (books) {
+          $scope.tech.books = books.data;
+          $scope.booksPaging = books.headers('link');
+        });
+
+        techsService.getData($scope.tech.courses).then(function (courses) {
+          $scope.tech.courses = courses.data;
+          $scope.coursesPaging = courses.headers('link');
+        });
+
+        techsService.getData($scope.tech.tutorials).then(function (tutorials) {
+          $scope.tech.tutorials = tutorials.data;
+          $scope.tutorialsPaging = tutorials.headers('link');
+        });
+
+        techsService.getData($scope.tech.competitors).then(function (competitors) {
+          $scope.tech.competitors = competitors.data;
+        });
+
       });
+    };
 
-      techsService.getData($scope.tech.books).then(function (books) {
-        $scope.tech.books = books.data;
-        $scope.booksPaging = books.headers('link');
-      });
-
-      techsService.getData($scope.tech.courses).then(function (courses) {
-        $scope.tech.courses = courses.data;
-        $scope.coursesPaging = courses.headers('link');
-      });
-
-      techsService.getData($scope.tech.tutorials).then(function (tutorials) {
-        $scope.tech.tutorials = tutorials.data;
-        $scope.tutorialsPaging = tutorials.headers('link');
-      });
-
-      techsService.getData($scope.tech.competitors).then(function (competitors) {
-        $scope.tech.competitors = competitors.data;
-      });
-
-    });
-
+    $scope.getTech();
 
     $scope.setData = function(response,id) {
       switch (id) {
@@ -78,12 +99,84 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       $location.path(url);
     };
 
-    // $scope.deleteTech = function() {
-    //   techsService.deleteTech($scope.toDel).then(function() {
-    //     $('#deleteTechModal').modal('hide');
-    //     $location.path('/#/techs');
-    //   });
-    // };
+    $scope.isReporter = function (data, username) {
+      let report;
+      for (report of data.reports) {
+        if (report.reported === username) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    $scope.logAll = function (p1, p2, p3, p4) {
+      console.log("p1: " + p1 + "   p2: " + p2 + "     p3: " + p3 + "    p4: "+ p4);
+    }
+
+    $scope.setDel = function (url) {
+      $scope.toDel = url;
+    };
+
+    $scope.cleanDel = function () {
+      $scope.toDel = undefined;
+    };
+
+    $scope.setReport = function (url) {
+      $scope.toReport = url;
+    };
+
+    $scope.cleanReport = function () {
+      $scope.toReport = undefined;
+    };
+
+    $scope.deleteTech = function() {
+      $('#deleteTechModal').modal('hide');
+      techsService.deleteData($scope.toDel).then(function() {
+        $location.path('/#/techs');
+      });
+    };
+
+    $scope.deleteContent = function() {
+      techsService.deleteData($scope.toDel).then(function() {
+        $scope.getTech();
+        $('#deleteContentModal').modal('hide');
+      });
+    };
+
+    $scope.deleteComment = function() {
+      techsService.deleteData($scope.toDel).then(function() {
+        $scope.getTech();
+        $('#deleteCommentModal').modal('hide');
+      });
+    };
+
+    $scope.addContent = function(title, type, link) {
+      techsService.addContent($routeParams.id, title, type, link).then(function () {
+        $scope.getTech();
+        $('#addContentModal').modal('hide');
+      });
+    }
+
+    $scope.addComment = function(input) {
+      techsService.addComment($routeParams.id, input).then(function () {
+        $scope.getTech();
+      });
+    }
+
+    $scope.reportContent = function(description) {
+      techsService.report($scope.toReport, description).then(function () {
+        $scope.getTech();
+        $('#reportContentModal').modal('hide');
+      })
+    }
+
+    $scope.reportComment = function(url, description) {
+      techsService.report($scope.toReport, description).then(function () {
+        $scope.getTech();
+        $('#reportCommentModal').modal('hide');
+      })
+    }
+
     //
     // $scope.rateTech = function(stars) {
     //   techsService.rateTech($scope.post.location, stars).then($scope.getTech());

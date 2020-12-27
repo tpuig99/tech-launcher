@@ -100,4 +100,58 @@ define(['angular'], function(angular) {
     };
   });
 
+  mod.directive('deleteContentModal', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        del: '=',
+        clean: '='
+      },
+      templateUrl: '../../views/components/delete_content_modal.html'
+    };
+  });
+
+  mod.directive('deleteTechModal', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        del: '=',
+        clean: '='
+      },
+      templateUrl: '../../views/components/delete_tech_modal.html'
+    };
+  });
+
+  mod.directive('addContentModal', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        add: '=',
+      },
+      templateUrl: '../../views/components/add_content_modal.html'
+    };
+  });
+
+  mod.directive('reportContentModal', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        report: '=',
+        clean: '='
+      },
+      templateUrl: '../../views/components/report_content_modal.html'
+    };
+  });
+
+  mod.directive('reportCommentModal', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        report: '=',
+        clean: '='
+      },
+      templateUrl: '../../views/components/report_comment_modal.html'
+    };
+  });
+
 });

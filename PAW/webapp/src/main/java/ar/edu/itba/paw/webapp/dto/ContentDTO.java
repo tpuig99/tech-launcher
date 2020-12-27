@@ -1,19 +1,22 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.models.Comment;
 import ar.edu.itba.paw.models.Content;
 
 import javax.ws.rs.core.UriInfo;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ContentDTO {
     private String location;
+    private String reportLocation;
     private SimpleUserDTO user;
     private Date date;
     private String title;
     private String link;
     private String type;
     private String techName;
+    private List<ReportDTO> reports;
 
     public static ContentDTO fromContent(Content content, UriInfo uriInfo) {
         final ContentDTO dto = new ContentDTO();
@@ -22,7 +25,11 @@ public class ContentDTO {
         dto.user = SimpleUserDTO.fromUser(content.getUser(), content.getFramework(),uriInfo);
         dto.title = content.getTitle();
         dto.type = content.getType().name();
-        dto.location = uriInfo.getBaseUriBuilder().path("/techs/"+content.getFrameworkId()+"/content/"+content.getContentId()).build().toString();
+        dto.location = "techs/"+content.getFrameworkId()+"/content/"+content.getContentId();
+        dto.reportLocation = dto.location + "/report";
+        if (content.getReports() != null) {
+            dto.reports = content.getReports().stream().map(ReportDTO::fromReportContent).collect(Collectors.toList());
+        }
         return dto;
     }
     public static ContentDTO fromProfile(Content content) {
@@ -31,7 +38,7 @@ public class ContentDTO {
         dto.link = content.getLink();
         dto.title = content.getTitle();
         dto.type = content.getType().name();
-        dto.location = "/techs/"+content.getFrameworkId();
+        dto.location = "techs/"+content.getFrameworkId()+"/content/"+content.getContentId();
         dto.techName = content.getFrameworkName();
         return dto;
     }
@@ -90,6 +97,22 @@ public class ContentDTO {
 
     public void setTechName(String techName) {
         this.techName = techName;
+    }
+
+    public List<ReportDTO> getReports() {
+        return reports;
+    }
+
+    public void setReports(List<ReportDTO> reports) {
+        this.reports = reports;
+    }
+
+    public String getReportLocation() {
+        return reportLocation;
+    }
+
+    public void setReportLocation(String reportLocation) {
+        this.reportLocation = reportLocation;
     }
 }
 

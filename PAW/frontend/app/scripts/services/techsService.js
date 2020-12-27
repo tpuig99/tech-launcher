@@ -29,6 +29,32 @@ define(['frontend'], function(frontend) {
       return Restangular.one(url).get();
     };
 
+    this.deleteData = function(url) {
+      return Restangular.one(url).remove();
+    };
+
+    this.addContent = function (id, title, type, link) {
+      var content = {
+        'title': title,
+        'type': type,
+        'link': link
+      };
+      return Restangular.all('techs/' + id + '/content').post(content);
+    };
+
+    this.addComment = function (id, input) {
+      var comment = {
+        'description': input
+      };
+      return Restangular.all('techs/' + id + '/comment').post(comment);
+    };
+
+    this.report = function (url, description) {
+      var report = {
+        'description': description
+      };
+      return Restangular.all(url).post(report);
+    };
 
   });
 });

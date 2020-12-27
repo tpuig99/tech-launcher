@@ -42,7 +42,7 @@
           <div class="d-flex flex-column my-auto">
             <div ng-if="isAdmin || isOwner">
               <div class="mb-4">
-                <a href="/#" >
+                <a href="tech.editLocation">
                   <button class="btn btn-info btn-block text-nowrap" type="button">
                     <i class="fa fa-edit fa-sm mr-1"></i>
                     {{'BUTTON_EDIT_TECH' | translate }}
@@ -50,7 +50,7 @@
                 </a>
               </div>
               <div>
-                <button class="btn btn-danger btn-block text-nowrap" type="button" onclick="openDeleteTechModal()">
+                <button class="btn btn-danger btn-block text-nowrap" type="button" ng-click="setDel(tech.location)" data-toggle="modal" data-target="#deleteTechModal" >
                   <i class="fas fa-trash-alt fa-sm mr-1"></i>
                   {{'BUTTON_DELETE_TECH' | translate }}
                 </button>
@@ -72,14 +72,14 @@
     <div><h4 class="title">{{'TECH_CONTENT' | translate }}</h4></div>
     <div class="d-flex justify-content-end">
 
-      <div ng-if="user.name == 'anonymousUser'">
+      <div ng-if="username == 'anonymousUser'">
         <button class="btn btn-info" type="button" data-toggle="modal" data-target="#loginModal">
           {{'BUTTON_ADD_CONTENT' | translate }}
         </button>
       </div>
-      <div ng-if="user.name != 'anonymousUser'">
+      <div ng-if="username != 'anonymousUser'">
         <div ng-if="!isEnable">
-          <button class="btn btn-info" type="button" data-toggle="modal" data-target="#loginModal">
+          <button class="btn btn-info" type="button" data-toggle="modal" data-target="#confirmMailModal">
             {{'BUTTON_ADD_CONTENT' | translate }}
           </button>
         </div>
@@ -108,19 +108,22 @@
             <div class="col-10">
               <a target="_blank" href="{{book.link}}">{{book.title}}</a>
             </div>
-            <div ng-if="isAdmin || verifyForFramework || user.name == book.user.name || isOwner">
+            <div ng-if="isAdmin || isVerify || username == book.user.username || isOwner">
               <div class="col d-flex justify-content-end align-items-end">
-                <button class="btn btn-link" onclick="openDeleteContentModal(book.contentId)" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                <button class="btn btn-link" ng-click="setDel(book.location)" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
               </div>
             </div>
-            <div ng-if="user.name != 'anonymousUser' && book.user.name!=user.name && !book.isReporter(user.name) && isEnable">
+            <div ng-if="username != 'anonymousUser' && book.user.username!=username && !isReporter(book, username) && isEnable">
               <div class="col d-flex justify-content-end align-items-end">
-                <button class="btn btn-link" onclick="getContentId(book.contentId)" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                <button class="btn btn-link" ng-click="setReport(book.reportLocation)" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
               </div>
             </div>
           </div>
         </li>
       </ul>
+      <div ng-if="booksPaging != undefined">
+        <pagination paging="{{booksPaging}}" id="{{'books'}}"></pagination>
+      </div>
     </div>
   </div>
 
@@ -136,20 +139,23 @@
             <div class="col-10">
               <a target="_blank" href="{{course.link}}">{{course.title}}</a>
             </div>
-            <div ng-if="isAdmin || verifyForFramework || user.name == course.user.name || isOwner">
+            <div ng-if="isAdmin || isVerify|| username == course.user.username || isOwner">
               <div class="col d-flex justify-content-end align-items-end">
-                <button class="btn btn-link" onclick="openDeleteContentModal(course.contentId)" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                <button class="btn btn-link" ng-click="setDel(course.location)" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
               </div>
             </div>
-            <div ng-if="user.name != 'anonymousUser' && course.user.name!=user.name && !course.isReporter(user.name) && isEnable">
+            <div ng-if="username != 'anonymousUser' && course.user.username!=username && !isReporter(course, username) && isEnable">
               <div class="col d-flex justify-content-end align-items-end">
-                <button class="btn btn-link" onclick="getContentId(course.contentId)" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                <button class="btn btn-link" ng-click="setReport(course.reportLocation)" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
               </div>
             </div>
           </div>
         </li>
       </ul>
       <!-- Courses pagination -->
+      <div ng-if="coursesPaging != undefined">
+        <pagination paging="{{coursesPaging}}" id="{{'courses'}}"></pagination>
+      </div>
     </div>
   </div>
 
@@ -164,20 +170,23 @@
               <a target="_blank" href="{{tutorial.link}}">{{tutorial.title}}</a>
             </div>
 
-            <div ng-if="isAdmin || verifyForFramework || user.name == tutorial.user.name || isOwner">
+            <div ng-if="isAdmin || isVerify || username == tutorial.user.username || isOwner">
               <div class="col d-flex justify-content-end align-items-end">
-                <button class="btn btn-link" onclick="openDeleteContentModal(tutorial.contentId)" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                <button class="btn btn-link" ng-click="setDel(tutorial.location)" data-toggle="modal" data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
               </div>
             </div>
-            <div ng-if="user.name != 'anonymousUser' && tutorial.user.name!=user.name && !tutorial.isReporter(user.name) && isEnable">
+            <div ng-if="username != 'anonymousUser' && tutorial.user.username!=username && !isReporter(tutorial, username) && isEnable">
               <div class="col d-flex justify-content-end align-items-end">
-                <button class="btn btn-link" onclick="getContentId(tutorial.contentId)" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                <button class="btn btn-link" ng-click="setReport(tutorial.reportLocation)" data-toggle="modal" data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
               </div>
             </div>
           </div>
         </li>
       </ul>
       <!-- Tutorial pagination -->
+      <div ng-if="tutorialsPaging != undefined">
+        <pagination paging="{{tutorialsPaging}}" id="{{'tutorials'}}"></pagination>
+      </div>
     </div>
   </div>
 
@@ -192,7 +201,7 @@
       <div ng-repeat="comment in tech.comments" class="row margin-left margin-bottom">
         <div class="col-1">
           <div>
-            <div ng-if="user.name != 'anonymousUser'">
+            <div ng-if="username != 'anonymousUser'">
               <div ng-if="!isEnable">
                 <button class=" btn upVote btn-link" data-toggle="modal" data-target="#confirmMailModal">
                   <i class="fa fa-arrow-up arrow">{{comment.votesUp}}</i>
@@ -201,12 +210,12 @@
               <div ng-if="isEnable">
 
                 <button class="btn upVote btn-link" type="submit" ng-click="upVote(comment)">
-                  <i ng-if="comment.getUserAuthVote(user.name) > 0" class="fa fa-arrow-up arrow votedUp">{{comment.votesUp}}</i>
-                  <i ng-if="comment.getUserAuthVote(user.name) <= 0" class="fa fa-arrow-up arrow">{{comment.votesUp}}</i>
+                  <i ng-if="comment.getUserAuthVote(username) > 0" class="fa fa-arrow-up arrow votedUp">{{comment.votesUp}}</i>
+                  <i ng-if="comment.getUserAuthVote(username) <= 0" class="fa fa-arrow-up arrow">{{comment.votesUp}}</i>
                 </button>
               </div>
             </div>
-            <div ng-if="user.name == 'anonymousUser'">
+            <div ng-if="username == 'anonymousUser'">
               <button class=" btn upVote btn-link" data-toggle="modal" data-target="#loginModal">
                 <i class="fa fa-arrow-up arrow">comment.votesUp</i>
               </button>
@@ -214,23 +223,23 @@
           </div>
           <div>
 
-            <div ng-if="user.name != 'anonymousUser'">
+            <div ng-if="username != 'anonymousUser'">
               <div ng-if="!isEnable">
                 <button class=" btn upVote btn-link" data-toggle="modal" data-target="#confirmMailModal">
-                  <i class="fa fa-arrow-up arrow">{{comment.votesDown}}</i>
+                  <i class="fa fa-arrow-down arrow">{{comment.votesDown}}</i>
                 </button>
               </div>
               <div ng-if="isEnable">
 
                 <button class="btn upVote btn-link" type="submit" ng-click="downVote(comment)">
-                  <i ng-if="comment.getUserAuthVote(user.name) > 0" class="fa fa-arrow-down arrow votedDown">{{comment.votesDown}}</i>
-                  <i ng-if="comment.getUserAuthVote(user.name) <= 0" class="fa fa-arrow-down arrow">{{comment.votesDown}}</i>
+                  <i ng-if="comment.getUserAuthVote(username) > 0" class="fa fa-arrow-down arrow votedDown">{{comment.votesDown}}</i>
+                  <i ng-if="comment.getUserAuthVote(username) <= 0" class="fa fa-arrow-down arrow">{{comment.votesDown}}</i>
                 </button>
               </div>
             </div>
-            <div ng-if="user.name == 'anonymousUser'">
+            <div ng-if="username == 'anonymousUser'">
               <button class=" btn upVote btn-link" data-toggle="modal" data-target="#loginModal">
-                <i class="fa fa-arrow-up arrow">{{comment.votesDown}}</i>
+                <i class="fa fa-arrow-down arrow">{{comment.votesDown}}</i>
               </button>
             </div>
           </div>
@@ -238,14 +247,14 @@
         <div class="col">
           <div class="row">
             <div class="col secondary-font">
-              <a href="/users/{{comment.user.name}}">
+              <a href="/users/{{comment.user.username}}">
                 <div ng-if="comment.user.username == tech.author">
                   <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="{{'TECH_TOOLTIP_OWNER' | translate }}"></i>
                 </div>
                 <div ng-if="comment.user.username != tech.author && comment.user.admin">
                   <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-admin" data-toggle="tooltip" title="{{'TECH_TOOLTIP_ADMIN' | translate }}"></i>
                 </div>
-                <div ng-if="comment.user.username != tech.author && !comment.user.admin && isVerifyForFramework">
+                <div ng-if="comment.user.username != tech.author && !comment.user.admin && isVerify">
                   <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip" title="{{'TECH_TOOLTIP_MODERATOR' | translate }}"></i>
                 </div>
                 {{comment.user.username}}
@@ -260,20 +269,20 @@
               {{comment.description}}
             </div>
 
-            <div ng-if="user.name != 'anonymousUser' && user.name != comment.user.username && !comment.isReporter(user.name) && !isAdmin && !isOwner && isEnable">
+            <div ng-if="username != 'anonymousUser' && username != comment.user.username && !isReporter(comment, username) && !isAdmin && !isOwner && isEnable">
               <div class="col d-flex justify-content-end align-items-end">
-                <button class="btn btn-link" onclick="getCommentId(comment.commentId)" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
+                <button class="btn btn-link" ng-click="setReport(comment.reportLocation)" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
               </div>
             </div>
-            <div ng-if="isAdmin || isOwner || comment.user.username == user.name">
+            <div ng-if="isAdmin || isOwner || comment.user.username == username">
                 <span class="col d-flex justify-content-end align-items-end">
-                  <button class="btn btn-link" onclick="openDeleteCommentModal(comment.commentId)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
+                  <button class="btn btn-link" ng-click="setDel(comment.location)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                 </span>
             </div>
           </div>
           <div class="row padding-bottom">
 
-                <div ng-if="user.name != 'anonymousUser'">
+                <div ng-if="username != 'anonymousUser'">
                     <div ng-if="!isEnable">
                       <button type="button" class="btn btn-light" data-toggle="modal" data-target="#confirmMailModal">
                         <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">{{'BUTTON_COMMENT_REPLY' | translate }}</span>
@@ -285,7 +294,7 @@
                       </button>
                     </div>
                 </div>
-                <div ng-if="user.name == 'anonymousUser'">
+                <div ng-if="username == 'anonymousUser'">
                   <button type="button" class="btn btn-light" data-toggle="modal" data-target="#loginModal">
                     <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">{{'BUTTON_COMMENT_REPLY' | translate }}</span>
                   </button>
@@ -309,7 +318,7 @@
                     <div class="vertical-divider margin-left">
                       <div class="padding-left">
                         <span class="secondary-font medium-font ">
-                          {{reply.user.name}}
+                          {{reply.user.username}}
                         </span>
                         <span class="third-font">
                           {{reply.date}}
@@ -323,14 +332,14 @@
                         {{reply.description}}
                       </div>
                     </div>
-                    <div ng-if="isAdmin || isOwner || reply.user.name == user.name">
+                    <div ng-if="isAdmin || isOwner || reply.user.username == username">
                       <span class="col d-flex justify-content-end align-items-end">
-                        <button class="btn btn-link" onclick="openDeleteCommentModal(reply.commentId)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-link" ng-click="openDeleteCommentModal(reply.commentId)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                       </span>
                     </div>
-                    <div ng-if="user.name != 'anonymousUser' && user.name != reply.user.name && !reply.isReporter(user.name) && !isAdmin && !isOwner && isEnable">
+                    <div ng-if="username != 'anonymousUser' && username != reply.user.username && !isReporter(reply, username) && !isAdmin && !isOwner && isEnable">
                       <div class="col d-flex justify-content-end align-items-end">
-                        <button class="btn btn-link" onclick="getCommentId(reply.commentId)" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
+                        <button class="btn btn-link" ng-click="getCommentId(reply.commentId)" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
                       </div>
                     </div>
                   </div>
@@ -357,6 +366,9 @@
       </div>
     </div>
     <!-- Comment pagination -->
+    <div ng-if="commentsPaging != undefined">
+      <pagination paging="{{commentsPaging}}" id="{{'comments'}}"></pagination>
+    </div>
   </div>
 
   <!-- User Interaction -->
@@ -368,16 +380,15 @@
   <div class="container margin-left">
     <div class="row">
       <div class="col-8">
-        <h5>{{'TECH_INTERACTIONS_LEAVE_COMMENT' | translate}}</h5>
         <div>
           <form name="commentForm">
             <div class="form-group">
               <label for="singleComment">{{'TECH_INTERACTIONS_LEAVE_COMMENT' | translate}}</label>
-              <input class="form-control" type="text" id="singleComment" ng-model="commentInput" name="commentInput" required ng-minlength="3" ng-maxlength="100" placeholder="{{'TECH_COMMENT_PLACEHOLDER' | translate}}"/>
+              <input class="form-control" type="text" id="singleComment" ng-model="commentInput" name="commentInput" required ng-minlength="3" ng-maxlength="500" placeholder="{{'TECH_COMMENT_PLACEHOLDER' | translate}}"/>
               <div ng-show="registerForm.commentInput.$dirty && registerForm.commentInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
-              <div ng-show="registerForm.commentInput.$error.minlength || registerForm.commentInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 100}'}}</div>
+              <div ng-show="registerForm.commentInput.$error.minlength || registerForm.commentInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 500}'}}</div>
             </div>
-            <button ng-if="commentForm.$valid" class="btn primary-button" type="submit"  ng-click="comment(commentInput)">{{'BUTTON_SUBMIT' | translate}}</button>
+            <button ng-if="commentForm.$valid" class="btn primary-button" type="submit"  ng-click="addComment(commentInput)">{{'BUTTON_SUBMIT' | translate}}</button>
             <button ng-if="commentForm.$invalid"  disabled class="btn primary-button" type="submit" >{{'BUTTON_SUBMIT' | translate}}</button>
           </form>
         </div>
@@ -390,12 +401,12 @@
 <!--          <jsp:include page="ratingForm.jsp">-->
 <!--            <jsp:param name="frameworkId" value="${framework.id}" />-->
 <!--            <jsp:param name="isEnable" value="${isEnable}" />-->
-<!--            <jsp:param name="username" value="${user.name}" />-->
+<!--            <jsp:param name="username" value="${username}" />-->
 <!--          </jsp:include>-->
 <!--        </div>-->
 <!--      </div>-->
     </div>
-      <div ng-if="!hasAppliedToFramework && !isAdmin && user.name != 'anonymousUser' && allowMod && !isOwner && isEnable">
+      <div ng-if="!isAdmin && username != 'anonymousUser' && allowMod && !isOwner && isEnable">
         <div class="d-flex justify-content-center align-items-center">
           <div class="card text-center">
             <div class="card-header subtitle"><h5>{{'TECH_APPLY_TITLE' | translate}}</h5></div>
@@ -403,12 +414,12 @@
               <p class="card-text">{{'TECH_APPLY_MESSAGE' | translate}}</p>
             </div>
             <div class="card-footer">
-              <button class="btn btn-info" onclick="applyForMod()">{{'BUTTON_APPLY' | translate}}</button>
+              <button class="btn btn-info" ng-click="applyForMod()">{{'BUTTON_APPLY' | translate}}</button>
             </div>
           </div>
         </div>
       </div>
-      <div ng-if="verifyForFramework && !isAdmin">
+      <div ng-if="isVerify && !isAdmin">
         <div class="d-flex justify-content-center align-items-center">
           <div class="card text-center">
             <div class="card-header subtitle"><h5>{{'TECH_STOP_TITLE' | translate}}</h5></div>
@@ -416,7 +427,7 @@
               <p class="card-text">{{'TECH_STOP_MESSAGE' | translate}}</p>
             </div>
             <div class="card-footer">
-              <button class="btn btn-danger" onclick="stopBeingAMod()">{{'BUTTON_STOP' | translate}}</button>
+              <button class="btn btn-danger" ng-click="stopBeingAMod()">{{'BUTTON_STOP' | translate}}</button>
             </div>
           </div>
         </div>
@@ -451,83 +462,19 @@
 
   </div>
 </div>
+
+  <delete-tech-modal del="deleteTech" clean="cleanDel"></delete-tech-modal>
+  <delete-comment-modal del="deleteComment" clean="cleanDel"></delete-comment-modal>
+  <delete-content-modal del="deleteContent" clean="cleanDel"></delete-content-modal>
+  <report-content-modal report="reportContent" clean="cleanReport"></report-content-modal>
+  <report-comment-modal report="reportComment" clean="cleanReport"></report-comment-modal>
+  <add-content-modal add="addContent"></add-content-modal>
+  <modal-login></modal-login>
+  <mail-modal></mail-modal>
 </div>
 
-<!--  &lt;!&ndash; Modals &ndash;&gt;-->
-
-<!--  &lt;!&ndash;Login Modal &ndash;&gt;-->
-
-<!--  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title" id="loginModalLabel"><spring:message code="user.not_logged"/></h5>-->
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--            <span aria-hidden="true">&times;</span>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <div class="row d-flex justify-content-center align-items-center">-->
-<!--            <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">-->
-<!--          </div>-->
-<!--          <div class="row justify-content-center align-items-center margin-top">-->
-<!--            <button type="button" class="btn btn-info" onclick="window.location.href = '<c:url value="/login"/>'"><spring:message code="button.login"/></button>-->
-<!--          </div>-->
-<!--          <div class="row  justify-content-center align-items-center margin-top">-->
-<!--            <div><spring:message code="login.sign_up_question"/> <a href="<c:url value="/register"/>"><spring:message code="button.sign_up"/></a>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-<!--  &lt;!&ndash; Confirm mail Modal &ndash;&gt;-->
-<!--  <div class="modal fade" id="confirmMailModal" tabindex="-1" role="dialog" aria-labelledby="confirmMailModalLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title" id="confirmMailModalLabel"><spring:message code="register.error.email_status"/></h5>-->
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--            <span aria-hidden="true">&times;</span>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <div class="row d-flex justify-content-center align-items-center">-->
-<!--            <img src="<c:url value="/resources/assets/logo.png"/>" width="60" height="60" class="d-inline-block align-top" alt="Tech Launcher Logo">-->
-<!--          </div>-->
-<!--          <div class="row justify-content-center align-items-center margin-top">-->
-<!--            <div><spring:message code="register.error.confirm_email"/></div>-->
-<!--          </div>-->
-<!--          <div class="row  justify-content-center align-items-center margin-top">-->
-<!--            <div><a href="<c:url value="/register/resend_token"/>"><spring:message code="button.resend"/></a></div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
 
 <!--  &lt;!&ndash; Content Modal &ndash;&gt;-->
-<!--  <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header container">-->
-
-<!--          <h5 class="modal-title" id="addContentLabel"><spring:message code="tech.content.form"/></h5>-->
-
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--          </button>-->
-<!--          <span aria-hidden="true">&times;</span>-->
-<!--        </div>-->
-<!--        <div class="modal-body container">-->
-<!--          <jsp:include page="contentForm.jsp">-->
-<!--            <jsp:param name="frameworkId" value="${framework.id}" />-->
-<!--          </jsp:include>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
 
 <!--  <div id="snackbar"><spring:message code="tech.content.uploaded_content"/></div>-->
 
@@ -535,70 +482,10 @@
 
 <!--  &lt;!&ndash;Delete Content Modal &ndash;&gt;-->
 
-<!--  <div class="modal fade" id="deleteContentModal" tabindex="-1" role="dialog" aria-labelledby="deleteContentModalLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title" id="deleteContentModalLabel"><spring:message code="tech.content.delete"/></h5>-->
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--            <span aria-hidden="true">&times;</span>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <div class="row  justify-content-center align-items-center margin-top">-->
-<!--            <div><spring:message code="tech.content.delete.message"/></div>-->
-<!--          </div>-->
-<!--          <div class="row justify-content-center align-items-center margin-top">-->
 
-<!--            <c:url value="/content/delete" var="postPathDeleteContent"/>-->
-<!--            <form:form modelAttribute="deleteContentForm" action="${postPathDeleteContent}" method="post">-->
-<!--              <form:label path="deleteContentFrameworkId"><form:input  class="input-wrap" path="deleteContentFrameworkId" type="hidden" value="${framework.id}"/></form:label>-->
-<!--              <form:label path="deleteContentId"><form:input  class="input-wrap" path="deleteContentId" type="hidden" id="contentIdDeleteInput"/></form:label>-->
-<!--              <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>-->
-<!--              <button type="submit" class="btn btn-danger ml-4"><spring:message code="button.delete"/></button>-->
-<!--            </form:form>-->
-
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
 
 <!--  &lt;!&ndash; Report Modals &ndash;&gt;-->
-<!--  <div class="modal fade" id="reportContentModal" tabindex="-1" role="dialog" aria-labelledby="reportContentModalLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header container">-->
 
-<!--          <h5 class="modal-title" id="reportContentLabel"><spring:message code="tech.content.report"/></h5>-->
-
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--          </button>-->
-<!--          <span aria-hidden="true">&times;</span>-->
-<!--        </div>-->
-<!--        <div class="modal-body container">-->
-<!--          <c:url value="/content/report" var="postPathReport" />-->
-<!--          <form:form modelAttribute="reportForm" action="${postPathReport}" method="post">-->
-<!--            <div class="form-group">-->
-<!--              <div><form:label path="description"><spring:message code="tech.content.report.reason"/></form:label></div>-->
-<!--              <div><form:input  path="description"  class="form-control" type="text"/></div>-->
-<!--              <form:errors path="description" element="p" cssClass="formError"/>-->
-<!--            </div>-->
-<!--            <form:label path="id">-->
-<!--              <form:input  class="input-wrap" path="id" type="hidden" value="" id="reportContentId"/>-->
-<!--            </form:label>-->
-<!--            <form:label path="reportFrameworkId">-->
-<!--              <form:input class="input-wrap" path="reportFrameworkId" type="hidden" value="${framework.id}"/>-->
-<!--            </form:label>-->
-<!--            <div class="d-flex justify-content-center">-->
-<!--              <input class="btn btn-danger" type="submit" value="<spring:message code="button.submit"/>"/>-->
-<!--            </div>-->
-<!--            &lt;!&ndash; <button type="submit" class="btn btn-info d-flex align-items-center justify-content-center">SUBMIT</button>&ndash;&gt;-->
-<!--          </form:form>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
 
 <!--  <div class="modal fade" id="reportCommentModal" tabindex="-1" role="dialog" aria-labelledby="reportCommentModalLabel" aria-hidden="true">-->
 <!--    <div class="modal-dialog" role="document">-->
@@ -664,32 +551,3 @@
 <!--    </div>-->
 <!--  </div>-->
 
-<!--  <div class="modal fade" id="deleteTechModal" tabindex="-1" role="dialog" aria-labelledby="deleteTechModalLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title" id="deleteTechModalLabel"><spring:message code="tech.delete"/></h5>-->
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--            <span aria-hidden="true">&times;</span>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <div class="row  justify-content-center align-items-center margin-top">-->
-<!--            <div><spring:message code="tech.delete.message"/></div>-->
-<!--          </div>-->
-<!--          <div class="row justify-content-center align-items-center margin-top">-->
-<!--            <c:url value="/delete_tech" var="postPathDeleteCommment"/>-->
-<!--            <form:form modelAttribute="deleteFrameworkForm" action="${postPathDeleteCommment}" method="post">-->
-<!--              <form:input  class="input-wrap" path="frameworkIdx" type="hidden" value="${framework.id}"/>-->
-<!--              <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>-->
-<!--              <button type="submit" class="btn btn-danger ml-4" ><spring:message code="button.delete"/></button>-->
-<!--            </form:form>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-</div>
-
-</div>

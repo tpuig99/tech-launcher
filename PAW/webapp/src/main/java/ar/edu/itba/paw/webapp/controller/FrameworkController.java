@@ -574,7 +574,7 @@ public class FrameworkController {
         final Optional<Framework> framework = fs.findById(id);
         if (framework.isPresent()) {
             if(content == null || content.getLink() == null || content.getLink().isEmpty()|| content.getType() == null || content.getType().isEmpty()|| content.getTitle() == null || content.getTitle().isEmpty()){
-                return Response.status(Response.Status.CONFLICT).entity("Comment can not be empty.").build();
+                return Response.status(Response.Status.CONFLICT).entity("Content can not be empty.").build();
             }
             ContentTypes type;
             try{
@@ -657,7 +657,7 @@ public class FrameworkController {
                     if(report == null || report.getDescription() == null || report.getDescription().isEmpty())
                         return Response.status(Response.Status.CONFLICT).entity("Content can not be empty.").build();
 
-                    commentService.addReport(contentId, user.get().getId(), report.getDescription());
+                    contentService.addReport(contentId, user.get().getId(), report.getDescription());
                     LOGGER.info("Tech {}: User {} reported content {}", id, user.get().getId(), contentId);
                     return Response.ok().build();
                 }
