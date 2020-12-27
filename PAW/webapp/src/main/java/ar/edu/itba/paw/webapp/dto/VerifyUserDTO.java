@@ -22,7 +22,9 @@ public class VerifyUserDTO {
         dto.frameworkName = verifyUser.getFrameworkName();
         dto.location = "techs/" + verifyUser.getFramework().getId();
         dto.description = verifyUser.getCommentDescription();
-        dto.timestamp = verifyUser.getComment().getTimestamp();
+        if( dto.description != null) {
+            dto.timestamp = verifyUser.getComment().getTimestamp();
+        }
         return dto;
     }
     public static VerifyUserDTO fromProfile(VerifyUser verifyUser) {
