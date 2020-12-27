@@ -171,7 +171,7 @@ public class RegisterController {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        us.passwordMailing(optionalUser.get(), uriInfo.getBaseUri().toString() + "register");
+        us.passwordMailing(optionalUser.get(), uriInfo.getBaseUri().toString() + "#/register");
         LOGGER.info("Register: Successfully sent recovery mail to {}", userDTO.getMail());
         return Response.ok().build();
     }
