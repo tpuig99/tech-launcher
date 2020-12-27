@@ -66,7 +66,9 @@ define(['frontend','services/postService','services/sessionService'], function(f
     $scope.categoriesChosen = [];
     $scope.typesChosen = [];
 
-
+    $scope.tagsEmpty = () => {
+      return _.isEmpty($scope.namesChosen) && _.isEmpty($scope.categoriesChosen) && _.isEmpty($scope.typesChosen)
+    }
 
     $scope.addName = function (name) {
       if( !$scope.namesChosen.includes(name) ) {
@@ -99,6 +101,9 @@ define(['frontend','services/postService','services/sessionService'], function(f
     }
 
     $scope.addPost = (title, description) => {
+      if( postTitleInput.$modelValue.length < 3 || postTitleInput.$modelValue.length > 200 || postDescriptionInput.$modelValue.length > 5000 || $scope.tagsEmpty()) {
+        return;
+      }
       let post = {
         'title' : title.$modelValue,
         'description' : description.$modelValue,
