@@ -96,5 +96,32 @@ define(['frontend','services/userService','services/sessionService'], function(f
     $scope.arrayIsEmpty = (array) => {
       return _.isEmpty(array);
     }
+
+    $scope.setData = function(response,id) {
+      switch (id) {
+        case 'mods':
+          $scope.mods = response.data;
+          $scope.modsPaging = response.headers('link');
+          break;
+        case 'repCons':
+          $scope.reportedContents = response.data;
+          $scope.repConsPaging = response.headers('link');
+          break;
+        case 'repComs':
+          $scope.reportedComments = response.data;
+          $scope.repComsPaging = response.headers('link');
+          break;
+        case 'applicants':
+          $scope.applicants = response.data;
+          $scope.applicantsPaging = response.headers('link');
+          break;
+        case 'verified':
+          $scope.verified = response.data;
+          $scope.verifiedPaging = response.headers('link');
+          break;
+        default:
+          break;
+      }
+    };
   });
 });

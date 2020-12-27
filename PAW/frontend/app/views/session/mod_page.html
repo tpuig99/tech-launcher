@@ -30,9 +30,9 @@
                 <div ng-repeat="applicant in verified">
                   <div class="card emphasis emph-comment row mb-2 mx-4 verified">
                     <div class="card-body row mt-1">
-                      <div class="col-3 secondary-font"><a href="{{applicant.location}}">{{applicant.username}}</a>
+                      <div class="col-3 secondary-font"><a href="#/{{applicant.location}}">{{applicant.username}}</a>
                         /
-                        <a href="{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
+                        <a href="#/{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
                       </div>
                       <div class="col-6 text-left"> {{applicant.description}}</div>
                       <div class="col third-font text-right"> {{applicant.timestamp}}</div>
@@ -49,6 +49,9 @@
                 </div>
                 <div ng-if="arrayIsEmpty(verified)">{{'MOD_EMPTY_PENDING' | translate}}</div>
               </div>
+              <div ng-if="verifiedPaging != undefined">
+                <pagination paging="{{verifiedPaging}}" id="{{'verified'}}"></pagination>
+              </div>
             </div>
             <div class="col">
               <!-- pending applicants to verify -->
@@ -58,9 +61,9 @@
                 <div ng-repeat="applicant in applicants">
                   <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
                     <div class="card-body mt-1">
-                      <div class="secondary-font"><a href="{{applicant.location}}">{{applicant.username}}</a>
+                      <div class="secondary-font"><a href="#/{{applicant.location}}">{{applicant.username}}</a>
                         /
-                        <a href="{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
+                        <a href="#/{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
                       </div>
                     </div>
                     <div class="card-footer row">
@@ -74,6 +77,9 @@
                   </div>
                 </div>
                 <div ng-if="arrayIsEmpty(applicants)">{{'MOD_EMPTY_APPLICANTS' | translate}}</div>
+              </div>
+              <div ng-if="applicantsPaging != undefined">
+                <pagination paging="{{applicantsPaging}}" id="{{'applicants'}}"></pagination>
               </div>
             </div>
           </div>
@@ -90,9 +96,9 @@
                   <div ng-if="!moderator.isAdmin" class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
                     <div class="card-body mt-1">
                       <div class="secondary-font">
-                        <a href="{{moderator.location}}">{{moderator.username}}</a>
+                        <a href="#/{{moderator.location}}">{{moderator.username}}</a>
                         /
-                        <a href="{{moderator.techLocation}}">{{moderator.frameworkName}}</a>
+                        <a href="#/{{moderator.techLocation}}">{{moderator.frameworkName}}</a>
                       </div>
                     </div>
                     <div class="card-footer row mx-2 justify-content-center">
@@ -103,6 +109,9 @@
                   </div>
                 </div>
                 <div ng-if="arrayIsEmpty(mods)">{{'MOD_NO_MODS' | translate}}</div>
+              </div>
+              <div ng-if="modsPaging != undefined">
+                <pagination paging="{{modsPaging}}" id="{{'mods'}}"></pagination>
               </div>
             </div>
           </div>
@@ -121,9 +130,9 @@
                     <div class="card-body my-auto">
                       <div class="border-bottom">
                         <p class="my-1">{{'MOD_REPORT_COMMENT_OWNER' | translate}}:&nbsp;<a
-                          href="{{comment.userLocation}}">{{comment.owner}}</a></p>
+                          href="#/{{comment.userLocation}}">{{comment.owner}}</a></p>
                         <p class="my-1">{{'MOD_REPORT_TECH' | translate}}:&nbsp;<a
-                          href="{{comment.techLocation}}">{{comment.frameworkName}}</a></p>
+                          href="#/{{comment.techLocation}}">{{comment.frameworkName}}</a></p>
                         <p class="my-1">{{'MOD_COMMENT_DESCRIPTION' | translate}}:&nbsp;{{comment.commentDescription}}</p>
                       </div>
                       <div class="mt-2">
@@ -143,6 +152,9 @@
               </div>
               <div ng-if="arrayIsEmpty(reportedComments)">{{'MOD_COMMENT_EMPTY' | translate}}</div>
             </div>
+            <div ng-if="repComsPaging != undefined">
+              <pagination paging="{{repComsPaging}}" id="{{'repComs'}}"></pagination>
+            </div>
           </div>
           <!-- reported content -->
           <div class="page-title">{{'MOD_CONTENT_TITLE' | translate}}</div>
@@ -154,10 +166,10 @@
                   <div class="card-body my-auto">
                     <div class="border-bottom">
                       <p class="my-1">{{'MOD_REPORT_CONTENT_OWNER' | translate}}:&nbsp;<a
-                        href="{{content.userLocation}}">{{content.owner}}</a></p>
+                        href="#/{{content.userLocation}}">{{content.owner}}</a></p>
                       <p class="my-1">{{'MOD_REPORT_TECH' | translate}}:&nbsp;<a
-                        href="{{content.techLocation}}">{{content.frameworkName}}</a></p>
-                      <p class="my-1">{{'MOD_CONTENT_DESCRIPTION' | translate}}:&nbsp;{{content.contentLink}}</p>
+                        href="#/{{content.techLocation}}">{{content.frameworkName}}</a></p>
+                      <p class="my-1">{{'MOD_CONTENT_DESCRIPTION' | translate}}:&nbsp;<a href="{{content.contentLink}}">{{content.contentLink}}</a></p>
                     </div>
                     <div class="mt-2">
                       <p class="my-1">{{'MOD_REPORT_DESCRIPTION' | translate}}:&nbsp;{{content.reportDescription}}</p>
@@ -175,6 +187,10 @@
               </div>
             </div>
             <div ng-if="arrayIsEmpty(reportedContents)">{{'MOD_CONTENT_EMPTY' | translate}}</div>
+          </div>
+          <!-- Pagination -->
+          <div ng-if="repConsPaging != undefined">
+            <pagination paging="{{repConsPaging}}" id="{{'repCons'}}"></pagination>
           </div>
         </div>
       </div>
