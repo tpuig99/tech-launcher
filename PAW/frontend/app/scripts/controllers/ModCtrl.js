@@ -57,30 +57,40 @@ define(['frontend','services/userService','services/sessionService'], function(f
 
     $scope.acceptMod = (applicant) => {
       userService.acceptMod(applicant.location);
+      $scope.getCurrentApplicants();
+      $scope.getVerified();
+      $scope.getCurrentMods();
     }
 
     $scope.rejectMod = (applicant) => {
       userService.rejectMod(applicant.location);
+      $scope.getCurrentApplicants();
+      $scope.getVerified();
     }
 
     $scope.deleteMod = (mod) => {
       userService.deleteMod(mod.location);
+      $scope.getCurrentMods();
     }
 
     $scope.deleteCommentReport = (reportedComment) => {
       userService.deleteCommentReport(reportedComment.location);
+      $scope.getReportedComments();
     };
 
     $scope.acceptCommentReport = (reportedComment) => {
       userService.acceptCommentReport(reportedComment.location);
+      $scope.getReportedComments();
     }
 
     $scope.deleteContentReport = (reportedContent) => {
       userService.deleteContentReport(reportedContent.location);
+      $scope.getReportedContents();
     }
 
     $scope.acceptContentReport = (reportedContent) => {
       userService.acceptContentReport(reportedContent.location);
+      $scope.getReportedContents();
     }
 
     $scope.arrayIsEmpty = (array) => {

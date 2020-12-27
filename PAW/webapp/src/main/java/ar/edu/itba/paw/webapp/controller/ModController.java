@@ -276,7 +276,7 @@ public class ModController {
         if (user.isPresent()) {
             if (user.get().isAdmin() || ! user.get().getOwnedFrameworks().isEmpty()) {
                 if (vu.isPresent()) {
-                    if (vu.get().isPending()) {
+                    if (!vu.get().isPending()) {
                         us.deleteVerification(verificationId);
                         LOGGER.info("User: Demoted user according to Verification {}", verificationId);
                         return Response.ok().build();
