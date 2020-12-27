@@ -49,12 +49,37 @@ define(['frontend'], function(frontend) {
       return Restangular.all('techs/' + id + '/comment').post(comment);
     };
 
+    this.addReply = function (location, input) {
+      var reply = {
+        'description': input
+      };
+      return Restangular.all(location).post(reply);
+    };
+
     this.report = function (url, description) {
       var report = {
         'description': description
       };
       return Restangular.all(url).post(report);
     };
+
+    this.vote = function (url, type) {
+      switch(type) {
+        case 'up':
+          return Restangular.all(url+'/upvote').post();
+        case 'down':
+          return Restangular.all(url+'/downvote').post();
+        default:
+          break;
+      }
+    }
+
+    this.rate = function (id, stars) {
+      let vote = {
+        'count': stars
+      }
+      return Restangular.all('techs/'+id+'/stars').post(vote);
+    }
 
   });
 });

@@ -51,6 +51,7 @@ define([], function() {
     BUTTON_STOP: 'Parar',
     BUTTON_LOADING: 'Cargando',
     BUTTON_GO_HOME: 'Ir al Home',
+    BUTTON_RATE: 'Puntuar',
 
     SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
@@ -255,6 +256,7 @@ define([], function() {
     TECH_REPORT_CONTENT: 'Reportar Contenido',
     TECH_REPORT_COMMENT: 'Reportar Comentario',
     TECH_REPORT_DESCRIPTION: '¿Por qué debería ser eliminado?',
+    TECH_REPLY_COMMENT: '¡Responde este comentario!',
 
     ADD_CONTENT: 'Añadir Contenido',
     ADD_CONTENT_TITLE: 'Título del Contenido',

@@ -209,9 +209,9 @@
               </div>
               <div ng-if="isEnable">
 
-                <button class="btn upVote btn-link" type="submit" ng-click="upVote(comment)">
-                  <i ng-if="comment.getUserAuthVote(username) > 0" class="fa fa-arrow-up arrow votedUp">{{comment.votesUp}}</i>
-                  <i ng-if="comment.getUserAuthVote(username) <= 0" class="fa fa-arrow-up arrow">{{comment.votesUp}}</i>
+                <button class="btn upVote btn-link" type="submit" ng-click="upVote(comment.location)">
+                  <i ng-if="hasUserVoted(comment, username)" class="fa fa-arrow-up arrow votedUp">{{comment.votesUp}}</i>
+                  <i ng-if="!hasUserVoted(comment, username)" class="fa fa-arrow-up arrow">{{comment.votesUp}}</i>
                 </button>
               </div>
             </div>
@@ -231,9 +231,9 @@
               </div>
               <div ng-if="isEnable">
 
-                <button class="btn upVote btn-link" type="submit" ng-click="downVote(comment)">
-                  <i ng-if="comment.getUserAuthVote(username) > 0" class="fa fa-arrow-down arrow votedDown">{{comment.votesDown}}</i>
-                  <i ng-if="comment.getUserAuthVote(username) <= 0" class="fa fa-arrow-down arrow">{{comment.votesDown}}</i>
+                <button class="btn upVote btn-link" type="submit" ng-click="downVote(comment.location)">
+                  <i ng-if="hasUserVoted(comment, username)" class="fa fa-arrow-down arrow votedDown">{{comment.votesDown}}</i>
+                  <i ng-if="!hasUserVoted(comment, username)" class="fa fa-arrow-down arrow">{{comment.votesDown}}</i>
                 </button>
               </div>
             </div>
@@ -247,7 +247,7 @@
         <div class="col">
           <div class="row">
             <div class="col secondary-font">
-              <a href="/users/{{comment.user.username}}">
+              <a href="#/{{comment.user.location}}">
                 <div ng-if="comment.user.username == tech.author">
                   <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="{{'TECH_TOOLTIP_OWNER' | translate }}"></i>
                 </div>
@@ -289,7 +289,7 @@
                       </button>
                     </div>
                     <div ng-if="isEnable">
-                      <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#Reply${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample2">
+                      <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#Reply--{{$index}}" aria-expanded="false" aria-controls="multiCollapseExample2">
                         <i class="arrow fas fa-comment-alt fa-xs"></i><span class="reply padding-left">{{'BUTTON_COMMENT_REPLY' | translate }}</span>
                       </button>
                     </div>
@@ -301,14 +301,14 @@
                 </div>
 
             <span class="padding-left">
-              <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#See${comment.commentId}" aria-expanded="false" aria-controls="multiCollapseExample1">
+              <button type="button" class="btn btn-light" data-toggle="collapse" data-target="#See--{{$parent.index}}-{{$index}}" aria-expanded="false" aria-controls="multiCollapseExample1">
                 <i class="arrow fas fa-eye fa-xs"></i><span class="reply padding-left">{{'BUTTON_COMMENT_SEE_REPLIES' | translate }}</span>
               </button>
             </span>
 
           </div>
 
-          <div  class="collapse multi-collapse" id="See{{comment.commentId}}">
+          <div  class="collapse multi-collapse" id="See--{{$parent.index}}-{{$index}}">
             <div ng-if="comment.replies.length <= 0">
               <div>{{'TECH_COMMENT_NO_REPLIES' | translate }}</div>
             </div>
@@ -334,12 +334,12 @@
                     </div>
                     <div ng-if="isAdmin || isOwner || reply.user.username == username">
                       <span class="col d-flex justify-content-end align-items-end">
-                        <button class="btn btn-link" ng-click="openDeleteCommentModal(reply.commentId)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-link" ng-click="setDel(reply.location)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                       </span>
                     </div>
                     <div ng-if="username != 'anonymousUser' && username != reply.user.username && !isReporter(reply, username) && !isAdmin && !isOwner && isEnable">
                       <div class="col d-flex justify-content-end align-items-end">
-                        <button class="btn btn-link" ng-click="getCommentId(reply.commentId)" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
+                        <button class="btn btn-link" ng-click="setReport(reply.reportLocation)" data-toggle="modal" data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
                       </div>
                     </div>
                   </div>
@@ -348,7 +348,7 @@
             </div>
           </div>
 
-          <div class="row collapse multi-collapse" id="Reply{{comment.commentId}}">
+          <div class="row collapse multi-collapse" id="Reply--{{$index}}">
             <form name="replyForm">
               <div class="form-group">
                 <label for="replyComment"> {{'TECH_REPLY_COMMENT' | translate}}</label>
@@ -357,7 +357,7 @@
                 <div ng-show="registerForm.commentInput.$error.minlength || registerForm.commentInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 100}'}}</div>
               </div>
               <div class="d-flex justify-content-center">
-                <button ng-if="replyForm.$valid" class="btn primary-button" type="submit"  ng-click="replyComment(commentInput)">{{'BUTTON_SUBMIT' | translate}}</button>
+                <button ng-if="replyForm.$valid" class="btn primary-button" type="submit"  ng-click="replyComment(comment.location ,commentInput)">{{'BUTTON_SUBMIT' | translate}}</button>
                 <button ng-if="replyForm.$invalid"  disabled class="btn primary-button" type="submit" >{{'BUTTON_SUBMIT' | translate}}</button>
               </div>
             </form>
@@ -394,17 +394,45 @@
         </div>
       </div>
 
-<!--      <div class="col">-->
-<!--        <h5>{{'TECH_INTERACTIONS_RATING' | translate}}</h5>-->
+      <div class="col">
+        <h5>{{'TECH_INTERACTIONS_RATING' | translate}}</h5>
 
-<!--        <div class="stars">-->
-<!--          <jsp:include page="ratingForm.jsp">-->
-<!--            <jsp:param name="frameworkId" value="${framework.id}" />-->
-<!--            <jsp:param name="isEnable" value="${isEnable}" />-->
-<!--            <jsp:param name="username" value="${username}" />-->
-<!--          </jsp:include>-->
-<!--        </div>-->
-<!--      </div>-->
+        <div class="stars">
+
+          <form name="ratingForm">
+
+            <input type="radio" ng-model="star" value="5" class="star star-5" id="star-5" name="star"/>
+            <label class="star star-5" for="star-5"></label>
+
+            <input type="radio" ng-model="star" value="4" class="star star-4" id="star-4" name="star"/>
+            <label class="star star-4" for="star-4"></label>
+
+            <input type="radio" ng-model="star" value="3" class="star star-3" id="star-3" name="star"/>
+            <label class="star star-3" for="star-3"></label>
+
+            <input type="radio" ng-model="star" value="2" class="star star-2" id="star-2" name="star"/>
+            <label class="star star-2" for="star-2"></label>
+
+            <input type="radio" ng-model="star" value="1" class="star star-1" id="star-1" name="star"/>
+            <label class="star star-1" for="star-1"></label>
+
+
+            <div ng-if="username != 'anonymousUser'">
+              <div ng-if="!isEnable">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#confirmMailModal">{{'BUTTON_RATE' | translate }}</button>
+              </div>
+              <div ng-if="isEnable">
+                <button type="submit" class="btn btn-info" ng-click="rateTech(star)" >{{'BUTTON_RATE' | translate }}</button>
+              </div>
+            </div>
+            <div ng-if="username == 'anonymousUser'">
+              <button type="button" class="btn btn-info" data-toggle="modal" data-target="#loginModal">{{'BUTTON_RATE' | translate }}</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
     </div>
       <div ng-if="!isAdmin && username != 'anonymousUser' && allowMod && !isOwner && isEnable">
         <div class="d-flex justify-content-center align-items-center">
@@ -479,75 +507,3 @@
 <!--  <div id="snackbar"><spring:message code="tech.content.uploaded_content"/></div>-->
 
 <!--  <div id="snackbarModApplication"><spring:message code="tech.content.pending_approval"/></div>-->
-
-<!--  &lt;!&ndash;Delete Content Modal &ndash;&gt;-->
-
-
-
-<!--  &lt;!&ndash; Report Modals &ndash;&gt;-->
-
-
-<!--  <div class="modal fade" id="reportCommentModal" tabindex="-1" role="dialog" aria-labelledby="reportCommentModalLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header container">-->
-
-<!--          <h5 class="modal-title" id="reportCommentLabel"><spring:message code="tech.comment.report"/></h5>-->
-
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--          </button>-->
-<!--          <span aria-hidden="true">&times;</span>-->
-<!--        </div>-->
-<!--        <div class="modal-body container">-->
-<!--          <c:url value="/comment/report" var="postPathReportComment" />-->
-<!--          <form:form modelAttribute="reportCommentForm" action="${postPathReportComment}" method="post">-->
-<!--            <div class="form-group">-->
-<!--              <div><form:label path="reportCommentDescription"><spring:message code="tech.comment.report.reason"/></form:label></div>-->
-<!--              <div><form:input  path="reportCommentDescription" class="form-control" type="text"/></div>-->
-<!--              <form:errors path="reportCommentDescription" element="p" cssClass="formError"/>-->
-<!--            </div>-->
-<!--            <form:label path="reportCommentId">-->
-<!--              <form:input  class="input-wrap" path="reportCommentId" type="hidden" value="" id="reportCommentId"/>-->
-<!--            </form:label>-->
-<!--            <form:label path="reportCommentFrameworkId">-->
-<!--              <form:input class="input-wrap" path="reportCommentFrameworkId" type="hidden" value="${framework.id}"/>-->
-<!--            </form:label>-->
-<!--            <div class="d-flex justify-content-center">-->
-<!--              <input class="btn btn-danger" type="submit" value="<spring:message code="button.submit"/>"/>-->
-<!--            </div>-->
-<!--            &lt;!&ndash; <button type="submit" class="btn btn-info d-flex align-items-center justify-content-center">SUBMIT</button>&ndash;&gt;-->
-<!--          </form:form>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-<!--  &lt;!&ndash;Delete Comment Modal &ndash;&gt;-->
-
-<!--  <div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title" id="deleteCommentModalLabel"><spring:message code="tech.comment.delete"/></h5>-->
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--            <span aria-hidden="true">&times;</span>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <div class="row  justify-content-center align-items-center margin-top">-->
-<!--            <div><spring:message code="tech.comment.delete.message"/></div>-->
-<!--          </div>-->
-<!--          <div class="row justify-content-center align-items-center margin-top">-->
-<!--            <c:url value="/comment/delete" var="postPathDeleteCommment"/>-->
-<!--            <form:form modelAttribute="deleteCommentForm" action="${postPathDeleteCommment}" method="post">-->
-<!--              <form:label path="commentDeleteFrameworkId"><form:input  class="input-wrap" path="commentDeleteFrameworkId" type="hidden" value="${framework.id}"/></form:label>-->
-<!--              <form:label path="commentDeleteId"><form:input  class="input-wrap" path="commentDeleteId" type="hidden" id="commentIdDeleteInput"/></form:label>-->
-<!--              <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal" aria-label="Close"><spring:message code="button.cancel"/></button>-->
-<!--              <button type="submit" class="btn btn-danger ml-4"><spring:message code="button.delete"/></button>-->
-<!--            </form:form>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-

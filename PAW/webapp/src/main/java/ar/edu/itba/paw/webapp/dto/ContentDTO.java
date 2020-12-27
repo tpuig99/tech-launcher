@@ -1,9 +1,9 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Content;
+import ar.edu.itba.paw.models.ReportContent;
 
 import javax.ws.rs.core.UriInfo;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +11,7 @@ public class ContentDTO {
     private String location;
     private String reportLocation;
     private SimpleUserDTO user;
-    private Date date;
+    private String date;
     private String title;
     private String link;
     private String type;
@@ -20,7 +20,7 @@ public class ContentDTO {
 
     public static ContentDTO fromContent(Content content, UriInfo uriInfo) {
         final ContentDTO dto = new ContentDTO();
-        dto.date = content.getTimestamp();
+        dto.date = content.getTimestamp().toLocaleString();
         dto.link = content.getLink();
         dto.user = SimpleUserDTO.fromUser(content.getUser(), content.getFramework(),uriInfo);
         dto.title = content.getTitle();
@@ -28,13 +28,13 @@ public class ContentDTO {
         dto.location = "techs/"+content.getFrameworkId()+"/content/"+content.getContentId();
         dto.reportLocation = dto.location + "/report";
         if (content.getReports() != null) {
-            dto.reports = content.getReports().stream().map(ReportDTO::fromReportContent).collect(Collectors.toList());
+            dto.reports = content.getReports().stream().map((ReportContent report) -> ReportDTO.fromReportContent(report, uriInfo)).collect(Collectors.toList());
         }
         return dto;
     }
     public static ContentDTO fromProfile(Content content) {
         final ContentDTO dto = new ContentDTO();
-        dto.date = content.getTimestamp();
+        dto.date = content.getTimestamp().toLocaleString();
         dto.link = content.getLink();
         dto.title = content.getTitle();
         dto.type = content.getType().name();
@@ -51,11 +51,11 @@ public class ContentDTO {
         this.user = user;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

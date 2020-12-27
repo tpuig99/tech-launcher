@@ -163,6 +163,12 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       });
     }
 
+    $scope.replyComment = function (location, input) {
+      techsService.addReply(location, input).then(function () {
+        $scope.getTech();
+      });
+    }
+
     $scope.reportContent = function(description) {
       techsService.report($scope.toReport, description).then(function () {
         $scope.getTech();
@@ -170,11 +176,33 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       })
     }
 
-    $scope.reportComment = function(url, description) {
+    $scope.reportComment = function(description) {
       techsService.report($scope.toReport, description).then(function () {
         $scope.getTech();
         $('#reportCommentModal').modal('hide');
       })
+    }
+
+    $scope.upVote = function (location) {
+      techsService.vote(location, 'up').then(function () {
+        $scope.getTech();
+      })
+    }
+
+    $scope.downVote = function (location) {
+      techsService.vote(location, 'down').then(function () {
+        $scope.getTech();
+      })
+    }
+
+    $scope.rateTech = function (stars) {
+      techsService.rate($routeParams.id, stars).then(function () {
+        $scope.getTech();
+      })
+    }
+
+    $scope.hasUserVoted = function (comment, username) {
+      return false;
     }
 
     //

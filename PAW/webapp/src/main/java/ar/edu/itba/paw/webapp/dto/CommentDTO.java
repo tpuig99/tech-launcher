@@ -1,15 +1,15 @@
 package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Comment;
+import ar.edu.itba.paw.models.ReportComment;
 
 import javax.ws.rs.core.UriInfo;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommentDTO {
     private String description;
-    private Date date;
+    private String date;
     private SimpleUserDTO user;
     private Long votesUp;
     private Long votesDown;
@@ -24,7 +24,7 @@ public class CommentDTO {
     public static CommentDTO fromComment(Comment comment, UriInfo uriInfo) {
         final CommentDTO dto = new CommentDTO();
         dto.description = comment.getDescription();
-        dto.date = comment.getTimestamp();
+        dto.date = comment.getTimestamp().toLocaleString();
         dto.referenceId = comment.getReference();
         dto.user = SimpleUserDTO.fromUser(comment.getUser(), comment.getFramework(),uriInfo);
         dto.votesUp = comment.getVotesUp();
@@ -34,14 +34,14 @@ public class CommentDTO {
         dto.location = "techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId();
         dto.reportLocation = dto.location + "/report";
         if (comment.getReports() != null) {
-            dto.reports = comment.getReports().stream().map(ReportDTO::fromReportComment).collect(Collectors.toList());
+            dto.reports = comment.getReports().stream().map((ReportComment report) -> ReportDTO.fromReportComment(report, uriInfo)).collect(Collectors.toList());
         }
         return dto;
     }
     public static CommentDTO fromProfile(Comment comment){
         final CommentDTO dto = new CommentDTO();
         dto.description = comment.getDescription();
-        dto.date = comment.getTimestamp();
+        dto.date = comment.getTimestamp().toLocaleString();
         dto.location = "techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId();
         dto.techName = comment.getFrameworkName();
         return dto;
@@ -54,11 +54,11 @@ public class CommentDTO {
         this.description = description;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

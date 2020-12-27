@@ -41,6 +41,7 @@ define([], function () {
     BUTTON_STOP_BEING_MOD: 'Stop being a mod',
     BUTTON_LOADING: 'Loading',
     BUTTON_GO_HOME: 'Go Home',
+    BUTTON_RATE: 'Rate',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
@@ -246,6 +247,7 @@ define([], function () {
     TECH_REPORT_CONTENT: 'Report Content',
     TECH_REPORT_COMMENT: 'Report Comment',
     TECH_REPORT_DESCRIPTION: 'Why should it be deleted?',
+    TECH_REPLY_COMMENT: 'Reply this comment!',
 
     ADD_CONTENT: 'Add Content',
     ADD_CONTENT_TITLE: 'Content Title',

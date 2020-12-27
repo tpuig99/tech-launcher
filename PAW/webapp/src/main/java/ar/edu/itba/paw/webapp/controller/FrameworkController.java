@@ -439,7 +439,7 @@ public class FrameworkController {
                         dto.setCount((double)vote.get().getComment().getVotesUp());
                         return Response.ok(dto).build();
                     }
-                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+                    return Response.noContent().build();
                 }
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
@@ -469,7 +469,7 @@ public class FrameworkController {
                         dto.setCount((double)vote.get().getComment().getVotesDown());
                         return Response.ok(dto).build();
                     }
-                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+                    return Response.noContent().build();
                 }
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
