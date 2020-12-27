@@ -47,7 +47,7 @@
                     </div>
                   </div>
                 </div>
-                <div ng-if="verified.isEmpty()">{{'MOD_EMPTY_PENDING' | translate}}</div>
+                <div ng-if="arrayIsEmpty(verified)">{{'MOD_EMPTY_PENDING' | translate}}</div>
               </div>
             </div>
             <div class="col">
@@ -73,7 +73,7 @@
                     </div>
                   </div>
                 </div>
-                <div ng-if="applicants.isEmpty()">{{'MOD_EMPTY_APPLICANTS' | translate}}</div>
+                <div ng-if="arrayIsEmpty(applicants)">{{'MOD_EMPTY_APPLICANTS' | translate}}</div>
               </div>
             </div>
           </div>
@@ -102,7 +102,7 @@
                     </div>
                   </div>
                 </div>
-                <div ng-if="mods.isEmpty()">{{'MOD_NO_MODS' | translate}}</div>
+                <div ng-if="arrayIsEmpty(mods)">{{'MOD_NO_MODS' | translate}}</div>
               </div>
             </div>
           </div>
@@ -141,7 +141,7 @@
                   </div>
                 </div>
               </div>
-              <div ng-if="reportedComments.isEmpty()">{{'MOD_COMMENT_EMPTY' | translate}}</div>
+              <div ng-if="arrayIsEmpty(reportedComments)">{{'MOD_COMMENT_EMPTY' | translate}}</div>
             </div>
           </div>
           <!-- reported content -->
@@ -174,7 +174,7 @@
                 </div>
               </div>
             </div>
-            <div ng-if="reportedContents.isEmpty()">{{'MOD_CONTENT_EMPTY' | translate}}</div>
+            <div ng-if="arrayIsEmpty(reportedContents)">{{'MOD_CONTENT_EMPTY' | translate}}</div>
           </div>
         </div>
       </div>
