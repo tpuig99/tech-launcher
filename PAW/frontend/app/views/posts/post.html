@@ -29,23 +29,47 @@
         <!-- Up Vote - Down Vote section -->
         <div class="col-1 net-votes">
           <div ng-if="!isPresent">
-            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal"
-                                             data-target="#loginModal"></i></button>
-            <div>
-              <h4>{{post.votesUp - post.votesDown}}</h4>
-            </div>
-            <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal"
-                                             data-target="#loginModal"></i></button>
-          </div>
-          <div ng-if="isPresent">
-            <div ng-if="!isEnabled">
-              <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal"
-                                               data-target="#confirmMailModal"></i></button>
+            <div class="net-votes">
+              <button class="btn pt-0 pb-0">
+                <div>
+                  <i class="fa fa-2x fa-arrow-up" data-toggle="modal"
+                     data-target="#loginModal"></i>
+                </div>
+              </button>
               <div>
                 <h4>{{post.votesUp - post.votesDown}}</h4>
               </div>
-              <button class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-down" data-toggle="modal"
-                                               data-target="#confirmMailModal"></i></button>
+            </div>
+            <div class="net-votes">
+              <button class="btn pt-0 pb-0">
+                <div>
+                  <i class="fa fa-2x fa-arrow-down" data-toggle="modal"
+                     data-target="#loginModal"></i>
+                </div>
+              </button>
+            </div>
+          </div>
+          <div ng-if="isPresent">
+            <div ng-if="!isEnabled">
+              <div class="net-votes">
+                <button class="btn pt-0 pb-0">
+                  <div>
+                    <i class="fa fa-2x fa-arrow-up" data-toggle="modal"
+                       data-target="#confirmMailModal"></i>
+                  </div>
+                </button>
+                <div>
+                  <h4>{{post.votesUp - post.votesDown}}</h4>
+                </div>
+              </div>
+              <div class="net-votes">
+                <button class="btn pt-0 pb-0">
+                  <div>
+                    <i class="fa fa-2x fa-arrow-down" data-toggle="modal"
+                       data-target="#confirmMailModal"></i>
+                  </div>
+                </button>
+              </div>
             </div>
             <div ng-if="isEnabled" ng-cloak>
               <div class="net-votes">
@@ -124,26 +148,54 @@
                   <div class="col-1 net-votes">
 
                       <div ng-if="!isPresent">
-                        <button ng-if="!isPresent" class="btn pt-0 pb-0"><i class="fa fa-2x fa-arrow-up" data-toggle="modal" data-target="#loginModal"></i></button>
-                        <div>
-                          <h4>{{answer.votesUp - answer.votesDown}}</h4>
+                        <div class="net-votes">
+                          <button class="btn pt-0 pb-0">
+                            <div>
+                              <i class="fa fa-1x fa-arrow-up" data-toggle="modal"
+                                 data-target="#loginModal"></i>
+                            </div>
+                          </button>
+                          <div>
+                            <h4>{{answer.votesUp - answer.votesDown}}</h4>
+                          </div>
                         </div>
-                        <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-down" data-toggle="modal" data-target="#loginModal"></i></button>
+                        <div class="net-votes">
+                          <button class="btn pt-0 pb-0">
+                            <div>
+                              <i class="fa fa-1x fa-arrow-down" data-toggle="modal"
+                                 data-target="#loginModal"></i>
+                            </div>
+                          </button>
+                        </div>
                       </div>
                       <div ng-if="isPresent">
 
                         <div ng-if="!isEnabled">
-                          <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-up" data-toggle="modal" data-target="#confirmMailModal"></i></button>
-                          <div>
-                            <h4>{{answer.votesUp - answer.votesDown}}</h4>
+                          <div class="net-votes">
+                            <button class="btn pt-0 pb-0">
+                              <div>
+                                <i class="fa fa-1x fa-arrow-up" data-toggle="modal"
+                                   data-target="#confirmMailModal"></i>
+                              </div>
+                            </button>
+                            <div>
+                              <h4>{{answer.votesUp - answer.votesDown}}</h4>
+                            </div>
                           </div>
-                          <button class="btn pt-0 pb-0"><i class="fa fa-1x fa-arrow-down" data-toggle="modal" data-target="#confirmMailModal"></i></button>
+                          <div class="net-votes">
+                            <button class="btn pt-0 pb-0">
+                              <div>
+                                <i class="fa fa-1x fa-arrow-down" data-toggle="modal"
+                                   data-target="#confirmMailModal"></i>
+                              </div>
+                            </button>
+                          </div>
                         </div>
                         <div ng-if="isEnabled">
                           <div class="net-votes">
                             <button class="btn pt-0 pb-0" type="submit" ng-click="upVoteAnswer(answer.location)">
-                              <i ng-if="post.loggedVote > 0" class="fa fa-2x fa-arrow-up votedUp"></i>
-                              <i ng-if="post.loggedVote <= 0" class="fa fa-2x fa-arrow-up"></i>
+                              <i ng-if="post.loggedVote > 0" class="fa fa-1x fa-arrow-up votedUp"></i>
+                              <i ng-if="post.loggedVote <= 0" class="fa fa-1x fa-arrow-up"></i>
                             </button>
                             <div>
                               <h4>{{answer.votesUp - answer.votesDown}}</h4>
@@ -152,8 +204,8 @@
 
                           <div class="net-votes">
                             <button class="btn pt-0 pb-0" type="submit" ng-click="downVoteAnswer(answer.location)">
-                              <i ng-if="post.loggedVote < 0" class="fa fa-2x fa-arrow-down votedDown"></i>
-                              <i ng-if="post.loggedVote >= 0" class="fa fa-2x fa-arrow-down"></i>
+                              <i ng-if="post.loggedVote < 0" class="fa fa-1x fa-arrow-down votedDown"></i>
+                              <i ng-if="post.loggedVote >= 0" class="fa fa-1x fa-arrow-down"></i>
                             </button>
                           </div>
                         </div>
