@@ -47,11 +47,11 @@ define(['frontend'], function(frontend) {
       }
 
 
-      var url = 'explore?to_search=' + toSearchQ + categoriesQ + typesQ + '&stars_left=' + starsLeftQ + '&stars_right=' + starsRightQ + '&name_flag=' + nameFlag + '&order=' + order + '&comment_amount=' + commentAmountQ + '&last_comment=' + lastCommentQ + '&last_update=' + lastUpdateQ;
+      var url = 'explore/techs?to_search=' + toSearchQ + categoriesQ + typesQ + '&stars_left=' + starsLeftQ + '&stars_right=' + starsRightQ + '&name_flag=' + nameFlag + '&order=' + order + '&comment_amount=' + commentAmountQ + '&last_comment=' + lastCommentQ + '&last_update=' + lastUpdateQ;
 
       console.log(url);
       if (tab === 'P') {
-        url = url + '&is_post=true';
+        url = 'explore/posts?to_search=' + toSearchQ + categoriesQ + typesQ + '&order=' + order + '&comment_amount=' + commentAmountQ + '&last_comment=' + lastCommentQ + '&last_update=' + lastUpdateQ + '&is_post=true';
         return Restangular.one(url).get();
       }
 

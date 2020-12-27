@@ -152,7 +152,7 @@
         <input ng-model="nameToSearch"  class="form-control mr-sm-2" type="text" placeholder="{{'SEARCH_TITLE' | translate}}" aria-label="Search" size="80">
         <button class="btn my-2 my-sm-0 primary-button" type="button" ng-click="search()">{{'SEARCH_TITLE' | translate}}</button>
       </form>
-      <div class="form-check" id="searchByNameCheckbox">
+      <div ng-if="activeTab === 'T'" class="form-check" id="searchByNameCheckbox">
         <input ng-model="nameFlag.selected" class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
         <label class="form-check-label" for="searchOnlyByName">
           {{'EXPLORE_SEARCH_ONLY_BY_NAME' | translate}}
@@ -300,7 +300,7 @@
                 <div ng-repeat="post in posts.posts" class="card mb-3 post-card">
                   <div class="card-body">
                     <div class="row search-post-title ml-1">
-                      <a ng-href="/posts/{{post.postId}}">{{post.postTitle}}</a>
+                      <a ng-href="post.location">{{post.postTitle}}</a>
                     </div>
                     <div class="row search-post-description ml-1">{{post.postDescription}}</div>
                     <div class="row extra-info">
