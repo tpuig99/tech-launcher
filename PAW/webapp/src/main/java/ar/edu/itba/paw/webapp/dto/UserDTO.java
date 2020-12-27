@@ -13,6 +13,7 @@ public class UserDTO {
     private String password;
     private String description;
     private List<VerifyUserDTO> verifications;
+    private List<VerifyUserDTO> applications;
     private Boolean enabled;
     private Boolean allowedModeration;
     private Boolean admin;
@@ -40,13 +41,12 @@ public class UserDTO {
             dto.verifications = user.getVerifications().stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());
             dto.verify = true;
         }
+        if (user.getApplications() != null && !user.getApplications().isEmpty()) {
+            dto.applications = user.getApplications().stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());
+        }
         dto.enabled = user.isEnable();
         dto.allowedModeration = user.isAllowMod();
         dto.admin = user.isAdmin();
-//        dto.comments = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/comments").build().toString();
-//        dto.content = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/contents").build().toString();
-//        dto.votes = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/votes").build().toString();
-//        dto.techs = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/techs").build().toString();
 
         dto.comments = "users/"+user.getId()+"/comments";
         dto.content = "users/"+user.getId()+"/contents";
@@ -228,5 +228,13 @@ public class UserDTO {
 
     public void setModLocation(String modLocation) {
         this.modLocation = modLocation;
+    }
+
+    public List<VerifyUserDTO> getApplications() {
+        return applications;
+    }
+
+    public void setApplications(List<VerifyUserDTO> applications) {
+        this.applications = applications;
     }
 }

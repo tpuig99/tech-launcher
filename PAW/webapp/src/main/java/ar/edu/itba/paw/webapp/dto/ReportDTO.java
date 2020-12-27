@@ -12,7 +12,7 @@ public class ReportDTO {
     private String frameworkName;
     private String owner;
     private String reported;
-    private String location;
+    private String location, userLocation, techLocation;
 
     public static ReportDTO fromReportComment (ReportComment reportComment, UriInfo uriInfo) {
         ReportDTO dto = new ReportDTO();
@@ -21,7 +21,10 @@ public class ReportDTO {
         dto.frameworkName = reportComment.getFrameworkName();
         dto.owner = reportComment.getUserNameOwner();
         dto.reported = reportComment.getUserReporterName();
-        dto.location = "mod/reports/comment/" + reportComment.getCommentId();
+        dto.location = "mod/reports/comment/" + reportComment.getReportId();
+        dto.techLocation = "/techs/" + reportComment.getFrameworkId();
+        dto.userLocation = "/users/" + reportComment.getUserId();
+
         return dto;
     }
 
@@ -33,9 +36,26 @@ public class ReportDTO {
         dto.owner = reportContent.getUserNameOwner();
         dto.reported = reportContent.getUserReporterName();
         dto.location = "mod/reports/content/" + reportContent.getContentId();
+        dto.techLocation = "/techs/" + reportContent.getFrameworkId();
+        dto.userLocation = "/users/" + reportContent.getUserId();
         return dto;
     }
 
+    public String getUserLocation() {
+        return userLocation;
+    }
+
+    public void setUserLocation(String userLocation) {
+        this.userLocation = userLocation;
+    }
+
+    public String getTechLocation() {
+        return techLocation;
+    }
+
+    public void setTechLocation(String techLocation) {
+        this.techLocation = techLocation;
+    }
 
     public String getLocation() {
         return location;

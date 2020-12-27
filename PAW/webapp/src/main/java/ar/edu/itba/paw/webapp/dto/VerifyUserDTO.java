@@ -10,7 +10,7 @@ public class VerifyUserDTO {
     private Boolean admin;
     private Boolean pending;
     private String frameworkName;
-    private String location;
+    private String location, techLocation;
     private String description;
     private Date timestamp;
 
@@ -20,17 +20,28 @@ public class VerifyUserDTO {
         dto.admin = verifyUser.getUser().isAdmin();
         dto.pending = verifyUser.isPending();
         dto.frameworkName = verifyUser.getFrameworkName();
-        dto.location = "techs/" + verifyUser.getFramework().getId();
+        dto.techLocation = "techs/" + verifyUser.getFramework().getId();
+        dto.location = "mod/" + verifyUser.getVerificationId();
         dto.description = verifyUser.getCommentDescription();
         if( dto.description != null) {
             dto.timestamp = verifyUser.getComment().getTimestamp();
         }
         return dto;
     }
+
+    public String getTechLocation() {
+        return techLocation;
+    }
+
+    public void setTechLocation(String techLocation) {
+        this.techLocation = techLocation;
+    }
+
     public static VerifyUserDTO fromProfile(VerifyUser verifyUser) {
         VerifyUserDTO dto = new VerifyUserDTO();
         dto.frameworkName = verifyUser.getFrameworkName();
         dto.location = "techs/"+verifyUser.getFrameworkId();
+        dto.pending = verifyUser.isPending();
 
         return dto;
     }

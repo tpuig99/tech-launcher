@@ -210,8 +210,8 @@
               <div ng-if="isEnable">
 
                 <button class="btn upVote btn-link" type="submit" ng-click="upVote(comment.location)">
-                  <i ng-if="hasUserVoted(comment, username)" class="fa fa-arrow-up arrow votedUp">{{comment.votesUp}}</i>
-                  <i ng-if="!hasUserVoted(comment, username)" class="fa fa-arrow-up arrow">{{comment.votesUp}}</i>
+                  <i ng-if="hasUserVotedUp(comment, username)" class="fa fa-arrow-up arrow votedUp">{{comment.votesUp}}</i>
+                  <i ng-if="!hasUserVotedUp(comment, username)" class="fa fa-arrow-up arrow">{{comment.votesUp}}</i>
                 </button>
               </div>
             </div>
@@ -232,8 +232,8 @@
               <div ng-if="isEnable">
 
                 <button class="btn upVote btn-link" type="submit" ng-click="downVote(comment.location)">
-                  <i ng-if="hasUserVoted(comment, username)" class="fa fa-arrow-down arrow votedDown">{{comment.votesDown}}</i>
-                  <i ng-if="!hasUserVoted(comment, username)" class="fa fa-arrow-down arrow">{{comment.votesDown}}</i>
+                  <i ng-if="hasUserVotedDown(comment, username)" class="fa fa-arrow-down arrow votedDown">{{comment.votesDown}}</i>
+                  <i ng-if="!hasUserVotedDown(comment, username)" class="fa fa-arrow-down arrow">{{comment.votesDown}}</i>
                 </button>
               </div>
             </div>
@@ -244,9 +244,9 @@
             </div>
           </div>
         </div>
-        <div class="col">
+        <div class="col-11">
           <div class="row">
-            <div class="col secondary-font">
+            <div class="col d-flex secondary-font">
               <a href="#/{{comment.user.location}}">
                 <div ng-if="comment.user.username == tech.author">
                   <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip" title="{{'TECH_TOOLTIP_OWNER' | translate }}"></i>
@@ -265,7 +265,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col">
+            <div class="col d-flex">
               {{comment.description}}
             </div>
 
@@ -377,9 +377,9 @@
   </div>
 
 
-  <div class="container margin-left">
-    <div class="row">
-      <div class="col-8">
+  <div class="container">
+    <div class="row mx-2">
+      <div class="col-6">
         <div>
           <form name="commentForm">
             <div class="form-group">
@@ -434,7 +434,7 @@
       </div>
 
     </div>
-      <div ng-if="!isAdmin && username != 'anonymousUser' && allowMod && !isOwner && isEnable">
+      <div ng-if="!isAdmin && username != 'anonymousUser' && allowMod && !isOwner && isEnable && !isVerify && !verifyPending">
         <div class="d-flex justify-content-center align-items-center">
           <div class="card text-center">
             <div class="card-header subtitle"><h5>{{'TECH_APPLY_TITLE' | translate}}</h5></div>
@@ -442,7 +442,7 @@
               <p class="card-text">{{'TECH_APPLY_MESSAGE' | translate}}</p>
             </div>
             <div class="card-footer">
-              <button class="btn btn-info" ng-click="applyForMod()">{{'BUTTON_APPLY' | translate}}</button>
+              <button class="btn btn-info" ng-click="applyForMod(tech.modLocation)">{{'BUTTON_APPLY' | translate}}</button>
             </div>
           </div>
         </div>
@@ -455,7 +455,7 @@
               <p class="card-text">{{'TECH_STOP_MESSAGE' | translate}}</p>
             </div>
             <div class="card-footer">
-              <button class="btn btn-danger" ng-click="stopBeingAMod()">{{'BUTTON_STOP' | translate}}</button>
+              <button class="btn btn-danger" ng-click="stopBeingAMod(tech.modLocation)">{{'BUTTON_STOP' | translate}}</button>
             </div>
           </div>
         </div>
