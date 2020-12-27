@@ -5,13 +5,12 @@
     </div>
 
     <div class="page-description"></div>
-    <div ng-if="postForm.$invalid" class="formError" id="error"> {{'LOGIN_ERROR' | translate}} </div>
 
     <form name="postForm" enctype="application/x-www-form-urlencoded" ng-submit="editPost(postForm.postTitleInput, postForm.postDescriptionInput)" novalidate>
       <div class="form-group">
         <label for="postTitleInput">{{'POST_EDIT_ADD_TITLE' | translate}}</label>
-        <input class="form-control" id="postTitleInput" ng-model="postTitleInput" name="postTitleInput" required ng-minlength="3" ng-maxlength="200" type="text" value="{{post.postTitle}}" placeholder="{{post.postTitle}}">
-        <div ng-show="postForm.postTitleInput.$error.minlength || postForm.postTitleInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 200}'}}</div>
+        <input class="form-control" id="postTitleInput" ng-model="postTitleInput" name="postTitleInput" required ng-minlength="3" ng-maxlength="200" type="text" value="{{post.postTitle}}" placeholder="{{post.postTitle}}"/>
+        <div ng-show="postForm.postTitleInput.$error.minlength || postForm.postTitleInput.$error.maxlength" class="alert alert-danger">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 200}'}}</div>
       </div>
 
       <div class="form-group">
@@ -19,7 +18,7 @@
         <textarea  name="postDescriptionInput"  class="form-control" id="postDescriptionInput" ng-model="postDescriptionInput" required ng-maxlength="5000">
           {{post.postDescription}}
         </textarea>
-        <div ng-show="postForm.postDescriptionInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{max: 5000}'}}</div>
+        <div ng-show="postForm.postDescriptionInput.$error.maxlength" class="alert alert-danger">{{ 'FORM_ERROR_LENGTH' | translate : '{max: 5000}'}}</div>
       </div>
 
       <!-- Tags Start -->
@@ -60,6 +59,10 @@
             </select>
           </div>
         </div>
+      </div>
+
+      <div ng-if="tagsEmpty()" class="alert alert-danger">
+        {{'POST_TAGS' | translate}}
       </div>
 
       <div class="row">
