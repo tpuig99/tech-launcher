@@ -115,7 +115,7 @@
                 <div ng-if="isAdmin || isOwner || answer.user.username == username">
                   <div class="row">
                       <span class="col d-flex justify-content-end align-items-end">
-                          <button class="btn btn-link" ng-click="setDel(answer.location)"  data-toggle="modal" data-target="#deletePostModal"><i class="fa fa-trash"></i></button>
+                          <button class="btn btn-link" ng-click="setDel(answer.location)"  data-toggle="modal" data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
                       </span>
                   </div>
                 </div>
@@ -224,7 +224,7 @@
   </div>
 
 
-  <modal-delete-post del="deletePost" clean="cleanDel"></modal-delete-post>
+   <modal-delete-post del="deletePost" clean="cleanDel"></modal-delete-post>
   <delete-comment-modal del="deleteAnswer" clean="cleanDel"></delete-comment-modal>
   <modal-login></modal-login>
   <mail-modal></mail-modal>
