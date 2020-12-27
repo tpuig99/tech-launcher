@@ -20,7 +20,7 @@ define(['frontend', 'services/sessionService'], function(frontend) {
               $scope.$parent.checkUser();
 
              // $location.path('/');
-             $window.location.href = "/";
+             $window.location.href = '/';
             }
         }, function(response) {
           $scope.failedLogin = true;
