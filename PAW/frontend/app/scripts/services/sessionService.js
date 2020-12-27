@@ -39,10 +39,12 @@ define(['frontend'], function(frontend) {
       return Restangular.all('register/forgot_password').post(mail);
     };
 
+    this.confirmRegister = (token) => {
+      return Restangular.one('register/confirm?token=' + token).get()
+    }
+
     /* Change Password */
     this.changePassword = function(token, password) {
-      console.log(token);
-      console.log(password);
       var newPassword = {
         'token': token,
         'password': password

@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
         tokenDao.insert(user.getId(),token);
         String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
                 "\r\n" +
-                appUrl + "/confirm?token=" + token;
+                appUrl + "/confirm/" + token;
         sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 
@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
         verificationToken.ifPresent(value -> tokenDao.change(value, token));
         String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
                 "\r\n" +
-                appUrl + "/confirm?token=" + token;
+                appUrl + "/confirm/" + token;
         sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 

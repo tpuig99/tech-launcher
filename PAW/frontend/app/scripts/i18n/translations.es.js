@@ -125,6 +125,16 @@ define([], function() {
     REGISTER_SUCCESS: '¡Te registraste correctamente! Por favor ingresa a tu mail para verificar tu usuario',
     REGISTER_ERROR_EMAIL_STATUS: 'Tu mail no está confirmado',
     REGISTER_ERROR_CONFIRM_EMAIL: 'Por favor, confirme su mail para continuar.',
+    REGISTER_SUCCESS_EMAIL_SENT:'Le hemos enviado un mail a su casilla para verificar su cuenta. Aquí hay un botón para ir a la pagina de Inicio',
+    REGISTER_SUCCESS_ACCOUNT_CREATED:'Cuenta creada exitosamente!',
+    REGISTER_SUCCESS_EMAIL_VALIDATED:'Su mail ha sido confirmado!',
+    REGISTER_SUCCESS_ACCOUNT_VALIDATED:'Ahora, eres un usuario de Tech Launcher! Presiona el boton Inicio y comienza a contribuir a nuestra comunidad',
+    REGISTER_SUCCESS_EMAIL_RESENT:'Aquí hay un botón que lleva a la página de inicio, para que comiences a explorar',
+    REGISTER_SUCCESS_ACCOUNT_RESENT:'Mail de verificación enviado',
+    REGISTER_CHANGE_PASSWORD_TITLE:'Contraseña cambiada',
+    REGISTER_CHANGE_PASSWORD_MESSAGE:'Mail enviado! Clickea en el link para finalizar el cambio de tu contraseña',
+
+
     POST_TITLE: 'Pregunta',
     POST_NO_ANSWERS_YET: 'No hay respuestas aún',
     POST_ANSWER_YOURSELF: 'Añade una respuesta !',
