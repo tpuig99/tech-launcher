@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend', 'services/sessionService'], function(frontend) {
 
-    frontend.controller('LoginCtrl', function($scope, $http, $location, $localStorage, $sessionStorage, sessionService,Restangular) {
+    frontend.controller('LoginCtrl', function($scope, $window, $http, $location, $localStorage, $sessionStorage, sessionService,Restangular) {
 
       $scope.failedLogin = false;
       $scope.rememberMe = false;
@@ -19,7 +19,8 @@ define(['frontend', 'services/sessionService'], function(frontend) {
               // $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
               $scope.$parent.checkUser();
 
-              $location.path('/');
+             // $location.path('/');
+             $window.location.href = "/";
             }
         }, function(response) {
           $scope.failedLogin = true;
