@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend', 'services/postService', 'services/sessionService'], function(frontend) {
 
-    frontend.controller('PostCtrl', function($scope, $location, $window, $routeParams, postService, $sessionStorage,Restangular, sessionService, $localStorage) {
+    frontend.controller('PostCtrl', function($scope, $location, $window,$rootScope, $routeParams, postService, $sessionStorage,Restangular, sessionService, $localStorage) {
 
       $scope.isPresent = false;
       $scope.$parent.$watch('username',function () {
@@ -65,8 +65,11 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
 
       };
 
-      $scope.redirect = function(url) {
-        $location.path(url);
+      $scope.redirectToExplore = function(tag, type) {
+
+        $rootScope.tagToSearch = tag;
+        $rootScope.tagType = type;
+        $window.location.href = '/#/explore';
       };
 
       $scope.setDel = function (url) {
@@ -79,7 +82,7 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       $scope.deletePost = function() {
         postService.deletePost($scope.toDel).then(function() {
           $('#deletePostModal').modal('hide');
-          $location.path('/#/posts');
+          $window.location.href = '/#/posts';
         });
 
 

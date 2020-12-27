@@ -73,7 +73,7 @@
           <div class="row extra-info">
             <!-- Tags section -->
             <div class="col-9 tags">
-                <button ng-repeat="tag in post.postTags" class="badge badge-color ml-1" ng-click="redirect('/explore')">
+                <button ng-repeat="tag in post.postTags" class="badge badge-color ml-1" ng-click="redirectToExplore(tag.tagName, tag.type)">
                       <span ng-switch="tag.type">
                           <span ng-switch-when="tech_category">
                               {{'CATEGORY_' + tag.tagName | uppercase | translate}}

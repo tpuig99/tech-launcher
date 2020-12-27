@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend', 'services/exploreService', 'services/techsService'], function(frontend) {
 
-    frontend.controller('ExploreCtrl', function($scope, exploreService,techsService) {
+    frontend.controller('ExploreCtrl', function($scope, $rootScope, exploreService,techsService) {
 
       /* Hide search bar in navbar */
       $scope.$parent.searchPage = true;
@@ -15,6 +15,36 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
          $scope.techsPaging = response.headers('link');
          $scope.navbarNameToSearch = $scope.$parent.navbarSearch;
        });
+     }else if($rootScope.tagToSearch !== undefined){
+       $scope.isExplore = false;
+       var techTab = document.getElementById("techs");
+       var postTab = document.getElementById("posts");
+       techTab.classList.remove("active");
+       postTab.classList.add("active");
+
+       switch ($rootScope.tagType) {
+         case 'tech_type':
+           exploreService.search('P', '', $scope.categories, $rootScope.tagToSearch, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
+             $scope.posts = response.data;
+             $scope.postsPaging = response.headers('link');
+           });
+           break;
+         case 'tech_category':
+           exploreService.search('P', '', $rootScope.tagToSearch, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
+             $scope.posts = response.data;
+             $scope.postsPaging = response.headers('link');
+           });
+           break;
+         default:
+           exploreService.search('P', $rootScope.tagToSearch, $scope.categories , $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
+             $scope.posts = response.data;
+             $scope.postsPaging = response.headers('link');
+             $scope.navbarNameToSearch = $rootScope.tagToSearch;
+           });
+
+       }
+
+
      } else {
        $scope.isExplore = true;
        exploreService.getTechs().then(function (response) {
@@ -64,6 +94,7 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
           }
 
           $scope.navbarNameToSearch = undefined;
+          $rootScope.tagToSearch = undefined;
         });
       };
 
@@ -106,6 +137,7 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       $scope.$on('$destroy',function() {
          $scope.$parent.searchPage = false;
          $scope.$parent.navbarSearch = undefined;
+         $rootScope.tagToSearch = undefined;
       });
 
 
