@@ -24,7 +24,6 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           if ($scope.userVerifications !== undefined && $scope.userVerifications.length > 0) {
             let verification;
             for (verification of $scope.userVerifications) {
-              console.log(verification);
               if (verification.frameworkName === $scope.tech.name) {
                 if (!verification.pending) {
                   $scope.isVerify = true;
@@ -55,7 +54,6 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         if ($scope.userVerifications !== undefined && $scope.userVerifications.length > 0) {
           let verification;
           for (verification of $scope.userVerifications) {
-            console.log(verification);
             if (verification.frameworkName === $scope.tech.name) {
               if (!verification.pending) {
                 $scope.isVerify = true;
@@ -130,9 +128,11 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
     $scope.isReporter = function (data, username) {
       let report;
-      for (report of data.reports) {
-        if (report.reported === username) {
-          return true;
+      if (data.reports !== undefined && data.reports.length > 0) {
+        for (report of data.reports) {
+          if (report.reported === username) {
+            return true;
+          }
         }
       }
       return false;
