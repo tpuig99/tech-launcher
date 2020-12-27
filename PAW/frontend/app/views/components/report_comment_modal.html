@@ -14,8 +14,8 @@
         <form name="commentReportForm">
 
           <div class="form-group">
-            <label for="description">{{'TECH_REPORT_DESCRIPTION' | translate}}</label>
-            <input class="form-control" type="text" id="description" ng-model="descriptionInput" name="descriptionInput" required ng-minlength="4" ng-maxlength="500" placeholder="{{'ADD_CONTENT_TITLE_PLACEHOLDER' | translate}}"/>
+            <label for="commentDescription">{{'TECH_REPORT_DESCRIPTION' | translate}}</label>
+            <input class="form-control" type="text" id="commentDescription" ng-model="descriptionInput" name="descriptionInput" required ng-minlength="4" ng-maxlength="500" placeholder="{{'ADD_CONTENT_TITLE_PLACEHOLDER' | translate}}"/>
             <div ng-show="commentReportForm.descriptionInput.$dirty && commentReportForm.descriptionInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
             <div ng-show="commentReportForm.descriptionInput.$error.minlength || commentReportForm.descriptionInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 4, max: 500}'}}</div>
           </div>

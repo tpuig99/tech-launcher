@@ -13,6 +13,8 @@ define(['frontend','services/techsService','services/sessionService'], function(
       });
     }
 
+    $scope.category = $routeParams.category
+
     techsService.getCategories().then(function (cats) {
       $scope.categories = cats.data;
     });
@@ -20,7 +22,12 @@ define(['frontend','services/techsService','services/sessionService'], function(
 
     techsService.getByCategory($routeParams.category).then( function (techs) {
       $scope.techs = techs.data;
+      $scope.pagingLinks = techs.headers('link');
     });
 
+    $scope.setData = function(response) {
+      $scope.techs = response.data;
+      $scope.pagingLinks = response.headers('link');
+    };
   });
 });

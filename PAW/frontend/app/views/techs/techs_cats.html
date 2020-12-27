@@ -1,13 +1,13 @@
 <div ng-controller="TechsCatCtrl">
   <div class="sidenav overflow-auto">
     <div ng-repeat="category in categories">
-      <a href="#/{{category.location}}">{{ "CATEGORY_" + category.category | uppercase | translate}}</a>
+      <a href="#/{{category.location}}">{{ "CATEGORY_" + (category.category | uppercase) | translate}}</a>
     </div>
   </div>
 
   <div class="content">
     <div class="page-title">
-      <h2>HOLA</h2>
+      <h2>{{ "CATEGORY_" + (category | uppercase) | translate}}</h2>
     </div>
     <div class="page-description">
     </div>
@@ -33,5 +33,7 @@
         </div>
       </div>
     </div>
+    <!-- Pagination -->
+    <pagination ng-if="pagingLinks != undefined" class="d-flex justify-content-center mt-2" paging="{{pagingLinks}}"></pagination>
   </div>
 </div>

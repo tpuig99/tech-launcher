@@ -1,6 +1,6 @@
 <div ng-controller="TechCtrl">
   <div class="sidenav overflow-auto">
-    <div ng-repeat="category in categories">
+    <div ng-repeat="category in categories track by $index">
       <a href="#/{{category.location}}">{{ "CATEGORY_" + category.category | uppercase | translate}}</a>
     </div>
   </div>
@@ -103,7 +103,7 @@
     <div class="container no-overflow-x">
       <h4 class="subtitle margin-left">{{'TECH_CONTENT_BIBLIOGRAPHY' | translate }}</h4>
       <ul class="margin-bottom list-group margin-left list-group-flush description">
-        <li ng-repeat="book in tech.books" class="list-group-item">
+        <li ng-repeat="book in tech.books  track by $index" class="list-group-item">
           <div class="row">
             <div class="col-10">
               <a target="_blank" href="{{book.link}}">{{book.title}}</a>
@@ -134,7 +134,7 @@
 
       <ul class=" margin-bottom list-group margin-left list-group-flush description">
 
-        <li ng-repeat="course in tech.courses" class="list-group-item">
+        <li ng-repeat="course in tech.courses  track by $index" class="list-group-item">
           <div class="row">
             <div class="col-10">
               <a target="_blank" href="{{course.link}}">{{course.title}}</a>
@@ -164,7 +164,7 @@
     <div class="container no-overflow-x">
       <h4 class="subtitle margin-left">{{'TECH_CONTENT_TUTORIALS' | translate }}</h4>
       <ul class="  margin-bottom list-group margin-left list-group-flush description">
-        <li ng-repeat="tutorial in tech.tutorials" class="list-group-item">
+        <li ng-repeat="tutorial in tech.tutorials  track by $index" class="list-group-item">
           <div class="row">
             <div class="col-10">
               <a target="_blank" href="{{tutorial.link}}">{{tutorial.title}}</a>
@@ -198,7 +198,7 @@
     </div>
 
     <div class="container d-flex">
-      <div ng-repeat="comment in tech.comments" class="row margin-left margin-bottom">
+      <div ng-repeat="comment in tech.comments  track by $index" class="row margin-left margin-bottom">
         <div class="col-1">
           <div>
             <div ng-if="username != 'anonymousUser'">
@@ -313,7 +313,7 @@
               <div>{{'TECH_COMMENT_NO_REPLIES' | translate }}</div>
             </div>
             <div ng-if="comment.replies.length > 0">
-                <div ng-repeat="reply in comment.replies" class="row margin-left">
+                <div ng-repeat="reply in comment.replies track by $parent.$index--$index" class="row margin-left">
                   <div class="row d-flex align-items-center ">
                     <div class="vertical-divider margin-left">
                       <div class="padding-left">
@@ -351,8 +351,8 @@
           <div class="row collapse multi-collapse" id="Reply--{{$index}}">
             <form name="replyForm">
               <div class="form-group">
-                <label for="replyComment"> {{'TECH_REPLY_COMMENT' | translate}}</label>
-                <input class="form-control" type="text" id="replyComment" ng-model="commentInput" name="commentInput" required ng-minlength="3" ng-maxlength="100" placeholder="{{'TECH_REPLY_PLACEHOLDER' | translate}}"/>
+                <label for="replyComment--{{$index}}"> {{'TECH_REPLY_COMMENT' | translate}}</label>
+                <input class="form-control" type="text" id="replyComment--{{$index}}" ng-model="commentInput" name="commentInput" required ng-minlength="3" ng-maxlength="100" placeholder="{{'TECH_REPLY_PLACEHOLDER' | translate}}"/>
                 <div ng-show="registerForm.commentInput.$dirty && registerForm.commentInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
                 <div ng-show="registerForm.commentInput.$error.minlength || registerForm.commentInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 100}'}}</div>
               </div>
@@ -469,7 +469,7 @@
     </div>
 
     <div class="container d-flex">
-        <div ng-repeat="competitor in tech.competitors" class="card mini-card mx-3 mb-4">
+        <div ng-repeat="competitor in tech.competitors track by $index" class="card mini-card mx-3 mb-4">
           <a href="{{competitor.location}}">
           <div class="card-body d-flex align-items-center justify-content-center">
             <div ng-if="competitor.hasPicture" >
