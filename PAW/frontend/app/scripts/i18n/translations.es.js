@@ -270,7 +270,7 @@ define([], function() {
     MOD_PROMOTE_DESCRIPTION:'Aquí puedes promover personas a moderador, o ignorar la petición',
     MOD_DEMOTE_DESCRIPTION:'Aqúi puedes remover de moderador a personas',
     MOD_SEE_REPORTS_DESCRIPTION:'Aquí puedes ver el contenido reportado y puedes lo remover, o ignorar',
-    MOD_SEE_REPORTS:'VER REPORTES',
+    MOD_SEE_REPORTS:'Reportes',
     MOD_MODERATION_PANEL:'Panel de Moderación'
 	};
 });

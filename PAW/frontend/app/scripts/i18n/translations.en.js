@@ -261,7 +261,7 @@ define([], function () {
     MOD_PROMOTE_DESCRIPTION:'Here you can promote a person to moderator or ignore the petition',
     MOD_DEMOTE_DESCRIPTION:'Here you can demote a person from being a moderator',
     MOD_SEE_REPORTS_DESCRIPTION:'Here you can see the content that has been reported and delete it or ignore the petition',
-    MOD_SEE_REPORTS:'SEE REPORTS',
+    MOD_SEE_REPORTS:'Reports',
     MOD_MODERATION_PANEL:'Moderation Panel'
   };
 });
