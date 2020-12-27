@@ -218,10 +218,10 @@ public class ExploreController {
         List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == 0 ? 1 : page);
         searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated);
         LOGGER.info("Explore: Found {} matching techs", searchResultsNumber);
-
+        int pages = (int) Math.ceil(((double)searchResultsNumber)/TECHS_PAGE_SIZE);
         search.setFrameworksAmount(searchResultsNumber);
         search.setFrameworks(frameworks.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
-        return pagination(uriInfo, page == 0 ? 1 : page, searchResultsNumber, search);
+        return pagination(uriInfo, page == 0 ? 1 : page, pages, search);
         /* -------------------------------------------------- */
     }
 
@@ -381,10 +381,10 @@ public class ExploreController {
         List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
         searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order);
         LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
-
+        int pages = (int) Math.ceil(((double)searchResultsNumber)/POSTS_PAGE_SIZE);
         search.setPosts(posts.stream().map((Post post) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList()));
         search.setPostsAmount(searchResultsNumber);
-        return pagination(uriInfo, page == 0 ? 1 : page, searchResultsNumber, search);
+        return pagination(uriInfo, page == 0 ? 1 : page, pages, search);
         /* -------------------------------------------------- */
     }
 
