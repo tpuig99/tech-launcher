@@ -5,20 +5,27 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
     $scope.isPresent = false;
     $scope.isVerify = false;
+    $scope.verifyPending = false;
     $scope.isOwner = false;
 
-    var user = sessionService.getStorageUser();
+    $scope.getUser = function () {
+      var user = sessionService.getStorageUser();
 
-    if (user !== undefined) {
-      sessionService.getCurrentUser(user.location).then(function (response) {
-        $scope.username = response.data.username;
-        $scope.isMod = response.data.verify;
-        $scope.isAdmin = response.data.admin;
-        $scope.isEnable = response.data.enabled;
-        $scope.isPresent = true;
-        $scope.userVerifications = response.data.verifications;
-      });
+      if (user !== undefined) {
+        sessionService.getCurrentUser(user.location).then(function (response) {
+          $scope.username = response.data.username;
+          $scope.isMod = response.data.verify;
+          $scope.isAdmin = response.data.admin;
+          $scope.isEnable = response.data.enabled;
+          $scope.allowMod = response.data.allowedModeration;
+          $scope.isPresent = true;
+          $scope.userVerifications = response.data.verifications;
+          console.log($scope.userVerifications);
+        });
+      }
     }
+
+    $scope.getUser();
 
     $scope.getTech = function() {
 
@@ -29,13 +36,21 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           $scope.isOwner = true;
         }
 
+        console.log("En tech:" + $scope.userVerifications);
         if ($scope.userVerifications !== undefined && $scope.userVerifications.length > 0) {
           let verification;
           for (verification of $scope.userVerifications) {
-            console.log("verification:" + verification);
-            if (!verification.pending && verification.frameworkName === $scope.tech.name) {
-              $scope.isVerify = true;
+            console.log(verification);
+            if (verification.frameworkName === $scope.tech.name) {
+              if (!verification.pending) {
+                $scope.isVerify = true;
+                $scope.verifyPending = false;
+              } else {
+                $scope.isVerify = false;
+                $scope.verifyPending = true;
+              }
             }
+
           }
         }
 
@@ -62,7 +77,6 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         techsService.getData($scope.tech.competitors).then(function (competitors) {
           $scope.tech.competitors = competitors.data;
         });
-
       });
     };
 
@@ -107,10 +121,6 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         }
       }
       return false;
-    }
-
-    $scope.logAll = function (p1, p2, p3, p4) {
-      console.log("p1: " + p1 + "   p2: " + p2 + "     p3: " + p3 + "    p4: "+ p4);
     }
 
     $scope.setDel = function (url) {
@@ -201,7 +211,30 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       })
     }
 
-    $scope.hasUserVoted = function (comment, username) {
+    $scope.hasUserVotedUp = function (comment, username) {
+      let commentVote;
+      if (comment.votes == null) {
+        return false;
+      }
+      for (commentVote of comment.votes) {
+        if (commentVote.voter === username && commentVote.value > 0) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    $scope.hasUserVotedDown = function (comment, username) {
+      let commentVote;
+      if (comment.votes == null) {
+        return false;
+      }
+
+      for (commentVote of comment.votes) {
+        if (commentVote.voter === username && commentVote.value < 0) {
+          return true;
+        }
+      }
       return false;
     }
 
@@ -225,46 +258,24 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       });
     };
 
-    //
-    // $scope.rateTech = function(stars) {
-    //   techsService.rateTech($scope.post.location, stars).then($scope.getTech());
-    // };
-    //
-    // $scope.upVoteComment = function(location) {
-    //   techsService.upVoteComment(location).then($scope.getComments());
-    // };
-    //
-    // $scope.downVoteComment = function(location) {
-    //   techsService.downVoteComment(location).then($scope.getComments());
-    // };
-    //
-    // $scope.commentTech = function(answer) {
-    //   techsService.commentTech($routeParams.id, answer).then(function () {
-    //     $scope.getPost();
-    //     $scope.getAnswers();
-    //   });
-    // };
-    //
-    // $scope.addContentTech = function(title, category, link) {
-    //   techsService.addContentTech($routeParams.id, title, category, link).then(function () {
-    //     $scope.getTech();
-    //     switch (category) {
-    //       case 'bibliography': $scope.getBibliography(); break;
-    //       case 'course': $scope.getCourses(); break;
-    //       case 'tutorial': $scope.getTutorials(); break;
-    //       default: break;
-    //     }
-    //   });
-    // };
+    $scope.applyForMod = function (location) {
+      techsService.applyForMod(location).then(function (response) {
+        if (response.status === 200) {
+          $scope.getUser();
+          $scope.getTech();
+        }
+      })
+    };
 
-    // $scope.setData = function(response) {
-    //   $scope.answers = response.data;
-    //   $scope.pagingLinks = response.headers('link');
-    // };
+    $scope.stopBeingAMod = function (location) {
+      techsService.stopBeingAMod(location).then(function (response) {
+        if (response.status === 200) {
+          $scope.getUser();
+          $scope.getTech();
+        }
+      })
+    };
 
-    // $('#deleteCommentModal').on('hide.bs.modal',function () {
-    //   $scope.cleanDel();
-    // });
   });
 
 });

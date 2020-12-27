@@ -20,6 +20,7 @@ public class CommentDTO {
     private String reportLocation;
     private String techName;
     private List<ReportDTO> reports;
+    private List<CommentVoteDTO> votes;
 
     public static CommentDTO fromComment(Comment comment, UriInfo uriInfo) {
         final CommentDTO dto = new CommentDTO();
@@ -31,6 +32,9 @@ public class CommentDTO {
         dto.votesDown = comment.getVotesDown();
         if(comment.getReplies() != null)
             dto.replies = comment.getReplies().stream().map((Comment comment1) -> fromComment(comment1,uriInfo)).collect(Collectors.toList());
+        if(!comment.getCommentVotes().isEmpty()) {
+            dto.votes = comment.getCommentVotes().stream().map(CommentVoteDTO::fromCommentVote).collect(Collectors.toList());
+        }
         dto.location = "techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId();
         dto.reportLocation = dto.location + "/report";
         if (comment.getReports() != null) {
@@ -139,5 +143,13 @@ public class CommentDTO {
 
     public void setReportLocation(String reportLocation) {
         this.reportLocation = reportLocation;
+    }
+
+    public List<CommentVoteDTO> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<CommentVoteDTO> votes) {
+        this.votes = votes;
     }
 }

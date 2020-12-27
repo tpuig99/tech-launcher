@@ -29,6 +29,7 @@ public class VerifyUserDTO {
         VerifyUserDTO dto = new VerifyUserDTO();
         dto.frameworkName = verifyUser.getFrameworkName();
         dto.location = "techs/"+verifyUser.getFrameworkId();
+        dto.pending = verifyUser.isPending();
 
         return dto;
     }

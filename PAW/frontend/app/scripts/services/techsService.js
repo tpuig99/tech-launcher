@@ -113,5 +113,13 @@ define(['frontend'], function(frontend) {
         .customPUT(fd, '', undefined, {'Content-Type': undefined});
     };
 
+    this.applyForMod = function (location) {
+      return Restangular.all(location).post();
+    };
+
+    this.stopBeingAMod = function (location) {
+      return Restangular.one(location).remove();
+    };
+
   });
 });

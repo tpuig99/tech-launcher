@@ -36,17 +36,13 @@ public class UserDTO {
         dto.description = user.getDescription();
         dto.mail = user.getMail();
         dto.verify = false;
-        if (user.getVerifications() != null && !user.getVerifications().isEmpty()) {
-            dto.verifications = user.getVerifications().stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());
+        if (user.getApplications() != null && !user.getApplications().isEmpty()) {
+            dto.verifications = user.getApplications().stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());
             dto.verify = true;
         }
         dto.enabled = user.isEnable();
         dto.allowedModeration = user.isAllowMod();
         dto.admin = user.isAdmin();
-//        dto.comments = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/comments").build().toString();
-//        dto.content = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/contents").build().toString();
-//        dto.votes = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/votes").build().toString();
-//        dto.techs = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/techs").build().toString();
 
         dto.comments = "users/"+user.getId()+"/comments";
         dto.content = "users/"+user.getId()+"/contents";

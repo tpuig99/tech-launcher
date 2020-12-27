@@ -14,7 +14,7 @@ public class FrameworkDTO {
     private String type;
     private String date;
     private Integer votesCant;
-    private Double stars;
+    private Float stars;
     private Integer commentsAmount;
     private String comments;
     private String books;
@@ -25,6 +25,7 @@ public class FrameworkDTO {
     private String relatedPosts;
     private Boolean hasPicture;
     private String competitors;
+    private String modLocation;
     private int loggedStars;
 
     public static FrameworkDTO fromFramework(Framework framework, UriInfo uriInfo) {
@@ -38,7 +39,7 @@ public class FrameworkDTO {
         dto.type = framework.getType().name();
         dto.date = framework.getPublishDate().toLocaleString();
         dto.votesCant = framework.getVotesCant();
-        dto.stars = framework.getStars();
+        dto.stars = (float) framework.getStars();
         dto.commentsAmount = framework.getCommentsAmount();
         dto.hasPicture = framework.getPicture() != null;
         dto.location = "techs/"+framework.getId();
@@ -49,6 +50,7 @@ public class FrameworkDTO {
         dto.tutorials = "techs/"+framework.getId()+"/content?type=tutorial";
         dto.relatedPosts = "explore?toSearch="+framework.getName()+"&isPost=true";
         dto.competitors = "techs/"+framework.getId()+"/competitors";
+        dto.modLocation = "mod/tech/"+framework.getId();
         return dto;
     }
 
@@ -58,7 +60,7 @@ public class FrameworkDTO {
         dto.hasPicture = framework.getPicture() != null;
         dto.picture = "techs/"+framework.getId()+"/image";
         dto.location = "techs/"+framework.getId();
-        dto.stars = framework.getStars();
+        dto.stars = (float) framework.getStars();
         return dto;
     }
 
@@ -102,7 +104,7 @@ public class FrameworkDTO {
         return votesCant;
     }
 
-    public Double getStars() {
+    public Float getStars() {
         return stars;
     }
 
@@ -169,7 +171,7 @@ public class FrameworkDTO {
         this.votesCant = votesCant;
     }
 
-    public void setStars(Double stars) {
+    public void setStars(Float stars) {
         this.stars = stars;
     }
 
@@ -227,5 +229,13 @@ public class FrameworkDTO {
 
     public void setLoggedStars(int loggedStars) {
         this.loggedStars = loggedStars;
+    }
+
+    public String getModLocation() {
+        return modLocation;
+    }
+
+    public void setModLocation(String modLocation) {
+        this.modLocation = modLocation;
     }
 }
