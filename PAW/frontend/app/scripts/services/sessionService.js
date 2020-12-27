@@ -52,6 +52,10 @@ define(['frontend'], function(frontend) {
       return Restangular.all('users/password').post(newPassword);
     };
 
+    this.requestNewToken = () => {
+      return Restangular.one('register/resend_token').post();
+    }
+
     this.getStorageUser = function() {
       var user;
       if ($localStorage.remember.me) {

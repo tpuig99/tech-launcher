@@ -9,10 +9,28 @@ define(['frontend', 'services/sessionService'], function(frontend) {
         $scope.registerConfirmed = true;
         $scope.title = $filter('translate')('REGISTER_SUCCESS_EMAIL_VALIDATED');
         $scope.message = $filter('translate')('REGISTER_SUCCESS_ACCOUNT_VALIDATED');
+        $scope.button = $filter('translate')('BUTTON_GO_HOME')
+        $scope.status = response.status;
+      }
+    }).catch((error) => {
+      if(error.status === 410 ){
+        $scope.title = $filter('translate')('REGISTER_REQUEST_NEW_TOKEN_TITLE');
+        $scope.message = $filter('translate')('REGISTER_REQUEST_NEW_TOKEN_DESCRIPTION');
+        $scope.button = $filter('translate')('BUTTON_REQUEST_NEW_TOKEN')
+        $scope.status = error.status;
       }
     });
     $scope.goHome = () => {
-      $location.path('/')
+      if( $scope.status === 200 ) {
+        $location.path('/');
+      } else if( $scope.status === 410 ) {
+        sessionService.requestNewToken().then((response) => {
+          $scope.title = $filter('translate')('REGISTER_SUCCESS_ACCOUNT_RESENT');
+          $scope.message = $filter('translate')('REGISTER_SUCCESS_EMAIL_RESENT');
+          $scope.button = $filter('translate')('BUTTON_GO_HOME')
+          $scope.status = response.status;
+        })
+      }
     }
   });
 });

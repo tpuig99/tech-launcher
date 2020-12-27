@@ -42,6 +42,7 @@ define([], function () {
     BUTTON_LOADING: 'Loading',
     BUTTON_GO_HOME: 'Go Home',
     BUTTON_RATE: 'Rate',
+    BUTTON_REQUEST_NEW_TOKEN: 'Get new Confirmation Token',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
@@ -124,6 +125,9 @@ define([], function () {
     REGISTER_SUCCESS_ACCOUNT_RESENT:'Verification email resent',
     REGISTER_CHANGE_PASSWORD_TITLE:'Password changed',
     REGISTER_CHANGE_PASSWORD_MESSAGE:'Email sent! Click on the link to finish changing your password',
+    REGISTER_REQUEST_NEW_TOKEN_TITLE: 'The token has expired!',
+    REGISTER_REQUEST_NEW_TOKEN_DESCRIPTION: 'Your token\'s time has passed. Want to get a new token?',
+
 
     POST_TITLE: 'Post',
     POST_NO_ANSWERS_YET: 'There are no answers yet',

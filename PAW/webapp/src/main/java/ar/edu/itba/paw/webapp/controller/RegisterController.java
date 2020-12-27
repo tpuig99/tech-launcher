@@ -117,7 +117,7 @@ public class RegisterController {
 
                 if ((verificationToken.get().getExpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
                     LOGGER.error("Register: Verification token for user {} expired", user.get().getId());
-                    return Response.status(Response.Status.NOT_FOUND).build();
+                    return Response.status(Response.Status.GONE).build();
                 }
 
                 user.get().setEnable(true);

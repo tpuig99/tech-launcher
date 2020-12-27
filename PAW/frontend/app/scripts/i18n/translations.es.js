@@ -52,6 +52,7 @@ define([], function() {
     BUTTON_LOADING: 'Cargando',
     BUTTON_GO_HOME: 'Ir al Home',
     BUTTON_RATE: 'Puntuar',
+    BUTTON_REQUEST_NEW_TOKEN: 'Obtener nuevo Token de Confirmación',
 
     SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
@@ -133,6 +134,8 @@ define([], function() {
     REGISTER_SUCCESS_ACCOUNT_RESENT:'Mail de verificación enviado',
     REGISTER_CHANGE_PASSWORD_TITLE:'Contraseña cambiada',
     REGISTER_CHANGE_PASSWORD_MESSAGE:'Mail enviado! Clickea en el link para finalizar el cambio de tu contraseña',
+    REGISTER_REQUEST_NEW_TOKEN_TITLE: 'Su token ha expirado!',
+    REGISTER_REQUEST_NEW_TOKEN_DESCRIPTION: 'Ya ha pasado suficiente tiempo como para poder validar su token. Desea obtener uno nuevo?',
 
 
     POST_TITLE: 'Pregunta',
