@@ -40,6 +40,7 @@ define([], function () {
     BUTTON_RESEND: 'Resend',
     BUTTON_STOP_BEING_MOD: 'Stop being a mod',
     BUTTON_LOADING: 'Loading',
+    BUTTON_GO_HOME: 'Go Home',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
@@ -106,6 +107,7 @@ define([], function () {
     LOGIN_EMAIL_SENT: 'Email Sent ! Please check your inbox in order to change your password',
     LOGIN_PASSWORD_CHANGED: 'Your password has been changed successfully !',
     LOGIN_GO_LOGIN: 'Go to Log In',
+    LOGIN_CHANGE_SUCCESS: 'Success!',
 
     REGISTER_UAE: 'We are sorry ! This user already exists. Try another username or email',
     REGISTER_WREF: 'Tech Launcher - Sign Up',

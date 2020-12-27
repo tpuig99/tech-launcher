@@ -50,6 +50,7 @@ define([], function() {
     BUTTON_APPLY: 'Aplicar',
     BUTTON_STOP: 'Parar',
     BUTTON_LOADING: 'Cargando',
+    BUTTON_GO_HOME: 'Ir al Home',
 
     SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
