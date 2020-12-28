@@ -28,8 +28,7 @@ nav a:hover {
 }
 
 .sidenav {
-  position: fixed;
-  height: 100%;
+  position: relative;
   width: 13.5em;
   left: 0;
   background-color: #733bce;
@@ -52,7 +51,7 @@ nav a:hover {
 }
 
 .content {
-  margin-left: 13.5em;
+  margin-left: 1em;
   margin-right: 1em;
   padding-left: 10px;
   padding-top: 10px;
