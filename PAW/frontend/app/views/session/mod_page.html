@@ -3,7 +3,7 @@
     <div class="page-title-big row">{{'MOD_WREF' | translate}}</div>
 
     <!-- Mods managing -->
-    <div class="container">
+    <div>
       <ul class="nav nav-tabs" id="mod-tab">
         <li class="nav-item">
           <a class="nav-link" href="#promote" data-toggle="tab" role="tab" aria-controls="promote" aria-selected="true">{{'BUTTON_PROMOTE' | translate}}</a>
@@ -59,7 +59,7 @@
               <div class="page-description"></div>
               <div class="d-flex flex-wrap justify-content-center">
                 <div ng-repeat="applicant in applicants">
-                  <div class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
+                  <div class="card emphasis emph-comment mb-2 applicant mx-2">
                     <div class="card-body mt-1">
                       <div class="secondary-font"><a href="#/{{applicant.location}}">{{applicant.username}}</a>
                         /
@@ -93,7 +93,7 @@
               <div class="page-description"></div>
               <div class="d-flex flex-wrap justify-content-center">
                 <div ng-repeat="moderator in mods">
-                  <div ng-if="!moderator.isAdmin" class="card emphasis emph-comment col-4 mb-2 applicant mx-2">
+                  <div ng-if="!moderator.isAdmin" class="card emphasis emph-comment mb-2 applicant mx-2">
                     <div class="card-body mt-1">
                       <div class="secondary-font">
                         <a href="#/{{moderator.location}}">{{moderator.username}}</a>
