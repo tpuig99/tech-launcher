@@ -113,7 +113,7 @@
             </div>
             <div class="col">
               <div class="row d-flex secondary-color text-right post-date">
-                {{post.timestamp.toLocaleString()}}
+                {{post.timestamp.toLocaleString() | date:'dd/MM/yyyy HH:mm'}}
               </div>
               <div class="row d-flex secondary-color text-right">
                 <a ng-href="#/{{post.postOwner.location}}">{{post.postOwner.username}}</a>
@@ -220,7 +220,7 @@
                       <div class="col-9 tags"></div>
                       <div class="col">
                         <div class="row d-flex secondary-color text-right post-date">
-                          {{answer.timestamp.toLocaleString()}}
+                          {{answer.timestamp.toLocaleString() | date:'dd/MM/yyyy HH:mm'}}
                         </div>
                         <div class="row d-flex secondary-color text-right">
                           <a ng-href="#/users/{{answer.user.username}}">{{answer.user.username}}</a>
