@@ -157,7 +157,7 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     $scope.deleteTech = function() {
       $('#deleteTechModal').modal('hide');
       techsService.deleteData($scope.toDel).then(function() {
-        $location.path('/#/techs');
+        $location.path('/techs');
       });
     };
 
@@ -291,7 +291,7 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         if (response.status === 200) {
           techsService.addTech($scope.add).then(function (response) {
             if (response.status === 201) {
-              $location.path('/#/techs');
+              $location.path('/techs');
             }
           });
         }

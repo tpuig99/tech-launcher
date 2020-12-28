@@ -34,6 +34,8 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
           $scope.namesChosen = [];
           $scope.categoriesChosen = [];
           $scope.typesChosen = [];
+          $scope.postTitleInput = $scope.post.postTitle;
+          $scope.postDescriptionInput = $scope.post.postDescription;
           $scope.getTags();
           $scope.post.postTags.forEach( tag => {
             if( tag.type === 'tech_name') {
@@ -175,19 +177,20 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
         }
       }
 
-      $scope.editPost = (postTitleInput, postDescriptionInput) => {
-        if( postTitleInput.$modelValue.length < 3 || postTitleInput.$modelValue.length > 200 || postDescriptionInput.$modelValue.length > 5000 || $scope.tagsEmpty()) {
-          return;
-        }
+
+
+      $scope.editPost = () => {
         let post = {
-          'title' : postTitleInput.$modelValue,
-          'description' : postDescriptionInput.$modelValue,
+          'title' : $scope.postTitleInput,
+          'description' : $scope.postDescriptionInput,
           'names' : $scope.namesChosen,
           'types' : $scope.typesChosen,
           'categories' : $scope.categoriesChosen
         }
-        postService.editPost(post, $scope.post.location);
-        $location.path('/#/posts/' + $routeParams.id);
+        postService.editPost(post, $scope.post.location).then((response) => {
+          console.log('Redirecting to: ' + '/#/posts/' + $routeParams.id)
+          $location.path('/posts/' + $routeParams.id);
+        });
       }
     });
 });
