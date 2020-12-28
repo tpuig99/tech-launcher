@@ -266,11 +266,18 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     };
 
     $scope.addTech = function () {
-      techsService.addTech($scope.add).then(function (response) {
-        if (response.status === 201) {
-          $location.path('/#/techs');
+      $scope.techNameError = false;
+      techsService.checkName($scope.add.name).then(function (response) {
+        if (response.status === 200) {
+          techsService.addTech($scope.add).then(function (response) {
+            if (response.status === 201) {
+              $location.path('/#/techs');
+            }
+          });
         }
-      });
+      }).catch(function () {
+          $scope.techNameError = true;
+      })
     };
 
     $scope.applyForMod = function (location) {

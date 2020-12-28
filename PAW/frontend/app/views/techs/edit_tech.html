@@ -10,6 +10,9 @@
       <div class="page-title">
         {{'EDIT_TECH' | translate }}
       </div>
+
+      <div class="mt-2 text-danger" ng-if="techNameError">{{'ADD_TECH_NAME_ERROR' | translate}}</div>
+
       <div class="page-description"></div>
 
       <form name="frameworkForm" ng-submit="editTech()" enctype="multipart/form-data">

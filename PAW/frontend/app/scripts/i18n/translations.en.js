@@ -305,6 +305,7 @@ define([], function () {
     ADD_TECH: 'Add Tech',
     ADD_TECH_NAME: 'Name:',
     ADD_TECH_NAME_PLACEHOLDER: 'Select the name of the Tech',
+    ADD_TECH_NAME_ERROR: 'That name is already being used, please choose another one!',
     ADD_TECH_CATEGORY: 'Category:',
     ADD_TECH_TYPE: 'Type:',
     ADD_TECH_DESCRIPTION: 'Description:',
@@ -312,5 +313,7 @@ define([], function () {
     ADD_TECH_INTRODUCTION: 'Introduction:',
     ADD_TECH_INTRODUCTION_PLACEHOLDER: 'Select the introduction for this Tech',
     ADD_TECH_PICTURE: 'Picture:',
+
+    EDIT_TECH: 'Edit Tech',
   };
 });

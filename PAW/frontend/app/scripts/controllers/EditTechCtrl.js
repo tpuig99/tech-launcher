@@ -42,12 +42,20 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     };
 
     $scope.editTech = function () {
-      techsService.editTech($routeParams.id, $scope.tech).then(function (response) {
+      $scope.techNameError = false;
+      techsService.checkNameEdit($scope.tech.name, $routeParams.id).then(function (response) {
         if (response.status === 200) {
-          $location.path($scope.tech.location);
+          techsService.editTech($routeParams.id, $scope.tech).then(function (response) {
+            if (response.status === 200) {
+              $location.path($scope.tech.location);
+            }
+          });
         }
-      });
+      }).catch(function () {
+        $scope.techNameError = true;
+      })
     };
+
   });
 
 });

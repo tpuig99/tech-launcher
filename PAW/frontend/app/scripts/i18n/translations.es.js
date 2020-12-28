@@ -309,6 +309,7 @@ define([], function() {
     ADD_TECH: 'Añadir Tech',
     ADD_TECH_NAME: 'Nombre:',
     ADD_TECH_NAME_PLACEHOLDER: 'Selecciona el nombre de la Tech',
+    ADD_TECH_NAME_ERROR: 'Ese nombre ya está en uso, ¡selecciona otro!',
     ADD_TECH_CATEGORY: 'Categoría:',
     ADD_TECH_TYPE: 'Tipo:',
     ADD_TECH_DESCRIPTION: 'Descripción:',
@@ -316,5 +317,7 @@ define([], function() {
     ADD_TECH_INTRODUCTION: 'Introducción:',
     ADD_TECH_INTRODUCTION_PLACEHOLDER: 'Selecciona la introducción de la Tech',
     ADD_TECH_PICTURE: 'Imagen:',
+
+    EDIT_TECH: 'Editar Tech',
 	};
 });
