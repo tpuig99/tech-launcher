@@ -48,6 +48,8 @@ define([], function () {
     BUTTON_GO_HOME: 'Go Home',
     BUTTON_RATE: 'Rate',
     BUTTON_REQUEST_NEW_TOKEN: 'Get new Confirmation Token',
+    BUTTON_NEXT: 'Next',
+    BUTTON_PREVIOUS: 'Previous',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
