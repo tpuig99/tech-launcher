@@ -315,5 +315,6 @@ define([], function () {
     ADD_TECH_PICTURE: 'Picture:',
 
     EDIT_TECH: 'Edit Tech',
+    TECH_CONTENT_NAME_ERROR: 'That title is already being used, please choose another one!'
   };
 });

@@ -1,7 +1,7 @@
 <div class="modal fade" id="addContentModal" tabindex="-1" role="dialog" aria-labelledby="addContentModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header container">
+      <div class="modal-header">
 
         <h5 class="modal-title" id="addContentLabel">{{'ADD_CONTENT' | translate}}</h5>
 
@@ -10,7 +10,9 @@
         <span aria-hidden="true">&times;</span>
       </div>
 
-      <div class="modal-body container">
+      <div class="modal-body">
+
+        <div class="mt-2 text-danger text-center" ng-if="contentNameError">{{'TECH_CONTENT_NAME_ERROR' | translate}}</div>
 
         <form name="addContentForm">
 
@@ -38,7 +40,7 @@
             <div ng-show="addContentForm.titleInput.$dirty && addContentForm.titleInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
           </div>
 
-          <div class="d-flex justify-content-center">}
+          <div class="d-flex justify-content-center">
 
             <button ng-if="addContentForm.$valid" class="btn primary-button" type="submit"  ng-click="add(titleInput, typeInput, linkInput)">{{'BUTTON_SUBMIT' | translate}}</button>
             <button ng-if="addContentForm.$invalid"  disabled class="btn primary-button" type="submit" >{{'BUTTON_SUBMIT' | translate}}</button>

@@ -182,6 +182,21 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       });
     }
 
+    $scope.addContent = function (title, type, link) {
+      $scope.contentNameError = false;
+      techsService.checkTitle($routeParams.id, title, type).then(function (response) {
+        if (response.status === 200) {
+          techsService.addContent($routeParams.id, title, type, link).then(function () {
+            $scope.getTech();
+            $('#addContentModal').modal('hide');
+          });
+        }
+      }).catch(function () {
+        $scope.contentNameError = true;
+      })
+    };
+
+
     $scope.addComment = function(input) {
       techsService.addComment($routeParams.id, input).then(function () {
         $scope.getTech();

@@ -319,5 +319,6 @@ define([], function() {
     ADD_TECH_PICTURE: 'Imagen:',
 
     EDIT_TECH: 'Editar Tech',
+    TECH_CONTENT_NAME_ERROR: 'Ese título ya está siendo utilizado, por favor, ¡selecciona otro!'
 	};
 });
