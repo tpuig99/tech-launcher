@@ -34,11 +34,11 @@
                 <h2>{{profile.username}}</h2>
                 <div ng-if="profile.admin">
                   <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color-admin" data-toggle="tooltip"
-                     title="{{'TOOLTIP_ADMIN'|translate}}"></i>
+                     title="{{'TECH_TOOLTIP_ADMIN'|translate}}"></i>
                 </div>
                 <div ng-if="profile.verify">
                   <i class="ml-2 mt-2 fas fa-rocket fa-2x rocket-color" data-toggle="tooltip"
-                     title="{{'TOOLTIP_MODERATOR'|translate}}"></i>
+                     title="{{'TECH_TOOLTIP_MODERATOR'|translate}}"></i>
                 </div>
               </div>
               <p><strong>{{'PROFILE_EMAIL' | translate}}</strong> {{profile.mail}}</p>
@@ -57,7 +57,7 @@
               <div ng-if="profile.verify">
                 <p>
                   <strong>{{'PROFILE_MODERATOR' | translate}}</strong>
-                  <div ng-repeat="verifyTech in profile.verifications"><a class="tags" href="{{'#/'+verifyTech.location}}">{{verifyTech.frameworkName}}</a></div>
+                  <div class="mb-1" ng-repeat="verifyTech in profile.verifications"><a class="tags" href="{{'#/'+verifyTech.location}}">{{verifyTech.frameworkName}}</a></div>
                 </p>
               </div>
             </div>
@@ -97,7 +97,7 @@
       </div>
       <div ng-if="profile.commentAmount != 0">
         <div class="container d-flex justify-content-center">
-          <div ng-repeat="comment in profile.comments track by $index" class="profile-card">
+          <div ng-repeat="comment in profile.comments track by $index" class="profile-card mb-1">
             <div class="card emphasis emph-comment row mb-2">
               <div class="card-body row mt-1">
                 <div class="col-3 secondary-font">
@@ -128,7 +128,7 @@
       </div>
       <div ng-if="profile.contentAmount != 0">
         <div class="container d-flex justify-content-center">
-          <div ng-repeat="content in profile.content track by $index" class="profile-card">
+          <div ng-repeat="content in profile.content track by $index" class="profile-card mb-1">
             <div class="card emphasis emph-content row mb-2">
               <div class="card-body row mt-1">
                 <div class="col-3 secondary-font">
@@ -162,7 +162,7 @@
       </div>
       <div ng-if="profile.votesAmount">
         <div class="container row equal justify-content-center" style="margin: auto">
-          <div ng-repeat="vote in profile.votes track by $index" class="votes-card">
+          <div ng-repeat="vote in profile.votes track by $index" class="col-5 votes-card mb-1 mr-1">
             <div class="card col d-flex emphasis emph-votes mb-2 mx-2">
               <div class="card-body row mt-1">
                 <div class="col secondary-font">
@@ -191,8 +191,8 @@
         <div class="page-title mb-4 ml-2 text-left">
           <h2>{{'PROFILE_TECHS' | translate}}</h2>
         </div>
-        <div class="container row equal justify-content-center">
-          <div ng-repeat="tech in profile.techs track by $index">
+        <div class="container row equal justify-content-center" style="margin: auto;">
+          <div ng-repeat="tech in profile.techs track by $index" class="mb-1">
             <div class="card mx-4 mb-4">
               <a href="{{'#/'+tech.location}}">
                 <div class="card-body">
@@ -228,7 +228,7 @@
       </div>
       <div ng-if="profile.postsAmount != 0">
         <div class="container d-flex justify-content-center">
-          <div ng-repeat="post in profile.posts track by $index" class="profile-card">
+          <div ng-repeat="post in profile.posts track by $index" class="profile-card mb-1">
             <div class="card emphasis emph-post row mb-2">
               <div class="card-body row mt-1">
                 <div class="col-3 secondary-font">
