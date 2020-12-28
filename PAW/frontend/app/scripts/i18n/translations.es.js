@@ -53,6 +53,8 @@ define([], function() {
     BUTTON_GO_HOME: 'Ir al Home',
     BUTTON_RATE: 'Puntuar',
     BUTTON_REQUEST_NEW_TOKEN: 'Obtener nuevo Token de Confirmación',
+    BUTTON_NEXT: 'Siguiente',
+    BUTTON_PREVIOUS: 'Anterior',
 
     SEARCH_TITLE: 'Buscar',
     EXPLORE_WREF: 'Tech Launcher - Explorar',
