@@ -30,6 +30,7 @@ nav a:hover {
 .sidenav {
   position: relative;
   width: 13.5em;
+  min-height: 100vmin;
   left: 0;
   background-color: #733bce;
   overflow-x: hidden;
