@@ -190,6 +190,9 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
             $scope.getTech();
             $('#addContentModal').modal('hide');
           });
+          $('#addContentTitle').val('')
+          $('#addContentType').val('')
+          $('#addContentLink').val('')
         }
       }).catch(function () {
         $scope.contentNameError = true;
@@ -200,12 +203,14 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     $scope.addComment = function(input) {
       techsService.addComment($routeParams.id, input).then(function () {
         $scope.getTech();
+        $scope.commentInput = '';
       });
     }
 
     $scope.replyComment = function (location, input) {
       techsService.addReply(location, input).then(function () {
         $scope.getTech();
+        $scope.commentInput = '';
       });
     }
 
