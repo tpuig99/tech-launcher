@@ -106,7 +106,7 @@
                   </a>
                 </div>
                 <div class="col-6 text-left"> {{comment.description}}</div>
-                <div class="col third-font text-right"> {{comment.date}}</div>
+                <div class="col third-font text-right"> {{comment.date | date:'dd/MM/yyyy HH:mm'}}</div>
               </div>
             </div>
           </div>
@@ -142,7 +142,7 @@
                   {{content.title}}
                 </div>
 
-                <div class="col third-font text-right"> {{content.date}}</div>
+                <div class="col third-font text-right"> {{content.date | date:'dd/MM/yyyy HH:mm'}}</div>
               </div>
             </div>
           </div>
@@ -161,7 +161,7 @@
         <h2>{{'PROFILE_VOTES' | translate}}</h2>
       </div>
       <div ng-if="profile.votesAmount">
-        <div class="container row equal justify-content-center">
+        <div class="container row equal justify-content-center" style="margin: auto">
           <div ng-repeat="vote in profile.votes track by $index" class="votes-card">
             <div class="card col d-flex emphasis emph-votes mb-2 mx-2">
               <div class="card-body row mt-1">
@@ -228,7 +228,7 @@
       </div>
       <div ng-if="profile.postsAmount != 0">
         <div class="container d-flex justify-content-center">
-          <div ng-repeat="post in profile.posts track by $index">
+          <div ng-repeat="post in profile.posts track by $index" class="profile-card">
             <div class="card emphasis emph-post row mb-2">
               <div class="card-body row mt-1">
                 <div class="col-3 secondary-font">
@@ -240,7 +240,7 @@
                   {{post.postDescription}}
                 </div>
                 <div class="col third-font text-right">
-                  {{post.timestamp}}
+                  {{post.timestamp | date:'dd/MM/yyyy HH:mm'}}
                 </div>
               </div>
             </div>

@@ -176,7 +176,7 @@ define([], function () {
     PROFILE_TECHS: 'Techs',
     PROFILE_VOTES: 'Votes',
     PROFILE_UPDATED: 'Your profile has been updated!',
-    PROFILE_VOTES_OVER_5: '{{stars} / 5 stars',
+    PROFILE_VOTES_OVER_5: '{{stars}} / 5 stars',
     PROFILE_CHANGE_PASS: 'Change my password',
     PROFILE_EMPTY_VOTES: 'There are no votes here yet!',
     PROFILE_EMPTY_COMMENTS: 'There are no comments here yet!',
