@@ -79,6 +79,10 @@ define([], function() {
             '/mod': {
               templateUrl: '/views/session/mod_page.html',
               controller: 'ModCtrl'
+            },
+            '/error': {
+              templateUrl: '/views/error.html',
+              controller: 'VoidCtrl'
             }
             /* ===== yeoman hook ===== */
             /* Do not remove these commented lines! Needed for auto-generation */
