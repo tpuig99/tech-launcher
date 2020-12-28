@@ -21,7 +21,11 @@ public class VerifyUserDTO {
         dto.pending = verifyUser.isPending();
         dto.frameworkName = verifyUser.getFrameworkName();
         dto.techLocation = "techs/" + verifyUser.getFramework().getId();
-        dto.location = "mod/" + verifyUser.getVerificationId();
+        if( !verifyUser.isPending()) {
+            dto.location = "mod/" + verifyUser.getVerificationId();
+        } else {
+            dto.location = "mod/pending/" + verifyUser.getVerificationId();
+        }
         dto.description = verifyUser.getCommentDescription();
         if( dto.description != null) {
             dto.timestamp = verifyUser.getComment().getTimestamp();

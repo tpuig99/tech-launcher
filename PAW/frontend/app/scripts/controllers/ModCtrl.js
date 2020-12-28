@@ -56,41 +56,48 @@ define(['frontend','services/userService','services/sessionService'], function(f
     $scope.getReportedContents();
 
     $scope.acceptMod = (applicant) => {
-      userService.acceptMod(applicant.location);
-      $scope.getCurrentApplicants();
-      $scope.getVerified();
-      $scope.getCurrentMods();
+      userService.acceptMod(applicant.location).then((response) => {
+        $scope.getCurrentApplicants();
+        $scope.getVerified();
+        $scope.getCurrentMods();
+      });
     }
 
     $scope.rejectMod = (applicant) => {
-      userService.rejectMod(applicant.location);
-      $scope.getCurrentApplicants();
-      $scope.getVerified();
+      userService.rejectMod(applicant.location).then((response) => {
+        $scope.getCurrentApplicants();
+        $scope.getVerified();
+      });
     }
 
     $scope.deleteMod = (mod) => {
-      userService.deleteMod(mod.location);
-      $scope.getCurrentMods();
+      userService.deleteMod(mod.location).then((response) => {
+        $scope.getCurrentMods();
+      });
     }
 
     $scope.deleteCommentReport = (reportedComment) => {
-      userService.deleteCommentReport(reportedComment.location);
-      $scope.getReportedComments();
+      userService.deleteCommentReport(reportedComment.location).then((response) => {
+        $scope.getReportedComments();
+      });
     };
 
     $scope.acceptCommentReport = (reportedComment) => {
-      userService.acceptCommentReport(reportedComment.location);
-      $scope.getReportedComments();
+      userService.acceptCommentReport(reportedComment.location).then((response) => {
+        $scope.getReportedComments();
+      });
     }
 
     $scope.deleteContentReport = (reportedContent) => {
-      userService.deleteContentReport(reportedContent.location);
-      $scope.getReportedContents();
+      userService.deleteContentReport(reportedContent.location).then((response) => {
+        $scope.getReportedContents();
+      });
     }
 
     $scope.acceptContentReport = (reportedContent) => {
-      userService.acceptContentReport(reportedContent.location);
-      $scope.getReportedContents();
+      userService.acceptContentReport(reportedContent.location).then((response) => {
+        $scope.getReportedContents();
+      })
     }
 
     $scope.arrayIsEmpty = (array) => {
