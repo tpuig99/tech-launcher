@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend','services/userService','services/sessionService','ng-file-upload'], function(frontend) {
 
-  frontend.controller('userCtrl', function($scope, $routeParams, userService,sessionService,$localStorage,Restangular) {
+  frontend.controller('userCtrl', function($scope, $routeParams, userService,sessionService,$window,Restangular) {
 
     var user = sessionService.getStorageUser();
     if ($scope.$parent.username !== undefined) {
@@ -118,6 +118,11 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $('#editProfileModal').modal('hide');
         }
       });
+    };
+    $scope.changePass = function() {
+      console.log('here');
+      $('#editProfileModal').modal('hide');
+      //$window.location.href = '/#/register/forgot_password';
     };
   });
 });
