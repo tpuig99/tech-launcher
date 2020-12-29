@@ -27,6 +27,10 @@ nav a:hover {
   background: #AFBBF2
 }
 
+select.form-control:not([size]):not([multiple]) {
+  height: auto!important;
+}
+
 .sidenav {
   position: relative;
   width: 13.5em;
