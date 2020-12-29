@@ -33,7 +33,7 @@
           <label for="techCategory">{{'ADD_TECH_CATEGORY' | translate}}</label>
           <select id="techCategory" class="form-control" ng-model="add.category" name="category" onfocus='this.size=5;'
                   onblur='this.size=1;' onchange='this.size=1; this.blur();' required>
-            <option ng-repeat="category in categories" value="{{category.category}}">
+            <option ng-repeat="category in categories track by $index" ng-selected="$index == 0" value="{{category.category}}">
               {{ "CATEGORY_" + category.category | uppercase | translate}}
             </option>
           </select>
@@ -46,7 +46,7 @@
           <label for="techType">{{'ADD_TECH_TYPE' | translate}}</label>
           <select id="techType" class="form-control" ng-model="add.type" name="type" onfocus='this.size=5;'
                   onblur='this.size=1;' onchange='this.size=1; this.blur();' required>
-            <option ng-repeat="type in types" value="{{type.type}}">{{ "TYPE_" + type.type | uppercase | translate}}
+            <option ng-repeat="type in types track by $index" ng-selected="$index == 0" value="{{type.type}}">{{ "TYPE_" + type.type | uppercase | translate}}
             </option>
           </select>
           <div ng-show="frameworkForm.techTypeInput.$dirty && frameworkForm.techTypeInput.$error.required">
