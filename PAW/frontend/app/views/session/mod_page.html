@@ -30,12 +30,12 @@
                 <div ng-repeat="applicant in verified">
                   <div class="card emphasis emph-comment row mb-2 mx-4 verified">
                     <div class="card-body row mt-1">
-                      <div class="col-3 secondary-font"><a href="#/{{applicant.userLocation}}">{{applicant.username}}</a>
+                      <div class="col-3 secondary-font"><a ng-href="#/{{applicant.userLocation}}">{{applicant.username}}</a>
                         /
-                        <a href="#/{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
+                        <a ng-href="#/{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
                       </div>
                       <div class="col-6 text-left"> {{applicant.description}}</div>
-                      <div class="col third-font text-right"> {{applicant.timestamp}}</div>
+                      <div class="col third-font text-right"> {{applicant.timestamp | date:'dd/MM/yyyy HH:mm'}}</div>
                     </div>
                     <div class="card-footer row mx-2">
                       <button type="submit" class="btn primary-button" ng-click="acceptMod(applicant)">
@@ -61,9 +61,9 @@
                 <div ng-repeat="applicant in applicants">
                   <div class="card emphasis emph-comment mb-2 applicant mx-2">
                     <div class="card-body mt-1">
-                      <div class="secondary-font"><a href="#/{{applicant.userLocation}}">{{applicant.username}}</a>
+                      <div class="secondary-font"><a ng-href="#/{{applicant.userLocation}}">{{applicant.username}}</a>
                         /
-                        <a href="#/{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
+                        <a ng-href="#/{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
                       </div>
                     </div>
                     <div class="card-footer row">
@@ -96,9 +96,9 @@
                   <div ng-if="!moderator.isAdmin" class="card emphasis emph-comment mb-2 applicant mx-2">
                     <div class="card-body mt-1">
                       <div class="secondary-font">
-                        <a href="#/{{moderator.location}}">{{moderator.username}}</a>
+                        <a ng-href="#/{{moderator.userLocation}}">{{moderator.username}}</a>
                         /
-                        <a href="#/{{moderator.techLocation}}">{{moderator.frameworkName}}</a>
+                        <a ng-href="#/{{moderator.techLocation}}">{{moderator.frameworkName}}</a>
                       </div>
                     </div>
                     <div class="card-footer row mx-2 justify-content-center">
@@ -130,9 +130,9 @@
                     <div class="card-body my-auto">
                       <div class="border-bottom">
                         <p class="my-1">{{'MOD_REPORT_COMMENT_OWNER' | translate}}:&nbsp;<a
-                          href="#/{{comment.userLocation}}">{{comment.owner}}</a></p>
+                          ng-href="#/{{comment.userLocation}}">{{comment.owner}}</a></p>
                         <p class="my-1">{{'MOD_REPORT_TECH' | translate}}:&nbsp;<a
-                          href="#/{{comment.techLocation}}">{{comment.frameworkName}}</a></p>
+                          ng-href="#/{{comment.techLocation}}">{{comment.frameworkName}}</a></p>
                         <p class="my-1">{{'MOD_COMMENT_DESCRIPTION' | translate}}:&nbsp;{{comment.commentDescription}}</p>
                       </div>
                       <div class="mt-2">
@@ -166,9 +166,9 @@
                   <div class="card-body my-auto">
                     <div class="border-bottom">
                       <p class="my-1">{{'MOD_REPORT_CONTENT_OWNER' | translate}}:&nbsp;<a
-                        href="#/{{content.userLocation}}">{{content.owner}}</a></p>
+                        ng-href="#/{{content.userLocation}}">{{content.owner}}</a></p>
                       <p class="my-1">{{'MOD_REPORT_TECH' | translate}}:&nbsp;<a
-                        href="#/{{content.techLocation}}">{{content.frameworkName}}</a></p>
+                        ng-href="#/{{content.techLocation}}">{{content.frameworkName}}</a></p>
                       <p class="my-1">{{'MOD_CONTENT_DESCRIPTION' | translate}}:&nbsp;<a href="{{content.contentLink}}">{{content.contentLink}}</a></p>
                     </div>
                     <div class="mt-2">

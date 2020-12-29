@@ -50,6 +50,8 @@ define([], function () {
     BUTTON_REQUEST_NEW_TOKEN: 'Get new Confirmation Token',
     BUTTON_NEXT: 'Next',
     BUTTON_PREVIOUS: 'Previous',
+    BUTTON_APPLY: 'Apply',
+    BUTTON_STOP:'Stop',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',

@@ -12,7 +12,7 @@
         <div ng-repeat="category in categories" class="row" style="margin: auto">
           <div ng-if="$index <= 5 " class="form-check">
             <input class="form-check-input" type="checkbox" ng-model="category.selected"  value="{{category.category}}">
-            <label class="form-check-label col col">
+            <label class="form-check-label" style="margin-left: 1em">
               {{ "CATEGORY_" + category.category | uppercase | translate}}
             </label>
           </div>
@@ -25,7 +25,7 @@
           <div ng-repeat="category in categories" class="row" style="margin: auto">
             <div ng-if="$index >= 6" class="form-check">
               <input class="form-check-input" type="checkbox" ng-model="category.selected"  value="{{category.category}}" >
-              <label class="form-check-label col">
+              <label class="form-check-label" style="margin-left: 1em">
                 {{ "CATEGORY_" + category.category | uppercase | translate}}
               </label>
             </div>
@@ -41,7 +41,7 @@
         <div ng-repeat="type in types" class="row" style="margin: auto">
           <div ng-if="$index <= 5" class="form-check">
             <input class="form-check-input" type="checkbox" ng-model="type.selected"  value="{{type.type}}">
-            <label class="form-check-label col">
+            <label class="form-check-label" style="margin-left: 1em">
               {{'TYPE_'+type.type | uppercase | translate}}
             </label>
           </div>
@@ -55,7 +55,7 @@
           <div ng-repeat="type in types" class="row" style="margin: auto">
             <div ng-if="$index >= 6" class="form-check">
               <input class="form-check-input" type="checkbox" ng-model="type.selected"  value="{{type.type}}">
-              <label class="form-check-label col">
+              <label class="form-check-label" style="margin-left: 1em">
                 {{'TYPE_'+type.type | uppercase | translate}}
               </label>
             </div>
@@ -153,7 +153,7 @@
       </form>
       <div ng-if="activeTab === 'T'" class="form-check" id="searchByNameCheckbox">
         <input ng-model="nameFlag.selected" class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
-        <label class="form-check-label col" for="searchOnlyByName">
+        <label class="form-check-label" for="searchOnlyByName" style="margin-left: 1em">
           {{'EXPLORE_SEARCH_ONLY_BY_NAME' | translate}}
         </label>
       </div>
@@ -323,7 +323,7 @@
                       </div>
                       <div class="col">
                         <div class="row d-flex secondary-color text-right post-date small-font">
-                          {{post.timestamp.toLocaleString()}}
+                          {{post.timestamp.toLocaleString() | date:'dd/MM/yyyy HH:mm'}}
                         </div>
                         <div class="row d-flex secondary-color text-right small-font">
                           <a ng-href="/users/{{post.user.username}}">{{post.user.username}}</a>
