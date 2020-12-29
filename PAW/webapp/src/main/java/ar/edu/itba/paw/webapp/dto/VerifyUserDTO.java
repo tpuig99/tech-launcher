@@ -10,7 +10,7 @@ public class VerifyUserDTO {
     private Boolean admin;
     private Boolean pending;
     private String frameworkName;
-    private String location, techLocation;
+    private String location, techLocation, userLocation;
     private String description;
     private Date timestamp;
 
@@ -26,6 +26,7 @@ public class VerifyUserDTO {
         } else {
             dto.location = "mod/pending/" + verifyUser.getVerificationId();
         }
+        dto.userLocation = "users/" + verifyUser.getUser().getId();
         dto.description = verifyUser.getCommentDescription();
         if( dto.description != null) {
             dto.timestamp = verifyUser.getComment().getTimestamp();
@@ -104,5 +105,13 @@ public class VerifyUserDTO {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getUserLocation() {
+        return userLocation;
+    }
+
+    public void setUserLocation(String userLocation) {
+        this.userLocation = userLocation;
     }
 }

@@ -30,7 +30,7 @@
                 <div ng-repeat="applicant in verified">
                   <div class="card emphasis emph-comment row mb-2 mx-4 verified">
                     <div class="card-body row mt-1">
-                      <div class="col-3 secondary-font"><a href="#/{{applicant.location}}">{{applicant.username}}</a>
+                      <div class="col-3 secondary-font"><a href="#/{{applicant.userLocation}}">{{applicant.username}}</a>
                         /
                         <a href="#/{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
                       </div>
@@ -61,7 +61,7 @@
                 <div ng-repeat="applicant in applicants">
                   <div class="card emphasis emph-comment mb-2 applicant mx-2">
                     <div class="card-body mt-1">
-                      <div class="secondary-font"><a href="#/{{applicant.location}}">{{applicant.username}}</a>
+                      <div class="secondary-font"><a href="#/{{applicant.userLocation}}">{{applicant.username}}</a>
                         /
                         <a href="#/{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
                       </div>

@@ -114,17 +114,14 @@
                 <div class="col-10">
                   <a target="_blank" href="{{book.link}}">{{book.title}}</a>
                 </div>
-                <div ng-if="isAdmin || isVerify || username == book.user.username || isOwner">
-                  <div class="col d-flex justify-content-end align-items-end">
+                <div class="col-2 d-flex justify-content-end">
+                  <div ng-if="isAdmin || isVerify || username == book.user.username || isOwner">
                     <button class="btn btn-link" ng-click="setDel(book.location)" data-toggle="modal"
-                            data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                              data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                   </div>
-                </div>
-                <div
-                  ng-if="username != 'anonymousUser' && book.user.username!=username && !isReporter(book, username) && isEnable">
-                  <div class="col d-flex justify-content-end align-items-end">
-                    <button class="btn btn-link" ng-click="setReport(book.reportLocation)" data-toggle="modal"
-                            data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                  <div ng-if="username != 'anonymousUser' && book.user.username!=username && !isReporter(book, username) && isEnable && !isAdmin && !isVerify">
+                      <button class="btn btn-link" ng-click="setReport(book.reportLocation)" data-toggle="modal"
+                              data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                   </div>
                 </div>
               </div>
@@ -148,19 +145,19 @@
                 <div class="col-10">
                   <a target="_blank" href="{{course.link}}">{{course.title}}</a>
                 </div>
-                <div ng-if="isAdmin || isVerify|| username == course.user.username || isOwner">
-                  <div class="col d-flex justify-content-end align-items-end">
-                    <button class="btn btn-link" ng-click="setDel(course.location)" data-toggle="modal"
-                            data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                <div class="col-2 d-flex justify-content-end">
+
+                  <div ng-if="isAdmin || isVerify|| username == course.user.username || isOwner">
+                      <button class="btn btn-link" ng-click="setDel(course.location)" data-toggle="modal"
+                              data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                  </div>
+                  <div ng-if="username != 'anonymousUser' && course.user.username!=username && !isReporter(course, username) && isEnable && !isAdmin && !isOwner ">
+                      <button class="btn btn-link" ng-click="setReport(course.reportLocation)" data-toggle="modal"
+                              data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                   </div>
                 </div>
-                <div
-                  ng-if="username != 'anonymousUser' && course.user.username!=username && !isReporter(course, username) && isEnable">
-                  <div class="col d-flex justify-content-end align-items-end">
-                    <button class="btn btn-link" ng-click="setReport(course.reportLocation)" data-toggle="modal"
-                            data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
-                  </div>
-                </div>
+
+
               </div>
             </li>
           </ul>
@@ -181,18 +178,14 @@
                 <div class="col-10">
                   <a target="_blank" href="{{tutorial.link}}">{{tutorial.title}}</a>
                 </div>
-
-                <div ng-if="isAdmin || isVerify || username == tutorial.user.username || isOwner">
-                  <div class="col d-flex justify-content-end align-items-end">
+                <div class="col-2 d-flex justify-content-end">
+                  <div ng-if="isAdmin || isVerify || username == tutorial.user.username || isOwner">
                     <button class="btn btn-link" ng-click="setDel(tutorial.location)" data-toggle="modal"
-                            data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
+                              data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                   </div>
-                </div>
-                <div
-                  ng-if="username != 'anonymousUser' && tutorial.user.username!=username && !isReporter(tutorial, username) && isEnable">
-                  <div class="col d-flex justify-content-end align-items-end">
+                  <div ng-if="username != 'anonymousUser' && tutorial.user.username!=username && !isReporter(tutorial, username) && isEnable && !isAdmin && !isOwner">
                     <button class="btn btn-link" ng-click="setReport(tutorial.reportLocation)" data-toggle="modal"
-                            data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
+                              data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                   </div>
                 </div>
               </div>
@@ -289,19 +282,15 @@
                 <div class="col d-flex">
                   {{comment.description}}
                 </div>
-
-                <div
-                  ng-if="username != 'anonymousUser' && username != comment.user.username && !isReporter(comment, username) && !isAdmin && !isOwner && isEnable">
-                  <div class="col d-flex justify-content-end align-items-end">
+                <div class="col-2 d-flex justify-content-end">
+                  <div ng-if="username != 'anonymousUser' && username != comment.user.username && !isReporter(comment, username) && !isAdmin && !isOwner && isEnable">
                     <button class="btn btn-link" ng-click="setReport(comment.reportLocation)" data-toggle="modal"
-                            data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
+                              data-target="#reportCommentModal"><i class="fa fa-exclamation"></i></button>
                   </div>
-                </div>
-                <div ng-if="isAdmin || isOwner || comment.user.username == username">
-                <span class="col d-flex justify-content-end align-items-end">
-                  <button class="btn btn-link" ng-click="setDel(comment.location)" data-toggle="modal"
-                          data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
-                </span>
+                  <div ng-if="isAdmin || isOwner || comment.user.username == username">
+                    <button class="btn btn-link" ng-click="setDel(comment.location)" data-toggle="modal"
+                            data-target="#deleteCommentModal"><i class="fa fa-trash"></i></button>
+                  </div>
                 </div>
               </div>
               <div class="row padding-bottom">
