@@ -26,30 +26,35 @@ define(['frontend','services/userService','services/sessionService'], function(f
     $scope.getCurrentMods = () => {
       userService.getCurrentMods().then((response) => {
         $scope.mods = response.data;
+        $scope.modsPaging = response.headers('link');
       });
     };
 
     $scope.getCurrentApplicants = () => {
       userService.getCurrentApplicants().then((response) => {
         $scope.applicants = response.data;
+        $scope.applicantsPaging = response.headers('link');
       });
     };
 
     $scope.getVerified = () => {
       userService.getVerified().then((response) => {
         $scope.verified = response.data;
+        $scope.verifiedPaging = response.headers('link');
       });
     };
 
     $scope.getReportedComments = () => {
       userService.getReportedComments().then((response) => {
         $scope.reportedComments = response.data;
+        $scope.repComsPaging = response.headers('link');
       });
     };
 
     $scope.getReportedContents = () => {
       userService.getReportedContents().then((response) => {
         $scope.reportedContents = response.data;
+        $scope.repConsPaging = response.headers('link');
       });
     };
 
@@ -107,6 +112,7 @@ define(['frontend','services/userService','services/sessionService'], function(f
         case 'mods':
           $scope.mods = response.data;
           $scope.modsPaging = response.headers('link');
+          console.log($scope.modsPaging)
           break;
         case 'repCons':
           $scope.reportedContents = response.data;
