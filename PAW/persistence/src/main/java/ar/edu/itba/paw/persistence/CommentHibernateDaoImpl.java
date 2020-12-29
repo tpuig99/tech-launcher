@@ -9,10 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -58,11 +55,20 @@ public class CommentHibernateDaoImpl implements CommentDao {
 
     @Override
     public List<Comment> getCommentsWithoutReferenceByFramework(long frameworkId, long page, long pageSize) {
-        final TypedQuery<Comment> query = em.createQuery("from Comment as c where c.framework.id = :frameworkId and c.reference is null ", Comment.class);
-        query.setParameter("frameworkId", frameworkId);
-        query.setFirstResult((int) ((page-1) * pageSize));
-        query.setMaxResults((int) pageSize);
-        return query.getResultList();
+
+        Query pagingQuery = em.createNativeQuery("SELECT comment_id from comments as c where c.framework_id = " +  String.valueOf(frameworkId) + "and c.reference is null LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Comment> query = em.createQuery("from Comment as c where c.commentId in (:resultList)", Comment.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return Collections.emptyList();
+        }
+
     }
 
     @Override
@@ -76,7 +82,7 @@ public class CommentHibernateDaoImpl implements CommentDao {
             query.setParameter("resultList", resultList);
             return query.getResultList();
         }else{
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
 

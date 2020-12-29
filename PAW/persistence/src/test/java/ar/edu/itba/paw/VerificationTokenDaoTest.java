@@ -54,9 +54,6 @@ public class VerificationTokenDaoTest {
                 .withTableName("verification_token")
                 .usingGeneratedKeyColumns("token_id");
 
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verification_token");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-
         for (int i = 0; i < USERS; i++) {
             User user = new User("user"+i,"mail"+i,null,true,"",true,null);
             em.persist(user);
@@ -69,8 +66,7 @@ public class VerificationTokenDaoTest {
     //<editor-fold desc="Content Methods">
     @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verification_token");
-        final VerificationToken token = verificationTokenDao.insert(users_ids[0].getId(),TOKEN);
+          final VerificationToken token = verificationTokenDao.insert(users_ids[0].getId(),TOKEN);
         em.flush();
         assertEquals(token.getToken(), TOKEN);
         assertEquals(token.getUser().getId(), users_ids[0].getId());
@@ -78,7 +74,7 @@ public class VerificationTokenDaoTest {
 
     @Test(expected = Exception.class)
     public void testCreateOnExisting() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verification_token");
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("user_id",users_ids[0]);
@@ -91,14 +87,14 @@ public class VerificationTokenDaoTest {
     }
     @Test(expected = Exception.class)
     public void testCreateWithoutUser() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verification_token");
+
         verificationTokenDao.insert(users_ids[0].getId()+10,TOKEN);
         em.flush();
     }
 
     @Test
     public void testChange() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verification_token");
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
 
         VerificationToken newVt = new VerificationToken();
@@ -118,7 +114,7 @@ public class VerificationTokenDaoTest {
 
     @Test
     public void testGetByToken() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         VerificationToken token = new VerificationToken();
         token.setUser(users_ids[0]);
@@ -135,7 +131,7 @@ public class VerificationTokenDaoTest {
     }
     @Test
     public void testGetByTokenNotExisting() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
         Optional<VerificationToken> vt = verificationTokenDao.getByToken(TOKEN);
         em.flush();
         assertFalse(vt.isPresent());

@@ -54,9 +54,6 @@ public class PostCommentDaoTest {
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("post_comments")
                 .usingGeneratedKeyColumns("post_comment_id");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "posts");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "post_comments");
 
 
         User user = new User("user","mail",null,true,"",true,null);
