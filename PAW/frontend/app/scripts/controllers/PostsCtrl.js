@@ -107,13 +107,13 @@ define(['frontend','services/postService','services/sessionService'], function(f
       }
     }
 
-    $scope.addPost = (title, description) => {
+    $scope.addPost = (postTitleInput, postDescriptionInput) => {
       if( postTitleInput.$modelValue.length < 3 || postTitleInput.$modelValue.length > 200 || postDescriptionInput.$modelValue.length > 5000 || $scope.tagsEmpty()) {
         return;
       }
       let post = {
-        'title' : title.$modelValue,
-        'description' : description.$modelValue,
+        'title' : postTitleInput.$modelValue,
+        'description' : postDescriptionInput.$modelValue,
         'names' : $scope.namesChosen,
         'categories' : $scope.categoriesChosen,
         'types' : $scope.typesChosen

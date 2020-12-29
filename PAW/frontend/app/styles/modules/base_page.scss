@@ -60,14 +60,19 @@ nav a:hover {
 }
 
 .content-no-sidebar {
+   justify-content: center;
+   text-align: center;
+   vertical-align: center;
+   padding-top: 4em;
+   margin: auto;
+   padding-left: 4em;
+   padding-right: 4em;
+   width: 80%;
+ }
+
+.error-body {
   justify-content: center;
   text-align: center;
-  vertical-align: center;
-  padding-top: 4em;
-  margin: auto;
-  padding-left: 4em;
-  padding-right: 4em;
-  width: 80%;
 }
 
 .content-no-sidebar-left {
