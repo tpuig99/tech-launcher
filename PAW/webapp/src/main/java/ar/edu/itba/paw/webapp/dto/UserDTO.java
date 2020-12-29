@@ -14,6 +14,7 @@ public class UserDTO {
     private String description;
     private List<VerifyUserDTO> verifications;
     private List<VerifyUserDTO> applications;
+    private List<VoteDTO> techVotes;
     private Boolean enabled;
     private Boolean allowedModeration;
     private Boolean admin;
@@ -43,6 +44,10 @@ public class UserDTO {
         }
         if (user.getApplications() != null && !user.getApplications().isEmpty()) {
             dto.applications = user.getApplications().stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());
+        }
+
+        if (user.getFrameworkVotes() != null && !user.getFrameworkVotes().isEmpty()) {
+            dto.techVotes = user.getFrameworkVotes().stream().map(VoteDTO::fromProfile).collect(Collectors.toList());
         }
         dto.enabled = user.isEnable();
         dto.allowedModeration = user.isAllowMod();
@@ -236,5 +241,13 @@ public class UserDTO {
 
     public void setApplications(List<VerifyUserDTO> applications) {
         this.applications = applications;
+    }
+
+    public List<VoteDTO> getTechVotes() {
+        return techVotes;
+    }
+
+    public void setTechVotes(List<VoteDTO> techVotes) {
+        this.techVotes = techVotes;
     }
 }

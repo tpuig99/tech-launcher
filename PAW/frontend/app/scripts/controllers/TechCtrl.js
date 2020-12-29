@@ -20,6 +20,7 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           $scope.allowMod = response.data.allowedModeration;
           $scope.isPresent = true;
           $scope.userVerifications = response.data.applications;
+          $scope.userVotes = response.data.techVotes;
 
           if ($scope.userVerifications !== undefined && $scope.userVerifications.length > 0) {
             let verification;
@@ -62,6 +63,17 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
                 $scope.isVerify = false;
                 $scope.verifyPending = true;
               }
+            }
+
+          }
+        }
+
+        if ($scope.userVotes !== undefined && $scope.userVotes.length > 0) {
+          let vote;
+          for (vote of $scope.userVotes) {
+            if (vote.techName === $scope.tech.name) {
+              console.log(vote.vote);
+              $scope.star = vote.vote;
             }
 
           }
