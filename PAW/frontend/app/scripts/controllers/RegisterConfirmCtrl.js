@@ -19,6 +19,9 @@ define(['frontend', 'services/sessionService'], function(frontend) {
         $scope.button = $filter('translate')('BUTTON_REQUEST_NEW_TOKEN')
         $scope.status = error.status;
       }
+      else if( error.status === 404 ) {
+        $location.path('/error');
+      }
     });
     $scope.goHome = () => {
       if( $scope.status === 200 ) {

@@ -6,10 +6,11 @@
 
     <div class="page-description"></div>
 
-    <form name="postForm" enctype="application/x-www-form-urlencoded" ng-submit="addPost(postForm.postTitleInput, postForm.postDescriptionInput)" novalidate>
+    <form name="postForm" enctype="application/x-www-form-urlencoded" ng-submit="addPost()" novalidate>
       <div class="form-group">
         <label for="postTitle">{{'POST_EDIT_ADD_TITLE' | translate}}</label>
         <input class="form-control" id="postTitle" ng-model="postTitleInput" name="postTitleInput" required ng-minlength="3" ng-maxlength="200" type="text" placeholder="{{'POST_EDIT_ADD_TITLE' | translate}}"/>
+        <div class="page-description"></div>
         <div ng-show="postForm.postTitleInput.$error.minlength || postForm.postTitleInput.$error.maxlength" class="alert alert-danger">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 200}'}}</div>
       </div>
 
@@ -17,6 +18,7 @@
         <label for="postDescription">{{'POST_EDIT_ADD_DESCRIPTION' | translate}}</label>
         <textarea  name="postDescriptionInput"  class="form-control" id="postDescription" ng-model="postDescriptionInput" required ng-maxlength="5000" placeholder="{{'POST_EDIT_ADD_DESCRIPTION' | translate}}">
         </textarea>
+        <div class="page-description"></div>
         <div ng-show="postForm.postDescriptionInput.$error.maxlength" class="alert alert-danger">{{ 'FORM_ERROR_LENGTH' | translate : '{min:0, max: 5000}'}}</div>
       </div>
 
@@ -26,8 +28,8 @@
         <!-- TECH NAMES -->
         <div class="col-4">
           <div class="search-bar sidebar-title">
-            <label for="techNames" class="row">{{'POST_EDIT_ADD_NAMES' | translate}}</label>
-            <select name="techNames" id="techNames" ng-model="data.techNames" multiple>
+            <label for="techNames">{{'POST_EDIT_ADD_NAMES' | translate}}</label>
+            <select name="techNames" id="techNames" ng-model="data.techNames" class="form-control row" style="margin: auto" multiple>
               <option ng-repeat="name in names" value="{{name.tagName}}" ng-click="addName(name.tagName)">
                   {{name.tagName}}
               </option>
@@ -38,8 +40,8 @@
         <!-- TECH TYPES -->
         <div class="col-4">
           <div class="search-bar sidebar-title">
-            <label for="techTypes" class="row">{{'POST_EDIT_ADD_TYPES' | translate}}</label>
-            <select name="techTypes" id="techTypes" ng-model="data.techTypes" multiple>
+            <label for="techTypes">{{'POST_EDIT_ADD_TYPES' | translate}}</label>
+            <select name="techTypes" id="techTypes" ng-model="data.techTypes" class="form-control row" style="margin: auto" multiple>
               <option ng-repeat="type in types" value="{{type.tagName}}" ng-click="addType(type.tagName)">
                 {{('TYPE_' + (type.tagName | uppercase)) | translate}}
               </option>
@@ -50,8 +52,8 @@
         <!-- TECH CATEGORIES -->
         <div class="col-4">
           <div class="search-bar sidebar-title">
-            <label for="techCategories" class="row">{{'POST_EDIT_ADD_CATEGORIES' | translate}}</label>
-            <select name="techCategories" id="techCategories" ng-model="data.techCategories" multiple>
+            <label for="techCategories">{{'POST_EDIT_ADD_CATEGORIES' | translate}}</label>
+            <select name="techCategories" id="techCategories" ng-model="data.techCategories" class="form-control row" style="margin: auto" multiple>
               <option ng-repeat="category in categories" value="{{category.tagName}}" ng-click="addCategory(category.tagName)">
                 {{('CATEGORY_' + (category.tagName | uppercase)) | translate}}
               </option>
@@ -60,11 +62,13 @@
         </div>
       </div>
 
+      <div class="page-description"></div>
+
       <div ng-if="tagsEmpty()" class="alert alert-danger">
           {{'POST_TAGS' | translate}}
       </div>
 
-      <div class="row">
+      <div class="row" style="margin: auto">
         <div ng-repeat="name in namesChosen" name="namesChosen">
           <div class="badge badge-color ml-1">
             <span>{{name}}</span>
@@ -86,7 +90,9 @@
       <div class="d-flex justify-content-center mt-4">
         <a ng-href="#/posts" class="btn btn-danger mr-4">{{'BUTTON_CANCEL' | translate}}</a>
 
-        <input class="btn btn-info" id="addPostButton" type="submit" value="{{'BUTTON_SUBMIT' | translate}}"/>
+        <input class="btn btn-info" ng-if="postForm.$valid" id="addPostButton" type="submit" value="{{'BUTTON_SUBMIT' | translate}}"/>
+        <input class="btn btn-info" ng-if="postForm.$invalid" id="addPostButtonDisabled" type="submit" value="{{'BUTTON_SUBMIT' | translate}}" disabled/>
+
         <div class="btn btn-info disabled" id="addPostLoading" hidden>
           <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
           {{'BUTTON_LOADING' | translate}}

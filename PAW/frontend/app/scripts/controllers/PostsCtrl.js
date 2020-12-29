@@ -107,19 +107,16 @@ define(['frontend','services/postService','services/sessionService'], function(f
       }
     }
 
-    $scope.addPost = (postTitleInput, postDescriptionInput) => {
-      if( postTitleInput.$modelValue.length < 3 || postTitleInput.$modelValue.length > 200 || postDescriptionInput.$modelValue.length > 5000 || $scope.tagsEmpty()) {
-        return;
-      }
+    $scope.addPost = () => {
       let post = {
-        'title' : postTitleInput.$modelValue,
-        'description' : postDescriptionInput.$modelValue,
+        'title' : $scope.postTitleInput,
+        'description' : $scope.postDescriptionInput,
         'names' : $scope.namesChosen,
         'categories' : $scope.categoriesChosen,
         'types' : $scope.typesChosen
       };
       postService.addPost(post, 'posts');
-      $location.path('/#/posts');
+      $location.path('/posts');
     }
   });
 });

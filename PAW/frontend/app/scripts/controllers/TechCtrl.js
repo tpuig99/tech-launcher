@@ -157,7 +157,7 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     $scope.deleteTech = function() {
       $('#deleteTechModal').modal('hide');
       techsService.deleteData($scope.toDel).then(function() {
-        $location.path('/#/techs');
+        $location.path('/techs');
       });
     };
 
@@ -190,6 +190,9 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
             $scope.getTech();
             $('#addContentModal').modal('hide');
           });
+          $('#addContentTitle').val('')
+          $('#addContentType').val('')
+          $('#addContentLink').val('')
         }
       }).catch(function () {
         $scope.contentNameError = true;
@@ -200,12 +203,14 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     $scope.addComment = function(input) {
       techsService.addComment($routeParams.id, input).then(function () {
         $scope.getTech();
+        $scope.commentInput = '';
       });
     }
 
     $scope.replyComment = function (location, input) {
       techsService.addReply(location, input).then(function () {
         $scope.getTech();
+        $scope.commentInput = '';
       });
     }
 
@@ -286,7 +291,7 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         if (response.status === 200) {
           techsService.addTech($scope.add).then(function (response) {
             if (response.status === 201) {
-              $location.path('/#/techs');
+              $location.path('/techs');
             }
           });
         }

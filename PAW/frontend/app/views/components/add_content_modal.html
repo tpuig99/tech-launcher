@@ -19,15 +19,15 @@
           <div ng-if="contentTypeAlreadyExists">{{'REGISTER_UAE' | translate}}</div>
 
           <div class="form-group">
-            <label for="title">{{'ADD_CONTENT_TITLE' | translate}}</label>
-            <input class="form-control" type="text" id="title" ng-model="titleInput" name="titleInput" required ng-minlength="4" ng-maxlength="40" placeholder="{{'ADD_CONTENT_TITLE_PLACEHOLDER' | translate}}"/>
+            <label for="addContentTitle">{{'ADD_CONTENT_TITLE' | translate}}</label>
+            <input class="form-control" type="text" id="addContentTitle" ng-model="titleInput" name="titleInput" required ng-minlength="4" ng-maxlength="40" placeholder="{{'ADD_CONTENT_TITLE_PLACEHOLDER' | translate}}"/>
             <div ng-show="addContentForm.titleInput.$dirty && addContentForm.titleInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
             <div ng-show="addContentForm.titleInput.$error.minlength || addContentForm.titleInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 4, max: 40}'}}</div>
           </div>
 
           <div class="form-group">
-            <label for="type">{{'ADD_CONTENT_TYPE' | translate}}</label>
-            <select id="type" class="form-control" ng-model="typeInput" name="typeInput" required>
+            <label for="addContentType">{{'ADD_CONTENT_TYPE' | translate}}</label>
+            <select id="addContentType" class="form-control" ng-model="typeInput" name="typeInput" required>
               <option value="book">{{'CONTENT_BOOK' | translate}}</option>
               <option value="course">{{'CONTENT_COURSE' | translate}}</option>
               <option value="tutorial">{{'CONTENT_TUTORIAL' | translate}}</option>
@@ -35,8 +35,8 @@
           </div>
 
           <div class="form-group">
-            <label for="link">{{'ADD_CONTENT_LINK' | translate}}</label>
-            <input class="form-control" type="text" id="link" ng-model="linkInput" name="linkInput" required placeholder="{{'ADD_CONTENT_LINK_PLACEHOLDER' | translate}}"/>
+            <label for="addContentLink">{{'ADD_CONTENT_LINK' | translate}}</label>
+            <input class="form-control" type="text" id="addContentLink" ng-model="linkInput" name="linkInput" required placeholder="{{'ADD_CONTENT_LINK_PLACEHOLDER' | translate}}"/>
             <div ng-show="addContentForm.titleInput.$dirty && addContentForm.titleInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
           </div>
 

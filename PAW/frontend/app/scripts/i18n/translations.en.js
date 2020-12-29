@@ -48,6 +48,8 @@ define([], function () {
     BUTTON_GO_HOME: 'Go Home',
     BUTTON_RATE: 'Rate',
     BUTTON_REQUEST_NEW_TOKEN: 'Get new Confirmation Token',
+    BUTTON_NEXT: 'Next',
+    BUTTON_PREVIOUS: 'Previous',
 
     SEARCH_TITLE: 'Search',
     EXPLORE_WREF: 'Tech Launcher - Explore',
@@ -176,7 +178,7 @@ define([], function () {
     PROFILE_TECHS: 'Techs',
     PROFILE_VOTES: 'Votes',
     PROFILE_UPDATED: 'Your profile has been updated!',
-    PROFILE_VOTES_OVER_5: '{{stars} / 5 stars',
+    PROFILE_VOTES_OVER_5: '{{stars}} / 5 stars',
     PROFILE_CHANGE_PASS: 'Change my password',
     PROFILE_EMPTY_VOTES: 'There are no votes here yet!',
     PROFILE_EMPTY_COMMENTS: 'There are no comments here yet!',
