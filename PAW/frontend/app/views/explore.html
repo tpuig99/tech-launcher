@@ -9,11 +9,10 @@
       <div class="subtitle"><h4>{{'EXPLORE_CATEGORIES' | translate}}</h4></div>
 
 
-        <div ng-repeat="category in categories" class="form-check">
-
-          <div ng-if="$index <= 5 ">
+        <div ng-repeat="category in categories" class="row" style="margin: auto">
+          <div ng-if="$index <= 5 " class="form-check">
             <input class="form-check-input" type="checkbox" ng-model="category.selected"  value="{{category.category}}">
-            <label class="form-check-label">
+            <label class="form-check-label col col">
               {{ "CATEGORY_" + category.category | uppercase | translate}}
             </label>
           </div>
@@ -23,10 +22,10 @@
         <button ng-hide="categoriesShowMoreBtnVisible" class="btn btn-link" ng-click="showMore('Categories')">{{'EXPLORE_SHOW_MORE' | translate}}</button>
       </div>
       <div ng-show="categoriesVisible" id="hiddenCategories">
-          <div ng-repeat="category in categories" class="form-check">
-            <div ng-if="$index >= 6">
+          <div ng-repeat="category in categories" class="row" style="margin: auto">
+            <div ng-if="$index >= 6" class="form-check">
               <input class="form-check-input" type="checkbox" ng-model="category.selected"  value="{{category.category}}" >
-              <label class="form-check-label">
+              <label class="form-check-label col">
                 {{ "CATEGORY_" + category.category | uppercase | translate}}
               </label>
             </div>
@@ -39,10 +38,10 @@
       <!-- Filter By Types -->
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_TYPES' | translate}}</h4></div>
 
-        <div ng-repeat="type in types" class="form-check">
-          <div ng-if="$index <= 5">
+        <div ng-repeat="type in types" class="row" style="margin: auto">
+          <div ng-if="$index <= 5" class="form-check">
             <input class="form-check-input" type="checkbox" ng-model="type.selected"  value="{{type.type}}">
-            <label class="form-check-label">
+            <label class="form-check-label col">
               {{'TYPE_'+type.type | uppercase | translate}}
             </label>
           </div>
@@ -53,10 +52,10 @@
       </div>
       <div ng-show="typesVisible" id="hiddenTypes">
 
-          <div ng-repeat="type in types" class="form-check">
-            <div ng-if="$index >= 6">
+          <div ng-repeat="type in types" class="row" style="margin: auto">
+            <div ng-if="$index >= 6" class="form-check">
               <input class="form-check-input" type="checkbox" ng-model="type.selected"  value="{{type.type}}">
-              <label class="form-check-label">
+              <label class="form-check-label col">
                 {{'TYPE_'+type.type | uppercase | translate}}
               </label>
             </div>
@@ -73,7 +72,7 @@
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_UPDATE_DATE' | translate}}</h4></div>
 
       <span>
-        <select ng-model="lastUpdate" id="update-date-dropdown" ng-click="search()">
+        <select ng-model="lastUpdate" id="update-date-dropdown" ng-click="search()" class="row" style="margin: auto">
           <option value="0">{{'EXPLORE_ANY_DATE' | translate}}</option>
           <option value="1">{{'EXPLORE_LAST_DAYS' | translate}}</option>
           <option value="2">{{'EXPLORE_LAST_WEEK' | translate}}</option>
@@ -88,7 +87,7 @@
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_COMMENT_DATE' | translate}}</h4></div>
 
       <span>
-        <select ng-model="lastComment" id="comments-date-dropdown" ng-click="search()">
+        <select ng-model="lastComment" id="comments-date-dropdown" ng-click="search()" class="row" style="margin: auto">
           <option value="0">{{'EXPLORE_ANY_DATE' | translate}}</option>
           <option value="1">{{'EXPLORE_LAST_DAYS' | translate}}</option>
           <option value="2">{{'EXPLORE_LAST_WEEK' | translate}}</option>
@@ -104,7 +103,7 @@
       <div class="subtitle sidebar-title"><h4>{{'EXPLORE_COMMENTS' | translate}}</h4></div>
 
       <span>
-        <select ng-model="commentAmount" id="comments-dropdown" ng-click="search()">
+        <select ng-model="commentAmount" id="comments-dropdown" ng-click="search()" class="row" style="margin: auto">
           <option value="0">{{'EXPLORE_COMMENTS_ALL' | translate}}</option>
           <option value="1">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:1}' }}</option>
           <option value="5">{{'EXPLORE_COMMENTS_FROM' | translate : '{amount:5}' }}</option>
@@ -154,13 +153,13 @@
       </form>
       <div ng-if="activeTab === 'T'" class="form-check" id="searchByNameCheckbox">
         <input ng-model="nameFlag.selected" class="form-check-input" type="checkbox" value="" id="searchOnlyByName">
-        <label class="form-check-label" for="searchOnlyByName">
+        <label class="form-check-label col" for="searchOnlyByName">
           {{'EXPLORE_SEARCH_ONLY_BY_NAME' | translate}}
         </label>
       </div>
 
       <!-- Sort -->
-      <div class="d-flex flex-row justify-content-end">
+      <div class="d-flex flex-row justify-content-end col">
         <div class="mx-2">
           <label class="subtitle" for="sortSelect">{{'EXPLORE_SORT_BY' | translate}}</label>
           <select ng-model="groupBy" class="form-control" id="sortSelect" ng-click="search()">

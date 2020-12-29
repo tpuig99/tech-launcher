@@ -173,3 +173,19 @@ img {
 .formError {
   color: red;
 }
+
+.fieldset {
+  font-size: 1em;
+  padding: 0.5em;
+  border-radius: 1em;
+  font-family: sans-serif;
+}
+
+.search-item {
+  font-size: inherit;
+  padding: 0.2em;
+  /* the following ensures they're all using the same box-model for rendering */
+  -moz-box-sizing: content-box; /* or `border-box` */
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}

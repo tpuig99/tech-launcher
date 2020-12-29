@@ -3,57 +3,60 @@ define(['frontend','services/userService','services/sessionService'], function(f
 
   frontend.controller('ModCtrl', function($scope, $location, sessionService, $window, $routeParams, $sessionStorage,userService, $localStorage) {
     $scope.isPresent = false;
-    let user = sessionService.getStorageUser();
 
-    if (user !== undefined) {
-      sessionService.getCurrentUser(user.location).then(function (response) {
-        $scope.username = response.data.username;
-        $scope.isMod = response.data.verify;
-        $scope.isAdmin = response.data.admin;
-        $scope.isOwner = response.data.techsAmount > 0;
-        $scope.isEnable = response.data.enabled;
-        $scope.isPresent = true;
-      });
-    }
+    $scope.$parent.$watch('username',function () {
+      let user = sessionService.getStorageUser();
+      if (user !== undefined) {
+        sessionService.getCurrentUser(user.location).then(function (response) {
+          $scope.username = response.data.username;
+          $scope.isMod = response.data.verify;
+          $scope.isAdmin = response.data.admin;
+          $scope.isOwner = response.data.techsAmount > 0;
+          $scope.isEnable = response.data.enabled;
+          $scope.isPresent = true;
+        });
+        $scope.getCurrentMods();
+        $scope.getCurrentApplicants();
+        $scope.getVerified();
+        $scope.getReportedComments();
+        $scope.getReportedContents();
+      }
+    });
 
     $scope.getCurrentMods = () => {
       userService.getCurrentMods().then((response) => {
         $scope.mods = response.data;
+        $scope.modsPaging = response.headers('link');
       });
     };
-    $scope.getCurrentMods();
 
     $scope.getCurrentApplicants = () => {
       userService.getCurrentApplicants().then((response) => {
         $scope.applicants = response.data;
+        $scope.applicantsPaging = response.headers('link');
       });
     };
-
-    $scope.getCurrentApplicants();
 
     $scope.getVerified = () => {
       userService.getVerified().then((response) => {
         $scope.verified = response.data;
+        $scope.verifiedPaging = response.headers('link');
       });
     };
-
-    $scope.getVerified();
 
     $scope.getReportedComments = () => {
       userService.getReportedComments().then((response) => {
         $scope.reportedComments = response.data;
+        $scope.repComsPaging = response.headers('link');
       });
     };
-
-    $scope.getReportedComments();
 
     $scope.getReportedContents = () => {
       userService.getReportedContents().then((response) => {
         $scope.reportedContents = response.data;
+        $scope.repConsPaging = response.headers('link');
       });
     };
-
-    $scope.getReportedContents();
 
     $scope.acceptMod = (applicant) => {
       userService.acceptMod(applicant.location).then((response) => {
@@ -109,6 +112,7 @@ define(['frontend','services/userService','services/sessionService'], function(f
         case 'mods':
           $scope.mods = response.data;
           $scope.modsPaging = response.headers('link');
+          console.log($scope.modsPaging)
           break;
         case 'repCons':
           $scope.reportedContents = response.data;

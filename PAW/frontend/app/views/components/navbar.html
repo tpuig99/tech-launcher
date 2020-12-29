@@ -23,9 +23,9 @@
       </ul>
       <div>
         <div ng-if="!searchPage">
-          <div class="form-inline my-2 my-lg-0">
-            <input ng-model="searchInput" placeholder={{'SEARCH_TITLE'|translate}}>
-            <button class="btn my-2 my-sm-0"  ng-click="toSearch(searchInput)"><i class="fas fa-search"></i></button>
+          <div class="fieldset form-inline my-2 my-lg-0">
+            <input ng-model="searchInput" placeholder={{'SEARCH_TITLE'|translate}} class="search-item">
+            <button class="btn search-item"  ng-click="toSearch(searchInput)"><i class="fas fa-search"></i></button>
           </div>
         </div>
       </div>
