@@ -3,7 +3,6 @@ package ar.edu.itba.paw;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.ContentDao;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
-
-
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -199,39 +195,39 @@ public class ContentDaoTest {
         assertFalse(content.isPresent());
     }
 
-    @Test
-    public void testGetByFrameworkAndType() {
-
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
-        for (int i = 0; i < 3; i++) {
-            Content content = new Content();
-            content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
-            content.setLink(LINK);
-            content.setUser(em.find(User.class,USER_ID-i));
-            content.setTitle(TITLE+i);
-            content.setType(TYPE);
-            content.setTimestamp(ts);
-            em.persist(content);
-        }
-        Content content = new Content();
-        content.setFramework(em.find(Framework.class,FRAMEWORK_ID-4));
-        content.setLink(LINK);
-        content.setUser(em.find(User.class,USER_ID-4));
-        content.setTitle(TITLE);
-        content.setType(TYPE);
-        content.setTimestamp(ts);
-        em.persist(content);
-
-        List<Content> contents = contentDao.getContentByFrameworkAndType(FRAMEWORK_ID,TYPE, 1, 5);
-
-        em.flush();
-        assertFalse(contents.isEmpty());
-        assertEquals(3,contents.size());
-        for (Content c:contents) {
-            assertEquals(FRAMEWORK_ID, c.getFrameworkId());
-            assertEquals(TYPE,c.getType());
-        }
-    }
+//    @Test
+//    public void testGetByFrameworkAndType() {
+//
+//        Timestamp ts = new Timestamp(System.currentTimeMillis());
+//        for (int i = 0; i < 3; i++) {
+//            Content content = new Content();
+//            content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
+//            content.setLink(LINK);
+//            content.setUser(em.find(User.class,USER_ID-i));
+//            content.setTitle(TITLE+i);
+//            content.setType(TYPE);
+//            content.setTimestamp(ts);
+//            em.persist(content);
+//        }
+//        Content content = new Content();
+//        content.setFramework(em.find(Framework.class,FRAMEWORK_ID-4));
+//        content.setLink(LINK);
+//        content.setUser(em.find(User.class,USER_ID-4));
+//        content.setTitle(TITLE);
+//        content.setType(TYPE);
+//        content.setTimestamp(ts);
+//        em.persist(content);
+//
+//        List<Content> contents = contentDao.getContentByFrameworkAndType(FRAMEWORK_ID,TYPE, 1, 5);
+//
+//        em.flush();
+//        assertFalse(contents.isEmpty());
+//        assertEquals(3,contents.size());
+//        for (Content c:contents) {
+//            assertEquals(FRAMEWORK_ID, c.getFrameworkId());
+//            assertEquals(TYPE,c.getType());
+//        }
+//    }
     @Test
     public void testGetByFrameworkAndTypeAndTitle() {
 
