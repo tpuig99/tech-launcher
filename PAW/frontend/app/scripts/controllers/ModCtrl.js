@@ -14,12 +14,15 @@ define(['frontend','services/userService','services/sessionService'], function(f
           $scope.isOwner = response.data.techsAmount > 0;
           $scope.isEnable = response.data.enabled;
           $scope.isPresent = true;
+          $scope.getCurrentMods();
+          $scope.getCurrentApplicants();
+          $scope.getVerified();
+          $scope.getReportedComments();
+          $scope.getReportedContents();
         });
-        $scope.getCurrentMods();
-        $scope.getCurrentApplicants();
-        $scope.getVerified();
-        $scope.getReportedComments();
-        $scope.getReportedContents();
+      }
+      if( user === undefined || ($scope.isMod === false && $scope.isAdmin === false && $scope.isEnable === false && $scope.isOwner === false) ) {
+        $location.path('/error');
       }
     });
 
