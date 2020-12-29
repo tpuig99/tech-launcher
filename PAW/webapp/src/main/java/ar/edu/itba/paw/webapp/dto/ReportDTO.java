@@ -22,8 +22,8 @@ public class ReportDTO {
         dto.owner = reportComment.getUserNameOwner();
         dto.reported = reportComment.getUserReporterName();
         dto.location = "mod/reports/comment/" + reportComment.getReportId();
-        dto.techLocation = "/techs/" + reportComment.getFrameworkId();
-        dto.userLocation = "/users/" + reportComment.getUserId();
+        dto.techLocation = "techs/" + reportComment.getFrameworkId();
+        dto.userLocation = "users/" + reportComment.getUserId();
 
         return dto;
     }
@@ -36,8 +36,8 @@ public class ReportDTO {
         dto.owner = reportContent.getUserNameOwner();
         dto.reported = reportContent.getUserReporterName();
         dto.location = "mod/reports/content/" + reportContent.getContentId();
-        dto.techLocation = "/techs/" + reportContent.getFrameworkId();
-        dto.userLocation = "/users/" + reportContent.getUserId();
+        dto.techLocation = "techs/" + reportContent.getFrameworkId();
+        dto.userLocation = "users/" + reportContent.getUserId();
         return dto;
     }
 
