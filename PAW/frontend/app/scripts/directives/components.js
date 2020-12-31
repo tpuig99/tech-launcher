@@ -50,7 +50,7 @@ define(['angular'], function(angular) {
     return {
       restrict: 'E',
       controller: 'IndexCtrl',
-      templateUrl: '../../views/components/navbar.html'
+      templateUrl: 'views/components/navbar.html'
     };
   });
   mod.directive('pagination', function() {
@@ -61,7 +61,7 @@ define(['angular'], function(angular) {
         id: '@'
       },
       controller: 'PagingCtrl',
-      templateUrl: '../../views/components/pagination.html'
+      templateUrl: 'views/components/pagination.html'
     };
   });
   mod.directive('modalDeletePost', function() {
@@ -71,21 +71,21 @@ define(['angular'], function(angular) {
         del: '=',
         clean: '='
       },
-      templateUrl: '../../views/components/post_modal.html'
+      templateUrl: 'views/components/post_modal.html'
     };
   });
 
   mod.directive('modalLogin', function() {
     return {
       restrict: 'E',
-      templateUrl: '../../views/components/login_modal.html'
+      templateUrl: 'views/components/login_modal.html'
     };
   });
 
   mod.directive('mailModal', function() {
     return {
       restrict: 'E',
-      templateUrl: '../../views/components/confirm_mail_modal.html'
+      templateUrl: 'views/components/confirm_mail_modal.html'
     };
   });
 
@@ -96,7 +96,7 @@ define(['angular'], function(angular) {
         del: '=',
         clean: '='
       },
-      templateUrl: '../../views/components/delete_comment_modal.html'
+      templateUrl: 'views/components/delete_comment_modal.html'
     };
   });
 
@@ -107,7 +107,7 @@ define(['angular'], function(angular) {
         del: '=',
         clean: '='
       },
-      templateUrl: '../../views/components/delete_content_modal.html'
+      templateUrl: 'views/components/delete_content_modal.html'
     };
   });
 
@@ -118,7 +118,7 @@ define(['angular'], function(angular) {
         del: '=',
         clean: '='
       },
-      templateUrl: '../../views/components/delete_tech_modal.html'
+      templateUrl: 'views/components/delete_tech_modal.html'
     };
   });
 
@@ -129,7 +129,7 @@ define(['angular'], function(angular) {
         add: '=',
         contentNameError: '='
       },
-      templateUrl: '../../views/components/add_content_modal.html'
+      templateUrl: 'views/components/add_content_modal.html'
     };
   });
 
@@ -140,7 +140,7 @@ define(['angular'], function(angular) {
         report: '=',
         clean: '='
       },
-      templateUrl: '../../views/components/report_content_modal.html'
+      templateUrl: 'views/components/report_content_modal.html'
     };
   });
 
@@ -151,7 +151,7 @@ define(['angular'], function(angular) {
         report: '=',
         clean: '='
       },
-      templateUrl: '../../views/components/report_comment_modal.html'
+      templateUrl: 'views/components/report_comment_modal.html'
     };
   });
 

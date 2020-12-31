@@ -5,63 +5,63 @@ define([], function() {
         defaultRoutePath: '/',
         routes: {
             '/': {
-                templateUrl: '/views/home.html',
+                templateUrl: 'views/home.html',
                 controller: 'HomeCtrl'
             },
             '/explore': {
-              templateUrl: '/views/explore.html',
+              templateUrl: 'views/explore.html',
               controller: 'ExploreCtrl'
             },
             '/error': {
-              templateUrl: '/views/error.html',
+              templateUrl: 'views/error.html',
               controller: 'ErrorCtrl'
             },
             '/login': {
-                templateUrl: '/views/session/login.html',
+                templateUrl: 'views/session/login.html',
                 controller: 'LoginCtrl'
             },
             '/register/confirm/:token' : {
-              templateUrl: '/views/session/register_succesful.html',
+              templateUrl: 'views/session/register_succesful.html',
               controller: 'RegisterConfirmCtrl'
             },
             '/register/forgot_password/:token': {
-              templateUrl: '/views/session/change_password.html',
+              templateUrl: 'views/session/change_password.html',
               controller: 'ChangePasswordCtrl'
             },
             '/register': {
-              templateUrl: '/views/session/register.html',
+              templateUrl: 'views/session/register.html',
               controller: 'RegisterCtrl'
             },
             '/register/forgot_password': {
-              templateUrl: '/views/session/recover_password.html',
+              templateUrl: 'views/session/recover_password.html',
               controller: 'RecoverPasswordCtrl'
             },
             '/register/success/:success_type' : {
-              templateUrl: '/views/session/register_succesful.html',
+              templateUrl: 'views/session/register_succesful.html',
               controller: 'SuccessCtrl'
             },
             '/posts/add': {
-              templateUrl: "/views/posts/add_post.html",
+              templateUrl: "views/posts/add_post.html",
               controller: 'PostsCtrl'
             },
             '/posts/:id/edit': {
-              templateUrl: '/views/posts/edit_post.html',
+              templateUrl: 'views/posts/edit_post.html',
               controller: 'PostCtrl'
             },
             '/posts/:id': {
-                templateUrl: '/views/posts/post.html',
+                templateUrl: 'views/posts/post.html',
                 controller: 'PostCtrl'
             },
             '/techs': {
-              templateUrl: '/views/techs/techs.html',
+              templateUrl: 'views/techs/techs.html',
               controller: 'TechsCtrl'
             },
             '/techs/category/:category': {
-              templateUrl: '/views/techs/techs_cats.html',
+              templateUrl: 'views/techs/techs_cats.html',
               controller: 'TechsCatCtrl'
             },
             '/techs/add_tech': {
-              templateUrl: '/views/techs/add_tech.html',
+              templateUrl: 'views/techs/add_tech.html',
               controller: 'TechCtrl'
             },
             '/techs/:id/edit_tech': {
