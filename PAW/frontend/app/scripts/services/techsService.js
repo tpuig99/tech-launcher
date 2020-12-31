@@ -75,7 +75,7 @@ define(['frontend'], function(frontend) {
     }
 
     this.rate = function (id, stars) {
-      let vote = {
+      var vote = {
         'count': stars
       }
       return Restangular.all('techs/'+id+'/stars').post(vote);

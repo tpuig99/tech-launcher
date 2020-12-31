@@ -112,7 +112,7 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
         if (response.status === 200) {
           userService.getUser($routeParams.id).then(function (user) {
             $scope.profile.description = user.data.description;
-            $scope.profile.image = user.data.image + '?t='+new Date().getTime();
+            $scope.profile.image = user.data.image + '?t=' + new Date().getTime();
             $('profilePicture').get();
           });
           $('#editProfileModal').modal('hide');
@@ -122,7 +122,7 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
     $scope.changePass = function() {
       console.log('here');
       $('#editProfileModal').modal('hide');
-      //$window.location.href = '/#/register/forgot_password';
+      // $window.location.href = '/#/register/forgot_password';
     };
   });
 });

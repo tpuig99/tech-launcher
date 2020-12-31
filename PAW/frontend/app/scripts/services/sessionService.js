@@ -39,7 +39,7 @@ define(['frontend'], function(frontend) {
       return Restangular.all('register/forgot_password').post(mail);
     };
 
-    this.confirmRegister = (token) => {
+    this.confirmRegister = function(token) {
       return Restangular.one('register/confirm?token=' + token).get()
     }
 
@@ -52,7 +52,7 @@ define(['frontend'], function(frontend) {
       return Restangular.all('users/password').post(newPassword);
     };
 
-    this.requestNewToken = () => {
+    this.requestNewToken = function()  {
       return Restangular.one('register/resend_token').post();
     }
 

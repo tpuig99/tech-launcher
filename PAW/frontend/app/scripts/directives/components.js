@@ -6,10 +6,10 @@ define(['angular'], function(angular) {
     $scope.refreshData = function () {
         $scope.prev = undefined;
         $scope.next = undefined;
-        let parts = $scope.data.split(',').reduce((acc, link) => {
-        let match = link.match(/<(.*)>; rel="(\w*)"/)
-        let url = match[1]
-        let rel = match[2]
+        var parts = $scope.data.split(',').reduce((acc, link) => {
+        var match = link.match(/<(.*)>; rel="(\w*)"/)
+        var url = match[1]
+        var rel = match[2]
         acc[rel] = url
         return acc;
       }, {});

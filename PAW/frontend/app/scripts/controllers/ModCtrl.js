@@ -5,7 +5,7 @@ define(['frontend','services/userService','services/sessionService'], function(f
     $scope.isPresent = false;
 
     $scope.$parent.$watch('username',function () {
-      let user = sessionService.getStorageUser();
+      var user = sessionService.getStorageUser();
       if (user !== undefined) {
         sessionService.getCurrentUser(user.location).then(function (response) {
           $scope.username = response.data.username;

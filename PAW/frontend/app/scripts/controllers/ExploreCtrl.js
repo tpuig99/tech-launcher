@@ -15,12 +15,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
          $scope.techsPaging = response.headers('link');
          $scope.navbarNameToSearch = $scope.$parent.navbarSearch;
        });
-     }else if($rootScope.tagToSearch !== undefined){
+     } else if ($rootScope.tagToSearch !== undefined) {
        $scope.isExplore = false;
-       var techTab = document.getElementById("techs");
-       var postTab = document.getElementById("posts");
-       techTab.classList.remove("active");
-       postTab.classList.add("active");
+       var techTab = document.getElementById('techs');
+       var postTab = document.getElementById('posts');
+       techTab.classList.remove('active');
+       postTab.classList.add('active');
 
        switch ($rootScope.tagType) {
          case 'tech_type':
