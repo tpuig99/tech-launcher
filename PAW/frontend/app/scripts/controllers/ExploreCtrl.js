@@ -145,17 +145,14 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       $scope.setData = function(response,id) {
         switch (id) {
           case 'tech':
-            console.log(response.data);
             $scope.matchingTechs = response.data;
             $scope.techsPaging = response.headers('link');
             break;
           case 'post':
-            console.log('post pagination ');
             $scope.posts = response.data;
             $scope.postsPaging = response.headers('link');
             break;
           default:
-            console.log(id);
             break;
         }
       };
