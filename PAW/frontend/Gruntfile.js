@@ -343,7 +343,12 @@ module.exports = function (grunt) {
         }, {
           expand: true,
           cwd: '.',
-          src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
+          src: ['bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*','bower_components/components-font-awesome/css/*'],
+          dest: '<%= yeoman.dist %>'
+        }, {
+          expand: true,
+          cwd: '.',
+          src: 'bower_components/bootstrap/dist/css/*',
           dest: '<%= yeoman.dist %>'
         }, {
           expand: true,
@@ -529,7 +534,7 @@ module.exports = function (grunt) {
       // minify css in: <<>> out: <<>>
       'cssmin',
       // adds hash to file names in: <<>> out: <<>>
-      'filerev',
+      //'filerev',
       // Creates file map from filerev result in: <<>> out: <<>>
       'jsrev',
       // ???
