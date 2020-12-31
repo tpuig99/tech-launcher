@@ -74,7 +74,7 @@ define([], function() {
             },
             '/users/:id': {
               templateUrl: '/views/session/userProfile.html',
-              controller: 'userCtrl'
+              controller: 'UserCtrl'
             },
             '/posts': {
               templateUrl: '/views/posts/posts.html',

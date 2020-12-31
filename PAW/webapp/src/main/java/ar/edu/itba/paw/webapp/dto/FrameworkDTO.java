@@ -43,7 +43,7 @@ public class FrameworkDTO {
         dto.commentsAmount = framework.getCommentsAmount();
         dto.hasPicture = framework.getPicture() != null;
         dto.location = "techs/"+framework.getId();
-        dto.picture = "techs/"+framework.getId()+"/image";
+        dto.picture = "api/techs/"+framework.getId()+"/image";
         dto.comments = "techs/"+framework.getId()+"/comment";
         dto.books = "techs/"+framework.getId()+"/content?type=book";
         dto.courses = "techs/"+framework.getId()+"/content?type=course";
@@ -58,7 +58,7 @@ public class FrameworkDTO {
         final FrameworkDTO dto = new FrameworkDTO();
         dto.name = framework.getName();
         dto.hasPicture = framework.getPicture() != null;
-        dto.picture = "techs/"+framework.getId()+"/image";
+        dto.picture = "api/techs/"+framework.getId()+"/image";
         dto.location = "techs/"+framework.getId();
         dto.stars = (float) framework.getStars();
         return dto;

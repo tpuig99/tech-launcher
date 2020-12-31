@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend','services/userService','services/sessionService','ng-file-upload'], function(frontend) {
 
-  frontend.controller('userCtrl', function($scope, $routeParams, userService,sessionService,$window,Restangular) {
+  frontend.controller('UserCtrl', function($scope, $routeParams, userService,sessionService,$window,Restangular) {
 
     var user = sessionService.getStorageUser();
     if ($scope.$parent.username !== undefined) {
