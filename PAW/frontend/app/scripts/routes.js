@@ -65,23 +65,23 @@ define([], function() {
               controller: 'TechCtrl'
             },
             '/techs/:id/edit_tech': {
-              templateUrl: '/views/techs/edit_tech.html',
+              templateUrl: 'views/techs/edit_tech.html',
               controller: 'EditTechCtrl'
             },
             '/techs/:id': {
-              templateUrl: '/views/techs/tech.html',
+              templateUrl: 'views/techs/tech.html',
               controller: 'TechCtrl'
             },
             '/users/:id': {
-              templateUrl: '/views/session/userProfile.html',
+              templateUrl: 'views/session/userProfile.html',
               controller: 'UserCtrl'
             },
             '/posts': {
-              templateUrl: '/views/posts/posts.html',
+              templateUrl: 'views/posts/posts.html',
               controller: 'PostsCtrl'
             },
             '/mod': {
-              templateUrl: '/views/session/mod_page.html',
+              templateUrl: 'views/session/mod_page.html',
               controller: 'ModCtrl'
             }
             /* ===== yeoman hook ===== */
