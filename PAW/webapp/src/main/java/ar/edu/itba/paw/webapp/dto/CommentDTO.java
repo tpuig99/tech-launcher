@@ -46,7 +46,7 @@ public class CommentDTO {
         final CommentDTO dto = new CommentDTO();
         dto.description = comment.getDescription();
         dto.date = comment.getTimestamp().toLocaleString();
-        dto.location = "techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId();
+        dto.location = "techs/"+comment.getFrameworkId();
         dto.techName = comment.getFrameworkName();
         return dto;
     }

@@ -74,7 +74,7 @@ define(['frontend','services/postService','services/sessionService'], function(f
 
       $rootScope.tagToSearch = tag;
       $rootScope.tagType = type;
-      $window.location.href = '/#/explore';
+      $window.location.href = '#/explore';
     };
 
     $scope.addName = function (name) {

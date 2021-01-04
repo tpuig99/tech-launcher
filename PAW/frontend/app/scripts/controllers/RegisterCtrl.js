@@ -3,7 +3,7 @@ define(['frontend','services/sessionService'], function(frontend) {
 
 
     frontend.controller('RegisterCtrl', function($scope, sessionService) {
-
+      $('.modal-backdrop').hide();
       $scope.userAlreadyExists = false;
       $scope.registered = false;
 
