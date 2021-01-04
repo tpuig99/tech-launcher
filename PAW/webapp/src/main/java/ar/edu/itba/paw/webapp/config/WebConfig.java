@@ -15,17 +15,12 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -39,16 +34,6 @@ import java.util.Properties;
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Value("classpath:schema.sql")
     private Resource schemaSql;
-    @Bean
-    public ViewResolver viewResolver() {
-        final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix("/WEB-INF/jsp/");
-        viewResolver.setSuffix(".jsp");
-
-        return viewResolver;
-    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -77,13 +62,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ds.setUsername("paw-2020b-1");
         ds.setPassword("uygwr2BX7");
 
-//        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
+//        ds.setUrl("jdbc:postgresql://localhost:5432/paw");
 //        ds.setUsername("postgres");
-//        ds.setPassword("uygwr2BX7");
-
-
-
-
+//        ds.setPassword("isd2012");
         return ds;
     }
 
@@ -125,9 +106,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         final Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
-        // Si ponen esto en prod, hay tabla!!!
-//            properties.setProperty("hibernate.show_sql", "true");
-//            properties.setProperty("format_sql", "true");
         factoryBean.setJpaProperties(properties);
         return factoryBean;
     }

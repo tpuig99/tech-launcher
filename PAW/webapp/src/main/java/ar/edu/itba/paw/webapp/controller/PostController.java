@@ -2,25 +2,25 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.form.posts.*;
+import ar.edu.itba.paw.webapp.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.net.URI;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Controller
+@Path("posts")
+@Component
 public class PostController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
+    final private Integer minTitleLength = 3, minDescriptionLength = 0, maxTitleLength = 200, maxDescriptionLength = 5000;
 
     @Autowired
     private PostService ps;
@@ -29,7 +29,7 @@ public class PostController {
     private FrameworkService fs;
 
     @Autowired
-    private PostCommentService pcs;
+    private PostCommentService commentService;
 
     @Autowired
     private PostTagService pts;
@@ -37,101 +37,133 @@ public class PostController {
     @Autowired
     private UserService us;
 
+    @Context
+    private UriInfo uriInfo;
+
     private final String START_PAGE = "1";
     private final long POSTS_PAGE_SIZE = 7;
     private final long COMMENTS_PAGE_SIZE = 5;
     private final int UP_VOTE_VALUE = 1;
     private final int DOWN_VOTE_VALUE = -1;
 
-    private static ModelAndView redirectToPosts() {
-        return new ModelAndView("redirect:/posts");
+    private Response pagination(UriInfo uriInfo,int page,int pages,Object dto){
+        Response.ResponseBuilder response = Response.ok(dto)
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).build(),"first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).build(),"last");
+        if(page < pages)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page+1).build(),"next");
+        if(page != 1)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page-1).build(),"prev");
+        return  response.build();
     }
 
-    private static ModelAndView redirectToPost( long postId) {
-        return new ModelAndView("redirect:/posts/" + postId);
-    }
-
-    @RequestMapping("/posts")
-    public ModelAndView posts( @RequestParam(value = "page", required = false, defaultValue = START_PAGE) Long postsPage) {
-
-        final ModelAndView mav = new ModelAndView("posts/posts_list");
-        final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        mav.addObject("posts", ps.getAll(postsPage, POSTS_PAGE_SIZE) );
-        mav.addObject("postsPage", postsPage);
-        mav.addObject("pageSize", POSTS_PAGE_SIZE);
-        mav.addObject("postsAmount", ps.getPostsAmount());
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("downVoteForm", new DownVoteForm());
-        mav.addObject("upVoteForm", new UpVoteForm());
-        mav.addObject("deletePostForm", new DeletePostForm());
-
-        if( optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            mav.addObject("isAdmin", user.isAdmin());
-            mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-            mav.addObject("isEnable", user.isEnable());
+    @GET
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response posts( @QueryParam("page") @DefaultValue(START_PAGE) Integer postsPage) {
+        final double pages = Math.ceil(((double)ps.getPostsAmount())/POSTS_PAGE_SIZE);
+        List<Post> postsList = ps.getAll(postsPage, POSTS_PAGE_SIZE);
+        PostsDTO list = new PostsDTO();
+        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<PostDTO> posts = new ArrayList<>();
+        for (Post post:postsList) {
+            PostDTO postDTO = PostDTO.fromPost(post,uriInfo);
+            user.ifPresent(value -> postDTO.setLoggedVote(value.getVoteForPost(post.getPostId())));
+            posts.add(postDTO);
         }
-
-        return mav;
+        list.setPosts(posts);
+        list.setPageSize((int)POSTS_PAGE_SIZE);
+        list.setAmount(ps.getPostsAmount());
+        list.setCurrentPage(postsPage);
+        return pagination(uriInfo, postsPage, (int)pages, list);
     }
 
-
-    @RequestMapping("/posts/{id}")
-    public ModelAndView post(@PathVariable long id, @ModelAttribute("postCommentForm") final PostCommentForm form, @ModelAttribute("deletePostCommentForm") final DeletePostCommentForm deletePostCommentForm, @RequestParam(value = "page", required = false, defaultValue = START_PAGE) Long commentsPage) {
-
-        final ModelAndView mav = new ModelAndView("posts/post");
-
+    @GET
+    @Path("/{id}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response post(@PathParam("id") long id) {
         Optional<Post> post = ps.findById(id);
-        if(post.isPresent()){
+        if(post.isPresent()) {
             LOGGER.info("Post {}: Requested and found, retrieving data", id);
-            mav.addObject("post", post.get() );
-            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-            mav.addObject("downVoteForm", new DownVoteForm());
-            mav.addObject("upVoteForm", new UpVoteForm());
-            mav.addObject("downVoteCommentForm", new DownVoteForm());
-            mav.addObject("upVoteCommentForm", new UpVoteForm());
-            mav.addObject("deletePostForm", new DeletePostForm());
-            mav.addObject("answers", pcs.getByPost(id, commentsPage));
-            mav.addObject("page", commentsPage);
-            mav.addObject("page_size", COMMENTS_PAGE_SIZE);
+            PostDTO dto = PostDTO.fromPost(post.get(), uriInfo);
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            if( optionalUser.isPresent()) {
+            if( optionalUser.isPresent()){
                 User user = optionalUser.get();
-                mav.addObject("isAdmin", user.isAdmin());
-                mav.addObject("isOwner", post.get().getUser().getId().equals(user.getId()) );
-                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-                mav.addObject("isEnable", user.isEnable());
+
+                optionalUser.ifPresent(value -> dto.setLoggedVote(value.getVoteForPost(id)));
             }
-            return mav;
-        }
 
-        return ErrorController.redirectToErrorView();
+            return Response.ok(dto).build();
+        }
+        LOGGER.error("Post {}: Requested and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @RequestMapping("/posts/add_post")
-    public ModelAndView addPostPage(@ModelAttribute("addPostForm") final AddPostForm form, final BindingResult errors) {
+    @GET
+    @Path("/{id}/answers")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response answersOfPost(@PathParam("id") long id,
+                                   @QueryParam("page") @DefaultValue(START_PAGE) int page) {
 
-        final ModelAndView mav = new ModelAndView("posts/add_post");
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-
-        mav.addObject("categories", fs.getAllCategories());
-        mav.addObject("frameworkNames", fs.getFrameworkNames());
-        mav.addObject("types", fs.getAllTypes());
-
-        return mav;
+        Optional<Post> post = ps.findById(id);
+        if (post.isPresent()) {
+            LOGGER.info("Tech {}: Requested and found, retrieving data", id);
+            long amount = post.get().getAnswersAmount();
+            int pages = (int) Math.ceil((double) amount/COMMENTS_PAGE_SIZE);
+            List<PostCommentDTO> dto = commentService.getByPost(id, page).stream()
+                    .map((PostComment comment) -> PostCommentDTO.fromComment(comment, uriInfo)).collect(Collectors.toList());
+            return pagination(uriInfo,page,pages,new GenericEntity<List<PostCommentDTO>>(dto){});
+        }
+        LOGGER.error("Tech {}: Requested and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @RequestMapping(path= "/posts/addPost/add", method = RequestMethod.POST)
-    public ModelAndView addPost(@Valid @ModelAttribute("addPostForm") final AddPostForm form , final BindingResult errors) {
-
-        if(errors.hasErrors()){
-            return addPostPage(form, errors);
+    private boolean postIsInvalid(final PostAddDTO post ){
+        if( post.getTitle() == null ){
+            return true;
+        }
+        if( post.getTitle().length() < minTitleLength || post.getTitle().length() > maxTitleLength ){
+            return true;
         }
 
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() ){
+        if( post.getDescription() == null ){
+            return true;
+        }
+
+        if( post.getDescription().length() < minDescriptionLength || post.getDescription().length() > maxDescriptionLength ){
+            return true;
+        }
+
+        return post.getTypes().isEmpty() && post.getCategories().isEmpty() && post.getNames().isEmpty();
+    }
+
+    @GET
+    @Path("/tags")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getTags() {
+        TagsDTO dto = new TagsDTO();
+        for( String tag : fs.getAllCategories() ) {
+            dto.addCategory(PostTagDTO.fromString(tag,PostTagType.tech_category.name()));
+        }
+        for( String tag : fs.getAllTypes() ) {
+            dto.addType(PostTagDTO.fromString(tag, PostTagType.tech_type.name()));
+        }
+        for( String tag : fs.getFrameworkNames() ) {
+            dto.addName(PostTagDTO.fromString(tag, PostTagType.tech_name.name()));
+        }
+        return Response.ok(dto).build();
+    }
+
+    @POST
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response addPost(final PostAddDTO form) {
+        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if( user.isPresent()) {
+            if(postIsInvalid(form)){
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
             Post newPost = ps.insertPost( user.get().getId(), form.getTitle(), form.getDescription() );
             if(form.getNames() != null ) {
                 for (String name : form.getNames()) {
@@ -149,242 +181,210 @@ public class PostController {
                     pts.insert(FrameworkType.valueOf(c).name(), newPost.getPostId(), PostTagType.valueOf("tech_type"));
                 }
             }
-
-            return redirectToPost(newPost.getPostId());
+            final URI uri = uriInfo.getAbsolutePathBuilder()
+                    .path(String.valueOf(newPost.getPostId())).build();
+            return Response.created(uri).build();
         }
 
-        return ErrorController.redirectToErrorView();
+        LOGGER.error("Posts: Unauthorized user attempted to add a new Post");
+        return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    @RequestMapping(value = "/posts/edit_post/{id}", method = { RequestMethod.GET})
-    public ModelAndView editPostPage(@ModelAttribute("editPostForm") final AddPostForm form,  final BindingResult errors, @PathVariable long id) {
-
-        final Optional<Post> post = ps.findById(id);
+    @PUT
+    @Path("/{id}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response editPost(final PostAddDTO form, @PathParam("id") long id) {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
+        final Optional<Post> post = ps.findById(id);
         if (post.isPresent()) {
             if (user.isPresent()) {
-                if (post.get().getUser().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
-                    final User u = user.get();
-
-                    form.setPostId(id);
-                    form.setTitle(post.get().getTitle());
-                    form.setDescription(post.get().getDescription());
-                    form.setNames(post.get().getPostTagsByType(PostTagType.tech_name));
-                    form.setCategories(post.get().getPostTagsByType(PostTagType.tech_category));
-                    form.setTypes(post.get().getPostTagsByType(PostTagType.tech_type));
-
-                    ModelAndView mav = new ModelAndView("posts/edit_post");
-
-                    mav.addObject("categories", fs.getAllCategories());
-                    mav.addObject("frameworkNames", fs.getFrameworkNames());
-                    mav.addObject("types", fs.getAllTypes());
-
-                    mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-
-                    mav.addObject("isAdmin", u.isAdmin());
-                    mav.addObject("isOwner", post.get().getUser().getId().equals(u.getId()) );
-                    mav.addObject("user_isMod", u.isVerify() || u.isAdmin());
-                    mav.addObject("isEnable", u.isEnable());
-
-                    LOGGER.info("Post {}: User {} accessed the page for updating the Post", id, user.get().getId());
-                    return mav;
+                if(postIsInvalid(form)){
+                    return Response.status(Response.Status.BAD_REQUEST).build();
                 }
 
-                LOGGER.error("Post {}: User without enough privileges attempted to access page for updating", id);
-                return ErrorController.redirectToErrorView();
-            }
-
-            LOGGER.error("Post {}: Unauthorized user attempted to access page for updating", id);
-            return ErrorController.redirectToErrorView();
-        }
-
-        LOGGER.error("Post {}: Requested for getting update page and not found", id);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(value = "/posts/edit_post/{id}", method = { RequestMethod.POST})
-    public ModelAndView editPost(@Valid @ModelAttribute("editPostForm") final AddPostForm form, final BindingResult errors, @PathVariable long id) {
-
-        if(errors.hasErrors()){
-            return editPostPage(form, errors, id);
-        }
-
-        final Optional<Post> post = ps.findById(id);
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (post.isPresent()) {
-            if (user.isPresent()) {
                 if (post.get().getUser().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
+                    Optional<Post> updatedPost = ps.update(id, form.getTitle(),form.getDescription());
 
-                      Optional<Post> updatedPost = ps.update(id, form.getTitle(),form.getDescription());
+                    if (updatedPost.isPresent()) {
+                        List<String> names = form.getNames() == null ? Collections.emptyList() : form.getNames();
+                        List<String> categories = form.getCategories() == null ? Collections.emptyList() : form.getCategories();
+                        List<String> types = form.getTypes() == null ? Collections.emptyList() : form.getTypes();
 
-                      if (updatedPost.isPresent()) {
-                          List<String> names = form.getNames() == null ? Collections.emptyList() : form.getNames();
-                          List<String> categories = form.getCategories() == null ? Collections.emptyList() : form.getCategories();
-                          List<String> types = form.getTypes() == null ? Collections.emptyList() : form.getTypes();
+                        pts.update(id, names, categories, types);
 
-                          pts.update(id, names, categories, types);
+                        LOGGER.info("Post {}: Updated successfully with new information", id);
 
-                          LOGGER.info("Post {}: Updated successfully with new information", id);
-
-                          return redirectToPost(updatedPost.get().getPostId());
-                      }
-
-                      return ErrorController.redirectToErrorView();
+                        return Response.ok(form).build();
+                    }
+                    LOGGER.error("Posts: A problem occurred while creating the new Post");
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
                 }
-
-                LOGGER.error("Post {}: User without enough privileges attempted to access page for updating", id);
-                return ErrorController.redirectToErrorView();
+                LOGGER.error("Post {}: Unauthorized user attempted to access page for updating", id);
+                return Response.status(Response.Status.UNAUTHORIZED).build();
             }
-
-            LOGGER.error("Post {}: Unauthorized user attempted to access page for updating", id);
-            return ErrorController.redirectToErrorView();
+            LOGGER.error("Post {}: Unauthorized user tried to update Post", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-
         LOGGER.error("Post {}: Requested for getting update page and not found", id);
-        return ErrorController.redirectToErrorView();
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @RequestMapping(path={"/posts/delete_post"}, method = RequestMethod.POST)
-    public ModelAndView deleteFramework(@Valid @ModelAttribute("deletePostForm") final DeletePostForm form){
-        Optional<Post> post = ps.findById(form.getPostIdx());
+    @DELETE
+    @Path("/{id}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response deletePost(@PathParam("id") Long postId){
+        Optional<Post> post = ps.findById(postId);
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if(post.isPresent()) {
             if (user.isPresent()) {
                 if (post.get().getUser().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
-                    ps.deletePost(form.getPostIdx());
-                    LOGGER.info("Posts: Post {} deleted successfully", form.getPostIdx());
-                    return new ModelAndView("redirect:/" + "posts");
+                    ps.deletePost(postId);
+                    LOGGER.info("Posts: Post {} deleted successfully", postId);
+                    return Response.noContent().build();
                 }
 
-                LOGGER.error("Post {}: User without enough privileges attempted to delete the Post", form.getPostIdx());
-                return ErrorController.redirectToErrorView();
+                LOGGER.error("Post {}: User without enough privileges attempted to delete the Post", postId);
+                return Response.status(Response.Status.FORBIDDEN).build();
             }
 
-            LOGGER.error("Post {}: Unauthorized user tried to delete the Post", form.getPostIdx());
-            return ErrorController.redirectToErrorView();
+            LOGGER.error("Post {}: Unauthorized user tried to delete the Post", postId);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        LOGGER.error("Post {}: Requested for deleting Post and not found", form.getPostIdx());
-        return ErrorController.redirectToErrorView();
+        LOGGER.error("Post {}: Requested for deleting Post and not found", postId);
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @RequestMapping( path = "/posts/upVote/", method = RequestMethod.POST)
-    public ModelAndView voteUp(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, final BindingResult errors){
-        if(errors.hasErrors()){
-            return  post(form.getUpVotePostId(), null, null, null);
-        }
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() ){
-            ps.vote(form.getUpVotePostId(), user.get().getId(), UP_VOTE_VALUE);
-            return PostController.redirectToPosts();
-        }
+    @POST
+    @Path("/{id}/up_vote")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response voteUpPost(@PathParam("id") long postId){
+        final Optional<Post> post = ps.findById(postId);
+        if( post.isPresent() ){
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        return ErrorController.redirectToErrorView();
+            if( user.isPresent() ){
+                ps.vote(postId, user.get().getId(), UP_VOTE_VALUE);
+                LOGGER.info("Post {}: User {} voted up post",postId, user.get().getId());
+                PostDTO postDTO = PostDTO.fromPost(post.get(), uriInfo);
+                postDTO.setVotesUp(postDTO.getVotesUp() + 1);
+                return Response.ok(postDTO).build();
+            }
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @RequestMapping( path = "/posts/{id}/upVote/", method = RequestMethod.POST)
-    public ModelAndView voteUpPost(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, @PathVariable("id") long postId, final BindingResult errors ){
-        if(errors.hasErrors()){
-            return  post(form.getUpVotePostId(), null, null, null);
-        }
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() && postId == form.getUpVotePostId()){
-            ps.vote(form.getUpVotePostId(), user.get().getId(), UP_VOTE_VALUE);
-            return redirectToPost(form.getUpVotePostId());
-        }
+    @POST
+    @Path("/{id}/down_vote")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response voteDownPost(@PathParam("id") long postId){
+        final Optional<Post> post = ps.findById(postId);
+        if( post.isPresent() ){
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        return ErrorController.redirectToErrorView();
+            if( user.isPresent() ){
+                ps.vote(postId, user.get().getId(), DOWN_VOTE_VALUE);
+                LOGGER.info("Post {}: User {} voted down post", postId, user.get().getId());
+                PostDTO postDTO = PostDTO.fromPost(post.get(), uriInfo);
+                postDTO.setVotesUp(postDTO.getVotesDown() + 1);
+                return Response.ok(postDTO).build();
+            }
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @RequestMapping( path = "/posts/{id}/upVoteComment/", method = RequestMethod.POST)
-    public ModelAndView voteUpComment(@Valid @ModelAttribute("upVoteForm") final UpVoteForm form, @PathVariable("id") long postId, final BindingResult errors ){
-        if(errors.hasErrors()){
-            return  post(form.getUpVotePostId(), null, null, null);
+    @POST
+    @Path("/{id}/answers/{commentId}/up_vote")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response voteUpComment(@PathParam("id") long postId, @PathParam("commentId") long commentId) {
+        final Optional<Post> post = ps.findById(postId);
+        if( post.isPresent() ) {
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            boolean appears = false;
+            for( PostComment comment : post.get().getPostComments()) {
+                if( comment.getPostCommentId() == commentId ){
+                    appears = true;
+                    break;
+                }
+            }
+            if (user.isPresent() && appears) {
+                commentService.vote(commentId, user.get().getId(), UP_VOTE_VALUE);
+                return getVoteCommentResponse(commentId);
+            }
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() && postId == form.getUpVoteCommentPostId()){
-            pcs.vote(form.getPostCommentUpVoteId(), user.get().getId(), UP_VOTE_VALUE);
-            return redirectToPost(form.getUpVoteCommentPostId());
-        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
 
-        return ErrorController.redirectToErrorView();
+    @POST
+    @Path("/{id}/answers/{commentId}/down_vote")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response voteDownComment( @PathParam("id") long postId, @PathParam("commentId") long commentId){
+        final Optional<Post> post = ps.findById(postId);
+        if( post.isPresent() ) {
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            boolean appears = false;
+            for( PostComment comment : post.get().getPostComments()) {
+                if( comment.getPostCommentId() == commentId ){
+                    appears = true;
+                    break;
+                }
+            }
+            if (user.isPresent() && appears) {
+                commentService.vote(commentId, user.get().getId(), DOWN_VOTE_VALUE);
+                return getVoteCommentResponse(commentId);
+            }
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    private Response getVoteCommentResponse( long commentId) {
+        Optional<PostComment> comment = commentService.getById(commentId);
+        if (comment.isPresent()) {
+            VoteDTO dto = new VoteDTO();
+            dto.setCount(Double.valueOf(comment.get().getVotesUp()));
+            return Response.ok(dto).build();
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
 
-
-    @RequestMapping( path = "/posts/{id}/downVote/", method = RequestMethod.POST)
-    public ModelAndView voteDown(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") final long postId, final BindingResult errors){
-        if(errors.hasErrors()){
-            return  post(form.getDownVotePostId(), null, null, null);
+    @POST
+    @Path("/{id}/answers")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response commentPost(final PostCommentAddDTO form, @PathParam("id") long postId){
+        final Optional<Post> post = ps.findById(postId);
+        if( post.isPresent() ){
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            if( user.isPresent() ){
+                commentService.insertPostComment(postId, user.get().getId(), form.getDescription(), null);
+                return Response.ok(form).build();
+            }
+            LOGGER.error("Post {}: Unauthorized user tried to insert a comment", postId);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() && postId == form.getDownVotePostId()){
-            ps.vote(form.getDownVotePostId(), user.get().getId(), DOWN_VOTE_VALUE);
-            return redirectToPost(form.getDownVotePostId());
-        }
-
-        return ErrorController.redirectToErrorView();
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @RequestMapping( path = "/posts/{id}/downVoteComment/", method = RequestMethod.POST)
-    public ModelAndView voteDownComment(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form,  @PathVariable("id") long postId, final BindingResult errors){
-        if(errors.hasErrors()){
-            return  post(form.getDownVotePostId(), null, null, null);
+    @DELETE
+    @Path("/{id}/answers/{commentId}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response deletePostComment(@PathParam("id") final long postId, @PathParam("commentId") final long commentId) {
+        final Optional<Post> post = ps.findById(postId);
+        if (post.isPresent()) {
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            if (user.isPresent()) {
+                commentService.deletePostComment(commentId);
+                return Response.noContent().build();
+            }
+            LOGGER.error("Post {}: Unauthorized user tried to delete comment", postId);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() && postId == form.getDownVoteCommentPostId()){
-            pcs.vote(form.getPostCommentDownVoteId(), user.get().getId(), DOWN_VOTE_VALUE);
-            return redirectToPost(form.getDownVoteCommentPostId());
-        }
-
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping( path = "/posts/downVote/", method = RequestMethod.POST)
-    public ModelAndView voteDownPost(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form, final BindingResult errors){
-
-        if(errors.hasErrors()){
-            return  post(form.getDownVotePostId(), null, null, null);
-        }
-
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() ){
-            ps.vote(form.getDownVotePostId(), user.get().getId(), DOWN_VOTE_VALUE);
-            return PostController.redirectToPosts();
-        }
-
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping( path = "/posts/comment", method = RequestMethod.POST )
-    public ModelAndView commentPost(@Valid @ModelAttribute("postCommentForm") final PostCommentForm form, final BindingResult errors){
-
-        if(errors.hasErrors()){
-            return  post(form.getCommentPostId(), form, null, null);
-        }
-
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() ){
-            pcs.insertPostComment(form.getCommentPostId(), user.get().getId(), form.getComment(), null);
-            return redirectToPost(form.getCommentPostId());
-        }
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path = "/posts/{postId}/comment/delete", method = RequestMethod.POST)
-    public ModelAndView deletePostComment(@PathVariable final long postId, @Valid @ModelAttribute("deletePostCommentForm") final DeletePostCommentForm form , final BindingResult errors){
-        if( errors.hasErrors() ){
-            return post(form.getCommentDeletePostId(), null, form, null);
-        }
-
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if( user.isPresent() && postId == form.getCommentDeletePostId()){
-            pcs.deletePostComment(form.getCommentDeleteId());
-            return redirectToPost(form.getCommentDeletePostId());
-        }
-        return ErrorController.redirectToErrorView();
+        LOGGER.error("Post {}: requested for deleting comment and not found", postId);
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 }

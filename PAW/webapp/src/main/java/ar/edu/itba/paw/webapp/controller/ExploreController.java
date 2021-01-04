@@ -4,23 +4,29 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.webapp.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.stereotype.Component;
 
+
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.stream.Collectors;
 
-@Controller
+@Path("explore")
+@Component
 public class ExploreController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExploreController.class);
@@ -37,6 +43,9 @@ public class ExploreController {
     @Autowired
     private PostService ps;
 
+    @Context
+    private UriInfo uriInfo;
+
     private final long START_PAGE = 1;
     private final long TECHS_PAGE_SIZE = 24;
     private final long POSTS_PAGE_SIZE = 5;
@@ -45,26 +54,37 @@ public class ExploreController {
         return messageSource.getMessage(code, Collections.EMPTY_LIST.toArray(), LocaleContextHolder.getLocale());
     }
 
-    @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
-    public ModelAndView advancedSearch(@RequestParam(required = false, defaultValue = "") String toSearch,
-                                       @RequestParam(required = false, defaultValue = "") final List<String> categories,
-                                       @RequestParam(required = false, defaultValue = "") final List<String> types,
-                                       @RequestParam(required = false) final Integer starsLeft,
-                                       @RequestParam(required = false) final Integer starsRight,
-                                       @RequestParam(required = false) final boolean nameFlag,
-                                       @RequestParam(required = false) final Integer order,
-                                       @RequestParam(required = false) final Integer commentAmount,
-                                       @RequestParam(required = false) final Integer lastComment,
-                                       @RequestParam(required = false) final Integer lastUpdate,
-                                       @RequestParam(value = "page", required = false) final Long page,
-                                       @RequestParam(value = "postsPage", required = false) final Long postsPage,
-                                       @RequestParam(required = false) final boolean isPost){
+    private Response pagination(UriInfo uriInfo,int page,int pages,Object dto){
+        Response.ResponseBuilder response = Response.ok(dto)
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).build(),"first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).build(),"last");
+        if(page < pages)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page+1).build(),"next");
+        if(page != 1)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page-1).build(),"prev");
+        return  response.build();
+    }
 
-        final ModelAndView mav = new ModelAndView("frameworks/explore");
+    @GET
+    @Path("techs")
+    public Response advancedSearchTechs(@QueryParam("to_search") @DefaultValue("") String toSearch,
+                                   @QueryParam("categories") final List<String> categories,
+                                   @QueryParam("types") final List<String> types,
+                                   @QueryParam("stars_left") final Integer starsLeft,
+                                   @QueryParam("stars_right") final Integer starsRight,
+                                   @QueryParam("name_flag") final boolean nameFlag,
+                                   @QueryParam("order") final Integer order,
+                                   @QueryParam("comment_amount") final Integer commentAmount,
+                                   @QueryParam("last_comment") final Integer lastComment,
+                                   @QueryParam("last_update") final Integer lastUpdate,
+                                   @QueryParam("page") final int page){
+
         List<FrameworkCategories> categoriesList = new ArrayList<>();
         List<String> categoriesQuery = new ArrayList<>();
         List<FrameworkType> typesList = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
+        final int DAYS = 1, WEEK = 2, MONTH = 3, MONTHS = 4, YEAR = 5;
+        SearchDTO search = new SearchDTO();
 
         LOGGER.info("Explore: Searching results for: {}", toSearch);
         LOGGER.info("Explore: Searching categories among: {}", categories);
@@ -73,14 +93,29 @@ public class ExploreController {
         LOGGER.info("Explore: Using search only by name: {}", nameFlag);
         LOGGER.info("Explore: Searching by comment amount = {}", commentAmount);
 
-        for( String c : categories){
-            categoriesQuery.add(c);
-            categoriesList.add(FrameworkCategories.valueOf(c));
+        if( categories.size() != 1 || !categories.get(0).equals("")) {
+            for (String c : categories) {
+                categoriesQuery.add(c);
+
+                try {
+                    categoriesList.add(FrameworkCategories.valueOf(c));
+                } catch (Exception e){
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+            }
         }
 
-        for( String c : types){
-            typesQuery.add(c);
-            typesList.add(FrameworkType.valueOf(c));
+        if( types.size() != 1 || !types.get(0).equals("")) {
+            for (String c : types) {
+
+                typesQuery.add(c);
+
+                try {
+                    typesList.add(FrameworkType.valueOf(c));
+                } catch (Exception e){
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+            }
         }
 
         List<String> allCategories = fs.getAllCategories();
@@ -102,23 +137,23 @@ public class ExploreController {
         if(lastComment!=null) {
             LOGGER.info("Explore: Searching 'last comment' according to criteria {}", lastComment);
             switch (lastComment) {
-                case 1:
+                case DAYS:
                     dateCommentTranslation = getMessageWithoutArguments("explore.last_days");
                     dateComment = LocalDate.now().minusDays(3);
                     break;
-                case 2:
+                case WEEK:
                     dateCommentTranslation = getMessageWithoutArguments("explore.last_week");
                     dateComment = LocalDate.now().minusWeeks(1);
                     break;
-                case 3:
+                case MONTH:
                     dateCommentTranslation = getMessageWithoutArguments("explore.last_month");
                     dateComment = LocalDate.now().minusMonths(1);
                     break;
-                case 4:
+                case MONTHS:
                     dateCommentTranslation = getMessageWithoutArguments("explore.last_months");
                     dateComment = LocalDate.now().minusMonths(3);
                     break;
-                case 5:
+                case YEAR:
                     dateCommentTranslation = getMessageWithoutArguments("explore.last_year");
                     dateComment = LocalDate.now().minusYears(1);
                     break;
@@ -129,23 +164,23 @@ public class ExploreController {
         if(lastUpdate!=null) {
             LOGGER.info("Explore: Searching 'last update' according to criteria {}", lastUpdate);
             switch (lastUpdate) {
-                case 1:
+                case DAYS:
                     dateUpdateTranslation = getMessageWithoutArguments("explore.last_days");
                     dateUpdate = LocalDate.now().minusDays(3);
                     break;
-                case 2:
+                case WEEK:
                     dateUpdateTranslation = getMessageWithoutArguments("explore.last_week");
                     dateUpdate = LocalDate.now().minusWeeks(1);
                     break;
-                case 3:
+                case MONTH:
                     dateUpdateTranslation = getMessageWithoutArguments("explore.last_month");
                     dateUpdate = LocalDate.now().minusMonths(1);
                     break;
-                case 4:
+                case MONTHS:
                     dateUpdateTranslation = getMessageWithoutArguments("explore.last_months");
                     dateUpdate = LocalDate.now().minusMonths(3);
                     break;
-                case 5:
+                case YEAR:
                     dateUpdateTranslation = getMessageWithoutArguments("explore.last_year");
                     dateUpdate = LocalDate.now().minusYears(1);
                     break;
@@ -158,70 +193,201 @@ public class ExploreController {
             tsUpdated=Date.from(dateUpdate.atStartOfDay().toInstant(ZoneOffset.UTC));
         }
 
+        search.setToSearch(toSearch);
+        search.setCategories(categoriesQuery);
+        search.setTypes(typesQuery);
+        search.setStarsLeft(starsLeft);
+        search.setStarsRight(starsRight);
+        search.setNameFlag(nameFlag);
+        search.setLastComment(lastComment);
+        search.setLastUpdate(lastUpdate);
+
+        Integer searchResultsNumber;
+        if (order != null) {
+            if( order < -4 || order > 4 ){
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+            search.setOrder((int) Math.signum(order));
+            search.setSort(Math.abs(order));
+        }  else {
+            search.setOrder(1);
+            search.setSort(0);
+        }
+
        /* --------------------- TECHS --------------------- */
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == 0 ? 1 : page);
+        searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated);
+        LOGGER.info("Explore: Found {} matching techs", searchResultsNumber);
+        int pages = (int) Math.ceil(((double)searchResultsNumber)/TECHS_PAGE_SIZE);
+        search.setFrameworksAmount(searchResultsNumber);
+        search.setFrameworks(frameworks.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
+        return pagination(uriInfo, page == 0 ? 1 : page, pages, search);
+        /* -------------------------------------------------- */
+    }
 
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated, order,page == null ? START_PAGE :page);
-        Integer searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch  : null, categoriesList.isEmpty() ? null : categoriesList ,typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft,starsRight== null ? 5 : starsRight, nameFlag,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated);
-        LOGGER.info("Explore: Found {} matching results", searchResultsNumber);
+    @GET
+    @Path("posts")
+    public Response advancedSearchPosts(@QueryParam("to_search") @DefaultValue("") String toSearch,
+                                   @QueryParam("categories") final List<String> categories,
+                                   @QueryParam("types") final List<String> types,
+                                   @QueryParam("stars_left") final Integer starsLeft,
+                                   @QueryParam("stars_right") final Integer starsRight,
+                                   @QueryParam("name_flag") final boolean nameFlag,
+                                   @QueryParam("order") final Integer order,
+                                   @QueryParam("comment_amount") final Integer commentAmount,
+                                   @QueryParam("last_comment") final Integer lastComment,
+                                   @QueryParam("last_update") final Integer lastUpdate,
+                                   @QueryParam("page") final int page) {
 
-        mav.addObject("matchingFrameworks", frameworks);
-        mav.addObject("page", page == null ? START_PAGE :page);
-        mav.addObject("page_size", TECHS_PAGE_SIZE);
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        mav.addObject("categories", allCategories);
-        mav.addObject("frameworkNames",fs.getFrameworkNames());
-        mav.addObject("types", allTypes);
-        mav.addObject("search_page", true);
-        mav.addObject("searchResultsNumber", searchResultsNumber);
+        List<FrameworkCategories> categoriesList = new ArrayList<>();
+        List<String> categoriesQuery = new ArrayList<>();
+        List<FrameworkType> typesList = new ArrayList<>();
+        List<String> typesQuery = new ArrayList<>();
+        final int DAYS = 1, WEEK = 2, MONTH = 3, MONTHS = 4, YEAR = 5;
+        SearchDTO search = new SearchDTO();
 
-        //Search Results For TECHS :
-        mav.addObject("techNameQuery", toSearch );
-        mav.addObject("categoriesQuery", categoriesQuery );
-        mav.addObject("typesQuery", typesQuery );
-        mav.addObject("starsQuery1", starsLeft );
-        mav.addObject("starsQuery2", starsRight );
-        mav.addObject("commentAmount", commentAmount);
-        mav.addObject("nameFlagQuery", nameFlag);
-        mav.addObject("dateComment",lastComment);
-        mav.addObject("dateCommentTranslation", dateCommentTranslation);
-        mav.addObject("dateUpdate",lastUpdate);
-        mav.addObject("dateUpdateTranslation", dateUpdateTranslation);
+        LOGGER.info("Explore: Searching results for: {}", toSearch);
+        LOGGER.info("Explore: Searching categories among: {}", categories);
+        LOGGER.info("Explore: Searching types among: {}", types);
+        LOGGER.info("Explore: Searching stars between: {} and {}", starsLeft, starsRight);
+        LOGGER.info("Explore: Using search only by name: {}", nameFlag);
+        LOGGER.info("Explore: Searching by comment amount = {}", commentAmount);
 
+        if (categories.size() != 1 || !categories.get(0).equals("")) {
+            for (String c : categories) {
+                categoriesQuery.add(c);
 
+                try {
+                    categoriesList.add(FrameworkCategories.valueOf(c));
+                } catch (Exception e) {
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+            }
+        }
+
+        if (types.size() != 1 || !types.get(0).equals("")) {
+            for (String c : types) {
+
+                typesQuery.add(c);
+
+                try {
+                    typesList.add(FrameworkType.valueOf(c));
+                } catch (Exception e) {
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+            }
+        }
+
+        List<String> allCategories = fs.getAllCategories();
+        List<String> allTypes = fs.getAllTypes();
+
+        if (allCategories.contains(toSearch)) {
+            categoriesList.add(FrameworkCategories.valueOf(toSearch));
+            toSearch = "";
+        } else if (allTypes.contains(toSearch)) {
+            toSearch = "";
+        }
+
+        Date tscomment = null;
+        Date tsUpdated = null;
+        LocalDate dateComment = null;
+        LocalDate dateUpdate = null;
+
+        String dateCommentTranslation = "";
+        if (lastComment != null) {
+            LOGGER.info("Explore: Searching 'last comment' according to criteria {}", lastComment);
+            switch (lastComment) {
+                case DAYS:
+                    dateCommentTranslation = getMessageWithoutArguments("explore.last_days");
+                    dateComment = LocalDate.now().minusDays(3);
+                    break;
+                case WEEK:
+                    dateCommentTranslation = getMessageWithoutArguments("explore.last_week");
+                    dateComment = LocalDate.now().minusWeeks(1);
+                    break;
+                case MONTH:
+                    dateCommentTranslation = getMessageWithoutArguments("explore.last_month");
+                    dateComment = LocalDate.now().minusMonths(1);
+                    break;
+                case MONTHS:
+                    dateCommentTranslation = getMessageWithoutArguments("explore.last_months");
+                    dateComment = LocalDate.now().minusMonths(3);
+                    break;
+                case YEAR:
+                    dateCommentTranslation = getMessageWithoutArguments("explore.last_year");
+                    dateComment = LocalDate.now().minusYears(1);
+                    break;
+            }
+        }
+
+        String dateUpdateTranslation = "";
+        if (lastUpdate != null) {
+            LOGGER.info("Explore: Searching 'last update' according to criteria {}", lastUpdate);
+            switch (lastUpdate) {
+                case DAYS:
+                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_days");
+                    dateUpdate = LocalDate.now().minusDays(3);
+                    break;
+                case WEEK:
+                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_week");
+                    dateUpdate = LocalDate.now().minusWeeks(1);
+                    break;
+                case MONTH:
+                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_month");
+                    dateUpdate = LocalDate.now().minusMonths(1);
+                    break;
+                case MONTHS:
+                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_months");
+                    dateUpdate = LocalDate.now().minusMonths(3);
+                    break;
+                case YEAR:
+                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_year");
+                    dateUpdate = LocalDate.now().minusYears(1);
+                    break;
+            }
+        }
+        if (dateComment != null) {
+            tscomment = Date.from(dateComment.atStartOfDay().toInstant(ZoneOffset.UTC));
+        }
+        if (dateUpdate != null) {
+            tsUpdated = Date.from(dateUpdate.atStartOfDay().toInstant(ZoneOffset.UTC));
+        }
+
+        search.setToSearch(toSearch);
+        search.setCategories(categoriesQuery);
+        search.setTypes(typesQuery);
+        search.setStarsLeft(starsLeft);
+        search.setStarsRight(starsRight);
+        search.setNameFlag(nameFlag);
+        search.setLastComment(lastComment);
+        search.setLastUpdate(lastUpdate);
+
+        Integer searchResultsNumber;
+        if (order != null) {
+            if (order < -4 || order > 4) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+            search.setOrder((int) Math.signum(order));
+            search.setSort(Math.abs(order));
+        } else {
+            search.setOrder(1);
+            search.setSort(0);
+        }
         /* --------------------- POSTS --------------------- */
-
-       // mav.addObject("posts", ps.getAll(postsPage == null ? 1 : postsPage, POSTS_PAGE_SIZE) );
-        mav.addObject("postsPage", postsPage);
-        mav.addObject("postsPageSize", POSTS_PAGE_SIZE);
-        mav.addObject("isPost", isPost);
-
-
         List<String> tags = new ArrayList<>();
         tags.addAll(categories);
         tags.addAll(types);
 
-        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch  : null,tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated,order,postsPage == null ? START_PAGE :postsPage, POSTS_PAGE_SIZE);
-        Integer postsSearchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch  : null,tags.isEmpty() ? null : tags,0,0,commentAmount == null ? 0:commentAmount,tscomment,tsUpdated,order);
-        mav.addObject("postsResults", postsSearchResultsNumber);
-        mav.addObject("posts", posts);
-
+        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
+        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order);
+        LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
+        int pages = (int) Math.ceil(((double)searchResultsNumber)/POSTS_PAGE_SIZE);
+        search.setPosts(posts.stream().map((Post post) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList()));
+        search.setPostsAmount(searchResultsNumber);
+        return pagination(uriInfo, page == 0 ? 1 : page, pages, search);
         /* -------------------------------------------------- */
-
-        if (order != null) {
-            mav.addObject("sortValue", Math.abs(order));
-            mav.addObject("orderValue", (int) Math.signum(order));
-        }  else {
-            mav.addObject("sortValue", 0);
-            mav.addObject("orderValue", 1);
-        }
-
-
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        user.ifPresent(value -> mav.addObject("user_isMod", value.isVerify() || value.isAdmin()));
-
-        return mav;
     }
+
 }
 
 

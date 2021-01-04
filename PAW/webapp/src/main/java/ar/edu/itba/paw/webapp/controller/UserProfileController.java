@@ -2,24 +2,25 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.form.register.ProfileForm;
+import ar.edu.itba.paw.webapp.dto.*;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@Controller
+@Path("/users")
+@Component
 public class UserProfileController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserProfileController.class);
@@ -42,161 +43,296 @@ public class UserProfileController {
     @Autowired
     private UserService us;
 
+    @Context
+    private UriInfo uriInfo;
+
     final private long PAGE_SIZE = 5;
     final private long FRAMEWORK_PAGE_SIZE = 7;
     final private long VOTE_PAGE_SIZE = 10;
     final private String START_PAGE = "1";
+    private final String PAGE = "page";
 
-    public static ModelAndView redirectToProfile(String username) {
-        return new ModelAndView("redirect:/users/" + username);
+
+    private Response.ResponseBuilder addPaginationLinks (Response.ResponseBuilder responseBuilder, String parameterName, long currentPage, long pages) {
+        responseBuilder
+                .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName,1).build(),"first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName,pages).build(),"last");
+        if(currentPage < pages) {
+            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, currentPage + 1).build(), "next");
+        }
+        if(currentPage != 1) {
+            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, currentPage - 1).build(), "prev");
+        }
+
+        return responseBuilder;
     }
 
-    @RequestMapping(path={"/users/{username}"}, method = RequestMethod.GET)
-    public ModelAndView userProfilePagination(@ModelAttribute("profileForm") final ProfileForm form,
-                                              @PathVariable String username,
-                                              @RequestParam(value = "comments_page",  required = false, defaultValue = START_PAGE) final Long commentsPage,
-                                              @RequestParam(value = "contents_page", required = false, defaultValue = START_PAGE) final Long contentsPage,
-                                              @RequestParam(value = "votes_page", required = false, defaultValue = START_PAGE) final Long votesPage,
-                                              @RequestParam(value = "frameworks_page", required = false, defaultValue = START_PAGE) final Long frameworksPage,
-                                              @RequestParam(value = "posts_page", required = false, defaultValue = START_PAGE) final Long postsPage) {
-        ModelAndView mav = new ModelAndView("session/user_profile");
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
+    @GET
+    @Path("{id}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getUser(@PathParam("id") Long userId) {
+        Optional<User> user = us.findById(userId);
 
-        final Optional<User> user = us.findByUsername(username);
         if (user.isPresent()) {
-            LOGGER.info("User Profile: Requested user {} exists, retrieving data", username);
 
-            long userId = user.get().getId();
-            mav.addObject("profile", user.get());
-            mav.addObject("previousDescription", user.get().getDescription());
+            LOGGER.info("User Profile: Requested user {} exists, retrieving data", userId);
 
-            final List<Comment> commentList = commentService.getCommentsByUser(userId, commentsPage);
-            final List<Content> contentList = contentService.getContentByUser(userId, contentsPage);
+            UserDTO dto = UserDTO.fromUser(user.get(),uriInfo);
+            dto.setCommentAmount(commentService.getCommentsCountByUser(userId).orElse(0));
+            dto.setContentAmount((int) (long) contentService.getContentCountByUser(userId).orElse(0L));
+            dto.setTechsAmount(frameworkService.getByUserCount(userId).orElse(0));
+            dto.setVotesAmount(voteService.getAllCountByUser(userId).orElse(0));
+            dto.setPostsAmount(postService.getPostsCountByUser(userId).orElse(0));
+
+            LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
+            return Response.ok(dto).build();
+        }
+
+        LOGGER.error("User Profile: Nonexistant user");
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @GET
+    @Path("{id}/comments")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getUserComments (@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long commentsPage) {
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
+
+            final List<Comment> commentsList = commentService.getCommentsByUser(userId, commentsPage);
+            final Optional<Integer> commentsAmount = commentService.getCommentsCountByUser(userId);
+
+            if(commentsList.size() > 0) {
+                List<CommentDTO> commentDTOList = commentsList.stream().map(CommentDTO::fromProfile).collect(Collectors.toList());
+                long pages = 0;
+                if (commentsAmount.isPresent()) {
+                    pages = (long) Math.ceil((double) commentsAmount.get() / PAGE_SIZE);
+                }
+                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<CommentDTO>>(commentDTOList){});
+                return addPaginationLinks(response, PAGE, commentsPage, pages).build();
+            }
+
+            return Response.noContent().build();
+
+        }
+
+        LOGGER.error("User Profile: Nonexistant user");
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @GET
+    @Path("{id}/contents")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getUserContents (@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long contentsPage) {
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
+            final List<Content> contentsList = contentService.getContentByUser(userId, contentsPage);
+            final Optional<Long> contentsAmount = contentService.getContentCountByUser(userId);
+
+            if(contentsList.size() > 0) {
+                List<ContentDTO> contentDTOList = contentsList.stream().map(ContentDTO::fromProfile).collect(Collectors.toList());
+                long pages = 0;
+                if (contentsAmount.isPresent()) {
+                    pages = (long) Math.ceil((double) contentsAmount.get() / PAGE_SIZE);
+                }
+                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ContentDTO>>(contentDTOList){});
+                return addPaginationLinks(response, PAGE, contentsPage, pages).build();
+            }
+
+            return Response.noContent().build();
+        }
+
+        LOGGER.error("User Profile: Nonexistant user");
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @GET
+    @Path("{id}/posts")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getUserPosts (@PathParam("id") Long userId,@QueryParam("page") @DefaultValue(START_PAGE) Long postsPage) {
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
+            final List<Post> postsList = postService.getPostsByUser(userId, postsPage);
+            final Optional<Integer> postsAmount = postService.getPostsCountByUser(userId);
+
+            if(postsList.size() > 0) {
+                List<PostDTO> postDTOList = postsList.stream().map((Post post ) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList());
+                long pages = 0;
+                if (postsAmount.isPresent()) {
+                    pages = (long) Math.ceil((double) postsAmount.get() / PAGE_SIZE);
+                }
+                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<PostDTO>>(postDTOList){});
+                return addPaginationLinks(response, PAGE, postsPage, pages).build();
+            }
+
+            return Response.noContent().build();
+        }
+
+        LOGGER.error("User Profile: Nonexistant user");
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @GET
+    @Path("{id}/votes")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getUserVotes (@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long votesPage) {
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId, votesPage);
-            final List<Framework> frameworks = frameworkService.getByUser(userId, frameworksPage);
-            final List<Post> posts = postService.getPostsByUser(userId, postsPage);
+            final Optional<Integer> votesAmount = voteService.getAllCountByUser(userId);
 
-            final Optional<Long> contentCount = contentService.getContentCountByUser(userId);
-            final Optional<Integer> commentsCount = commentService.getCommentsCountByUser(userId);
-            final Optional<Integer> votesCount = voteService.getAllCountByUser(userId);
-            final Optional<Integer> frameworksCount = frameworkService.getByUserCount(userId);
-            final Optional<Integer> postsCount = postService.getPostsCountByUser(userId);
+            if(votesList.size() > 0) {
+                List<VoteDTO> voteDTOList = votesList.stream().map(VoteDTO::fromProfile).collect(Collectors.toList());
+                long pages = 0;
+                if (votesAmount.isPresent()) {
+                    pages = (long) Math.ceil((double) votesAmount.get() / VOTE_PAGE_SIZE);
+                }
+                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VoteDTO>>(voteDTOList){});
+                return addPaginationLinks(response, PAGE, votesPage, pages).build();
+            }
 
+            return Response.noContent().build();
+        }
+
+        LOGGER.error("User Profile: Nonexistant user");
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @GET
+    @Path("{id}/techs")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getUserTechs (@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE)Long techsPage) {
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
+            final List<Framework> techsList = frameworkService.getByUser(userId, techsPage);
+            final Optional<Integer> techsAmount = frameworkService.getByUserCount(userId);
+
+            if(techsList.size() > 0) {
+                List<FrameworkDTO> frameworkDTOList = techsList.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList());
+                long pages = 0;
+                if (techsAmount.isPresent()) {
+                    pages = (long) Math.ceil((double) techsAmount.get() / FRAMEWORK_PAGE_SIZE);
+                }
+                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<FrameworkDTO>>(frameworkDTOList){});
+                return addPaginationLinks(response, PAGE, techsPage, pages).build();
+            }
+
+            return Response.noContent().build();
+        }
+
+        LOGGER.error("User Profile: Nonexistant user");
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @GET
+    @Path("/{id}/image")
+    @Produces({"image/jpg", "image/png", "image/gif"})
+    public Response getImage(@PathParam("id") Long id) {
+        return Response.ok(us.findById(id).map(User::getPicture).orElse(null)).build();
+    }
+
+    @PUT
+    @Path("/{id}/password")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response changePassword(@PathParam("id") Long userId ,final UserAddDTO form) {
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
             if (SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
-                form.setUserId(user.get().getId());
-                form.setDescription(user.get().getDescription());
+                if (form.getPassword() == null) {
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+
+                us.updatePassword(userId, form.getPassword());
+                LOGGER.info("Register: User {} updated its password successfully", userId);
+
+                return Response.ok().build();
             }
-
-            mav.addObject("verifiedList", user.get().getVerifications());
-            mav.addObject("contents", contentList);
-            mav.addObject("contents_page", contentsPage);
-            contentCount.ifPresent(value -> mav.addObject("contentCount", value));
-            mav.addObject("comments", commentList);
-            mav.addObject("comments_page", commentsPage);
-            commentsCount.ifPresent(value -> mav.addObject("commentsCount", value));
-            mav.addObject("votes", votesList);
-            mav.addObject("votes_page", votesPage);
-            mav.addObject("votes_page_size",VOTE_PAGE_SIZE);
-            votesCount.ifPresent(value -> mav.addObject("votesCount", value));
-            mav.addObject("frameworks",frameworks);
-            mav.addObject("frameworks_page", frameworksPage);
-            mav.addObject("frameworks_page_size", FRAMEWORK_PAGE_SIZE);
-            frameworksCount.ifPresent(value -> mav.addObject("frameworksCount", value));
-
-            mav.addObject("posts",posts);
-            mav.addObject("posts_page", postsPage);
-//            mav.addObject("posts_page_size", PAGE_SIZE);
-            postsCount.ifPresent(value -> mav.addObject("postsCount", value));
-
-            mav.addObject("page_size", PAGE_SIZE);
-            mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
-            mav.addObject("isAdmin", user.get().isAdmin());
-            mav.addObject("isAllowMod", user.get().isAllowMod());
-            return mav;
-        }
-
-        LOGGER.error("User Profile: Requested user {} does not exist", username);
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/users/{id}/image"}, method = RequestMethod.GET)
-    public @ResponseBody byte[] getImage(@PathVariable long id)  {
-        return us.findById(id).map(User::getPicture).orElse(null);
-    }
-
-//    @RequestMapping(path = {"/users/{username}/upload"}, method = RequestMethod.POST)
-//    public ModelAndView uploadPicture(@RequestParam("picture") MultipartFile picture, @PathVariable String username) throws IOException {
-//        Optional<User> user = us.findByUsername(username);
-//
-//        if (user.isPresent() && SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
-//            if (!picture.isEmpty()) {
-////                us.updatePicture(user.get().getId(), picture.getBytes());
-//                LOGGER.info("User Profile: User {} updated picture successfully",user.get().getId());
-//            } else {
-//                LOGGER.error("User Profile: Sent picture was unreadable");
-//            }
-//
-//            return UserProfileController.redirectToProfile(user.get().getUsername());
-//        }
-//
-//        LOGGER.error("User Profile: Unauthorized user attempted to update another profile");
-//        return ErrorController.redirectToErrorView();
-//    }
-
-    @RequestMapping(path={"/users/{username}"}, method = RequestMethod.POST)
-    public ModelAndView editProfile(@Valid @ModelAttribute("profileForm") final ProfileForm form,
-                                    final BindingResult errors,
-                                    final RedirectAttributes redirectAttributes,
-                                    @PathVariable String username,
-                                    @RequestParam(value = "comments_page",  required = false, defaultValue = START_PAGE) final Long commentsPage,
-                                    @RequestParam(value = "contents_page", required = false, defaultValue = START_PAGE) final Long contentsPage,
-                                    @RequestParam(value = "votes_page", required = false, defaultValue = START_PAGE) final Long votesPage,
-                                    @RequestParam(value = "frameworks_page", required = false, defaultValue = START_PAGE) final Long frameworksPage,
-                                    @RequestParam(value = "posts_page", required = false, defaultValue = START_PAGE) final Long postsPage
-    ) throws IOException {
-
-        Optional<User> user = us.findByUsername(username);
-
-        if (user.isPresent() && SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
-            if(errors.hasErrors()){
-                LOGGER.info("User Profile: Profile Form por updating User {} profile has errors",user.get().getId());
-                final ModelAndView userError = userProfilePagination(form, username ,commentsPage,contentsPage,votesPage,frameworksPage, postsPage);
-                userError.addObject("profileFormError", true);
-                return userError;
-            }
-            redirectAttributes.addFlashAttribute("profileFormError",false);
-            redirectAttributes.addFlashAttribute("profileFormMessage","Your profile has been updated successfully!");
-
-            if (!form.getPicture().isEmpty()) {
-                byte[] picture = form.getPicture().getBytes();
-                us.updateInformation(form.getUserId(), form.getDescription(), picture, true);
-            } else {
-                us.updateInformation(form.getUserId(), form.getDescription(), user.get().getPicture(), false);
-            }
-
-            LOGGER.info("User Profile: User {} updated its profile successfully",user.get().getId());
-            return UserProfileController.redirectToProfile(user.get().getUsername());
+            LOGGER.error("User Profile: User {} does not have enough privileges to update profile", userId);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         LOGGER.error("User Profile: Unauthorized user attempted to update another profile");
-        return ErrorController.redirectToErrorView();
+        return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    @RequestMapping(path={"/user/{username}/enableMod/{value}"})
-    public ModelAndView enableMod( @PathVariable("username") String username, @PathVariable("value") Boolean value){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @POST
+    @Path("password")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response changePasswordWithToken(PasswordDTO passwordDTO) {
 
-        if(us.findByUsername(authentication.getName()).isPresent()){
-            User user = us.findByUsername(authentication.getName()).get();
-            if( username.equals(user.getUsername())){
-                us.updateModAllow(user.getId(), value);
-                LOGGER.info("User Profile: User {} updated its Mod Status successfully",user.getId());
-                return UserProfileController.redirectToProfile(username);
+        String[] strings = passwordDTO.getToken().split("-a_d-ss-");
+        Long userId = Long.valueOf(strings[strings.length - 1]);
+
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
+            if (passwordDTO.getPassword() == null) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
             }
+
+            us.updatePassword(userId, passwordDTO.getPassword());
+            LOGGER.info("Register: User {} updated its password successfully", userId);
+
+            return Response.ok().build();
         }
 
-        LOGGER.error("User Profile: Unauthorized user attempted to update another profile");
-        return ErrorController.redirectToErrorView();
+        LOGGER.error("User Profile: User {} not found", userId);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
 
+    @PUT
+    @Path("/{id}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    public Response updateProfile(@PathParam("id") Long userId, @FormDataParam("description") final String description, @FormDataParam("picture") final byte[] picture) throws IOException {
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
+            if (SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
+
+                if (picture == null && description == null) {
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+
+                if (picture != null) {
+                    us.updateInformation(userId, description == null ? user.get().getDescription() :description, picture, true);
+                } else {
+                    us.updateInformation(userId, description == null ? user.get().getDescription() :description, user.get().getPicture(), false);
+                }
+
+                LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
+                return Response.ok().build();
+            }
+            LOGGER.error("User Profile: User {} does not have enough privileges to update profile", userId);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        LOGGER.error("User Profile: Unauthorized user attempted to update another profile");
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    @PUT
+    @Path("/{id}/enable_modding/{value}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response enableMod(@PathParam("id") Long userId, @PathParam("value") Boolean value) {
+        Optional<User> user = us.findById(userId);
+
+        if (user.isPresent()) {
+            if (SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
+                us.updateModAllow(userId, value);
+                LOGGER.info("User Profile: User {} updated its Mod Status successfully", userId);
+                return Response.ok().build();
+            }
+            LOGGER.error("User Profile: User {} does not have enough privileges to update the Mod Status", userId);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        LOGGER.error("User Profile: Unauthorized user attempted to update a Mod Status");
+        return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
 }
