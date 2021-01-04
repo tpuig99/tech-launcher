@@ -49,7 +49,7 @@ define(['routes',
 					$translateProvider.preferredLanguage('preferredLanguage');
           $translateProvider.useSanitizeValueStrategy('escape');
 
-          RestangularProvider.setBaseUrl('/api');
+          RestangularProvider.setBaseUrl('api');
           RestangularProvider.setFullResponse(true);
 
         }]);
