@@ -2,7 +2,7 @@
 define(['frontend', 'services/sessionService'], function(frontend) {
 
     frontend.controller('LoginCtrl', function($scope, $window, $http, $location, $localStorage, $sessionStorage, sessionService,Restangular) {
-
+      $('.modal-backdrop').hide();
       $scope.failedLogin = false;
       $scope.rememberMe = false;
       $scope.login = function() {

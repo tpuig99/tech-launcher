@@ -23,10 +23,12 @@
       </ul>
       <div>
         <div ng-if="!searchPage">
+          <form ng-submit="toSearch(searchInput)">
           <div class="fieldset form-inline my-2 my-lg-0">
             <input ng-model="searchInput" placeholder={{'SEARCH_TITLE'|translate}} class="search-item">
-            <button class="btn search-item"  ng-click="toSearch(searchInput)"><i class="fas fa-search"></i></button>
+            <button class="btn search-item" ng-click="toSearch(searchInput)"><i class="fas fa-search"></i></button>
           </div>
+          </form>
         </div>
       </div>
       <div class="nav-item dropdown" id="profile-settings">

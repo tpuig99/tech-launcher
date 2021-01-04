@@ -38,7 +38,7 @@ public class ContentDTO {
         dto.link = content.getLink();
         dto.title = content.getTitle();
         dto.type = content.getType().name();
-        dto.location = "techs/"+content.getFrameworkId()+"/content/"+content.getContentId();
+        dto.location = "techs/"+content.getFrameworkId();
         dto.techName = content.getFrameworkName();
         return dto;
     }
