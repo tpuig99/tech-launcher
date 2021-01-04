@@ -37,9 +37,7 @@
               <goal>install-node-and-npm</goal>
             </goals>
             <configuration>
-              <!-- See https://nodejs.org/en/download/ for latest node and npm (lts) versions -->
               <nodeVersion>v9.9.0</nodeVersion>
-              <!-- npm included in node installation -->
             </configuration>
           </execution>
 
@@ -49,7 +47,6 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <!-- Install is default -->
               <arguments>install</arguments>
             </configuration>
           </execution>
@@ -60,7 +57,6 @@
               <goal>bower</goal>
             </goals>
             <configuration>
-              <!-- Install is default -->
               <arguments>install --allow-root</arguments>
             </configuration>
           </execution>

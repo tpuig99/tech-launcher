@@ -115,7 +115,6 @@ define(['frontend','services/userService','services/sessionService'], function(f
         case 'mods':
           $scope.mods = response.data;
           $scope.modsPaging = response.headers('link');
-          console.log($scope.modsPaging)
           break;
         case 'repCons':
           $scope.reportedContents = response.data;

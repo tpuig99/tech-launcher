@@ -176,23 +176,5 @@ public class RegisterController {
         return Response.ok().build();
     }
 
-//    @GET
-//    @Path("forgot_password")
-//    @Produces(value = {MediaType.APPLICATION_JSON,})
-//    public Response forgotPasswordToken(@QueryParam("token") String token) {
-//        String[] strings = token.split("-a_d-ss-");
-//        Long userId = Long.valueOf(strings[strings.length - 1]);
-//
-//        Optional<User> optionalUser = us.findById(userId);
-//
-//        if (optionalUser.isPresent()) {
-//            PasswordDTO dto = new PasswordDTO();
-//            dto.setToken(token);
-//            return Response.ok(dto).build();
-//        }
-//
-//        return Response.status(Response.Status.NOT_FOUND).build();
-//    }
-
 }
 

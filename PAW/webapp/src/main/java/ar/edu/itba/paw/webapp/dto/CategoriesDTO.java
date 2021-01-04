@@ -21,7 +21,6 @@ public class CategoriesDTO {
     public static CategoriesDTO fromSideBar(String category, UriInfo uriInfo){
         final CategoriesDTO dto = new CategoriesDTO();
         dto.category = category;
-        //dto.location = uriInfo.getAbsolutePathBuilder().path(category).build().toString();
         dto.location = "techs/category/"+category;
         return dto;
     }

@@ -72,7 +72,6 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           let vote;
           for (vote of $scope.userVotes) {
             if (vote.techName === $scope.tech.name) {
-              console.log(vote.vote);
               $scope.star = vote.vote;
             }
 

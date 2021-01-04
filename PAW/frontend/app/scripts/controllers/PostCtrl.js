@@ -188,7 +188,6 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
           'categories' : $scope.categoriesChosen
         }
         postService.editPost(post, $scope.post.location).then((response) => {
-          console.log('Redirecting to: ' + '/#/posts/' + $routeParams.id)
           $location.path('/posts/' + $routeParams.id);
         });
       }

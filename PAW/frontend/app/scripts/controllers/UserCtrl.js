@@ -120,9 +120,7 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
       });
     };
     $scope.changePass = function() {
-      console.log('here');
       $('#editProfileModal').modal('hide');
-      // $window.location.href = '/#/register/forgot_password';
     };
   });
 });

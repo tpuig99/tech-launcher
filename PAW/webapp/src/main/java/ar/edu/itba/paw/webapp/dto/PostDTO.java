@@ -32,7 +32,6 @@ public class PostDTO {
         dto.ownerLocation = uriInfo.getBaseUriBuilder().path("users/"+post.getUser().getId()).build().toString();
         dto.votesUp = post.getVotesUp();
         dto.votesDown = post.getVotesDown();
-        //dto.location = uriInfo.getBaseUriBuilder().path("posts/"+post.getPostId()).build().toString();
         dto.location = "posts/"+post.getPostId();
         return dto;
     }

@@ -41,7 +41,6 @@
     </properties>
     <dependencyManagement>
         <dependencies>
-            <!-- All Jersey Dependencies -->
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-servlet-core</artifactId>
@@ -53,7 +52,6 @@
                 <artifactId>jersey-spring4</artifactId>
                 <version>${jersey.version}</version>
                 <exclusions>
-                    <!-- La versión incluida requiere Java 9+ -->
                     <exclusion>
                         <groupId>org.glassfish.hk2</groupId>
                         <artifactId>hk2</artifactId>
@@ -61,13 +59,11 @@
                 </exclusions>
             </dependency>
 
-            <!-- última versión compatible con Java 8 -->
             <dependency>
                 <groupId>org.glassfish.hk2</groupId>
                 <artifactId>hk2</artifactId>
                 <version>2.5.0-b05</version>
                 <exclusions>
-                    <!--      El bean-validator incluye jboss-logging que colisiona con hibernate    -->
                     <exclusion>
                         <groupId>org.glassfish.hk2.external</groupId>
                         <artifactId>bean-validator</artifactId>
@@ -87,20 +83,17 @@
                 </exclusions>
             </dependency>
 
-            <!-- JERSEY JSON -->
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-moxy</artifactId>
                 <version>${jersey.version}</version>
                 <exclusions>
-                    <!-- Not Java 10 compliant -->
                     <exclusion>
                         <groupId>org.eclipse.persistence</groupId>
                         <artifactId>org.eclipse.persistence.moxy</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
-            <!-- Java 10 compatible -->
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.moxy</artifactId>
@@ -113,7 +106,6 @@
                 <version>${jersey.version}</version>
             </dependency>
 
-            <!--   JERSEY MULTIPART   -->
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-multipart</artifactId>
@@ -284,7 +276,6 @@
             </dependency>
 
 
-            <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
             <dependency>
                 <groupId>com.auth0</groupId>
                 <artifactId>java-jwt</artifactId>
@@ -322,7 +313,6 @@
     <build>
     <pluginManagement>
         <plugins>
-            <!--    Plugin To Integrate Frontend Module    -->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
@@ -333,7 +323,6 @@
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.1.0</version>
             </plugin>
-            <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.0.2</version>

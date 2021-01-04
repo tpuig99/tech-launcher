@@ -5,7 +5,6 @@ public class JwtRequestDTO {
     private String username;
     private String password;
 
-    //need default constructor for JSON Parsing
     public JwtRequestDTO()
     {
 

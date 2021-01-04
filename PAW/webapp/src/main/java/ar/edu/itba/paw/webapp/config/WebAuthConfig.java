@@ -38,7 +38,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        // We don't need CSRF for this example
         http.csrf().disable()
                 /* Permit just /users/authenticate or /register */
                 .authorizeRequests()
