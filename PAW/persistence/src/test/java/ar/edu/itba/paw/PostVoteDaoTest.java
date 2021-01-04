@@ -51,8 +51,6 @@ public class PostVoteDaoTest {
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "posts");
 
         for (int i = 0; i < 2; i++) {
             User user = new User("user" + i, "mail" + i, null, true, "", true, null);
@@ -73,7 +71,7 @@ public class PostVoteDaoTest {
 
     @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_votes");
+
         PostVote vote = postVoteDao.insert(POST_ID,USER_ID,POSITIVE);
 
         em.flush();
@@ -85,14 +83,14 @@ public class PostVoteDaoTest {
 
     @Test(expected = Exception.class)
     public void testCreateWithoutUser() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_votes");
+
 
         postVoteDao.insert(POST_ID,USER_ID+1,POSITIVE);
         em.flush();
     }
     @Test(expected = Exception.class)
     public void testCreateWithoutPost() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_votes");
+
 
         postVoteDao.insert(POST_ID+1,USER_ID,POSITIVE);
         em.flush();
@@ -100,7 +98,7 @@ public class PostVoteDaoTest {
 
     @Test
     public void testDelete() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_votes");
+
         PostVote vote = new PostVote();
         vote.setPost(em.find(Post.class,POST_ID));
         vote.setUser(em.find(User.class,USER_ID));
@@ -114,13 +112,13 @@ public class PostVoteDaoTest {
     }
     @Test(expected = Exception.class)
     public void testDeleteWithoutTag() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_tags");
+
         postVoteDao.delete(1);
         em.flush();
     }
     @Test
     public void testUpdate(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_votes");
+
         PostVote vote = new PostVote();
         vote.setPost(em.find(Post.class,POST_ID));
         vote.setUser(em.find(User.class,USER_ID));
@@ -139,7 +137,6 @@ public class PostVoteDaoTest {
     }
     @Test
     public void testGetByUser(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_votes");
         for (int i = 0; i < 2; i++) {
             PostVote vote = new PostVote();
             vote.setPost(em.find(Post.class,POST_ID-i));
@@ -165,7 +162,7 @@ public class PostVoteDaoTest {
     }
     @Test
     public void testGetByUserAndPost(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_votes");
+
         for (int i = 0; i < 2; i++) {
             PostVote vote = new PostVote();
             vote.setPost(em.find(Post.class,POST_ID-i));

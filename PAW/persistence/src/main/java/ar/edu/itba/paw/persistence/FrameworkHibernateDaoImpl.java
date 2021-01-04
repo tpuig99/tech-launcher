@@ -1,17 +1,17 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.FrameworkCategories;
-import ar.edu.itba.paw.models.FrameworkType;
-import ar.edu.itba.paw.models.User;
+import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class FrameworkHibernateDaoImpl implements FrameworkDao {
@@ -33,11 +33,18 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> getByCategory(FrameworkCategories category, long page, long pageSize) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.category= :category order by f.id", Framework.class);
-        query.setParameter("category", category);
-        query.setFirstResult((int) ((page-1) * pageSize));
-        query.setMaxResults((int) pageSize);
-        return query.getResultList();
+
+        Query pagingQuery = em.createNativeQuery("select framework_id from frameworks f where f.category= '"+ String.valueOf(category) + "' order by f.framework_id  LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Framework> query = em.createQuery("from Framework as f where f.id in (:resultList)", Framework.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -65,11 +72,20 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
 
     @Override
     public List<Framework> getByUser(long userId, long page, long pageSize) {
-        final TypedQuery<Framework> query = em.createQuery("select f from Framework f where f.author.id = :userId order by f.id", Framework.class);
-        query.setParameter("userId", userId);
-        query.setFirstResult((int) ((page-1) * pageSize));
-        query.setMaxResults((int) pageSize);
-        return query.getResultList();
+
+        Query pagingQuery = em.createNativeQuery("select framework_id from frameworks f where f.author= "+ String.valueOf(userId) + " order by f.framework_id LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Framework> query = em.createQuery("from Framework as f where f.id in (:resultList)", Framework.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return Collections.emptyList();
+        }
+
     }
 
     @Override
@@ -232,7 +248,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         framework.setType(type);
         framework.setPublishDate(ts);
 
-        if (picture.length > 0) {
+        if (picture!=null && picture.length>0) {
             framework.setPicture(picture);
         }  else {
             framework.setPicture(framework.getPicture());

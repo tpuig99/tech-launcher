@@ -24,9 +24,15 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
         if(!event.isResend()){
-            service.createVerificationToken(user, token,event.getAppUrl());
+            service.createVerificationToken(user, token,reformatURL(event.getAppUrl()));
         }else{
-            service.generateNewVerificationToken(user,token,event.getAppUrl());
+            service.generateNewVerificationToken(user,token,reformatURL(event.getAppUrl()));
         }
+    }
+
+    private String reformatURL(String url){
+        int startIndex = url.indexOf("/register");
+        url = url.substring(0, startIndex).concat("/#/register");
+        return url;
     }
 }

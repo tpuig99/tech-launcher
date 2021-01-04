@@ -71,11 +71,7 @@ public class FrameworkDaoImplTest {
                 .withTableName("frameworks")
                 .usingGeneratedKeyColumns("framework_id");
 
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "frameworks");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "content");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-
-        for (int i = 1; i < 6; i++) {
+         for (int i = 1; i < 6; i++) {
             User user = new User("user"+i,"mail"+i,null,true,"",true,null);
             em.persist(user);
             em.flush();
@@ -86,7 +82,7 @@ public class FrameworkDaoImplTest {
     @Test
     public void testFindById() throws SQLException {
         //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "frameworks");
+
 
         Date date = new Date(System.currentTimeMillis());
 
@@ -118,8 +114,6 @@ public class FrameworkDaoImplTest {
 
    @Test
     public void tesFindByIdNotExists() {
-        //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
 
         //Class under test
         Optional<Framework> framework = frameworkDao.findById(FRAMEWORK_ID);
@@ -152,8 +146,7 @@ public class FrameworkDaoImplTest {
 
     @Test(expected = Exception.class)
     public void testCreateAlreadyExists() {
-        //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
 
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
@@ -177,7 +170,6 @@ public class FrameworkDaoImplTest {
     @Test
     public void testGetFrameworkNames(){
         //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
 
         Date date = new Date(System.currentTimeMillis());
         List<String> names = new ArrayList<>();
@@ -212,7 +204,7 @@ public class FrameworkDaoImplTest {
     @Test
     public void testSearchOnlyByName(){
         //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
 
         Date date = new Date(System.currentTimeMillis());
 
@@ -264,7 +256,6 @@ public class FrameworkDaoImplTest {
     @Test
     public void testSearchByNameAndDescription(){
         //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
 
         Date date = new Date(System.currentTimeMillis());
 
@@ -317,7 +308,6 @@ public class FrameworkDaoImplTest {
     @Test
     public void testSearchByCategory(){
         //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
 
         Date date = new Date(System.currentTimeMillis());
 
@@ -366,7 +356,7 @@ public class FrameworkDaoImplTest {
     @Test
     public void testSearchByType(){
         //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
+
 
         Date date = new Date(System.currentTimeMillis());
 

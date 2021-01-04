@@ -2,27 +2,25 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
-import ar.edu.itba.paw.webapp.form.framework.*;
-import ar.edu.itba.paw.webapp.form.frameworks.*;
+import ar.edu.itba.paw.webapp.dto.*;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 import java.io.IOException;
+import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@Controller
+@Path("techs")
+@Component
 public class FrameworkController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrameworkController.class);
@@ -42,491 +40,655 @@ public class FrameworkController {
     @Autowired
     private UserService us;
 
-    @Autowired
-    private MessageSource messageSource;
+    @Context
+    private UriInfo uriInfo;
 
     private final String START_PAGE = "1";
-    private final long PAGE_SIZE = 5;
+    private final int PAGE_SIZE = 5;
+    private final int CATEGORY_PAGE_SIZE = 7;
 
-    public static ModelAndView redirectToFramework(Long id, String category) {
-        return new ModelAndView("redirect:/techs/" + category + "/" + id);
+    @GET
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response frameworksHome() {
+        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<Framework> frameworks = fs.getBestRatedFrameworks();
+        TechsHomeDTO dto = TechsHomeDTO.fromTechs(frameworks,uriInfo);
+        user.ifPresent(value -> {
+            dto.setInterests(fs.getUserInterests(value.getId()).stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
+        });
+        return Response.ok(dto).build();
+    }
+    @GET
+    @Path("/category")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getCategories() {
+        final List<String> enumCategory = Arrays.stream(FrameworkCategories.values()).map(Enum::name).collect(Collectors.toList());
+        List<CategoriesDTO> dto = enumCategory.stream().map(x->CategoriesDTO.fromSideBar(x,uriInfo)).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<CategoriesDTO>>(dto){}).build();
     }
 
-    private void loadForms(ModelAndView mav) {
-        mav.addObject("ratingForm", new RatingForm());
-        mav.addObject("upVoteForm", new VoteForm());
-        mav.addObject("downVoteForm", new DownVoteForm());
-        mav.addObject("commentForm", new CommentForm());
-        mav.addObject("replyForm", new ReplyForm());
-        mav.addObject("deleteCommentForm", new DeleteCommentForm());
-        mav.addObject("deleteContentForm", new DeleteContentForm());
-        mav.addObject("contentForm", new ContentForm());
-        mav.addObject("reportForm", new ReportForm());
-        mav.addObject("reportCommentForm", new ReportCommentForm());
-        mav.addObject("deleteFrameworkForm", new DeleteFrameworkForm());
+    @GET
+    @Path("/types")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response getTypes() {
+        List<TypesDTO> types = fs.getAllTypes().stream().map(TypesDTO::fromTypes).collect(Collectors.toList());
+        return Response.ok(new GenericEntity<List<TypesDTO>>(types){}).build();
     }
 
-    @RequestMapping("/techs/{category}/{id}")
-    public ModelAndView framework(@PathVariable long id,
-                                  @PathVariable String category,
-                                  @RequestParam(value = "books_page", required = false, defaultValue = START_PAGE) Long booksPage,
-                                  @RequestParam(value = "courses_page", required = false, defaultValue = START_PAGE) Long coursesPage,
-                                  @RequestParam(value = "tutorials_page", required = false, defaultValue = START_PAGE) Long tutorialsPage,
-                                  @RequestParam(value = "comments_page", required = false, defaultValue = START_PAGE) Long commentsPage) {
+    @GET
+    @Path("/category/{category}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response frameworkMenuPaging(@PathParam("category") String category,
+                                        @QueryParam("page") @DefaultValue(START_PAGE) int frameworksPage) {
+        final FrameworkCategories enumCategory = FrameworkCategories.valueOf(category);
+        LOGGER.info("Techs: Getting Techs by category '{}'", enumCategory.name());
+        int amount = fs.getAmountByCategory(enumCategory);
+        final int pages = (int) Math.ceil(((double)amount)/CATEGORY_PAGE_SIZE);
+        List<Framework> frameworkList = fs.getByCategory(enumCategory, frameworksPage);
+        CategoriesDTO categoriesDTO = CategoriesDTO.fromCategories(frameworkList,amount,uriInfo);
+        return pagination(uriInfo,frameworksPage,pages,categoriesDTO);
+    }
+    private Response pagination(UriInfo uriInfo,int page,int pages,Object dto){
+        Response.ResponseBuilder response = Response.ok(dto)
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).build(),"first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).build(),"last");
+        if(page < pages)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page+1).build(),"next");
+        if(page != 1)
+            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page-1).build(),"prev");
+        return  response.build();
+    }
+    @GET
+    @Path("/{id}/comment")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response commentsOfTech(@PathParam("id") long id,
+                              @QueryParam("page") @DefaultValue(START_PAGE) int page) {
 
-        final ModelAndView mav = new ModelAndView("frameworks/framework");
         Optional<Framework> framework = fs.findById(id);
-
-        loadForms(mav);
-
         if (framework.isPresent()) {
             LOGGER.info("Tech {}: Requested and found, retrieving data", id);
-            mav.addObject("framework", framework.get());
-//            mav.addObject("category_translated", ts.getCategory(framework.get().getCategory().name()));
-//            mav.addObject("type_translated", ts.getType(framework.get().getType().name()));
-
-            mav.addObject("books", contentService.getContentByFrameworkAndType(id, ContentTypes.book, booksPage));
-            mav.addObject("books_page", booksPage);
-            mav.addObject("courses", contentService.getContentByFrameworkAndType(id, ContentTypes.course, coursesPage));
-            mav.addObject("courses_page", coursesPage);
-            mav.addObject("tutorials", contentService.getContentByFrameworkAndType(id, ContentTypes.tutorial, tutorialsPage));
-            mav.addObject("tutorials_page", tutorialsPage);
-            mav.addObject("page_size", PAGE_SIZE);
-            mav.addObject("category", category);
-            mav.addObject("competitors", fs.getCompetitors(framework.get()));
-            mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-            mav.addObject("comments_page", commentsPage);
-
-
-            final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-            List<Comment> comments = commentService.getCommentsWithoutReferenceByFramework(id, commentsPage);
-            mav.addObject("comments",comments);
-            mav.addObject("categories_sidebar", fs.getAllCategories());
-
-            if( optionalUser.isPresent()){
-                User user = optionalUser.get();
-
-                mav.addObject("user_isMod", user.isVerify() || user.isAdmin());
-                mav.addObject("verifyForFramework", user.isVerifyForFramework(id));
-                mav.addObject("isAdmin",user.isAdmin());
-                mav.addObject("isEnable",user.isEnable());
-                mav.addObject("allowMod",user.isAllowMod());
-                mav.addObject("isOwner", framework.get().getAuthor().getUsername().equals(user.getUsername()));
-                mav.addObject("hasAppliedToFramework",user.hasAppliedToFramework(framework.get().getId()));
-                Optional<FrameworkVote> fv = user.getVoteForFramework(id);
-
-                if(fv.isPresent()){
-                    mav.addObject("stars",fv.get().getStars());
-                }else{
-                    mav.addObject("stars",0);
-                }
-            }
-
-            return mav;
+            int amount = framework.get().getCommentsAmount();
+            int pages = (int) Math.ceil((double) amount/PAGE_SIZE);
+            List<CommentDTO> dto = commentService.getCommentsWithoutReferenceByFramework(id, page).stream()
+                    .map((Comment comment) -> CommentDTO.fromComment(comment,uriInfo)).collect(Collectors.toList());
+            return pagination(uriInfo,page,pages,new GenericEntity<List<CommentDTO>>(dto){});
         }
         LOGGER.error("Tech {}: Requested and not found", id);
-        return ErrorController.redirectToErrorView();
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @RequestMapping(path={"/techs/{category}/{id}/image"}, method = RequestMethod.GET)
-    public @ResponseBody byte[] getImage(@PathVariable long id,
-                                         @PathVariable String category) throws IOException {
+    @GET
+    @Path("/{id}/competitors")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response techCompetitors(@PathParam("id") Long id) {
         Optional<Framework> framework = fs.findById(id);
-        return framework.map(Framework::getPicture).orElse(null);
-    }
-
-    @RequestMapping(path={"/comment"}, method= RequestMethod.POST)
-    public ModelAndView saveComment(@Valid @ModelAttribute("commentForm") final CommentForm form) {
-
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (user.isPresent()) {
-            final Comment comment = commentService.insertComment(form.getCommentFrameworkId(), user.get().getId(), form.getComment(), form.getCommentId());
-            LOGGER.info("Tech {}: User {} inserted a comment", form.getCommentFrameworkId(), user.get().getId());
-            return FrameworkController.redirectToFramework(form.getCommentFrameworkId(), comment.getCategory());
-        }
-
-        LOGGER.error("Tech {}: Unauthorized user tried to insert a comment", form.getCommentFrameworkId());
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/reply"}, method= RequestMethod.POST)
-    public ModelAndView replyComment(@Valid @ModelAttribute("replyForm") final ReplyForm form) {
-
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (user.isPresent()) {
-            final Comment comment = commentService.insertComment(form.getReplyFrameworkId(), user.get().getId(), form.getReplyComment(), form.getReplyCommentId());
-            LOGGER.info("Tech {}: User {} replied comment {}", form.getReplyFrameworkId(), user.get().getId(), form.getReplyCommentId());
-            return FrameworkController.redirectToFramework(form.getReplyFrameworkId(), comment.getCategory());
-        }
-
-        LOGGER.error("Tech {}: Unauthorized user tried to reply comment {}", form.getReplyFrameworkId(), form.getReplyCommentId());
-        return ErrorController.redirectToErrorView();
-    }
-
-
-    @RequestMapping(path={"/upvote"}, method= RequestMethod.POST)
-    public ModelAndView voteUpComment(@Valid @ModelAttribute("upVoteForm") final VoteForm form) {
-
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (user.isPresent()) {
-            final Optional<CommentVote> commentVote = commentService.vote(form.getCommentId(), user.get().getId(),1);
-            LOGGER.info("Tech {}: User {} upvoted comment {}", form.getFrameworkId(), user.get().getId(), form.getCommentId());
-            final Optional<Framework> fw = fs.findById(form.getFrameworkId());
-            if( fw.isPresent()) {
-                return FrameworkController.redirectToFramework(fw.get().getId(), fw.get().getCategory().name());
-            }
-            LOGGER.error("Tech {}: Tech doesn't exist", form.getFrameworkId());
-            return ErrorController.redirectToErrorView();
-        }
-
-        LOGGER.error("Tech {}: Unauthorized user tried to upvote comment {}", form.getFrameworkId(), form.getCommentId());
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/downvote"}, method= RequestMethod.POST)
-    public ModelAndView voteDownComment(@Valid @ModelAttribute("downVoteForm") final DownVoteForm form) {
-
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (user.isPresent()) {
-            final Optional<CommentVote> commentVote = commentService.vote(form.getDownVoteCommentId(), user.get().getId(),-1);
-            LOGGER.info("Tech {}: User {} downvoted comment {}", form.getDownVoteFrameworkId(), user.get().getId(), form.getDownVoteCommentId());
-            final Optional<Framework> fw = fs.findById(form.getDownVoteFrameworkId());
-            if( fw.isPresent()) {
-                return FrameworkController.redirectToFramework(fw.get().getId(), fw.get().getCategory().name());
-            }
-            LOGGER.error("Tech {}: Tech doesn't exist", form.getDownVoteFrameworkId());
-            return ErrorController.redirectToErrorView();
-        }
-
-        LOGGER.error("Tech {}: Unauthorized user tried to downvote comment {}", form.getDownVoteFrameworkId(), form.getDownVoteCommentId());
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/rate"}, method = RequestMethod.POST)
-    public ModelAndView rateComment(@Valid @ModelAttribute("ratingForm") final RatingForm form, final BindingResult errors) {
-
-        long frameworkId = form.getFrameworkId();
-        final Optional<Framework> framework = fs.findById(frameworkId);
-
         if (framework.isPresent()) {
+            LOGGER.info("Tech {}: Requested and found, retrieving data", id);
+            List<FrameworkDTO> competitors = fs.getCompetitors(framework.get()).stream().map((f) -> FrameworkDTO.fromExtern(f, uriInfo)).collect(Collectors.toList());
 
-            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-            if (user.isPresent()) {
-                final FrameworkVote frameworkVote = frameworkVoteService.insert(framework.get(), user.get().getId(), form.getRating());
-                LOGGER.info("Tech {}: User {} rated the Tech", frameworkId, user.get().getId());
-                return FrameworkController.redirectToFramework(frameworkId, frameworkVote.getCategory());
+            if (competitors.isEmpty()) {
+                return Response.noContent().build();
             }
 
-            LOGGER.error("Tech {}: Unauthorized user tried to rate the Tech", frameworkId);
-            return ErrorController.redirectToErrorView();
+            return Response.ok(new GenericEntity<List<FrameworkDTO>> (competitors){}).build();
         }
-
-        LOGGER.error("Tech {}: Requested for rating and not found", frameworkId);
-        return ErrorController.redirectToErrorView();
+        LOGGER.error("Tech {}: Requested and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @RequestMapping("/mod/quit")
-    public ModelAndView QuitMod(@RequestParam("fId") final long fId,@RequestParam("category") final String cat) {
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if(user.isPresent()){
-            if (us.quitModdingFromTech(user.get(), fId)) {
-                LOGGER.info("Tech {}: User {} is no longer a Mod", fId, user.get().getId());
-                return FrameworkController.redirectToFramework(fId, cat);
-            }
-
-            LOGGER.error("Tech {}: User {} tried to quit from being a Mod without previously being one", fId, user.get().getId());
-            return ErrorController.redirectToErrorView();
+    @GET
+    @Path("/{id}/content")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response contentOfTech(@PathParam("id") long id,
+                                   @QueryParam("type")  String type,
+                                   @QueryParam("page")@DefaultValue(START_PAGE) int page) {
+        if(type == null){
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
-
-        LOGGER.error("Tech {}: Unauthorized user tried to quit modding", fId);
-        return ErrorController.redirectToErrorView();
-    }
-
-
-    @RequestMapping(path={"/content"}, method = RequestMethod.POST)
-    public ModelAndView addContent(@Valid @ModelAttribute("contentForm") final ContentForm form, final BindingResult errors, final RedirectAttributes redirectAttributes){
-
-        long frameworkId = form.getFrameworkId();
-        final Optional<Framework> framework = fs.findById(frameworkId);
-
+        Optional<Framework> framework = fs.findById(id);
         if (framework.isPresent()) {
-            if(errors.hasErrors()){
-                LOGGER.info("Tech {}: Content Form has errors", frameworkId);
-                final ModelAndView framework1 = framework(frameworkId, framework.get().getCategory().name(), Long.valueOf(START_PAGE), Long.valueOf(START_PAGE), Long.valueOf(START_PAGE), Long.valueOf(START_PAGE));
-
-                loadForms(framework1);
-                framework1.addObject("contentFormError", true);
-                framework1.addObject("contentForm", form);
-
-                return framework1;
+            LOGGER.info("Tech {}: Requested and found, retrieving data", id);
+            ContentTypes contentTypes;
+            try{
+                contentTypes = ContentTypes.valueOf(type);
+            } catch (IllegalArgumentException e){
+                return Response.status(Response.Status.CONFLICT).entity("Incorrect Type.").build();
             }
+            int amount = (int) framework.get().getContentAmount(contentTypes);
+            int pages = (int) Math.ceil((double) amount/PAGE_SIZE);
+            List<ContentDTO> dto = contentService.getContentByFrameworkAndType(id, contentTypes, page).stream()
+                    .map((Content content) -> ContentDTO.fromContent(content,uriInfo))
+                    .collect(Collectors.toList());
+            Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ContentDTO>>(dto){})
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).queryParam("type",type).build(),"first")
+                    .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).queryParam("type",type).build(),"last");
+            if(page < pages)
+                response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page+1).queryParam("type",type).build(),"next");
+            if(page != 1)
+                response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page-1).queryParam("type",type).build(),"prev");
+            return  response.build();
+        }
+        LOGGER.error("Tech {}: Requested and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    @GET
+    @Path("/{id}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response framework(@PathParam("id") long id) {
 
-            redirectAttributes.addFlashAttribute("contentFormError",false);
+        Optional<Framework> framework = fs.findById(id);
+        if (framework.isPresent()) {
+            LOGGER.info("Tech {}: Requested and found, retrieving data", id);
+            FrameworkDTO dto = FrameworkDTO.fromFramework(framework.get(),uriInfo);
+            Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            if(user.isPresent()){
+                Optional<FrameworkVote> vote = user.get().getVoteForFramework(id);
+                vote.ifPresent(frameworkVote -> dto.setLoggedStars(frameworkVote.getStars()));
+            }
+            return Response.ok(dto).build();
+        }
+        LOGGER.error("Tech {}: Requested and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
 
-            redirectAttributes.addFlashAttribute("contentFormMessage",messageSource.getMessage("tech.content.pending", new Object[]{},LocaleContextHolder.getLocale()));
-
-            ContentTypes type = ContentTypes.valueOf(form.getType());
-
-            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-            if (user.isPresent()) {
-                String pathToContent = form.getLink();
-                if( !pathToContent.contains("://")){
-                    pathToContent = "http://".concat(pathToContent);
+    @POST
+    @Path("/check-name")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response checkTechNameNotExists(final CheckTechDTO tech) {
+        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(user.isPresent()) {
+            if(user.get().isAdmin() || user.get().isVerify()) {
+                if(tech.getName() == null){
+                    return Response.status(Response.Status.CONFLICT).entity("Missing name.").build();
                 }
-                contentService.insertContent(frameworkId, user.get().getId(), form.getTitle(), pathToContent, type);
-
-                LOGGER.info("Tech {}: User {} inserted new content", frameworkId, user.get().getId());
-                return FrameworkController.redirectToFramework(frameworkId, framework.get().getCategory().name());
+                Optional<Framework> framework = fs.getByName(tech.getName());
+                if (tech.getId() == null)
+                    return !framework.isPresent() ? Response.ok().build() : Response.status(422).build();
+                if (!framework.isPresent())
+                    return Response.ok().build();
+                return framework.get().getId() == tech.getId() ? Response.ok().build() : Response.status(422).build();
             }
-
-            LOGGER.error("Tech {}: Unauthorized user tried to insert content", frameworkId);
-            return ErrorController.redirectToErrorView();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
-
-        LOGGER.error("Tech {}: requested for inserting content and not found", frameworkId);
-        return ErrorController.redirectToErrorView();
+       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    @RequestMapping(path={"/content/delete"}, method = RequestMethod.POST)
-    public ModelAndView deleteComment(@Valid @ModelAttribute("deleteContentForm") final DeleteContentForm form, final BindingResult errors){
-
-        final Optional<Framework> framework = fs.findById(form.getDeleteContentFrameworkId());
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (framework.isPresent()) {
-            if (user.isPresent()) {
-                contentService.deleteContent(form.getDeleteContentId());
-                LOGGER.info("Tech {}: User {} deleted content {}", form.getDeleteContentFrameworkId(), user.get().getId(), form.getDeleteContentId());
-                return FrameworkController.redirectToFramework(form.getDeleteContentFrameworkId(), framework.get().getCategory().name());
-            }
-            LOGGER.error("Tech {}: Unauthorized user tried to delete content", form.getDeleteContentFrameworkId());
-            return ErrorController.redirectToErrorView();
-        }
-
-        LOGGER.error("Tech {}: requested for deleting content and not found", form.getDeleteContentFrameworkId());
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/content/report"}, method = RequestMethod.POST)
-    public ModelAndView reportContent(@Valid @ModelAttribute("reportForm")ReportForm form, final BindingResult errors, HttpServletRequest request){
-
-        final Optional<Framework> framework = fs.findById(form.getReportFrameworkId());
-        final Optional<User> user= us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (framework.isPresent()) {
-            if (user.isPresent()) {
-                contentService.addReport(form.getId(), user.get().getId(), form.getDescription());
-                LOGGER.info("Tech {}: User {} reported content {}", form.getReportFrameworkId(), user.get().getId(), form.getId());
-                return FrameworkController.redirectToFramework(form.getReportFrameworkId(), framework.get().getCategory().name());
-            }
-
-            LOGGER.error("Tech {}: Unauthorized user tried to report content", form.getReportFrameworkId());
-            return ErrorController.redirectToErrorView();
-        }
-
-        LOGGER.error("Tech {}: requested for reporting content and not found", form.getReportFrameworkId());
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/comment/report"}, method = RequestMethod.POST)
-    public ModelAndView reportComment(@Valid @ModelAttribute("reportCommentForm")ReportCommentForm form, final BindingResult errors, HttpServletRequest request){
-
-        final Optional<Framework> framework = fs.findById(form.getReportCommentFrameworkId());
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (framework.isPresent()) {
-            if(user.isPresent()) {
-                commentService.addReport(form.getReportCommentId(), user.get().getId(),form.getReportCommentDescription());
-                LOGGER.info("Tech {}: User {} reported comment {}", form.getReportCommentFrameworkId(), user.get().getId(), form.getReportCommentId());
-                return FrameworkController.redirectToFramework(form.getReportCommentFrameworkId(), framework.get().getCategory().name());
-            }
-
-            LOGGER.error("Tech {}: Unauthorized user tried to report comment", form.getReportCommentFrameworkId());
-            return ErrorController.redirectToErrorView();
-        }
-
-        LOGGER.error("Tech {}: requested for reporting comment and not found", form.getReportCommentFrameworkId());
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(path={"/comment/delete"}, method = RequestMethod.POST)
-    public ModelAndView deleteComment(@Valid @ModelAttribute("deleteCommentForm") final DeleteCommentForm form, final BindingResult errors){
-        Optional<Framework> framework = fs.findById(form.getCommentDeleteFrameworkId());
+    @POST
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    public Response createTech(
+            @FormDataParam("name") final String name,
+            @FormDataParam("category") final String category,
+            @FormDataParam("type") final String type,
+            @FormDataParam("description") final String description,
+            @FormDataParam("introduction") final String introduction,
+            @FormDataParam("picture") final byte[] picture
+    ) throws IOException {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (framework.isPresent()) {
-            if (user.isPresent()) {
-                commentService.deleteComment(form.getCommentDeleteId());
-                return FrameworkController.redirectToFramework(form.getCommentDeleteFrameworkId(), framework.get().getCategory().name());
-            }
-
-            LOGGER.error("Tech {}: Unauthorized user tried to delete comment", form.getCommentDeleteFrameworkId());
-            return ErrorController.redirectToErrorView();
-        }
-
-        LOGGER.error("Tech {}: requested for deleting comment and not found", form.getCommentDeleteFrameworkId());
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(value = "/add_tech",  method = { RequestMethod.GET})
-    public ModelAndView addTech(@ModelAttribute("frameworkForm") final FrameworkForm form) {
-        ModelAndView mav = new ModelAndView("frameworks/add_tech");
-
-        mav.addObject("categories", fs.getAllCategories());
-        mav.addObject("types", fs.getAllTypes());
-        mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if(user.isPresent()){
-            LOGGER.info("Techs: User {} requested for accessing page for adding a new Tech", user.get().getId());
-            mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
-            return mav;
-        }
-
-        LOGGER.error("Techs: Unauthorized user tried to access page for adding a new Tech");
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(value = "/add_tech", method = { RequestMethod.POST })
-    public ModelAndView createTech(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) throws IOException {
-        if (errors.hasErrors()) {
-            LOGGER.info("Techs: Add Tech Form has errors");
-            return addTech(form);
-        }
-
-        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
         if( user.isPresent()){
-            FrameworkType type = FrameworkType.valueOf(form.getType());
-            FrameworkCategories category = FrameworkCategories.valueOf(form.getCategory());
-            byte[] picture = form.getPicture().getBytes();
+            if(user.get().isAdmin() || user.get().isVerify()) {
+                FrameworkType fType;
+                FrameworkCategories fCategory;
+                if(name == null || description == null || introduction == null || picture == null || category == null || type == null){
+                    return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
+                }
+                try{
+                    fType = FrameworkType.valueOf(type);
+                    fCategory = FrameworkCategories.valueOf(category);
+                } catch (IllegalArgumentException e){
+                    return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
+                }
 
-            Optional<Framework> framework = fs.create(form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,user.get().getId(), picture);
+                if(fs.getByName(name).isPresent()){
+                    return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
+                }
+                Optional<Framework> framework = fs.create(name, fCategory, description, introduction, fType, user.get().getId(), picture);
 
-            if (framework.isPresent()) {
-                LOGGER.info("Techs: User {} added a new Tech with id: {}", user.get().getId(), framework.get().getId());
-                return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory().name());
+                if (framework.isPresent()) {
+                    LOGGER.info("Techs: User {} added a new Tech with id: {}", user.get().getId(), framework.get().getId());
+                    final URI uri = uriInfo.getAbsolutePathBuilder()
+                            .path(String.valueOf(framework.get().getId())).build();
+                    return Response.created(uri).build();
+                }
+
+                LOGGER.error("Techs: A problem occurred while creating the new Tech");
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+
             }
-
-            LOGGER.error("Techs: A problem occurred while creating the new Tech");
-            return ErrorController.redirectToErrorView();
+            LOGGER.error("Techs: Unauthorized user attempted to add a new Tech");
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         LOGGER.error("Techs: Unauthorized user attempted to add a new Tech");
-        return ErrorController.redirectToErrorView();
+        return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    @RequestMapping(value = "/update_tech",  method = { RequestMethod.GET})
-    public ModelAndView updateTech(@ModelAttribute("frameworkForm") final FrameworkForm form, @RequestParam("id") final long frameworkId) {
-        final Optional<Framework> framework = fs.findById(frameworkId);
-        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (framework.isPresent()) {
-            if (user.isPresent()) {
-                if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
-                    form.setCategory(framework.get().getCategory().name());
-                    form.setDescription(framework.get().getDescription());
-                    if(form.getFrameworkName() == null)
-                        form.setFrameworkName(framework.get().getName());
-                    form.setIntroduction(framework.get().getIntroduction());
-                    form.setFrameworkId(frameworkId);
-                    form.setType(framework.get().getType().name());
-
-                    ModelAndView mav = new ModelAndView("frameworks/update_tech");
-
-                    mav.addObject("categories", fs.getAllCategories());
-                    mav.addObject("types", fs.getAllTypes());
-                    mav.addObject("user", SecurityContextHolder.getContext().getAuthentication());
-                    mav.addObject("category",framework.get().getCategory());
-                    mav.addObject("user_isMod", user.get().isVerify() || user.get().isAdmin());
-
-                    LOGGER.info("Tech {}: User {} accessed the page for updating the Tech", form.getFrameworkId(), user.get().getId());
-                    return mav;
-                }
-
-                LOGGER.error("Tech {}: User without enough privileges attempted to access page for updating", form.getFrameworkId());
-                return ErrorController.redirectToErrorView();
-            }
-
-            LOGGER.error("Tech {}: Unauthorized user attempted to access page for updating", form.getFrameworkId());
-            return ErrorController.redirectToErrorView();
-        }
-
-        LOGGER.error("Tech {}: Requested for getting update page and not found", form.getFrameworkId());
-        return ErrorController.redirectToErrorView();
-    }
-
-    @RequestMapping(value = "/update_tech", method = { RequestMethod.POST })
-    public ModelAndView updateTech(@Valid @ModelAttribute("frameworkForm") final FrameworkForm form, final BindingResult errors, HttpServletRequest request) throws IOException {
-        if (errors.hasErrors()) {
-            LOGGER.info("Tech {}: Update Form has errors", form.getFrameworkId());
-            return updateTech(form,form.getFrameworkId());
-        }
+    @PUT
+    @Path("/{id}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    public Response updateTech(@PathParam("id") long id,
+                               @FormDataParam("name") final String name,
+                               @FormDataParam("category") final String category,
+                               @FormDataParam("type") final String type,
+                               @FormDataParam("description") final String description,
+                               @FormDataParam("introduction") final String introduction,
+                               @FormDataParam("picture") final byte[] picture) throws IOException {
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        final Optional<Framework> framework = fs.findById(form.getFrameworkId());
-
+        final Optional<Framework> framework = fs.findById(id);
         if(framework.isPresent()) {
             if (user.isPresent()) {
                 if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
-                    FrameworkType type = FrameworkType.valueOf(form.getType());
-                    FrameworkCategories category = FrameworkCategories.valueOf(form.getCategory());
-                    byte[] picture = form.getPicture().getBytes();
-                    final Optional<Framework> updatedFramework = fs.update(form.getFrameworkId(),form.getFrameworkName(),category,form.getDescription(),form.getIntroduction(),type,picture);
 
-                    if (updatedFramework.isPresent()) {
-                        LOGGER.info("Tech {}: User {} updated the Tech", form.getFrameworkId(), user.get().getId());
-                        return FrameworkController.redirectToFramework(framework.get().getId(), framework.get().getCategory().name());
+                    FrameworkType fType;
+                    FrameworkCategories fCategory;
+                    if(name == null || description == null || introduction == null || category == null || type == null){
+                        return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
+                    }
+                    try{
+                        fType = FrameworkType.valueOf(type);
+                        fCategory = FrameworkCategories.valueOf(category);
+                    } catch (IllegalArgumentException e){
+                        return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
                     }
 
-                    LOGGER.error("Tech {}: A problem occurred while updating the Tech", form.getFrameworkId());
-                    return ErrorController.redirectToErrorView();
+                    if(fs.getByName(name).isPresent() && !framework.get().getName().equals(name)){
+                        return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
+                    }
+                    final Optional<Framework> updatedFramework = fs.update(id, name,fCategory, description, introduction,fType,picture);
+
+                    if (updatedFramework.isPresent()) {
+                        LOGGER.info("Tech {}: User {} updated the Tech", id, user.get().getId());
+                        return Response.ok(FrameworkDTO.fromFramework(updatedFramework.get(),uriInfo)).build();
+                    }
+
+                    LOGGER.error("Tech {}: A problem occurred while updating the Tech", id);
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
                 }
 
-                LOGGER.error("Tech {}: User without enough privileges attempted to update tech", form.getFrameworkId());
-                return ErrorController.redirectToErrorView();
+                LOGGER.error("Tech {}: User without enough privileges attempted to update tech", id);
+                return Response.status(Response.Status.FORBIDDEN).build();
             }
 
-            LOGGER.error("Tech {}: Unauthorized user tried to update Tech", form.getFrameworkId());
-            return ErrorController.redirectToErrorView();
+            LOGGER.error("Tech {}: Unauthorized user tried to update Tech", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        LOGGER.error("Tech {}: Requested for updating tech and not found", form.getFrameworkId());
-        return ErrorController.redirectToErrorView();
+        LOGGER.error("Tech {}: Requested for updating tech and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
-
-    @RequestMapping(path={"/delete_tech"}, method = RequestMethod.POST)
-    public ModelAndView deleteFramework(@Valid @ModelAttribute("deleteFrameworkForm") final DeleteFrameworkForm form, final BindingResult errors){
-        Optional<Framework> framework = fs.findById(form.getFrameworkIdx());
+    @DELETE
+    @Path("/{id}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response deleteFramework(@PathParam("id") long id){
+        Optional<Framework> framework = fs.findById(id);
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if(framework.isPresent()) {
             if (user.isPresent()) {
                 if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
-                    fs.delete(form.getFrameworkIdx());
+                    fs.delete(id);
 
-                    LOGGER.info("Techs: Tech {} deleted successfully", form.getFrameworkIdx());
-                    return new ModelAndView("redirect:/" + "techs");
+                    LOGGER.info("Techs: Tech {} deleted successfully", id);
+                    return Response.noContent().build();
                 }
 
-                LOGGER.error("Tech {}: User without enough privileges attempted to delete the Tech", form.getFrameworkIdx());
-                return ErrorController.redirectToErrorView();
+                LOGGER.error("Tech {}: User without enough privileges attempted to delete the Tech", id);
+                return Response.status(Response.Status.FORBIDDEN).build();
             }
 
-            LOGGER.error("Tech {}: Unauthorized user tried to delete the Tech", form.getFrameworkIdx());
-            return ErrorController.redirectToErrorView();
+            LOGGER.error("Tech {}: Unauthorized user tried to delete the Tech", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        LOGGER.error("Tech {}: Requested for deleting Tech and not found", form.getFrameworkIdx());
-        return ErrorController.redirectToErrorView();
+        LOGGER.error("Tech {}: Requested for deleting Tech and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
+
+    @POST
+    @Path("/{id}/stars")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response rateTech(@PathParam("id") long id,final VoteDTO vote) {
+
+        final Optional<Framework> framework = fs.findById(id);
+
+        if (framework.isPresent()) {
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            if (user.isPresent()) {
+                if(user.get().isEnable()) {
+                    if(vote == null || vote.getCount() == null){
+                        return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
+                    }
+                    frameworkVoteService.insert(framework.get(), user.get().getId(), (int) Math.round(vote.getCount()));
+                    LOGGER.info("Tech {}: User {} rated the Tech", id, user.get().getId());
+                    /*TODO:CHECKEAR SI ASÍ SIRVE O HAY QUE LLAMAR PARA ACTUALIZAR VALOR*/
+                    vote.setCount(framework.get().getStars());
+                    return Response.ok(vote).build();
+                }
+                LOGGER.error("Tech {}: Not Allowed user tried to rate the Tech", id);
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
+
+            LOGGER.error("Tech {}: Unauthorized user tried to rate the Tech", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        LOGGER.error("Tech {}: Requested for rating and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @GET
+    @Path("/{id}/image")
+    @Produces(value = {"image/jpg", "image/png", "image/gif"})
+    public Response getImage(@PathParam("id") long id) throws IOException {
+        Optional<Framework> framework = fs.findById(id);
+        if(framework.isPresent())
+            return Response.ok(framework.get().getPicture()).build();
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @POST
+    @Path("/{id}/comment")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response saveComment(@PathParam("id") long id,final CommentAddDTO form) {
+        final Optional<Framework> framework = fs.findById(id);
+
+        if (framework.isPresent()) {
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+            if (user.isPresent() && user.get().isEnable()) {
+               if(form == null || form.getDescription() == null || form.getDescription().isEmpty()){
+                   return Response.status(Response.Status.CONFLICT).entity("Comment can not be empty.").build();
+               }
+                Comment comment = commentService.insertComment(id, user.get().getId(), form.getDescription(), null);
+                return Response.ok(CommentDTO.fromComment(comment,uriInfo)).build();
+            }
+
+            LOGGER.error("Tech {}: Unauthorized user tried to insert a comment", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+
+    }
+    @POST
+    @Path("/{id}/comment/{commentId}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response replyComment(@PathParam("id") long id,@PathParam("commentId") long commentId,final CommentAddDTO form) {
+        final Optional<Framework> framework = fs.findById(id);
+
+        if (framework.isPresent()) {
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+            if (user.isPresent() && user.get().isEnable()) {
+                if(form == null || form.getDescription() == null || form.getDescription().isEmpty()){
+                    return Response.status(Response.Status.CONFLICT).entity("Comment can not be empty.").build();
+                }
+                Comment comment = commentService.insertComment(id, user.get().getId(), form.getDescription(), commentId);
+                LOGGER.info("Tech {}: User {} replied comment {}", id, user.get().getId(), commentId);
+
+                return Response.ok(CommentDTO.fromComment(comment,uriInfo)).build();
+            }
+
+            LOGGER.error("Tech {}: Unauthorized user tried to insert a comment", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+
+    }
+
+    @POST
+    @Path("/{id}/comment/{commentId}/upvote")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response voteUpComment(@PathParam("id") long id, @PathParam("commentId") long commentId) {
+        final Optional<Framework> framework = fs.findById(id);
+        Optional<Comment> comment = commentService.getById(commentId);
+
+        if (framework.isPresent() && comment.isPresent() && comment.get().getFramework().getId() == framework.get().getId()) {
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            if (user.isPresent()) {
+                if (user.get().isEnable()) {
+                    Optional<CommentVote> vote = commentService.vote(commentId, user.get().getId(), 1);
+                    LOGGER.info("Tech {}: User {} voted up comment {}", id, user.get().getId(), commentId);
+                    if(vote.isPresent()) {
+                        VoteDTO dto = new VoteDTO();
+                        dto.setCount((double)vote.get().getComment().getVotesUp());
+                        return Response.ok(dto).build();
+                    }
+                    return Response.noContent().build();
+                }
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
+
+            LOGGER.error("Tech {}: Unauthorized user tried to vote comment {}", id, commentId);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    @POST
+    @Path("/{id}/comment/{commentId}/downvote")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response voteDownComment(@PathParam("id") long id, @PathParam("commentId") long commentId) {
+        final Optional<Framework> framework = fs.findById(id);
+
+        Optional<Comment> comment = commentService.getById(commentId);
+
+        if (framework.isPresent() && comment.isPresent() && comment.get().getFramework().getId() == framework.get().getId()) {
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+            if (user.isPresent()) {
+                if (user.get().isEnable()) {
+                    Optional<CommentVote> vote = commentService.vote(commentId, user.get().getId(), -1);
+                    LOGGER.info("Tech {}: User {} voted down comment {}", id, user.get().getId(), commentId);
+                    if(vote.isPresent()) {
+                        VoteDTO dto = new VoteDTO();
+                        dto.setCount((double)vote.get().getComment().getVotesDown());
+                        return Response.ok(dto).build();
+                    }
+                    return Response.noContent().build();
+                }
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
+
+            LOGGER.error("Tech {}: Unauthorized user tried to vote comment {}", id, commentId);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    @DELETE
+    @Path("/{id}/comment/{commentId}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response deleteComment(@PathParam("id") long id, @PathParam("commentId") long commentId){
+        Optional<Framework> framework = fs.findById(id);
+        Optional<Comment> comment = commentService.getById(commentId);
+        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (framework.isPresent() && comment.isPresent() && comment.get().getFramework().getId() == framework.get().getId()) {
+            if (user.isPresent()) {
+                if(user.get().isAdmin() || comment.get().getUser().getUsername().equals(user.get().getUsername())) {
+                    commentService.deleteComment(commentId);
+                    return Response.noContent().build();
+                }
+                LOGGER.error("Tech {}: Unauthorized user tried to delete comment", id);
+                return Response.status(Response.Status.FORBIDDEN).build();
+
+            }
+
+            LOGGER.error("Tech {}: Unauthorized user tried to delete comment", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        LOGGER.error("Tech {}: requested for deleting comment and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    @POST
+    @Path("/{id}/comment/{commentId}/report")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response reportComment(@PathParam("id") long id, @PathParam("commentId") long commentId, final CommentAddDTO report) {
+        final Optional<Framework> framework = fs.findById(id);
+        Optional<Comment> comment = commentService.getById(commentId);
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (framework.isPresent() && comment.isPresent() && comment.get().getFramework().getId() == framework.get().getId()) {
+            if(user.isPresent()) {
+                if(user.get().isEnable()) {
+                    if(user.get().getCommentsReported().stream().anyMatch(x->x.getComment().getCommentId() == commentId)){
+                        return Response.status(Response.Status.BAD_REQUEST).build();
+                    }
+                    if(report == null || report.getDescription() == null || report.getDescription().isEmpty())
+                        return Response.status(Response.Status.CONFLICT).entity("Comment can not be empty.").build();
+
+                    commentService.addReport(commentId, user.get().getId(), report.getDescription());
+                    LOGGER.info("Tech {}: User {} reported comment {}", id, user.get().getId(), commentId);
+                    return Response.ok().build();
+                }
+                LOGGER.error("Tech {}: Unauthorized user tried to report comment", id);
+                return Response.status(Response.Status.FORBIDDEN).build();
+
+            }
+
+            LOGGER.error("Tech {}: Unauthorized user tried to report comment", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        LOGGER.error("Tech {}: requested for reporting comment and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @POST
+    @Path("/{id}/content/check-title")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response checkTitleContent(@PathParam("id") long id, final CheckContentDTO content) {
+        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(user.isPresent()) {
+            if(user.get().isEnable()) {
+                if(content == null || content.getTitle() == null || content.getType() == null){
+                    return Response.status(Response.Status.CONFLICT).entity("Missing data.").build();
+                }
+                ContentTypes type;
+                try{
+                    type = Enum.valueOf(ContentTypes.class,content.getType());
+                } catch (IllegalArgumentException e){
+                    return Response.status(Response.Status.CONFLICT).entity("Invalid type").build();
+                }
+                List<Content> ls = contentService.getContentByFrameworkAndTypeAndTitle(id,type,content.getTitle());
+                if(ls.isEmpty()){
+                    return Response.ok().build();
+                }
+                return Response.status(422).build();
+
+            }
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    @POST
+    @Path("/{id}/content")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response addContent(@PathParam("id") long id, final ContentAddDTO content){
+        final Optional<Framework> framework = fs.findById(id);
+        if (framework.isPresent()) {
+            if(content == null || content.getLink() == null || content.getLink().isEmpty()|| content.getType() == null || content.getType().isEmpty()|| content.getTitle() == null || content.getTitle().isEmpty()){
+                return Response.status(Response.Status.CONFLICT).entity("Content can not be empty.").build();
+            }
+            ContentTypes type;
+            try{
+                type = Enum.valueOf(ContentTypes.class,content.getType());
+            } catch (IllegalArgumentException e){
+                return Response.status(Response.Status.CONFLICT).entity("Invalid type").build();
+            }
+
+            final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+            if (user.isPresent()) {
+                if(user.get().isEnable()) {
+                    String pathToContent = content.getLink();
+                    if (!pathToContent.contains("://")) {
+                        pathToContent = "http://".concat(pathToContent);
+                    }
+
+                    if (!contentService.getContentByFrameworkAndTypeAndTitle(id, type, content.getTitle()).isEmpty()) {
+                        return Response.status(Response.Status.CONFLICT).entity("Already exists.").build();
+                    }
+
+                    Content insertContent = contentService.insertContent(id, user.get().getId(), content.getTitle(), pathToContent, type);
+
+                    LOGGER.info("Tech {}: User {} inserted new content", id, user.get().getId());
+                    return Response.ok(ContentDTO.fromContent(insertContent,uriInfo)).build();
+                }
+                LOGGER.error("Tech {}: Unauthorized user tried to insert content", id);
+                return Response.status(Response.Status.FORBIDDEN).build();
+
+            }
+            LOGGER.error("Tech {}: Unauthorized user tried to insert content", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        LOGGER.error("Tech {}: requested for inserting content and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @DELETE
+    @Path("/{id}/content/{contentId}")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response deleteContent(@PathParam("id") long id, @PathParam("contentId") long contentId){
+
+        final Optional<Framework> framework = fs.findById(id);
+        final Optional<Content> content = contentService.getById(contentId);
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (framework.isPresent() && content.isPresent() && content.get().getFrameworkId()==id) {
+            if (user.isPresent()) {
+                if(user.get().isAdmin() || user.get().isVerifyForFramework(id) || content.get().getUserName().equals(user.get().getUsername())) {
+                    contentService.deleteContent(contentId);
+                    LOGGER.info("Tech {}: User {} deleted content {}", id, user.get().getId(), contentId);
+                    return Response.noContent().build();
+                }
+                LOGGER.error("Tech {}: Unauthorized user tried to delete content", id);
+                return Response.status(Response.Status.FORBIDDEN).build();
+
+            }
+            LOGGER.error("Tech {}: Unauthorized user tried to delete content", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        LOGGER.error("Tech {}: requested for deleting content and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    @POST
+    @Path("/{id}/content/{contentId}/report")
+    @Produces(value = {MediaType.APPLICATION_JSON,})
+    public Response reportContent(@PathParam("id") long id, @PathParam("contentId") long contentId, final CommentDTO report){
+        final Optional<Framework> framework = fs.findById(id);
+        Optional<Content> content = contentService.getById(contentId);
+        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (framework.isPresent() && content.isPresent() && content.get().getFrameworkId() == id) {
+            if(user.isPresent()) {
+                if(user.get().isEnable()) {
+                    if(user.get().getContentsReported().stream().anyMatch(x->x.getContentId() == contentId)){
+                        return Response.status(Response.Status.BAD_REQUEST).build();
+                    }
+                    if(report == null || report.getDescription() == null || report.getDescription().isEmpty())
+                        return Response.status(Response.Status.CONFLICT).entity("Content can not be empty.").build();
+
+                    contentService.addReport(contentId, user.get().getId(), report.getDescription());
+                    LOGGER.info("Tech {}: User {} reported content {}", id, user.get().getId(), contentId);
+                    return Response.ok().build();
+                }
+                LOGGER.error("Tech {}: Unauthorized user tried to report content", id);
+                return Response.status(Response.Status.FORBIDDEN).build();
+
+            }
+
+            LOGGER.error("Tech {}: Unauthorized user tried to report content", id);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        LOGGER.error("Tech {}: requested for reporting content and not found", id);
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
 }
 

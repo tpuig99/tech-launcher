@@ -53,12 +53,12 @@ public class UserDaoTest {
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("user_id");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
+
     }
 
     @Test
     public void testCreate(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
+
         User testUser = new User();
         testUser.setUsername(USER1);
         testUser.setMail(USER_MAIL);
@@ -98,7 +98,7 @@ public class UserDaoTest {
 
     @Test
     public void testChangeDescription(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
+
         User testUser = new User();
         testUser.setUsername(USER1);
         testUser.setMail(USER_MAIL);
@@ -121,7 +121,7 @@ public class UserDaoTest {
 
     @Test
     public void testChangePassword(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
+
         User testUser = new User();
         testUser.setUsername(USER1);
         testUser.setMail(USER_MAIL);
@@ -142,7 +142,7 @@ public class UserDaoTest {
 
     @Test
     public void testChangeAllowMod(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
+
         User testUser = new User();
         testUser.setUsername(USER1);
         testUser.setMail(USER_MAIL);
@@ -164,7 +164,7 @@ public class UserDaoTest {
 
     @Test
     public void testDeleteUser(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
+
         User testUser = new User();
         testUser.setUsername(USER1);
         testUser.setMail(USER_MAIL);
@@ -188,7 +188,7 @@ public class UserDaoTest {
 
     @Test(expected = Exception.class)
     public void testCreateOnExisting() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
+
         final Map<String, Object> args = new HashMap<>();
         args.put("user_name", USER1);
         args.put("mail",USER_MAIL);
@@ -201,7 +201,7 @@ public class UserDaoTest {
 
     @Test
     public  void testChangeEnable(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
+
         User testUser = new User();
         testUser.setUsername(USER1);
         testUser.setMail(USER_MAIL);
@@ -223,7 +223,7 @@ public class UserDaoTest {
 
     @Test
     public void testModAllow(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
+
         User testUser = new User();
         testUser.setUsername(USER1);
         testUser.setMail(USER_MAIL);

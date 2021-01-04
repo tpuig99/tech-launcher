@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
         return userDao.findByMail(mail);
     }
 
-    private long checkIfUserExists(String username, String mail) throws UserAlreadyExistException {
+    private long geUserIdIfNotExists(String username, String mail) throws UserAlreadyExistException {
         Optional<User> user = findByUsernameOrMail(username,mail);
         if( user.isPresent() ){
             if(user.get().getMail().equals(mail) && user.get().getPassword()==null)
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User create(String username, String mail, String password) throws UserAlreadyExistException{
-        long aux= checkIfUserExists(username,mail);
+        long aux= geUserIdIfNotExists(username,mail);
         String psw = passwordEncoder.encode(password);
         if(aux==USER_NOT_EXISTS) {
             return userDao.create(username, mail, psw);
@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
         tokenDao.insert(user.getId(),token);
         String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
                 "\r\n" +
-                appUrl + "/register/confirm?token=" + token;
+                appUrl + "/confirm/" + token;
         sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 
@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
         verificationToken.ifPresent(value -> tokenDao.change(value, token));
         String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
                 "\r\n" +
-                appUrl + "/register/confirm?token=" + token;
+                appUrl + "/confirm/" + token;
         sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
     }
 
@@ -251,7 +251,7 @@ public class UserServiceImpl implements UserService {
         String recipientAddress = user.getMail();
 
         String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
-        String confirmationUrl = "/recover/recovering_token?token=" + token;
+        String confirmationUrl = "/forgot_password/" + token;
 
         String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
         String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());

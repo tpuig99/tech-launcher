@@ -48,8 +48,6 @@ public class PostTagDaoTest {
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "posts");
 
         User user = new User("user","mail",null,true,"",true,null);
         em.persist(user);
@@ -69,7 +67,7 @@ public class PostTagDaoTest {
 
    @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_tags");
+
        Optional<PostTag> tagOptional = postTagDao.insert(TAG_1,POST_ID, PostTagType.tech_name);
 
         em.flush();
@@ -82,13 +80,13 @@ public class PostTagDaoTest {
 
     @Test(expected = Exception.class)
     public void testCreateWithoutPost() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_tags");
+
         Optional<PostTag> tagOptional = postTagDao.insert(TAG_1,POST_ID+1,PostTagType.tech_name);
         em.flush();
     }
     @Test
     public void testDelete() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_tags");
+
         PostTag postTag = new PostTag();
         postTag.setPost(em.find(Post.class,POST_ID));
         postTag.setTagName(TAG_1);
@@ -102,13 +100,13 @@ public class PostTagDaoTest {
     }
     @Test(expected = Exception.class)
     public void testDeleteWithoutTag() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_tags");
+
         postTagDao.delete(1);
         em.flush();
     }
     @Test
     public void testGetByPost(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_tags");
+
         for (int i = 0; i < 4; i++) {
             PostTag postTag = new PostTag();
             postTag.setPost(em.find(Post.class,POST_ID));
@@ -133,7 +131,6 @@ public class PostTagDaoTest {
     }
     @Test
     public void testGetAll(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"post_tags");
         for (int i = 0; i < 4; i++) {
             PostTag postTag = new PostTag();
             postTag.setPost(em.find(Post.class,POST_ID));

@@ -7,10 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -32,10 +29,20 @@ public class PostDaoImpl implements PostDao {
 
     @Override
     public List<Post> getAllByPage(long page, long pageSize) {
-            TypedQuery<Post> query = em.createQuery("from Post as p", Post.class);
-            query.setMaxResults((int)pageSize);
-            query.setFirstResult((int) ((page-1)*pageSize));
+
+        Query pagingQuery = em.createNativeQuery("SELECT post_id from posts LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Post> query = em.createQuery("from Post as p where p.postId in (:resultList)", Post.class);
+            query.setParameter("resultList", resultList);
             return query.getResultList();
+        }else{
+            return Collections.emptyList();
+        }
+
     }
 
     @Override
@@ -49,7 +56,7 @@ public class PostDaoImpl implements PostDao {
             query.setParameter("resultList", resultList);
             return query.getResultList();
         }else{
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 
@@ -71,7 +78,7 @@ public class PostDaoImpl implements PostDao {
             query.setParameter("resultList", resultList);
             return query.getResultList();
         }else{
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 

@@ -3,7 +3,6 @@ package ar.edu.itba.paw;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.persistence.ContentDao;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
-
-
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -58,10 +54,6 @@ public class ContentDaoTest {
                 .withTableName("content")
                 .usingGeneratedKeyColumns("content_id");
 
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "content");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "frameworks");
-
         for (int i = 1; i < 6; i++) {
             User user = new User("user"+i,"mail"+i,null,true,"",true,null);
             em.persist(user);
@@ -83,7 +75,7 @@ public class ContentDaoTest {
     //<editor-fold desc="Content Methods">
     @Test
     public void testCreate() {
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = "+TITLE);
+
 
         final Content content = contentDao.insertContent(FRAMEWORK_ID,USER_ID,TITLE,LINK,TYPE);
 
@@ -96,9 +88,10 @@ public class ContentDaoTest {
         assertEquals(LINK,content.getLink());
         assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "content","content_id ="+content.getContentId()));
     }
+
     @Test(expected = Exception.class)
     public void testCreateOnExisting() {
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = ",TITLE);
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         args.put("framework_id", FRAMEWORK_ID);
@@ -111,6 +104,7 @@ public class ContentDaoTest {
 
         final Content content = contentDao.insertContent(FRAMEWORK_ID,USER_ID,TITLE,LINK,TYPE);
     }
+
     @Test(expected = Exception.class)
     public void testCreateWithoutUser() {
         JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = ",TITLE);
@@ -123,7 +117,7 @@ public class ContentDaoTest {
     }
     @Test
     public void testChange() {
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = "+TITLE);
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         final Map<String, Object> args = new HashMap<>();
         Content content = new Content();
@@ -148,7 +142,7 @@ public class ContentDaoTest {
     }
     @Test
     public void testDelete() {
-        JdbcTestUtils.deleteFromTableWhere(jdbcTemplate,"content","title = "+TITLE);
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         Content content = new Content();
         content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
@@ -170,7 +164,7 @@ public class ContentDaoTest {
     //<editor-fold desc="Getters">
     @Test
     public void testGetById() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         Content content = new Content();
         content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
@@ -193,7 +187,7 @@ public class ContentDaoTest {
     }
     @Test()
     public void testGetByIdNotExisting() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
 
         Optional<Content> content = contentDao.getById(1);
 
@@ -201,42 +195,42 @@ public class ContentDaoTest {
         assertFalse(content.isPresent());
     }
 
-    @Test
-    public void testGetByFrameworkAndType() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
-        for (int i = 0; i < 3; i++) {
-            Content content = new Content();
-            content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
-            content.setLink(LINK);
-            content.setUser(em.find(User.class,USER_ID-i));
-            content.setTitle(TITLE+i);
-            content.setType(TYPE);
-            content.setTimestamp(ts);
-            em.persist(content);
-        }
-        Content content = new Content();
-        content.setFramework(em.find(Framework.class,FRAMEWORK_ID-4));
-        content.setLink(LINK);
-        content.setUser(em.find(User.class,USER_ID-4));
-        content.setTitle(TITLE);
-        content.setType(TYPE);
-        content.setTimestamp(ts);
-        em.persist(content);
-
-        List<Content> contents = contentDao.getContentByFrameworkAndType(FRAMEWORK_ID,TYPE, 1, 5);
-
-        em.flush();
-        assertFalse(contents.isEmpty());
-        assertEquals(3,contents.size());
-        for (Content c:contents) {
-            assertEquals(FRAMEWORK_ID, c.getFrameworkId());
-            assertEquals(TYPE,c.getType());
-        }
-    }
+//    @Test
+//    public void testGetByFrameworkAndType() {
+//
+//        Timestamp ts = new Timestamp(System.currentTimeMillis());
+//        for (int i = 0; i < 3; i++) {
+//            Content content = new Content();
+//            content.setFramework(em.find(Framework.class,FRAMEWORK_ID));
+//            content.setLink(LINK);
+//            content.setUser(em.find(User.class,USER_ID-i));
+//            content.setTitle(TITLE+i);
+//            content.setType(TYPE);
+//            content.setTimestamp(ts);
+//            em.persist(content);
+//        }
+//        Content content = new Content();
+//        content.setFramework(em.find(Framework.class,FRAMEWORK_ID-4));
+//        content.setLink(LINK);
+//        content.setUser(em.find(User.class,USER_ID-4));
+//        content.setTitle(TITLE);
+//        content.setType(TYPE);
+//        content.setTimestamp(ts);
+//        em.persist(content);
+//
+//        List<Content> contents = contentDao.getContentByFrameworkAndType(FRAMEWORK_ID,TYPE, 1, 5);
+//
+//        em.flush();
+//        assertFalse(contents.isEmpty());
+//        assertEquals(3,contents.size());
+//        for (Content c:contents) {
+//            assertEquals(FRAMEWORK_ID, c.getFrameworkId());
+//            assertEquals(TYPE,c.getType());
+//        }
+//    }
     @Test
     public void testGetByFrameworkAndTypeAndTitle() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         for (int i = 0; i < 3; i++) {
             Content content = new Content();
@@ -270,7 +264,7 @@ public class ContentDaoTest {
     }
     @Test
     public void testGetByUser() {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"content");
+
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         for (int i = 0; i < 3; i++) {
             Content content = new Content();

@@ -54,11 +54,6 @@ public class CommentVoteDaoTest {
                 .withTableName("comment_votes")
                 .usingGeneratedKeyColumns("vote_id");
 
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "comment_votes");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "comments");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "frameworks");
-
         for (int i = 1; i < SIZE+1; i++) {
             User user = new User("user"+i, "mail"+i, null, true, DESCRIPTION, false, null);
             em.persist(user);

@@ -57,13 +57,6 @@ public class UserHibernateDao implements UserDao {
         em.merge(user);
     }
 
-//    @Override
-//    public void updateDescription(long userId, String description) {
-//        User user = em.find(User.class,userId);
-//        user.setDescription(description);
-//        em.merge(user);
-//    }
-
     @Override
     public void updatePicture(long id, byte[] picture) {
         User user = em.find(User.class,id);

@@ -44,8 +44,7 @@ public class VerifyUserTest {
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
 
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "frameworks");
+
 
         for (int i = 1; i < 6; i++) {
             User user = new User("user"+i,"mail"+i,null,true,"",true,null);
@@ -67,7 +66,7 @@ public class VerifyUserTest {
 
     @Test
     public void testCreate(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verify_users");
+
         VerifyUser user = new VerifyUser();
         user.setComment(null);
         user.setPending(true);
@@ -88,7 +87,7 @@ public class VerifyUserTest {
 
     @Test
     public void testVerify(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verify_users");
+
         VerifyUser user = new VerifyUser();
         user.setComment(null);
         user.setPending(true);
@@ -106,7 +105,7 @@ public class VerifyUserTest {
 
     @Test
     public void testGetApplicantsByPending(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verify_users");
+
         VerifyUser user = new VerifyUser();
         user.setComment(null);
         user.setPending(true);
@@ -128,7 +127,7 @@ public class VerifyUserTest {
 
     @Test
     public void testDelete(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verify_users");
+
         VerifyUser user = new VerifyUser();
         user.setComment(null);
         user.setPending(true);
@@ -148,7 +147,7 @@ public class VerifyUserTest {
 
     @Test
     public void testDeleteVerificationByUser(){
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "verify_users");
+
         VerifyUser user = new VerifyUser();
         user.setComment(null);
         user.setPending(true);
