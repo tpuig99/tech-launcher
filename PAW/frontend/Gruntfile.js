@@ -31,7 +31,7 @@ module.exports = function (grunt) {
             https: false,
             changeOrigin: true,
             rewrite: {
-              '^/': '/'
+              '^/api': '/api'
             }
           }
         ]
@@ -63,7 +63,7 @@ module.exports = function (grunt) {
          tasks: ['wiredep:serve']
        },
       js: {
-        files: ['<%= yeoman.app %>/scripts/**/*.js'],
+        files: ['<%= yeoman.app %>scripts/**/*.js'],
         tasks: ['newer:eslint:all'],
         options: {
           livereload: '<%= connect.options.livereload %>'
@@ -94,7 +94,7 @@ module.exports = function (grunt) {
         cssDir: '.tmp/styles',
         generatedImagesDir: '.tmp/images/generated',
         imagesDir: '<%= yeoman.app %>/images',
-        javascriptsDir: '<%= yeoman.app %>/scripts',
+        javascriptsDir: '<%= yeoman.app %>scripts',
         fontsDir: '<%= yeoman.app %>/styles/fonts',
         importPath: './bower_components',
         httpImagesPath: '/images',
@@ -122,7 +122,7 @@ module.exports = function (grunt) {
         fix: grunt.option('fix') // this will get params from the flags
       },
       all: [
-      '<%= yeoman.app %>/scripts/**/*.js',
+      '<%= yeoman.app %>scripts/**/*.js',
       'test/spec/**/*.js',
       'Gruntfile.js'
       ],
@@ -161,7 +161,7 @@ module.exports = function (grunt) {
 
     bower: {
       all: {
-        rjsConfig: '<%= yeoman.app %>/scripts/build.js'
+        rjsConfig: '<%= yeoman.app %>scripts/build.js'
       }
     },
 
@@ -194,13 +194,13 @@ module.exports = function (grunt) {
           '<%= yeoman.dist %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
           '<%= yeoman.dist %>/styles/fonts/*',
           '<%= yeoman.dist %>/views/**/*.html',
-          '<%= yeoman.dist %>/scripts/**/*.js',
+          '<%= yeoman.dist %>scripts/**/*.js',
           '<%= yeoman.dist %>/bower_components/**/*.js',
           '!<%= yeoman.dist %>/images/static/*.jpg'
         ]
       },
       paths: {
-          src: ['<%= yeoman.dist %>/scripts/paths.js']
+          src: ['<%= yeoman.dist %>scripts/paths.js']
       }
     },
 
@@ -223,7 +223,7 @@ module.exports = function (grunt) {
     usemin: {
       html: ['<%= yeoman.dist %>/**/*.html'],
       css: ['<%= yeoman.dist %>/styles/**/*.css'],
-      imagesAndViews: ['<%= yeoman.dist %>/scripts/**/*.js', '<%= yeoman.dist %>/views/**/*.html'],
+      imagesAndViews: ['<%= yeoman.dist %>scripts/**/*.js', '<%= yeoman.dist %>/views/**/*.html'],
       options: {
         assetsDirs: ['<%= yeoman.dist %>', '<%= yeoman.dist %>/images'],
         patterns: {
@@ -244,9 +244,9 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>/bower_components'
         }, {
           expand: true,
-          cwd: '<%= yeoman.dist %>/scripts',
+          cwd: '<%= yeoman.dist %>scripts',
           src: '**/*.js',
-          dest: '<%= yeoman.dist %>/scripts'
+          dest: '<%= yeoman.dist %>scripts'
         }]
       }
     },
@@ -397,9 +397,9 @@ module.exports = function (grunt) {
     jsrev: {
         dist: {
             options: {
-                baseRoot: '<%= yeoman.dist %>/scripts',
+                baseRoot: '<%= yeoman.dist %>scripts',
                 baseUrl: 'scripts',
-                outputFile: '<%= yeoman.dist %>/scripts/paths.js'
+                outputFile: '<%= yeoman.dist %>scripts/paths.js'
             }
         }
     }
