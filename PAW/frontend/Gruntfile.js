@@ -529,7 +529,7 @@ module.exports = function (grunt) {
       // minify css in: <<>> out: <<>>
       'cssmin',
       // adds hash to file names in: <<>> out: <<>>
-      //'filerev',
+      'filerev',
       // Creates file map from filerev result in: <<>> out: <<>>
       'jsrev',
       // ???

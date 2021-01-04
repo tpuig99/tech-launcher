@@ -6,3 +6,4 @@ frontend/package-lock.json
 frontend/dist
 frontend/.tmp
 frontend/.sass-cache
+frontend/distscripts
