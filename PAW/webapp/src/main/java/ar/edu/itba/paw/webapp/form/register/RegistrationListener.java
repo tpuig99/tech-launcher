@@ -31,7 +31,12 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     }
 
     private String reformatURL(String url){
-        int startIndex = url.indexOf("/register");
+        int startIndex;
+
+        startIndex = url.indexOf("/api");
+        url = url.substring(0, startIndex);
+
+        startIndex = url.indexOf("/register");
         url = url.substring(0, startIndex).concat("/#/register");
         return url;
     }
