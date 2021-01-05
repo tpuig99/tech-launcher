@@ -75,7 +75,7 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
 
         $rootScope.tagToSearch = tag;
         $rootScope.tagType = type;
-        $window.location.href = '/#/explore';
+        $window.location.href = '#/explore';
       };
 
       $scope.setDel = function (url) {
@@ -88,7 +88,7 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       $scope.deletePost = function() {
         postService.deletePost($scope.toDel).then(function() {
           $('#deletePostModal').modal('hide');
-          $window.location.href = '/#/posts';
+          $window.location.href = '#/posts';
         });
 
 
