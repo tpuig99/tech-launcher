@@ -101,6 +101,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         techsService.getData($scope.tech.competitors).then(function (competitors) {
           $scope.tech.competitors = competitors.data;
         });
+
+        $scope.tech.stars = $scope.tech.stars.toFixed(2);
       });
     };
 
