@@ -88,6 +88,7 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       $scope.deletePost = function() {
         postService.deletePost($scope.toDel).then(function() {
           $('#deletePostModal').modal('hide');
+          $scope.cleanDel();
           $window.location.href = '#/posts';
         });
 
