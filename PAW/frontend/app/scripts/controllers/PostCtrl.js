@@ -106,11 +106,15 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       };
 
       $scope.upVote = function() {
-        postService.upVote($scope.post.location).then($scope.getPost());
+        postService.upVote($scope.post.location).then(function() {
+          $scope.getPost()
+        });
       };
 
       $scope.downVote = function(location) {
-        postService.downVote($scope.post.location).then($scope.getPost());
+        postService.downVote($scope.post.location).then(function(){
+          $scope.getPost()
+        });
       };
 
       $scope.upVoteAnswer = function(location) {
