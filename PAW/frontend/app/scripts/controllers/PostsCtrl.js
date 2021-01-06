@@ -119,8 +119,12 @@ define(['frontend','services/postService','services/sessionService'], function(f
         'categories' : $scope.categoriesChosen,
         'types' : $scope.typesChosen
       };
-      postService.addPost(post, 'posts');
-      $location.path('/posts');
+      postService.addPost(post, 'posts').then(response => {
+        let startIndex = response.headers('location').indexOf("api/");
+        let location = response.headers('location').substring(startIndex + 4);
+        $location.path(location);
+      });
+
     }
   });
 });
