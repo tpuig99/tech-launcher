@@ -14,6 +14,7 @@ public class PostCommentDTO {
     private Long votesUp;
     private Long votesDown;
     private String location;
+    private String voteLocation;
 
     public static PostCommentDTO fromComment(PostComment comment, UriInfo uriInfo){
         final PostCommentDTO postComment = new PostCommentDTO();
@@ -24,9 +25,17 @@ public class PostCommentDTO {
         postComment.votesUp = comment.getVotesUp();
         postComment.votesDown = comment.getVotesDown();
         postComment.userLocation = "users/"+comment.getUser().getId();
-        //postComment.location = uriInfo.getBaseUriBuilder().path("/posts/" + comment.getPost().getPostId() + "/answers/" + comment.getPostCommentId()).build().toString();
         postComment.location = "posts/" + comment.getPost().getPostId() + "/answers/" + comment.getPostCommentId();
+        postComment.voteLocation = "api/" + postComment.location;
         return postComment;
+    }
+
+    public String getVoteLocation() {
+        return voteLocation;
+    }
+
+    public void setVoteLocation(String voteLocation) {
+        this.voteLocation = voteLocation;
     }
 
     public String getLocation() {
