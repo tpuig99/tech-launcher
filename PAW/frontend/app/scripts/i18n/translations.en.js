@@ -71,7 +71,7 @@ define([], function () {
     CATEGORY_PLATFORMS: 'Platforms',
     CATEGORY_SECURITY: 'Security',
 
-    CONTENT_BOOK: 'Book',
+    CONTENT_BOOK: 'Bibliography',
     CONTENT_COURSE: 'Course',
     CONTENT_TUTORIAL: 'Tutorial',
 

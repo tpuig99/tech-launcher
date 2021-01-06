@@ -71,7 +71,7 @@ define([], function() {
     CATEGORY_PLATFORMS: 'Platformas',
     CATEGORY_SECURITY: 'Seguridad',
 
-    CONTENT_BOOK: 'Libro',
+    CONTENT_BOOK: 'Bibliografía',
     CONTENT_COURSE: 'Curso',
     CONTENT_TUTORIAL: 'Tutorial',
 
@@ -263,7 +263,7 @@ define([], function() {
     TECH_APPLY_MESSAGE: '¿Quieres ayudarnos? Vuélvete un Moderador. Podrás administrar contenido en esta Tech. ',
     TECH_APPLY_TITLE: 'Ser un Moderador',
     TECH_AUTHOR: 'Autor:',
-    TECH_COMMENTS: 'Commentarios',
+    TECH_COMMENTS: 'Comentarios',
     TECH_COMMENT_NO_REPLIES: 'Este comentario no tiene respuestas todavía',
     TECH_COMMENT_PLACEHOLDER: '¡Deja un comentario aquí!',
     TECH_COMPETITION: 'Techs Relacionadas',
