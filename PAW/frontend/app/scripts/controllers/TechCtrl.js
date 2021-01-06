@@ -329,10 +329,10 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           $scope.getTech();
           $scope.getUser();
         }
-      })
-    }.catch( () =>
-      $location.path($scope.tech.location)
-    );
+      }).catch( () =>
+        $location.path($scope.tech.location)
+      );
+    };
 
   });
 
