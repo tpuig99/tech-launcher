@@ -23,7 +23,7 @@ public class VoteDTO {
         VoteDTO dto = new VoteDTO();
         dto.vote =  vote.getStars();
         dto.techName = vote.getFrameworkName();
-        dto.techLocation = "/techs/"+vote.getFrameworkId();
+        dto.techLocation = "techs/"+vote.getFrameworkId();
         return dto;
     }
     public Double getCount() {
