@@ -194,8 +194,8 @@
                         <div ng-if="isEnabled">
                           <div class="net-votes">
                             <button class="btn pt-0 pb-0" type="submit" ng-click="upVoteAnswer(answer.voteLocation)">
-                              <i ng-if="post.loggedVote > 0" class="fa fa-1x fa-arrow-up votedUp"></i>
-                              <i ng-if="post.loggedVote <= 0" class="fa fa-1x fa-arrow-up"></i>
+                              <i ng-if="answer.loggedVote > 0" class="fa fa-1x fa-arrow-up votedUp"></i>
+                              <i ng-if="answer.loggedVote <= 0" class="fa fa-1x fa-arrow-up"></i>
                             </button>
                             <div>
                               <h4>{{answer.votesUp - answer.votesDown}}</h4>
@@ -204,8 +204,8 @@
 
                           <div class="net-votes">
                             <button class="btn pt-0 pb-0" type="submit" ng-click="downVoteAnswer(answer.voteLocation)">
-                              <i ng-if="post.loggedVote < 0" class="fa fa-1x fa-arrow-down votedDown"></i>
-                              <i ng-if="post.loggedVote >= 0" class="fa fa-1x fa-arrow-down"></i>
+                              <i ng-if="answer.loggedVote < 0" class="fa fa-1x fa-arrow-down votedDown"></i>
+                              <i ng-if="answer.loggedVote >= 0" class="fa fa-1x fa-arrow-down"></i>
                             </button>
                           </div>
                         </div>
