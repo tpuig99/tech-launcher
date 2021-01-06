@@ -326,11 +326,13 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     $scope.stopBeingAMod = function (location) {
       techsService.stopBeingAMod(location).then(function (response) {
         if (response.status === 200) {
-          $scope.getUser();
           $scope.getTech();
+          $scope.getUser();
         }
       })
-    };
+    }.catch( () =>
+      $location.path($scope.tech.location)
+    );
 
   });
 
