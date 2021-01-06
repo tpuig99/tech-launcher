@@ -131,7 +131,7 @@ public class ModController {
 
             if (user.isAdmin()) {
                 userList = us.getApplicantsByPending(true, applicantsPage);
-                modsAmount = us.getApplicantsByPendingAmount(false).get();
+                modsAmount = us.getApplicantsByPendingAmount(true).get();
 
             } else if (ownedFrameworks.size() > 0 || user.isVerify() ) {
                 List<Long> frameworkIds = new ArrayList<>();

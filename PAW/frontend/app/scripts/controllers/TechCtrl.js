@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend', 'services/techsService', 'services/sessionService'], function(frontend) {
 
-  frontend.controller('TechCtrl', function($scope, $location, $window, $routeParams, techsService, $sessionStorage,Restangular, sessionService, $localStorage) {
+  frontend.controller('TechCtrl', function($scope, $location, $window, $routeParams, techsService, $sessionStorage,Restangular, sessionService, $localStorage, $rootScope) {
 
     $scope.isPresent = false;
     $scope.isVerify = false;
@@ -134,9 +134,10 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       }
     };
 
-
-    $scope.redirect = function(url) {
-      $location.path(url);
+    $scope.redirectToExplore = function(tag) {
+      $rootScope.tagToSearch = tag;
+      $rootScope.tagType = 'tech_name';
+      $window.location.href = '#/explore';
     };
 
     $scope.isReporter = function (data, username) {
@@ -325,10 +326,12 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     $scope.stopBeingAMod = function (location) {
       techsService.stopBeingAMod(location).then(function (response) {
         if (response.status === 200) {
-          $scope.getUser();
           $scope.getTech();
+          $scope.getUser();
         }
-      })
+      }).catch( () =>
+        $location.path($scope.tech.location)
+      );
     };
 
   });
