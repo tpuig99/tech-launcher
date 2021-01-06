@@ -21,7 +21,7 @@ public class ReportDTO {
         dto.frameworkName = reportComment.getFrameworkName();
         dto.owner = reportComment.getUserNameOwner();
         dto.reported = reportComment.getUserReporterName();
-        dto.location = "mod/reports/comment/" + reportComment.getReportId();
+        dto.location = "mod/reports/comment/" + reportComment.getCommentId();
         dto.techLocation = "techs/" + reportComment.getFrameworkId();
         dto.userLocation = "users/" + reportComment.getUserId();
 
