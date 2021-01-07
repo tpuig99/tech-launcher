@@ -15,6 +15,11 @@ module.exports = function (grunt) {
   };
 
   grunt.initConfig({
+    karma: {
+      unit: {
+        configFile: 'karma.conf.js'
+      }
+    },
     yeoman: appConfig,
     connect: {
       options: {
@@ -542,6 +547,11 @@ module.exports = function (grunt) {
       'htmlmin'
     ]);
   });
+
+  grunt.loadNpmTasks('grunt-karma');
+  grunt.registerTask('test', [
+    'karma'
+  ]);
 
   grunt.registerTask('default', [
     'newer:eslint',

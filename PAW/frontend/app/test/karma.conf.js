@@ -1,32 +1,47 @@
 // Karma configuration
-// Generated on Wed Dec 30 2020 14:33:29 GMT-0300 (Argentina Standard Time)
+// Generated on Wed Jan 06 2021 20:24:04 GMT-0300 (Argentina Standard Time)
 
 module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
-
+    basePath: '../..',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'requirejs'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      'bower_components/angular/angular.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'node_modules/requirejs/bin/r.js',
-      'app/scripts/frontend.js',
-      'app/scripts/controllers/*.js',
-      '*.js',
-      'test/**/*.js'
+      // Main.js
+      'app/test/test-main.js',
+
+      // Sources
+      { pattern: 'app/scripts/*.js', included: false },
+      { pattern: 'app/scripts/**/*.js', included: false },
+
+      // Project Dependencies
+      { pattern: 'bower_components/**/*.js', included: false },
+
+      // Angular Mocks Dev Dependency
+      { pattern: 'node_modules/angular-mocks/angular-mocks.js', included: false },
+
+      // // PhantomJS Polyfill Dev Dependencies
+      // { pattern: 'node_modules/phantomjs-polyfill-includes/includes-polyfill.js', included: false },
+      // { pattern: 'node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js', included: false },
+      // { pattern: 'node_modules/url-search-params-polyfill/index.js', included: false },
+      // { pattern: 'node_modules/phantomjs-polyfill-find/find-polyfill.js', included: false },
+
+      //Test
+      { pattern: 'app/test/controllers/*.spec.js', included: false }
+
     ],
 
 
     // list of files / patterns to exclude
     exclude: [
+      'app/scripts/build.js'
     ],
 
 
