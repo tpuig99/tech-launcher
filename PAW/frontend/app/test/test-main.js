@@ -16,6 +16,7 @@ require.config({
   baseUrl: '/base',
 
   deps: allTestFiles,
+
   paths: {
     affix: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix',
     alert: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert',
@@ -76,6 +77,11 @@ require.config({
       ]
     },
     'ng-file-upload': {
+      deps: [
+        'angular'
+      ]
+    },
+    angularMocks: {
       deps: [
         'angular'
       ]

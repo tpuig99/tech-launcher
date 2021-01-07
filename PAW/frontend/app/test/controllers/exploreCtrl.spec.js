@@ -1,5 +1,5 @@
 describe('ExploreCtrl', function() {
-  beforeEach(module('frontend'));
+  /*beforeEach(module('frontend'));
 
   var $controller;
 
@@ -22,5 +22,5 @@ describe('ExploreCtrl', function() {
       $scope.setActiveTab('T');
       expect($scope.activeTab).toEqual('T');
     });
-  });
+  });*/
 });
