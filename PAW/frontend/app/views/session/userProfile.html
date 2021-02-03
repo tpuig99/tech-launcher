@@ -42,7 +42,7 @@
                 </div>
               </div>
               <p><strong>{{'PROFILE_EMAIL' | translate}}</strong> {{profile.mail}}</p>
-              <div ng-if="profile.description != undefined">
+              <div ng-if="profile.description !== '' ">
                 <p><strong>{{'PROFILE_DESCRIPTION' | translate}}</strong> {{profile.description}}</p>
               </div>
               <div ng-if="profile.username == username && !profile.admin">
