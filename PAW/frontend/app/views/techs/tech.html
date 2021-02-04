@@ -257,8 +257,12 @@
             </div>
             <div class="col-11">
               <div class="row">
-                <div class="col d-flex secondary-font">
+                <div class="col">
                   <a href="#/{{comment.user.location}}">
+                    <div class="col d-inline-flex">
+                    <div class="secondary-font mr-2">
+                       {{comment.user.username}}
+                    </div>
                     <div ng-if="comment.user.username == tech.author">
                       <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip"
                          title="{{'TECH_TOOLTIP_OWNER' | translate }}"></i>
@@ -271,7 +275,8 @@
                       <i class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color" data-toggle="tooltip"
                          title="{{'TECH_TOOLTIP_MODERATOR' | translate }}"></i>
                     </div>
-                    {{comment.user.username}}
+
+                    </div>
                   </a>
                 </div>
                 <div class="col third-font d-flex justify-content-flex-end">
@@ -394,7 +399,7 @@
                       </div>
                       <div ng-if="isEnable">
                         <button ng-if="replyForm.$valid" class="btn primary-button" type="submit"
-                                ng-click="replyComment(comment.location ,commentInput)">{{'BUTTON_SUBMIT' | translate}}
+                                ng-click="replyComment(comment.location ,commentInput, $index)">{{'BUTTON_SUBMIT' | translate}}
                         </button>
                         <button ng-if="replyForm.$invalid" disabled class="btn primary-button" type="submit">
                           {{'BUTTON_SUBMIT' | translate}}

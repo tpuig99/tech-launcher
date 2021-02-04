@@ -37,6 +37,17 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
             }
           }
+
+          if ($scope.userVotes !== undefined && $scope.userVotes.length > 0) {
+            let vote;
+            for (vote of $scope.userVotes) {
+              if (vote.techName === $scope.tech.name) {
+                console.log("El voto vale: " +vote.vote);
+                $scope.star = vote.vote;
+              }
+
+            }
+          }
         });
       }
     }
@@ -72,6 +83,7 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           let vote;
           for (vote of $scope.userVotes) {
             if (vote.techName === $scope.tech.name) {
+              console.log("El voto vale: " +vote.vote);
               $scope.star = vote.vote;
             }
 
@@ -221,9 +233,10 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       });
     }
 
-    $scope.replyComment = function (location, input) {
+    $scope.replyComment = function (location, input, index) {
       techsService.addReply(location, input).then(function () {
         $scope.getTech();
+        $("#replyComment--" + index).val('');
         $scope.commentInput = '';
       });
     }
@@ -257,6 +270,7 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     $scope.rateTech = function (stars) {
       techsService.rate($routeParams.id, stars).then(function () {
         $scope.getTech();
+        $scope.star = stars;
       })
     }
 
