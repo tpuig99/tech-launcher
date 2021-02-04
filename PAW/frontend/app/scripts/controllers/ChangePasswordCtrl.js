@@ -3,6 +3,8 @@ define(['frontend', 'services/sessionService'], function(frontend) {
 
 
     frontend.controller('ChangePasswordCtrl', function($scope, $routeParams, sessionService) {
+      $('.modal-backdrop').hide();
+
       $scope.passwordChanged = false;
 
       $scope.isPresent = false;
