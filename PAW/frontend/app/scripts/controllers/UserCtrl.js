@@ -7,11 +7,9 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
       var user = sessionService.getStorageUser();
       if ($scope.$parent.username !== undefined) {
         $scope.username = $scope.$parent.username;
-        console.log("in");
         sessionService.getCurrentUser(user.location).then(function (response) {
           $scope.allowMod = response.data.allowedModeration;
           $scope.modValue = $scope.allowMod;
-          console.log($scope.allowMod + 'and' + response.data.allowedModeration);
           $scope.username = response.data.username;
         });
       }
