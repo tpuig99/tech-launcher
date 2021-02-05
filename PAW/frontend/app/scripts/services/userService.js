@@ -79,7 +79,7 @@ define(['frontend'], function(frontend) {
     }
 
     this.acceptContentReport = (reportedContent) => {
-      return Restangular.one(reportedContent).remove();
+      return Restangular.one(reportedContent).post();
     }
   });
 });
