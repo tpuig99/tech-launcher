@@ -24,7 +24,7 @@ define([], function() {
               templateUrl: 'views/session/register_succesful.html',
               controller: 'RegisterConfirmCtrl'
             },
-            '/register/change_password': {
+            '/users/:id/change_password': {
               templateUrl: 'views/session/change_password.html',
               controller: 'ChangePasswordCtrl'
             },

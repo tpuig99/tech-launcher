@@ -42,7 +42,6 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
             let vote;
             for (vote of $scope.userVotes) {
               if (vote.techName === $scope.tech.name) {
-                console.log("El voto vale: " +vote.vote);
                 $scope.star = vote.vote;
               }
 
@@ -83,7 +82,6 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           let vote;
           for (vote of $scope.userVotes) {
             if (vote.techName === $scope.tech.name) {
-              console.log("El voto vale: " +vote.vote);
               $scope.star = vote.vote;
             }
 

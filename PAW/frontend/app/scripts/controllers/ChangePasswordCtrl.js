@@ -16,14 +16,28 @@ define(['frontend', 'services/sessionService'], function(frontend) {
             $scope.isPresent = true;
             $scope.userLocation = user.location;
           });
-          $scope.getPosts();
         }
       });
 
-
+      $scope.changePasswordWrapper = function(newPassword) {
+        if( $scope.username !== undefined ){
+          this.changePasswordProfile(newPassword);
+        } else {
+          this.changePassword(newPassword);
+        }
+      }
 
       $scope.changePassword = function(newPassword) {
         sessionService.changePassword($routeParams.token, newPassword).then(function(response) {
+          if (response.status === 200) {
+            $scope.passwordChanged = true;
+          }
+
+        });
+      };
+
+      $scope.changePasswordProfile = function(newPassword) {
+        sessionService.changePasswordProfile($routeParams.id, newPassword).then(function(response) {
           if (response.status === 200) {
             $scope.passwordChanged = true;
           }

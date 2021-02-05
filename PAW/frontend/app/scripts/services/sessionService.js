@@ -52,6 +52,13 @@ define(['frontend'], function(frontend) {
       return Restangular.all('users/password').post(newPassword);
     };
 
+    this.changePasswordProfile = function(id, password) {
+      var newPassword = {
+        'password': password
+      };
+      return Restangular.all('users/' + id + '/password').post(newPassword);
+    };
+
     this.requestNewToken = function()  {
       return Restangular.one('register/resend_token').post();
     }

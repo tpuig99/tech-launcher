@@ -11,13 +11,13 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $scope.allowMod = response.data.allowedModeration;
           $scope.modValue = $scope.allowMod;
           $scope.username = response.data.username;
+          $scope.id = $routeParams.id;
         });
       }
     });
 
     userService.getUser($routeParams.id).then(function (user) {
       $scope.profile = user.data;
-      $scope.update.description = $scope.profile.description;
       if (user.commentAmount !== 0) {
         userService.getData($scope.profile.comments).then(function (comments) {
           $scope.profile.comments = comments.data;
