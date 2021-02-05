@@ -115,6 +115,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         });
 
         $scope.tech.stars = $scope.tech.stars.toFixed(2);
+      }).catch(function () {
+        $window.location.href = '#/error';
       });
     };
 

@@ -37,12 +37,14 @@
 }
 
 .post-cards {
+  min-width: 100%;
   align-items: center;
   display: flex;
   flex-direction: column;
 }
 
 .post-card {
+  min-width: 90%;
   width: 90%;
   height: 14em;
 }

@@ -56,7 +56,9 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
             }
           });
 
-        });
+        }).catch( function () {
+            $window.location.href = '#/error';
+          });
       };
 
 
