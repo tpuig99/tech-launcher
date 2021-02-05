@@ -2,6 +2,7 @@
 define(['frontend','services/postService','services/sessionService'], function(frontend) {
 
   frontend.controller('PostsCtrl', function($scope, $location, sessionService, $window, $routeParams, $sessionStorage,postService, $rootScope) {
+    $('.modal-backdrop').hide();
     $scope.isPresent = false;
     $scope.$parent.$watch('username',function () {
       var user = sessionService.getStorageUser();
