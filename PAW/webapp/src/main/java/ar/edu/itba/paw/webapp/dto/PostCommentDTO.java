@@ -15,6 +15,7 @@ public class PostCommentDTO {
     private Long votesDown;
     private String location;
     private String voteLocation;
+    private int loggedVote;
 
     public static PostCommentDTO fromComment(PostComment comment, UriInfo uriInfo){
         final PostCommentDTO postComment = new PostCommentDTO();
@@ -100,5 +101,13 @@ public class PostCommentDTO {
 
     public void setVotesDown(Long votesDown) {
         this.votesDown = votesDown;
+    }
+
+    public int getLoggedVote() {
+        return loggedVote;
+    }
+
+    public void setLoggedVote(int loggedVote) {
+        this.loggedVote = loggedVote;
     }
 }
