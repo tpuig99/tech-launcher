@@ -31,6 +31,9 @@ public class PawUserDetailsService implements UserDetailsService {
         if(user.get().isAdmin()){
             aut.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
+        if(user.get().isEnable()){
+            aut.add(new SimpleGrantedAuthority("ROLE_USER_ENABLED"));
+        }
         if(user.get().isEnable() && user.get().isVerify()){
             aut.add(new SimpleGrantedAuthority("ROLE_MODERATOR"));
         }
