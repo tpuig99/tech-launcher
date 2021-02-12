@@ -14,7 +14,6 @@ define(['frontend','services/techsService','services/sessionService'], function(
           $scope.isAdmin = response.data.admin;
           $scope.isPresent = true;
         });
-        $scope.getInfo();
       }
     });
     techsService.getCategories().then(function (cats) {

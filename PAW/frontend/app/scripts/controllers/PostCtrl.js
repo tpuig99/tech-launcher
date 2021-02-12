@@ -14,11 +14,8 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
           $scope.isEnabled = response.data.enabled;
           $scope.isPresent = true;
         });
-        $scope.getPost();
-        $scope.getAnswers();
       }
     });
-
 
     $scope.getTags = function () {
       postService.getTags().then((tags => {
@@ -199,5 +196,9 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
         $location.path('/posts/' + $routeParams.id);
       });
     }
+
+    $scope.getPost();
+    $scope.getAnswers();
   });
+
 });

@@ -14,7 +14,6 @@ define(['frontend','services/postService','services/sessionService'], function(f
           $scope.isEnable = response.data.enabled;
           $scope.isPresent = true;
         });
-        $scope.getPosts();
       }
     });
 
