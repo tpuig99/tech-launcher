@@ -42,7 +42,7 @@
                 </div>
               </div>
               <p><strong>{{'PROFILE_EMAIL' | translate}}</strong> {{profile.mail}}</p>
-              <div ng-if="profile.description != undefined">
+              <div ng-if="profile.description !== '' ">
                 <p><strong>{{'PROFILE_DESCRIPTION' | translate}}</strong> {{profile.description}}</p>
               </div>
               <div ng-if="profile.username == username && !profile.admin">
@@ -166,7 +166,7 @@
             <div class="card col d-flex emphasis emph-votes mb-2 mx-2">
               <div class="card-body row mt-1">
                 <div class="col secondary-font">
-                  <a href="{{'#/'+vote.location}}">
+                  <a href="{{'#/'+vote.techLocation}}">
                     {{vote.techName}}
                   </a>
                 </div>
@@ -298,7 +298,7 @@
 
             <!-- Change Password -->
             <div class="d-flex justify-content-center mt-3">
-              <span><a ng-click="changePass()" ng-href="#/register/forgot_password">{{'LOGIN_CHANGE_PASSWORD'|translate}}</a></span>
+              <span><a ng-click="changePass()" ng-href="#/users/{{id}}/change_password">{{'LOGIN_CHANGE_PASSWORD'|translate}}</a></span>
             </div>
 
           </div>

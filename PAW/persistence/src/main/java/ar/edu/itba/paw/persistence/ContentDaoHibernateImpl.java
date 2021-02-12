@@ -26,7 +26,7 @@ public class ContentDaoHibernateImpl implements  ContentDao{
     @Override
     public List<Content> getContentByFrameworkAndType(long frameworkId, ContentTypes type, long page, long pageSize) {
 
-        Query pagingQuery = em.createNativeQuery("SELECT content_id FROM content c WHERE c.framework_id = "+ String.valueOf(frameworkId) + " and c.type =' " + type + "' LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        Query pagingQuery = em.createNativeQuery("SELECT content_id FROM content c WHERE c.framework_id = "+ String.valueOf(frameworkId) + " and c.type ='" + type + "' LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
         @SuppressWarnings("unchecked")
         List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
 

@@ -4,11 +4,11 @@
     <!--Questions Section -->
     <div class="ml-4 mr-1 description-text"><h1>{{post.postTitle}}</h1></div>
 
-    <div ng-if="isAdmin || isOwner">
+    <div ng-if="isAdmin || post.postOwner.username == username">
       <div class="row d-flex my-1 justify-content-end">
         <div class="row d-flex">
           <div class="mb-4 mx-2">
-            <a href="/#/{{post.location}}/edit" >
+            <a href="#/{{post.location}}/edit" >
             <button class="btn btn-info btn-block text-nowrap" type="button">
               <i class="fa fa-edit fa-sm mr-1"></i>
               {{'BUTTON_EDIT_POST' | translate}}
@@ -193,9 +193,9 @@
                         </div>
                         <div ng-if="isEnabled">
                           <div class="net-votes">
-                            <button class="btn pt-0 pb-0" type="submit" ng-click="upVoteAnswer(answer.location)">
-                              <i ng-if="post.loggedVote > 0" class="fa fa-1x fa-arrow-up votedUp"></i>
-                              <i ng-if="post.loggedVote <= 0" class="fa fa-1x fa-arrow-up"></i>
+                            <button class="btn pt-0 pb-0" type="submit" ng-click="upVoteAnswer(answer.voteLocation)">
+                              <i ng-if="answer.loggedVote > 0" class="fa fa-1x fa-arrow-up votedUp"></i>
+                              <i ng-if="answer.loggedVote <= 0" class="fa fa-1x fa-arrow-up"></i>
                             </button>
                             <div>
                               <h4>{{answer.votesUp - answer.votesDown}}</h4>
@@ -203,9 +203,9 @@
                           </div>
 
                           <div class="net-votes">
-                            <button class="btn pt-0 pb-0" type="submit" ng-click="downVoteAnswer(answer.location)">
-                              <i ng-if="post.loggedVote < 0" class="fa fa-1x fa-arrow-down votedDown"></i>
-                              <i ng-if="post.loggedVote >= 0" class="fa fa-1x fa-arrow-down"></i>
+                            <button class="btn pt-0 pb-0" type="submit" ng-click="downVoteAnswer(answer.voteLocation)">
+                              <i ng-if="answer.loggedVote < 0" class="fa fa-1x fa-arrow-down votedDown"></i>
+                              <i ng-if="answer.loggedVote >= 0" class="fa fa-1x fa-arrow-down"></i>
                             </button>
                           </div>
                         </div>
@@ -223,7 +223,7 @@
                           {{answer.timestamp.toLocaleString() | date:'dd/MM/yyyy HH:mm'}}
                         </div>
                         <div class="row d-flex secondary-color text-right">
-                          <a ng-href="#/users/{{answer.user.username}}">{{answer.user.username}}</a>
+                          <a ng-href="#/{{answer.userLocation}}">{{answer.user.username}}</a>
                         </div>
                       </div>
                     </div>

@@ -2,6 +2,7 @@
 define(['frontend','services/postService','services/sessionService'], function(frontend) {
 
   frontend.controller('PostsCtrl', function($scope, $location, sessionService, $window, $routeParams, $sessionStorage,postService, $rootScope) {
+    $('.modal-backdrop').hide();
     $scope.isPresent = false;
     $scope.$parent.$watch('username',function () {
       var user = sessionService.getStorageUser();
@@ -119,8 +120,12 @@ define(['frontend','services/postService','services/sessionService'], function(f
         'categories' : $scope.categoriesChosen,
         'types' : $scope.typesChosen
       };
-      postService.addPost(post, 'posts');
-      $location.path('/posts');
+      postService.addPost(post, 'posts').then(response => {
+        let startIndex = response.headers('location').indexOf("api/");
+        let location = response.headers('location').substring(startIndex + 4);
+        $location.path(location);
+      });
+
     }
   });
 });

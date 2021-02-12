@@ -236,7 +236,7 @@ public class UserProfileController {
         return Response.ok(us.findById(id).map(User::getPicture).orElse(null)).build();
     }
 
-    @PUT
+    @POST
     @Path("/{id}/password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response changePassword(@PathParam("id") Long userId ,final UserAddDTO form) {

@@ -82,8 +82,9 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       /* Search Results */
 
       $scope.search = function () {
+
         $scope.isExplore = false;
-        exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
+        exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $('#stars-dropdown-1').val(), $('#stars-dropdown-2').val(), $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
 
           if ($scope.activeTab === 'T') {
             $scope.matchingTechs = response.data;

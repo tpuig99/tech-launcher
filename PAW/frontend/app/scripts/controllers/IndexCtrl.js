@@ -10,10 +10,11 @@ define(['frontend','services/sessionService'], function(frontend) {
       $sessionStorage.remember = {me: false};
     }
 
-	  var user = sessionService.getStorageUser();
+	  let user = sessionService.getStorageUser();
 
     $scope.searchPage = false;
     $scope.checkUser = function() {
+      let user = sessionService.getStorageUser();
       if (user !== undefined) {
         sessionService.getCurrentUser(user.location).then(function (response) {
           var code = 'Bearer ' + user.token;

@@ -87,11 +87,7 @@ public class PostController {
             PostDTO dto = PostDTO.fromPost(post.get(), uriInfo);
 
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            if( optionalUser.isPresent()){
-                User user = optionalUser.get();
-
-                optionalUser.ifPresent(value -> dto.setLoggedVote(value.getVoteForPost(id)));
-            }
+            optionalUser.ifPresent(value -> dto.setLoggedVote(value.getVoteForPost(id)));
 
             return Response.ok(dto).build();
         }
@@ -108,10 +104,17 @@ public class PostController {
         Optional<Post> post = ps.findById(id);
         if (post.isPresent()) {
             LOGGER.info("Tech {}: Requested and found, retrieving data", id);
+            final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+
             long amount = post.get().getAnswersAmount();
             int pages = (int) Math.ceil((double) amount/COMMENTS_PAGE_SIZE);
             List<PostCommentDTO> dto = commentService.getByPost(id, page).stream()
-                    .map((PostComment comment) -> PostCommentDTO.fromComment(comment, uriInfo)).collect(Collectors.toList());
+                    .map((PostComment comment) -> {
+                        PostCommentDTO commentDTO = PostCommentDTO.fromComment(comment, uriInfo);
+                        optionalUser.ifPresent(value -> commentDTO.setLoggedVote(comment.getUserAuthVote(value.getUsername())));
+                        return commentDTO;
+                    }).collect(Collectors.toList());
             return pagination(uriInfo,page,pages,new GenericEntity<List<PostCommentDTO>>(dto){});
         }
         LOGGER.error("Tech {}: Requested and not found", id);

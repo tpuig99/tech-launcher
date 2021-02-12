@@ -3,15 +3,18 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
 
   frontend.controller('UserCtrl', function($scope, $routeParams, userService,sessionService,$window,Restangular) {
 
-    var user = sessionService.getStorageUser();
-    if ($scope.$parent.username !== undefined) {
-      $scope.username = $scope.$parent.username;
-      sessionService.getCurrentUser(user.location).then(function (response) {
-        $scope.allowMod = response.data.allowedModeration;
-        $scope.modValue = $scope.allowMod;
-        $scope.username = response.data.username;
-      });
-    }
+    $scope.$parent.$watch('username',function () {
+      var user = sessionService.getStorageUser();
+      if ($scope.$parent.username !== undefined) {
+        $scope.username = $scope.$parent.username;
+        sessionService.getCurrentUser(user.location).then(function (response) {
+          $scope.allowMod = response.data.allowedModeration;
+          $scope.modValue = $scope.allowMod;
+          $scope.username = response.data.username;
+          $scope.id = $routeParams.id;
+        });
+      }
+    });
 
     userService.getUser($routeParams.id).then(function (user) {
       $scope.profile = user.data;

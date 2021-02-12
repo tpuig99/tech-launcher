@@ -32,7 +32,7 @@
           {{'FORUM_SHOWING_RESULTS' | translate}} {{posts.amount}}
         </div>
       </div>
-      <div ng-if="posts.posts.length > 0">
+      <div ng-if="posts.posts.length > 0" style="width: 100%">
         <div ng-repeat="post in posts.posts">
           <div class="card mb-3 post-card">
             <div class="card-body">
@@ -110,11 +110,11 @@
                 </div>
                 <div class="col">
                   <div class="row post-title">
-                    <a href="#/{{post.location}}">
+                    <a href="#/{{post.location}}" style="word-break: break-all">
                       {{post.postTitle}}
                     </a>
                   </div>
-                  <div class="row posts-description">
+                  <div class="row posts-description" style="word-break: break-all">
                     {{post.postDescription}}
                   </div>
                   <div class="row extra-info">

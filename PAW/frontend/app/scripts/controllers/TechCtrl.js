@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend', 'services/techsService', 'services/sessionService'], function(frontend) {
 
-  frontend.controller('TechCtrl', function($scope, $location, $window, $routeParams, techsService, $sessionStorage,Restangular, sessionService, $localStorage) {
+  frontend.controller('TechCtrl', function($scope, $location, $window, $routeParams, techsService, $sessionStorage,Restangular, sessionService, $localStorage, $rootScope) {
 
     $scope.isPresent = false;
     $scope.isVerify = false;
@@ -33,6 +33,16 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
                   $scope.isVerify = false;
                   $scope.verifyPending = true;
                 }
+              }
+
+            }
+          }
+
+          if ($scope.userVotes !== undefined && $scope.userVotes.length > 0) {
+            let vote;
+            for (vote of $scope.userVotes) {
+              if (vote.techName === $scope.tech.name) {
+                $scope.star = vote.vote;
               }
 
             }
@@ -101,6 +111,10 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         techsService.getData($scope.tech.competitors).then(function (competitors) {
           $scope.tech.competitors = competitors.data;
         });
+
+        $scope.tech.stars = $scope.tech.stars.toFixed(2);
+      }).catch(function () {
+        $window.location.href = '#/error';
       });
     };
 
@@ -132,9 +146,10 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       }
     };
 
-
-    $scope.redirect = function(url) {
-      $location.path(url);
+    $scope.redirectToExplore = function(tag) {
+      $rootScope.tagToSearch = tag;
+      $rootScope.tagType = 'tech_name';
+      $window.location.href = '#/explore';
     };
 
     $scope.isReporter = function (data, username) {
@@ -218,9 +233,10 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       });
     }
 
-    $scope.replyComment = function (location, input) {
+    $scope.replyComment = function (location, input, index) {
       techsService.addReply(location, input).then(function () {
         $scope.getTech();
+        $("#replyComment--" + index).val('');
         $scope.commentInput = '';
       });
     }
@@ -254,6 +270,7 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     $scope.rateTech = function (stars) {
       techsService.rate($routeParams.id, stars).then(function () {
         $scope.getTech();
+        $scope.star = stars;
       })
     }
 
@@ -323,10 +340,12 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     $scope.stopBeingAMod = function (location) {
       techsService.stopBeingAMod(location).then(function (response) {
         if (response.status === 200) {
-          $scope.getUser();
           $scope.getTech();
+          $scope.getUser();
         }
-      })
+      }).catch( () =>
+        $location.path($scope.tech.location)
+      );
     };
 
   });

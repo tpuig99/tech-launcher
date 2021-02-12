@@ -56,7 +56,9 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
             }
           });
 
-        });
+        }).catch( function () {
+            $window.location.href = '#/error';
+          });
       };
 
 
@@ -88,6 +90,7 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       $scope.deletePost = function() {
         postService.deletePost($scope.toDel).then(function() {
           $('#deletePostModal').modal('hide');
+          $scope.cleanDel();
           $window.location.href = '#/posts';
         });
 
@@ -105,19 +108,27 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
       };
 
       $scope.upVote = function() {
-        postService.upVote($scope.post.location).then($scope.getPost());
+        postService.upVote($scope.post.location).then(function() {
+          $scope.getPost();
+        });
       };
 
       $scope.downVote = function(location) {
-        postService.downVote($scope.post.location).then($scope.getPost());
+        postService.downVote($scope.post.location).then(function() {
+          $scope.getPost();
+        });
       };
 
       $scope.upVoteAnswer = function(location) {
-        postService.upVoteAnswer(location).then($scope.getAnswers());
+        postService.upVoteAnswer(location).then(function() {
+          $scope.getAnswers();
+        });
       };
 
       $scope.downVoteAnswer = function(location) {
-        postService.downVoteAnswer(location).then($scope.getAnswers());
+        postService.downVoteAnswer(location).then(function() {
+          $scope.getAnswers();
+        });
       };
 
       $scope.commentPost = function(answer) {
