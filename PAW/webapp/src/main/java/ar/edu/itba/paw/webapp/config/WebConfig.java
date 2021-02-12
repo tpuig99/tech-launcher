@@ -18,9 +18,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -28,20 +25,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 @EnableTransactionManagement
-@EnableWebMvc
 @ComponentScan({ "ar.edu.itba.paw.webapp.controller","ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence","ar.edu.itba.paw.webapp.form"})
 @Configuration
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig{
     @Value("classpath:schema.sql")
     private Resource schemaSql;
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        super.addResourceHandlers(registry);
-        registry
-                .addResourceHandler("/resources/**")
-                .addResourceLocations("/resources/");
-    }
     @Bean
     public DataSource dataSource() {
         final SimpleDriverDataSource ds = new SimpleDriverDataSource();
