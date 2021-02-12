@@ -59,15 +59,14 @@ public class RegisterController {
 
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response register (final UserAddDTO userDTO) {
+    public Response register(final UserAddDTO userDTO) {
         try {
             User registeredUser = us.create(userDTO.getUsername(), userDTO.getMail(), userDTO.getPassword());
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, LocaleContextHolder.getLocale(), uriInfo.getRequestUri().toString() , false));
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, LocaleContextHolder.getLocale(), uriInfo.getRequestUri().toString(), false));
             LOGGER.info("Register: User '{}' registered successfully with id {}", registeredUser.getUsername(), registeredUser.getId());
 
             return login(new JwtRequestDTO(userDTO.getUsername(), userDTO.getPassword()));
-        }
-        catch (UserAlreadyExistException uaeEx) {
+        } catch (UserAlreadyExistException uaeEx) {
             return Response.status(Response.Status.CONFLICT).build();
         }
     }
@@ -84,7 +83,7 @@ public class RegisterController {
 
         final String token = jwtTokenUtil.generateToken(userDetails);
         Optional<User> user = us.findByUsername(jwtRequestDTO.getUsername());
-        return Response.ok(new JwtResponseDTO(token,user.get())).build();
+        return Response.ok(new JwtResponseDTO(token, user.get())).build();
 
     }
 
@@ -139,26 +138,23 @@ public class RegisterController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response resendToken() {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if(user.isPresent()){
 
-            Optional<VerificationToken> verificationToken = us.getVerificationToken(user.get().getVerificationToken().get().getToken());
+        Optional<VerificationToken> verificationToken = us.getVerificationToken(user.get().getVerificationToken().get().getToken());
 
-            if (verificationToken.isPresent()) {
-                Optional<User> registered = Optional.ofNullable(verificationToken.get().getUser());
+        if (verificationToken.isPresent()) {
+            Optional<User> registered = Optional.ofNullable(verificationToken.get().getUser());
 
-                if (registered.isPresent()) {
-                    eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered.get(), LocaleContextHolder.getLocale(), uriInfo.getBaseUri().toString() + "register", true));
-                    LOGGER.info("Register: Resending verification token for user {}", registered.get().getId());
-                    return Response.ok().build();
-                }
-
-                LOGGER.error("Register: User {} does not exist", verificationToken.get().getUserId());
-                return Response.status(Response.Status.NOT_FOUND).build();
+            if (registered.isPresent()) {
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered.get(), LocaleContextHolder.getLocale(), uriInfo.getBaseUri().toString() + "register", true));
+                LOGGER.info("Register: Resending verification token for user {}", registered.get().getId());
+                return Response.ok().build();
             }
 
+            LOGGER.error("Register: User {} does not exist", verificationToken.get().getUserId());
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST
@@ -176,7 +172,7 @@ public class RegisterController {
         return Response.ok().build();
     }
 
-    private String reformatURL(String url){
+    private String reformatURL(String url) {
         int startIndex;
 
         startIndex = url.indexOf("/api");
