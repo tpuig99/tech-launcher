@@ -9,12 +9,12 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>frontend</module>
         <module>webapp</module>
         <module>models</module>
         <module>persistence</module>
         <module>services</module>
         <module>interfaces</module>
+        <module>frontend</module>
     </modules>
     <properties>
         <org.springframework.version>4.2.5.RELEASE</org.springframework.version>
