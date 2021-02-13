@@ -32,6 +32,7 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
 
     @Override
     public List<VerifyUser> getVerifyForCommentByFrameworks(List<Long> frameworksIds, boolean pending, long page, long pageSize) {
+
         final TypedQuery<VerifyUser> query;
         if(!pending){
             query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.pending = :pending", VerifyUser.class);
