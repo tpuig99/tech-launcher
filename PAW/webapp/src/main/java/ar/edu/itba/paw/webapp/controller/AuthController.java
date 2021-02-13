@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.webapp.auth.JWTAuthenticationFilter;
 import ar.edu.itba.paw.webapp.auth.JwtTokenUtil;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
 import ar.edu.itba.paw.webapp.dto.JwtRequestDTO;
@@ -22,8 +23,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
 
-@Path("login")
-@Component
+//@Path("login")
+//@Component
 public class AuthController {
 
     @Autowired
@@ -38,23 +39,24 @@ public class AuthController {
     @Autowired
     private UserService us;
 
-    @POST
-    @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response login(JwtRequestDTO jwtRequestDTO) {
-        try {
-            authenticate(jwtRequestDTO.getUsername(), jwtRequestDTO.getPassword());
-        } catch (Exception e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
 
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(jwtRequestDTO.getUsername());
-
-        final String token = jwtTokenUtil.generateToken(userDetails);
-        Optional<User> user = us.findByUsername(jwtRequestDTO.getUsername());
-        return Response.ok(new JwtResponseDTO(token,user.get())).build();
-
-    }
+//    @POST
+//    @Produces(value = {MediaType.APPLICATION_JSON,})
+//    public Response login(JwtRequestDTO jwtRequestDTO) {
+//        try {
+//            authenticate(jwtRequestDTO.getUsername(), jwtRequestDTO.getPassword());
+//        } catch (Exception e) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//
+//        final UserDetails userDetails = userDetailsService
+//                .loadUserByUsername(jwtRequestDTO.getUsername());
+//
+//        final String token = jwtTokenUtil.generateToken(userDetails);
+//        Optional<User> user = us.findByUsername(jwtRequestDTO.getUsername());
+//        return Response.ok(new JwtResponseDTO(token,user.get())).build();
+//
+//    }
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
