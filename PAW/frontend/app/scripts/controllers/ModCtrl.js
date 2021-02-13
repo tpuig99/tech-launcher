@@ -14,10 +14,17 @@ define(['frontend','services/userService','services/sessionService'], function(f
           $scope.isOwner = response.data.techsAmount > 0;
           $scope.isEnable = response.data.enabled;
           $scope.isPresent = true;
+          $scope.getCurrentMods();
+          $scope.getCurrentApplicants();
+          $scope.getVerified();
+          $scope.getReportedComments();
+          $scope.getReportedContents();
+        }).catch((error) => {
+          $location.path('/404');
         });
       }
       if( user === undefined || ($scope.isMod === false && $scope.isAdmin === false && $scope.isEnable === false && $scope.isOwner === false) ) {
-        $location.path('/404');
+        $location.path('/');
       }
     });
 
@@ -27,6 +34,8 @@ define(['frontend','services/userService','services/sessionService'], function(f
       userService.getCurrentMods().then((response) => {
         $scope.mods = response.data;
         $scope.modsPaging = response.headers('link');
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
@@ -34,6 +43,8 @@ define(['frontend','services/userService','services/sessionService'], function(f
       userService.getCurrentApplicants().then((response) => {
         $scope.applicants = response.data;
         $scope.applicantsPaging = response.headers('link');
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
@@ -41,6 +52,8 @@ define(['frontend','services/userService','services/sessionService'], function(f
       userService.getVerified().then((response) => {
         $scope.verified = response.data;
         $scope.verifiedPaging = response.headers('link');
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
@@ -48,6 +61,8 @@ define(['frontend','services/userService','services/sessionService'], function(f
       userService.getReportedComments().then((response) => {
         $scope.reportedComments = response.data;
         $scope.repComsPaging = response.headers('link');
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
@@ -55,6 +70,8 @@ define(['frontend','services/userService','services/sessionService'], function(f
       userService.getReportedContents().then((response) => {
         $scope.reportedContents = response.data;
         $scope.repConsPaging = response.headers('link');
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
@@ -63,6 +80,8 @@ define(['frontend','services/userService','services/sessionService'], function(f
         $scope.getCurrentApplicants();
         $scope.getVerified();
         $scope.getCurrentMods();
+      }).catch((error) => {
+        $location.path('/404');
       });
     }
 
@@ -70,37 +89,49 @@ define(['frontend','services/userService','services/sessionService'], function(f
       userService.rejectMod(applicant.location).then((response) => {
         $scope.getCurrentApplicants();
         $scope.getVerified();
+      }).catch((error) => {
+        $location.path('/404');
       });
     }
 
     $scope.deleteMod = (mod) => {
       userService.deleteMod(mod.location).then((response) => {
         $scope.getCurrentMods();
+      }).catch((error) => {
+        $location.path('/404');
       });
     }
 
     $scope.deleteCommentReport = (reportedComment) => {
       userService.deleteCommentReport(reportedComment.location).then((response) => {
         $scope.getReportedComments();
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
     $scope.acceptCommentReport = (reportedComment) => {
       userService.acceptCommentReport(reportedComment.location).then((response) => {
         $scope.getReportedComments();
+      }).catch((error) => {
+        $location.path('/404');
       });
     }
 
     $scope.deleteContentReport = (reportedContent) => {
       userService.deleteContentReport(reportedContent.location).then((response) => {
         $scope.getReportedContents();
+      }).catch((error) => {
+        $location.path('/404');
       });
     }
 
     $scope.acceptContentReport = (reportedContent) => {
       userService.acceptContentReport(reportedContent.location).then((response) => {
         $scope.getReportedContents();
-      })
+      }).catch((error) => {
+        $location.path('/404');
+      });
     }
 
     $scope.arrayIsEmpty = (array) => {
@@ -133,11 +164,5 @@ define(['frontend','services/userService','services/sessionService'], function(f
           break;
       }
     };
-
-    $scope.getCurrentMods();
-    $scope.getCurrentApplicants();
-    $scope.getVerified();
-    $scope.getReportedComments();
-    $scope.getReportedContents();
   });
 });
