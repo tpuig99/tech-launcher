@@ -9,6 +9,8 @@ define(['frontend', 'services/sessionService'], function(frontend) {
       $scope.sendEmail = function(mail) {
         sessionService.setPasswordToken(mail).then(function (response) {
           $scope.emailSent = true;
+        }).catch((error) => {
+          $location.path('/404');
         });
       };
 

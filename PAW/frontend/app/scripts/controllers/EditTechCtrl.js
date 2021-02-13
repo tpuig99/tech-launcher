@@ -17,6 +17,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         $scope.isEnable = response.data.enabled;
         $scope.isPresent = true;
         $scope.userVerifications = response.data.verifications;
+      }).catch((error) => {
+        $location.path('/404');
       });
     }
 
@@ -24,15 +26,21 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       techsService.getTech($routeParams.id).then(function (tech) {
         $scope.tech = tech.data;
         $scope.tech.picture = undefined;
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
     techsService.getCategories().then(function (cats) {
       $scope.categories = cats.data;
+    }).catch((error) => {
+      $location.path('/404');
     });
 
     techsService.getTypes().then(function (cats) {
       $scope.types = cats.data;
+    }).catch((error) => {
+      $location.path('/404');
     });
 
     $scope.getTech();
@@ -49,6 +57,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
             if (response.status === 200) {
               $location.path($scope.tech.location);
             }
+          }).catch((error) => {
+            $location.path('/404');
           });
         }
       }).catch(function () {
