@@ -185,7 +185,7 @@ public class ModController {
     @GET
     @Path("/reported_comments")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response reportedComments(@QueryParam("rComPage") @DefaultValue(START_PAGE) Long rComPage) {
+    public Response reportedComments(@QueryParam("page") @DefaultValue(START_PAGE) Long rComPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
         List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int reportsAmount = 0;

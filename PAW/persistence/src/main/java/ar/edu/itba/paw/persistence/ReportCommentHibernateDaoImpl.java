@@ -66,9 +66,8 @@ public class ReportCommentHibernateDaoImpl implements ReportCommentDao{
 
     @Override
     public List<ReportComment> getByFrameworks( List<Long> frameworksIds, long page, long pageSize){
-
-        String[] ids = frameworksIds.stream().toArray(String[]::new);
-        Query pagingQuery = em.createNativeQuery("SELECT report_id from comment_report as rc where rc.comment.framework_id IN (" + ids + ") LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        String ids = frameworksIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        Query pagingQuery = em.createNativeQuery("SELECT report_id from comment_report as cr join comments as c ON c.comment_id = cr.comment_id WHERE c.framework_id IN (" + ids + ") LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
 
         @SuppressWarnings("unchecked")
         List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
