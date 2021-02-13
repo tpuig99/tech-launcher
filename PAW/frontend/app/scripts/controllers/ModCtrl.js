@@ -17,7 +17,7 @@ define(['frontend','services/userService','services/sessionService'], function(f
         });
       }
       if( user === undefined || ($scope.isMod === false && $scope.isAdmin === false && $scope.isEnable === false && $scope.isOwner === false) ) {
-        $location.path('/error');
+        $location.path('/404');
       }
     });
 

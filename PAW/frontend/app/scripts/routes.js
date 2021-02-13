@@ -2,7 +2,7 @@
 
 define([], function() {
     return {
-        defaultRoutePath: '/',
+        defaultRoutePath: '/404',
         routes: {
             '/': {
                 templateUrl: 'views/home.html',
@@ -12,7 +12,7 @@ define([], function() {
               templateUrl: 'views/explore.html',
               controller: 'ExploreCtrl'
             },
-            '/error': {
+            '/404': {
               templateUrl: 'views/error.html',
               controller: 'ErrorCtrl'
             },

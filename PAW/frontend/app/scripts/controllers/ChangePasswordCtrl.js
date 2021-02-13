@@ -15,6 +15,8 @@ define(['frontend', 'services/sessionService'], function(frontend) {
             $scope.username = response.data.username;
             $scope.isPresent = true;
             $scope.userLocation = user.location;
+          }).catch((error) => {
+            $location.path('/404');
           });
         }
       });
@@ -33,6 +35,8 @@ define(['frontend', 'services/sessionService'], function(frontend) {
             $scope.passwordChanged = true;
           }
 
+        }).catch((error) => {
+          $location.path('/404');
         });
       };
 
@@ -42,6 +46,8 @@ define(['frontend', 'services/sessionService'], function(frontend) {
             $scope.passwordChanged = true;
           }
 
+        }).catch((error) => {
+          $location.path('/404');
         });
       };
 
