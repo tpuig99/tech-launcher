@@ -55,6 +55,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         if (response.status === 200) {
           $location.path($scope.tech.location);
         }
+      }).catch(function () {
+        $scope.techNameError = true;
       });
     };
   });

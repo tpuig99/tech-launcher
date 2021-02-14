@@ -349,8 +349,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         if (response.status === 201) {
           $location.path('/techs');
         }
-      }).catch((error) => {
-        $location.path('/404');
+      }).catch(function () {
+        $scope.techNameError = true;
       });
     };
 
