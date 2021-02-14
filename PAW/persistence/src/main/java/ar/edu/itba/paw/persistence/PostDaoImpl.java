@@ -191,7 +191,12 @@ public class PostDaoImpl implements PostDao {
         }
 
 
-        Query pagingQuery = em.createNativeQuery(sb.toString() + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        Query pagingQuery;
+        if(pageSize > 0){
+            pagingQuery = em.createNativeQuery(sb.toString() + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        } else {
+            pagingQuery = em.createNativeQuery(sb.toString());
+        }
         @SuppressWarnings("unchecked")
         List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
 
@@ -202,25 +207,6 @@ public class PostDaoImpl implements PostDao {
         }else{
             return Collections.emptyList();
         }
-
-
-
-//        final TypedQuery<Post> query = em.createQuery(sb.toString(), Post.class);
-//        if (page != -1 || pageSize != -1) {
-//            query.setFirstResult((int) ((page-1) * pageSize));
-//            query.setMaxResults((int) pageSize);
-//        }
-//        query.setParameter("commentAmount", Long.valueOf(commentAmount));
-//        if(toSearch != null && !toSearch.isEmpty())
-//            query.setParameter("search", search);
-//        if(tags != null)
-//            query.setParameter("tags", tags);
-//        if(lastUpdated != null)
-//            query.setParameter("lastUpdated", lastUpdated);
-//        if(lastComment != null)
-//            query.setParameter("lastComment", lastComment);
-//
-//        return query.getResultList();
 
     }
 
