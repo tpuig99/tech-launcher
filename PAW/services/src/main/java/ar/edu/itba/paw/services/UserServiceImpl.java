@@ -26,8 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -308,16 +306,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture) {
         userDao.updateInformation(userId, description, picture, updatePicture);
-    }
-
-    public void internalLogin(String user, String pass, HttpServletRequest req) {
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(user, pass);
-        Authentication auth = authManager.authenticate(authReq);
-
-        SecurityContext sc = SecurityContextHolder.getContext();
-        sc.setAuthentication(auth);
-        HttpSession session = req.getSession(true);
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 
     @Transactional(readOnly = true)
