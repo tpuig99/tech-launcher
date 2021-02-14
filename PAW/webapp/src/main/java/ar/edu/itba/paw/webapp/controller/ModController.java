@@ -219,7 +219,7 @@ public class ModController {
     @GET
     @Path("/reported_contents")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response reportedContents(@QueryParam("rConPage") @DefaultValue(START_PAGE) Long rConPage) {
+    public Response reportedContents(@QueryParam("page") @DefaultValue(START_PAGE) Long rConPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
         List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int reportsAmount = 0;
