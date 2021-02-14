@@ -125,7 +125,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         }
 
         StringBuilder sb = new StringBuilder(" select f from Framework f left outer join f.frameworkVotes v on f.id = v.framework.id left outer join f.comments c on f.id = c.framework.id");
-        //TypedQuery<Framework> query2 = em.createQuery("select f from Framework f left outer join f.frameworkVotes v on f.id = v.framework.id left outer join f.comments c on f.id = c.framework.id", Framework.class);
         if(toSearch!=null || categories!=null || types != null || lastUpdated!=null) {
             sb.append(" where ");
         }
@@ -155,9 +154,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
             if(!sb.toString().substring(sb.length()-6).contains("where")){
                 sb.append(" and ");
             }
-          /*  if(!sb.toString().contains("where")) {
-                sb.append(" and ");
-            }*/
             sb.append(" f.type in (:types) ");
         }
 
@@ -167,8 +163,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
             }
             sb.append(" f.publishDate >= :lastUpdated ");
         }
-
-
 
         sb.append(" group by f having coalesce(avg(v.stars),0) >= :starsLeft and coalesce(avg(v.stars),0) <= :starsRight and count(distinct c.commentId) >= :commentAmount ");
 
