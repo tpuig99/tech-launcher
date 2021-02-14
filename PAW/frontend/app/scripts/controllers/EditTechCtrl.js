@@ -51,21 +51,11 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
     $scope.editTech = function () {
       $scope.techNameError = false;
-      techsService.checkNameEdit($scope.tech.name, $routeParams.id).then(function (response) {
+      techsService.editTech($routeParams.id, $scope.tech).then(function (response) {
         if (response.status === 200) {
-          techsService.editTech($routeParams.id, $scope.tech).then(function (response) {
-            if (response.status === 200) {
-              $location.path($scope.tech.location);
-            }
-          }).catch((error) => {
-            $location.path('/404');
-          });
+          $location.path($scope.tech.location);
         }
-      }).catch(function () {
-        $scope.techNameError = true;
-      })
+      });
     };
-
   });
-
 });
