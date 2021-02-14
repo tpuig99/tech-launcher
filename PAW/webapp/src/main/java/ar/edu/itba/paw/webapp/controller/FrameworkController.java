@@ -200,23 +200,18 @@ public class FrameworkController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @POST
-    @Path("/check-name")
-    @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response checkTechNameNotExists(final CheckTechDTO tech) {
+    public boolean nameAvailable(final String tech, final Long id) {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (user.get().isAdmin() || user.get().isVerify()) {
-            if (tech.getName() == null) {
-                return Response.status(Response.Status.CONFLICT).entity("Missing name.").build();
+        if (user.isPresent() && (user.get().isAdmin() || user.get().isVerify())) {
+            if (tech == null) {
+                return false;
             }
-            Optional<Framework> framework = fs.getByName(tech.getName());
-            if (tech.getId() == null)
-                return !framework.isPresent() ? Response.ok().build() : Response.status(422).build();
-            if (!framework.isPresent())
-                return Response.ok().build();
-            return framework.get().getId() == tech.getId() ? Response.ok().build() : Response.status(422).build();
+            Optional<Framework> framework = fs.getByName(tech);
+            if (id == null)
+                return !framework.isPresent();
+            return !framework.filter(value -> value.getId() != id).isPresent();
         }
-        return Response.status(Response.Status.FORBIDDEN).build();
+        return false;
     }
 
     @POST
@@ -243,7 +238,7 @@ public class FrameworkController {
             return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
         }
 
-        if (fs.getByName(name).isPresent()) {
+        if (!nameAvailable(name, null)) {
             return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
         }
         Optional<Framework> framework = fs.create(name, fCategory, description, introduction, fType, user.get().getId(), picture);
@@ -270,6 +265,9 @@ public class FrameworkController {
                                @FormDataParam("description") final String description,
                                @FormDataParam("introduction") final String introduction,
                                @FormDataParam("picture") final byte[] picture) throws IOException {
+        if( !nameAvailable(name, id)) {
+            return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
+        }
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         final Optional<Framework> framework = fs.findById(id);
@@ -498,24 +496,19 @@ public class FrameworkController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @POST
-    @Path("/{id}/content/check-title")
-    @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response checkTitleContent(@PathParam("id") long id, final CheckContentDTO content) {
-        if (content == null || content.getTitle() == null || content.getType() == null) {
-            return Response.status(Response.Status.CONFLICT).entity("Missing data.").build();
+
+    public boolean titleIsAvailable( long id, final String title, final String contentType) {
+        if (title == null ) {
+            return false;
         }
         ContentTypes type;
         try {
-            type = Enum.valueOf(ContentTypes.class, content.getType());
+            type = Enum.valueOf(ContentTypes.class, contentType);
         } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.CONFLICT).entity("Invalid type").build();
+            return false;
         }
-        List<Content> ls = contentService.getContentByFrameworkAndTypeAndTitle(id, type, content.getTitle());
-        if (ls.isEmpty()) {
-            return Response.ok().build();
-        }
-        return Response.status(422).build();
+        List<Content> ls = contentService.getContentByFrameworkAndTypeAndTitle(id, type, title);
+        return ls.isEmpty();
 
     }
 
@@ -524,6 +517,9 @@ public class FrameworkController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response addContent(@PathParam("id") long id, final ContentAddDTO content) {
         final Optional<Framework> framework = fs.findById(id);
+        if( !titleIsAvailable(id, content.getTitle(), content.getType())) {
+            return Response.status(Response.Status.CONFLICT).entity("Already exists.").build();
+        }
         if (framework.isPresent()) {
             if (content == null || content.getLink() == null || content.getLink().isEmpty() || content.getType() == null || content.getType().isEmpty() || content.getTitle() == null || content.getTitle().isEmpty()) {
                 return Response.status(Response.Status.CONFLICT).entity("Content can not be empty.").build();
