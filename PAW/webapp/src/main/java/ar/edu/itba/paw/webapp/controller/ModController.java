@@ -151,7 +151,7 @@ public class ModController {
     @GET
     @Path("/verified")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response verified(@QueryParam("verifyPage") @DefaultValue(START_PAGE) Long verifyPage) {
+    public Response verified(@QueryParam("page") @DefaultValue(START_PAGE) Long verifyPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
         List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int modsAmount = 0;

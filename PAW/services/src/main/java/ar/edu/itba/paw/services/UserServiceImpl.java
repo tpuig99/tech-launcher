@@ -182,13 +182,6 @@ public class UserServiceImpl implements UserService {
         return verifyUserDao.create(user,framework,null);
     }
 
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<VerifyUser> getVerifyByFrameworks(List<Long> frameworksIds, boolean pending, long page) {
-        return verifyUserDao.getVerifyForCommentByFrameworks(frameworksIds, pending, page, PAGE_SIZE);
-    }
-
     @Transactional(readOnly = true)
     @Override
     public Optional<VerifyUser> getVerifyById(long verificationId) {
