@@ -99,12 +99,20 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     @Override
     public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
 
+        String ids = frameworksIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        Query pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu WHERE vu.framework_id IN (" + ids + ") and vu.pending = true and vu.comment_id is not null LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page - 1) * pageSize));
 
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.comment is null and vu.pending = true", VerifyUser.class);
-        query.setParameter("frameworksIds", frameworksIds);
-        query.setFirstResult((int) ((page - 1) * pageSize));
-        query.setMaxResults((int) pageSize);
-        return query.getResultList();
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>) pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if (!resultList.isEmpty()) {
+            TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.verificationId in (:resultList)", VerifyUser.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        } else {
+            return Collections.emptyList();
+        }
+
     }
 
     @Override
