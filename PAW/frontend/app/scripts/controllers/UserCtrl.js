@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend','services/userService','services/sessionService','ng-file-upload'], function(frontend) {
 
-  frontend.controller('UserCtrl', function($scope, $routeParams, userService,sessionService,$window,Restangular) {
+  frontend.controller('UserCtrl', function($location, $scope, $routeParams, userService,sessionService,$window,Restangular) {
 
     $scope.$parent.$watch('username',function () {
       var user = sessionService.getStorageUser();
@@ -12,6 +12,8 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $scope.modValue = $scope.allowMod;
           $scope.username = response.data.username;
           $scope.id = $routeParams.id;
+        }).catch((error) => {
+          $location.path('/404');
         });
       }
     });
@@ -22,24 +24,32 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
         userService.getData($scope.profile.comments).then(function (comments) {
           $scope.profile.comments = comments.data;
           $scope.commentPaging = comments.headers('link');
+        }).catch((error) => {
+          $location.path('/404');
         });
       }
       if (user.contentAmount !== 0) {
         userService.getData($scope.profile.content).then(function (content) {
           $scope.profile.content = content.data;
           $scope.contentPaging = content.headers('link');
+        }).catch((error) => {
+          $location.path('/404');
         });
       }
       if (user.postsAmount !== 0) {
         userService.getData($scope.profile.posts).then(function (posts) {
           $scope.profile.posts = posts.data;
           $scope.postsPaging = posts.headers('link');
+        }).catch((error) => {
+          $location.path('/404');
         });
       }
       if (user.techsAmount !== 0) {
         userService.getData($scope.profile.techs).then(function (techs) {
           $scope.profile.techs = techs.data;
           $scope.techsPaging = techs.headers('link');
+        }).catch((error) => {
+          $location.path('/404');
         });
       }
       if (user.votesAmount !== 0) {
@@ -47,6 +57,8 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $scope.profile.votes = votes.data;
           $scope.votesPaging = votes.headers('link');
 
+        }).catch((error) => {
+          $location.path('/404');
         });
       }
     });
@@ -86,9 +98,13 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
             if (set === false) {
               $('#stopBeingAModModal').modal('hide');
             }
+          }).catch((error) => {
+            $location.path('/404');
           });
 
         }
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
     $scope.changeMod = function() {
@@ -117,9 +133,14 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
             $scope.profile.description = user.data.description;
             $scope.profile.image = user.data.image + '?t=' + new Date().getTime();
             $('profilePicture').get();
+          }).catch((error) => {
+            $('#editProfileModal').modal('hide');
+            $location.path('/404');
           });
           $('#editProfileModal').modal('hide');
         }
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
     $scope.changePass = function() {
