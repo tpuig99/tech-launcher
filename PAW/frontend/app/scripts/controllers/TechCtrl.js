@@ -230,19 +230,15 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
     $scope.addContent = function (title, type, link) {
       $scope.contentNameError = false;
-      techsService.checkTitle($routeParams.id, title, type).then(function (response) {
-        if (response.status === 200) {
           techsService.addContent($routeParams.id, title, type, link).then(function () {
             $scope.getTech();
             $('#addContentModal').modal('hide');
-          });
-          $('#addContentTitle').val('')
-          $('#addContentType').val('')
-          $('#addContentLink').val('')
-        }
-      }).catch(function () {
+            $('#addContentTitle').val('');
+            $('#addContentType').val('');
+            $('#addContentLink').val('');
+          }).catch(function () {
         $scope.contentNameError = true;
-      })
+      });
     };
 
 
@@ -349,19 +345,13 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
     $scope.addTech = function () {
       $scope.techNameError = false;
-      techsService.checkName($scope.add.name).then(function (response) {
-        if (response.status === 200) {
-          techsService.addTech($scope.add).then(function (response) {
-            if (response.status === 201) {
-              $location.path('/techs');
-            }
-          }).catch((error) => {
-            $location.path('/404');
-          });
+      techsService.addTech($scope.add).then(function (response) {
+        if (response.status === 201) {
+          $location.path('/techs');
         }
       }).catch(function () {
-          $scope.techNameError = true;
-      })
+        $scope.techNameError = true;
+      });
     };
 
     $scope.applyForMod = function (location) {

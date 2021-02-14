@@ -85,29 +85,6 @@ define(['frontend'], function(frontend) {
       return Restangular.all('techs').post(add);
     };
 
-    this.checkName = function (name) {
-      var toPost = {
-        'name' : name
-      }
-      return Restangular.all('techs/check-name').post(toPost);
-    }
-
-    this.checkNameEdit = function (name, id) {
-      var toPost = {
-        'name' : name,
-        'id': id
-      }
-      return Restangular.all('techs/check-name').post(toPost);
-    }
-
-    this.checkTitle = function (id, title, type) {
-      var toPost = {
-        'title' : title,
-        'type' : type,
-      }
-      return Restangular.all('techs/'+id+'/content/check-title').post(toPost);
-    }
-
     this.addTech = function(add) {
       var fd = new FormData();
       fd.append('name', add.name);
