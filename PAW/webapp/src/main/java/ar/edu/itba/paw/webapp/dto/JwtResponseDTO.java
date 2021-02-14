@@ -2,6 +2,8 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.User;
 
+import javax.ws.rs.core.UriInfo;
+
 public class JwtResponseDTO {
 
     private String token;
@@ -11,9 +13,9 @@ public class JwtResponseDTO {
 
     }
 
-    public JwtResponseDTO(String token, User user) {
+    public JwtResponseDTO(String token, User user, UriInfo uriInfo) {
         this.token = token;
-        this.location = "users/"+user.getId();
+        this.location = uriInfo.getBaseUriBuilder().path("users/"+user.getId()).build().toString();
     }
 
     public String getToken() {

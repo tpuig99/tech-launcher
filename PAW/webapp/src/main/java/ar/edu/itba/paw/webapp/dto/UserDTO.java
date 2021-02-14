@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import ar.edu.itba.paw.models.FrameworkVote;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerifyUser;
 
@@ -31,6 +32,7 @@ public class UserDTO {
     private int postsAmount;
     private String image;
     private String modLocation;
+    private long id;
 
     public static UserDTO fromUser (User user, UriInfo uriInfo) {
         UserDTO dto = new UserDTO();
@@ -47,18 +49,19 @@ public class UserDTO {
         }
 
         if (user.getFrameworkVotes() != null && !user.getFrameworkVotes().isEmpty()) {
-            dto.techVotes = user.getFrameworkVotes().stream().map(VoteDTO::fromProfile).collect(Collectors.toList());
+            dto.techVotes = user.getFrameworkVotes().stream().map((FrameworkVote vote) -> VoteDTO.fromProfile(vote,uriInfo)).collect(Collectors.toList());
         }
         dto.enabled = user.isEnable();
         dto.allowedModeration = user.isAllowMod();
         dto.admin = user.isAdmin();
 
-        dto.comments = "users/"+user.getId()+"/comments";
-        dto.content = "users/"+user.getId()+"/contents";
-        dto.votes = "users/"+user.getId()+"/votes";
-        dto.techs = "users/"+user.getId()+"/techs";
-        dto.posts = "users/"+user.getId()+"/posts";
-        dto.modLocation = "users/"+user.getId()+"/enable_modding/";
+        dto.comments = uriInfo.getBaseUriBuilder().path("users/"+user.getId()+"/comments").build().toString();
+        dto.content = uriInfo.getBaseUriBuilder().path("users/"+user.getId()+"/contents").build().toString();
+        dto.votes = uriInfo.getBaseUriBuilder().path("users/"+user.getId()+"/votes").build().toString();
+        dto.techs = uriInfo.getBaseUriBuilder().path("users/"+user.getId()+"/techs").build().toString();
+        dto.posts = uriInfo.getBaseUriBuilder().path("users/"+user.getId()+"/posts").build().toString();
+        dto.modLocation = uriInfo.getBaseUriBuilder().path("users/"+user.getId()+"/enable_modding/").build().toString();
+        dto.id = user.getId();
         if(user.getPicture() != null)
             dto.image = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/image").build().toString();
         return dto;
@@ -249,5 +252,13 @@ public class UserDTO {
 
     public void setTechVotes(List<VoteDTO> techVotes) {
         this.techVotes = techVotes;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

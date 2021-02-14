@@ -23,6 +23,7 @@ define(['frontend','services/sessionService'], function(frontend) {
           $scope.isMod = response.data.verify;
           $scope.isAdmin = response.data.admin;
           $scope.userLocation = user.location;
+          $scope.userId = response.data.id;
         }).catch((error) => {
           $location.path('/404');
         });

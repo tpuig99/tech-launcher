@@ -1,7 +1,7 @@
 <div class="d-flex">
   <div class="sidenav overflow-auto">
     <div ng-repeat="category in categories track by $index">
-      <a href="#/{{category.location}}">{{ "CATEGORY_" + category.category | uppercase | translate}}</a>
+      <a href={{"#/techs/category/"+category.category}}>{{ "CATEGORY_" + category.category | uppercase | translate}}</a>
     </div>
   </div>
 
@@ -27,7 +27,7 @@
           <div class="row">
             <div class="col">
               <span class="framework-title"><h2>{{tech.name}}</h2></span>
-              <div>{{'TECH_AUTHOR' | translate }}&nbsp;<a href="#/{{tech.authorLocation}}">{{tech.author}}</a><i
+              <div>{{'TECH_AUTHOR' | translate }}&nbsp;<a href="#/users/{{tech.authorId}}">{{tech.author}}</a><i
                 class="ml-2 mt-2 fas fa-rocket fa-sm rocket-color-owner" data-toggle="tooltip"
                 title="{{'TOOLTIP_OWNER' | translate }}"></i></div>
               <div>{{'TECH_DATE' | translate }} {{tech.date}}</div>
@@ -46,7 +46,7 @@
             <div class="d-flex flex-column my-auto">
               <div ng-if="isAdmin || isOwner">
                 <div class="mb-4">
-                  <a href="#/{{tech.location}}/edit_tech">
+                  <a href="#/techs/{{tech.id}}/edit_tech">
                     <button class="btn btn-info btn-block text-nowrap" type="button">
                       <i class="fa fa-edit fa-sm mr-1"></i>
                       {{'BUTTON_EDIT_TECH' | translate }}
@@ -557,7 +557,7 @@
 
       <div class="container d-flex">
         <div ng-repeat="competitor in tech.competitors track by $index" class="card mini-card mx-3 mb-4">
-          <a href="#/{{competitor.location}}">
+          <a href="#/techs/{{competitor.id}}">
             <div class="card-body d-flex align-items-center justify-content-center">
               <div ng-if="competitor.hasPicture">
                 <div class="mini-logo d-flex align-items-center justify-content-center">

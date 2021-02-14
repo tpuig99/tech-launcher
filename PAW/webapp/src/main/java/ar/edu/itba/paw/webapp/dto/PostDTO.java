@@ -20,6 +20,7 @@ public class PostDTO {
     private String comments;
     private String location;
     private int loggedVote;
+    private long id;
 
     public static PostDTO fromPost(Post post, UriInfo uriInfo) {
         final PostDTO dto = new PostDTO();
@@ -27,13 +28,21 @@ public class PostDTO {
         dto.postDescription = post.getDescription();
         dto.postOwner = SimpleUserDTO.fromUser(post.getUser(),uriInfo);
         dto.timestamp = post.getTimestamp();
-        dto.comments = "posts/" + post.getPostId()+ "/answers";
+        dto.comments = uriInfo.getBaseUriBuilder().path("posts/" + post.getPostId()+ "/answers").build().toString();
         dto.postTags = post.getPostTags().stream().map(PostTagDTO::fromPostTag).collect(Collectors.toList());
-        dto.ownerLocation = "users/"+post.getUser().getId();
+        dto.ownerLocation = uriInfo.getBaseUriBuilder().path("users/"+post.getUser().getId()).build().toString();
         dto.votesUp = post.getVotesUp();
         dto.votesDown = post.getVotesDown();
-        dto.location = "posts/"+post.getPostId();
+        dto.location = uriInfo.getBaseUriBuilder().path("posts/"+post.getPostId()).build().toString();
+        dto.id = post.getPostId();
         return dto;
+    }
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getLocation() {
