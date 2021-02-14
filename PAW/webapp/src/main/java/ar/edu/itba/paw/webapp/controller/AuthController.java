@@ -18,8 +18,10 @@ import javax.swing.text.html.Option;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.util.Optional;
 
 @Path("login")
@@ -38,6 +40,9 @@ public class AuthController {
     @Autowired
     private UserService us;
 
+    @Context
+    private UriInfo uriInfo;
+
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response login(JwtRequestDTO jwtRequestDTO) {
@@ -52,7 +57,7 @@ public class AuthController {
 
         final String token = jwtTokenUtil.generateToken(userDetails);
         Optional<User> user = us.findByUsername(jwtRequestDTO.getUsername());
-        return Response.ok(new JwtResponseDTO(token,user.get())).build();
+        return Response.ok(new JwtResponseDTO(token,user.get(),uriInfo)).build();
 
     }
     private void authenticate(String username, String password) throws Exception {

@@ -104,7 +104,7 @@ public class UserProfileController {
             final Optional<Integer> commentsAmount = commentService.getCommentsCountByUser(userId);
 
             if (commentsList.size() > 0) {
-                List<CommentDTO> commentDTOList = commentsList.stream().map(CommentDTO::fromProfile).collect(Collectors.toList());
+                List<CommentDTO> commentDTOList = commentsList.stream().map((Comment comment) -> CommentDTO.fromProfile(comment,uriInfo)).collect(Collectors.toList());
                 long pages = 0;
                 if (commentsAmount.isPresent()) {
                     pages = (long) Math.ceil((double) commentsAmount.get() / PAGE_SIZE);
@@ -133,7 +133,7 @@ public class UserProfileController {
             final Optional<Long> contentsAmount = contentService.getContentCountByUser(userId);
 
             if (contentsList.size() > 0) {
-                List<ContentDTO> contentDTOList = contentsList.stream().map(ContentDTO::fromProfile).collect(Collectors.toList());
+                List<ContentDTO> contentDTOList = contentsList.stream().map((Content content) -> ContentDTO.fromProfile(content,uriInfo)).collect(Collectors.toList());
                 long pages = 0;
                 if (contentsAmount.isPresent()) {
                     pages = (long) Math.ceil((double) contentsAmount.get() / PAGE_SIZE);
@@ -189,7 +189,7 @@ public class UserProfileController {
             final Optional<Integer> votesAmount = voteService.getAllCountByUser(userId);
 
             if (votesList.size() > 0) {
-                List<VoteDTO> voteDTOList = votesList.stream().map(VoteDTO::fromProfile).collect(Collectors.toList());
+                List<VoteDTO> voteDTOList = votesList.stream().map((FrameworkVote vote) -> VoteDTO.fromProfile(vote,uriInfo)).collect(Collectors.toList());
                 long pages = 0;
                 if (votesAmount.isPresent()) {
                     pages = (long) Math.ceil((double) votesAmount.get() / VOTE_PAGE_SIZE);

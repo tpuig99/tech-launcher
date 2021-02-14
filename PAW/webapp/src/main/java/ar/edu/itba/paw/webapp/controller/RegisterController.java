@@ -83,7 +83,7 @@ public class RegisterController {
 
         final String token = jwtTokenUtil.generateToken(userDetails);
         Optional<User> user = us.findByUsername(jwtRequestDTO.getUsername());
-        return Response.ok(new JwtResponseDTO(token, user.get())).build();
+        return Response.ok(new JwtResponseDTO(token, user.get(),uriInfo)).build();
 
     }
 

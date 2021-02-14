@@ -17,7 +17,7 @@ public class SimpleUserDTO {
         dto.admin = user.isAdmin();
         dto.verify = user.isVerifyForFramework(framework.getId());
         dto.author = framework.getAuthor().getId().equals(user.getId());
-        dto.location = "users/"+ user.getId();
+        dto.location = uriInfo.getBaseUriBuilder().path("users/"+ user.getId()).build().toString();
         return dto;
     }
 
@@ -25,7 +25,7 @@ public class SimpleUserDTO {
         SimpleUserDTO dto = new SimpleUserDTO();
         dto.username=user.getUsername();
         dto.admin = user.isAdmin();
-        dto.location = "users/"+user.getId();
+        dto.location = "users/"+ user.getId();
         dto.verify = false;
         dto.author = false;
         return dto;

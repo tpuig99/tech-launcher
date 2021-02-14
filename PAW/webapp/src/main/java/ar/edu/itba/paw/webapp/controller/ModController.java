@@ -104,7 +104,7 @@ public class ModController {
         }
 
         if (userList.size() > 0) {
-            verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
+            verifyUserDTOList = userList.stream().map((VerifyUser verifyUser) -> VerifyUserDTO.fromVerifyUser(verifyUser,uriInfo)).collect(Collectors.toList());
             long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList) {
             });
@@ -138,7 +138,7 @@ public class ModController {
         }
 
         if (userList.size() > 0) {
-            verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
+            verifyUserDTOList = userList.stream().map((VerifyUser verifyUser) -> VerifyUserDTO.fromVerifyUser(verifyUser,uriInfo)).collect(Collectors.toList());
             long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList) {
             });
@@ -172,7 +172,7 @@ public class ModController {
         }
 
         if (userList.size() > 0) {
-            verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
+            verifyUserDTOList = userList.stream().map((VerifyUser verifyUser) -> VerifyUserDTO.fromVerifyUser(verifyUser,uriInfo)).collect(Collectors.toList());
             long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList) {
             });

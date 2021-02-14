@@ -258,7 +258,7 @@
 
       <div class="row equal">
         <div ng-repeat="tech in matchingTechs.frameworks" class="card mx-4 mb-4">
-          <a ng-href="#/{{tech.location}}">
+          <a ng-href="#/techs/{{tech.id}}">
             <div class="card-body">
               <div ng-if="tech.hasPicture">
                 <div class="max-logo d-flex align-items-center justify-content-center">
@@ -295,7 +295,7 @@
         <div ng-repeat="post in posts.posts" class="card mb-3 post-card">
           <div class="card-body">
             <div class="row search-post-title ml-1">
-              <a href="#/{{post.location}}">
+              <a href="#/posts/{{post.id}}">
                 {{post.postTitle}}
               </a>
             </div>

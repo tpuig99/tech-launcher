@@ -30,9 +30,9 @@
                 <div class="card emphasis emph-comment row mb-2 mx-4 verified">
                   <div class="card-body row mt-1">
                     <div class="col-3 secondary-font"><a
-                      ng-href="#/{{applicant.userLocation}}">{{applicant.username}}</a>
+                      ng-href="#/users/{{applicant.userId}}">{{applicant.username}}</a>
                       /
-                      <a ng-href="#/{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
+                      <a ng-href="#/techs/{{applicant.techId}}">{{applicant.frameworkName}}</a>
                     </div>
                     <div class="col-6 text-left"> {{applicant.description}}</div>
                     <div class="col third-font text-right"> {{applicant.timestamp | date:'dd/MM/yyyy HH:mm'}}</div>
@@ -61,9 +61,9 @@
               <div ng-repeat="applicant in applicants">
                 <div class="card emphasis emph-comment mb-2 applicant mx-2">
                   <div class="card-body mt-1">
-                    <div class="secondary-font"><a ng-href="#/{{applicant.userLocation}}">{{applicant.username}}</a>
+                    <div class="secondary-font"><a ng-href="#/users/{{applicant.userId}}">{{applicant.username}}</a>
                       /
-                      <a ng-href="#/{{applicant.techLocation}}">{{applicant.frameworkName}}</a>
+                      <a ng-href="#/techs/{{applicant.techId}}">{{applicant.frameworkName}}</a>
                     </div>
                   </div>
                   <div class="card-footer row mx-2" style="flex: auto">
@@ -96,9 +96,9 @@
                 <div ng-if="!moderator.isAdmin" class="card emphasis emph-comment mb-2 applicant mx-2">
                   <div class="card-body mt-1">
                     <div class="secondary-font">
-                      <a ng-href="#/{{moderator.userLocation}}">{{moderator.username}}</a>
+                      <a ng-href="#/users/{{moderator.userId}}">{{moderator.username}}</a>
                       /
-                      <a ng-href="#/{{moderator.techLocation}}">{{moderator.frameworkName}}</a>
+                      <a ng-href="#/techs/{{moderator.techId}}">{{moderator.frameworkName}}</a>
                     </div>
                   </div>
                   <div class="card-footer row mx-2 justify-content-center">
