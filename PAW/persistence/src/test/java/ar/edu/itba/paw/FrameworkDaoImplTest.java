@@ -201,7 +201,7 @@ public class FrameworkDaoImplTest {
     }
 
 
-    @Test
+    /*@Test
     public void testSearchOnlyByName(){
         //Preconditions
 
@@ -303,7 +303,7 @@ public class FrameworkDaoImplTest {
         //Asserts
         Assert.assertFalse(matchingFrameworks.isEmpty());
         Assert.assertEquals(results, matchingFrameworks);
-    }
+    }*/
 
     @Test
     public void testSearchByCategory(){
