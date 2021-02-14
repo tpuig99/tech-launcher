@@ -13,8 +13,9 @@ define(['frontend','services/postService','services/sessionService'], function(f
           $scope.isAdmin = response.data.admin;
           $scope.isEnable = response.data.enabled;
           $scope.isPresent = true;
+        }).catch((error) => {
+          $location.path('/404');
         });
-        $scope.getPosts();
       }
     });
 
@@ -22,6 +23,8 @@ define(['frontend','services/postService','services/sessionService'], function(f
       postService.getPosts().then(function (posts) {
         $scope.posts = posts.data;
         $scope.pagingLinks = posts.headers('link');
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
     $scope.setData = function(response) {
@@ -40,6 +43,8 @@ define(['frontend','services/postService','services/sessionService'], function(f
         $scope.getPosts();
         $scope.cleanDel();
         $('#deletePostModal').modal('hide');
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
     $('#deletePostModal').on('hide.bs.modal',function () {
@@ -48,12 +53,16 @@ define(['frontend','services/postService','services/sessionService'], function(f
     $scope.upVote = function(location) {
       postService.upVote(location).then(function () {
         $scope.getPosts();
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
     $scope.downVote = function(location) {
       postService.downVote(location).then(function() {
         $scope.getPosts();
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
@@ -64,7 +73,9 @@ define(['frontend','services/postService','services/sessionService'], function(f
          $scope.names = tags.data.names;
          $scope.categories = tags.data.categories;
          $scope.types = tags.data.types;
-       }));
+       })).catch((error) => {
+         $location.path('/404');
+       });
     }
     $scope.getTags();
     $scope.namesChosen = [];
@@ -124,6 +135,8 @@ define(['frontend','services/postService','services/sessionService'], function(f
         let startIndex = response.headers('location').indexOf("api/");
         let location = response.headers('location').substring(startIndex + 4);
         $location.path(location);
+      }).catch((error) => {
+        $location.path('/404');
       });
 
     }

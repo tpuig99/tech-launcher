@@ -47,6 +47,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
             }
           }
+        }).catch((error) => {
+            $location.path('/404');
         });
       }
     }
@@ -91,30 +93,40 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         techsService.getData($scope.tech.comments).then(function (comments) {
           $scope.tech.comments = comments.data;
           $scope.commentsPaging = comments.headers('link');
+        }).catch((error) => {
+          $location.path('/404');
         });
 
         techsService.getData($scope.tech.books).then(function (books) {
           $scope.tech.books = books.data;
           $scope.booksPaging = books.headers('link');
+        }).catch((error) => {
+          $location.path('/404');
         });
 
         techsService.getData($scope.tech.courses).then(function (courses) {
           $scope.tech.courses = courses.data;
           $scope.coursesPaging = courses.headers('link');
+        }).catch((error) => {
+          $location.path('/404');
         });
 
         techsService.getData($scope.tech.tutorials).then(function (tutorials) {
           $scope.tech.tutorials = tutorials.data;
           $scope.tutorialsPaging = tutorials.headers('link');
+        }).catch((error) => {
+          $location.path('/404');
         });
 
         techsService.getData($scope.tech.competitors).then(function (competitors) {
           $scope.tech.competitors = competitors.data;
+        }).catch((error) => {
+          $location.path('/404');
         });
 
         $scope.tech.stars = $scope.tech.stars.toFixed(2);
       }).catch(function () {
-        $window.location.href = '#/error';
+        $window.location.href = '#/404';
       });
     };
 
@@ -184,6 +196,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       $('#deleteTechModal').modal('hide');
       techsService.deleteData($scope.toDel).then(function() {
         $location.path('/techs');
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
@@ -191,6 +205,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       techsService.deleteData($scope.toDel).then(function() {
         $scope.getTech();
         $('#deleteContentModal').modal('hide');
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
@@ -198,6 +214,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       techsService.deleteData($scope.toDel).then(function() {
         $scope.getTech();
         $('#deleteCommentModal').modal('hide');
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
@@ -205,6 +223,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       techsService.addContent($routeParams.id, title, type, link).then(function () {
         $scope.getTech();
         $('#addContentModal').modal('hide');
+      }).catch((error) => {
+        $location.path('/404');
       });
     }
 
@@ -245,33 +265,43 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       techsService.report($scope.toReport, description).then(function () {
         $scope.getTech();
         $('#reportContentModal').modal('hide');
-      })
+      }).catch((error) => {
+        $location.path('/404');
+      });
     }
 
     $scope.reportComment = function(description) {
       techsService.report($scope.toReport, description).then(function () {
         $scope.getTech();
         $('#reportCommentModal').modal('hide');
-      })
+      }).catch((error) => {
+        $location.path('/404');
+      });
     }
 
     $scope.upVote = function (location) {
       techsService.vote(location, 'up').then(function () {
         $scope.getTech();
-      })
+      }).catch((error) => {
+        $location.path('/404');
+      });
     }
 
     $scope.downVote = function (location) {
       techsService.vote(location, 'down').then(function () {
         $scope.getTech();
-      })
+      }).catch((error) => {
+        $location.path('/404');
+      });
     }
 
     $scope.rateTech = function (stars) {
       techsService.rate($routeParams.id, stars).then(function () {
         $scope.getTech();
         $scope.star = stars;
-      })
+      }).catch((error) => {
+        $location.path('/404');
+      });
     }
 
     $scope.hasUserVotedUp = function (comment, username) {
@@ -303,10 +333,14 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
     techsService.getCategories().then(function (cats) {
       $scope.categories = cats.data;
+    }).catch((error) => {
+      $location.path('/404');
     });
 
     techsService.getTypes().then(function (cats) {
       $scope.types = cats.data;
+    }).catch((error) => {
+      $location.path('/404');
     });
 
     $scope.setPic = function(file) {
@@ -321,6 +355,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
             if (response.status === 201) {
               $location.path('/techs');
             }
+          }).catch((error) => {
+            $location.path('/404');
           });
         }
       }).catch(function () {
@@ -334,6 +370,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           $scope.getUser();
           $scope.getTech();
         }
+      }).catch((error) => {
+        $location.path('/404');
       })
     };
 
