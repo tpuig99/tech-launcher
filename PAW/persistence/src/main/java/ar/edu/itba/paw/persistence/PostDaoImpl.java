@@ -137,7 +137,7 @@ public class PostDaoImpl implements PostDao {
 
             return getAllByPage(page,pageSize);
         }
-        StringBuilder sb = new StringBuilder(" select p from Post p left outer join p.postVotes v on p.postId = v.post.postId left outer join p.postComments c on p.postId = c.post.postId left outer join p.postTags t on p.postId = t.post.postId ");
+        StringBuilder sb = new StringBuilder("select p.post_id from posts p left outer join post_votes v on p.post_id = v.post_id left outer join post_comments c on p.post_id = c.post_id left outer join post_tags t on p.post_id = t.post_id ");
         if(toSearch!=null || tags!=null || lastUpdated!=null) {
             sb.append(" where ");
         }
@@ -145,18 +145,19 @@ public class PostDaoImpl implements PostDao {
         String search = "";
 
         if(toSearch != null && !toSearch.isEmpty()){
-            search = "%"+toSearch.toLowerCase()+"%";
-                sb.append(" lower(p.description) like :search or lower(p.title) like :search or lower(t.tagName) like :search ");
+            search = "'%"+toSearch.toLowerCase()+"%'";
+                sb.append(" lower(p.description) like "+search+" or lower(p.title) like "+search+" or lower(t.tag_name) like "+search+" ");
         }
+         if (tags != null) {
+             String parsedTags = tags.stream().map(String::valueOf).collect(Collectors.joining("','","'","'"));
 
-        if (tags != null) {
-            if(!sb.toString().substring(sb.length()-6).contains("where")){
+             if(!sb.toString().substring(sb.length()-6).contains("where")){
                 sb.append(" and ");
             }
             if(search != ""){
-                sb.append(" (  t.tagName in (:tags) or lower(t.tagName) like :search ) ");
+                sb.append(" (  t.tag_name in ("+parsedTags+") or lower(t.tag_name) like "+search+" ) ");
             } else {
-                sb.append(" t.tagName in (:tags) ");
+                sb.append(" t.tag_name in ("+parsedTags+") ");
             }
         }
 
@@ -164,13 +165,13 @@ public class PostDaoImpl implements PostDao {
             if(!sb.toString().substring(sb.length()-6).contains("where")){
                 sb.append(" and ");
             }
-            sb.append(" p.timestamp >= :lastUpdated ");
+            sb.append(" p.tstamp >= '"+lastUpdated+"' ");
         }
 
-        sb.append(" group by p having count(distinct c.postCommentId) >= :commentAmount ");
+        sb.append(" group by p.post_id having count(distinct c.post_comment_id) >= "+commentAmount+" ");
 
         if(lastComment!=null) {
-            sb.append(" and max(c.timestamp) >= :lastComment ");
+            sb.append(" and max(c.tstamp) >= '" + lastComment + "' ");
         }
 
         if(order != null && order != 0 && Math.abs(order) != 1){
@@ -178,35 +179,48 @@ public class PostDaoImpl implements PostDao {
 
             switch (Math.abs(order)){
                 case 2:
-                    sb.append(" count(distinct c.postCommentId) ").append(order > 0 ?" desc ":" asc ");
+                    sb.append(" count(distinct c.post_comment_id) ").append(order > 0 ?" desc ":" asc ");
                     break;
                 case 3:
-                    sb.append(" p.timestamp ").append(order > 0 ?" desc ":" asc ");
+                    sb.append(" p.tstamp ").append(order > 0 ?" desc ":" asc ");
                     break;
                 case 4:
-                    sb.append(" max(c.timestamp) ").append(order > 0 ?" desc ":" asc ");
+                    sb.append(" max(c.tstamp) ").append(order > 0 ?" desc ":" asc ");
                     break;
             }
         }
 
-        final TypedQuery<Post> query = em.createQuery(sb.toString(), Post.class);
-        if (page != -1 || pageSize != -1) {
-            query.setFirstResult((int) ((page-1) * pageSize));
-            query.setMaxResults((int) pageSize);
-        }
-        query.setParameter("commentAmount", Long.valueOf(commentAmount));
-        if(toSearch != null && !toSearch.isEmpty())
-            query.setParameter("search", search);
-        if(tags != null)
-            query.setParameter("tags", tags);
-        if(lastUpdated != null)
-            query.setParameter("lastUpdated", lastUpdated);
-//        query.setParameter("starsLeft", Double.valueOf(starsLeft));
-//        query.setParameter("starsRight", Double.valueOf(starsRight));
-        if(lastComment != null)
-            query.setParameter("lastComment", lastComment);
 
-        return query.getResultList();
+        Query pagingQuery = em.createNativeQuery(sb.toString() + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Post> query = em.createQuery("select p from Post as p where p.postId in (:resultList)", Post.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return Collections.emptyList();
+        }
+
+
+
+//        final TypedQuery<Post> query = em.createQuery(sb.toString(), Post.class);
+//        if (page != -1 || pageSize != -1) {
+//            query.setFirstResult((int) ((page-1) * pageSize));
+//            query.setMaxResults((int) pageSize);
+//        }
+//        query.setParameter("commentAmount", Long.valueOf(commentAmount));
+//        if(toSearch != null && !toSearch.isEmpty())
+//            query.setParameter("search", search);
+//        if(tags != null)
+//            query.setParameter("tags", tags);
+//        if(lastUpdated != null)
+//            query.setParameter("lastUpdated", lastUpdated);
+//        if(lastComment != null)
+//            query.setParameter("lastComment", lastComment);
+//
+//        return query.getResultList();
 
     }
 
