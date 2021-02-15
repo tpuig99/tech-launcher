@@ -4,9 +4,10 @@ import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.webapp.auth.JwtTokenUtil;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
-import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.JwtResponseDTO;
+import ar.edu.itba.paw.webapp.dto.UserAddDTO;
+import ar.edu.itba.paw.webapp.dto.UserDTO;
 import ar.edu.itba.paw.webapp.form.register.OnRegistrationCompleteEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -46,13 +44,7 @@ public class RegisterController {
     private MessageSource messageSource;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private PawUserDetailsService userDetailsService;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
 
     @Context
     private UriInfo uriInfo;
@@ -61,39 +53,15 @@ public class RegisterController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response register(final UserAddDTO userDTO) {
         try {
-            User registeredUser = us.create(userDTO.getUsername(), userDTO.getMail(), userDTO.getPassword());
+            User registeredUser = us.register(userDTO.getUsername(), userDTO.getMail(), userDTO.getPassword());
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, LocaleContextHolder.getLocale(), uriInfo.getRequestUri().toString(), false));
-            LOGGER.info("Register: User '{}' registered successfully with id {}", registeredUser.getUsername(), registeredUser.getId());
-
-            return login(new JwtRequestDTO(userDTO.getUsername(), userDTO.getPassword()));
+            LOGGER.info("Register: User '{}' registered successfully with id '{}'", registeredUser.getUsername(), registeredUser.getId());
+            String token = userDetailsService.generateToken(userDTO.getUsername());
+            return Response.ok(new JwtResponseDTO(token, registeredUser, uriInfo)).build();
         } catch (UserAlreadyExistException uaeEx) {
             return Response.status(Response.Status.CONFLICT).build();
-        }
-    }
-
-    private Response login(JwtRequestDTO jwtRequestDTO) {
-        try {
-            authenticate(jwtRequestDTO.getUsername(), jwtRequestDTO.getPassword());
-        } catch (Exception e) {
+        } catch (DisabledException | BadCredentialsException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(jwtRequestDTO.getUsername());
-
-        final String token = jwtTokenUtil.generateToken(userDetails);
-        Optional<User> user = us.findByUsername(jwtRequestDTO.getUsername());
-        return Response.ok(new JwtResponseDTO(token, user.get(),uriInfo)).build();
-
-    }
-
-    private void authenticate(String username, String password) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
 

@@ -20,6 +20,9 @@ public class PawUserDetailsService implements UserDetailsService {
     @Autowired
     private UserService us;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         final Optional<User> user = us.findByUsername(username);
@@ -39,5 +42,10 @@ public class PawUserDetailsService implements UserDetailsService {
         }
         final Collection<? extends GrantedAuthority> authorities = aut;
         return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(), authorities);
+    }
+
+    public String generateToken(String username){
+        final UserDetails userDetails = loadUserByUsername(username);
+        return jwtTokenUtil.generateToken(userDetails);
     }
 }
