@@ -87,6 +87,14 @@ public class UserServiceImpl implements UserService {
         return userDao.findByMail(mail);
     }
 
+    @Override
+    public Optional<User> findByToken(String token) {
+        String[] strings = token.split("-a_d-ss-");
+        long userId = Long.parseLong(strings[strings.length - 1]);
+
+        return userDao.findById(userId);
+    }
+
     private long geUserIdIfNotExists(String username, String mail) throws UserAlreadyExistException {
         Optional<User> user = findByUsernameOrMail(username, mail);
         if (user.isPresent()) {
@@ -356,8 +364,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture) {
-        userDao.updateInformation(userId, description, picture, updatePicture);
+    public void updateInformation(Long userId, String description, byte[] picture) {
+        userDao.updateInformation(userId, description, picture, picture != null );
     }
 
     @Transactional(readOnly = true)
@@ -370,5 +378,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds) {
         return verifyUserDao.getVerifyByPendingAndFrameworksAmount(pending, frameworkIds);
+    }
+
+    @Override
+    public long getPagesInt(Optional<Integer> count, long size) {
+        return count.map(integer -> (long) Math.ceil((double) integer / size)).orElse(0L);
+    }
+    @Override
+    public long getPagesLong(Optional<Long> count, long size) {
+        return count.map(integer -> (long) Math.ceil((double) integer / size)).orElse(0L);
     }
 }
