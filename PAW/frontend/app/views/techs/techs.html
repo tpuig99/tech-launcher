@@ -1,7 +1,7 @@
 <div class="d-flex">
   <div class="sidenav overflow-auto">
     <div ng-repeat="category in categories">
-      <a href="#/{{category.location}}">{{ "CATEGORY_" + category.category | uppercase | translate}}</a>
+      <a href={{"#/techs/category/"+category.category}}>{{ "CATEGORY_" + category.category | uppercase | translate}}</a>
     </div>
   </div>
 
@@ -28,7 +28,7 @@
       <div class="row equal">
         <div ng-repeat="hot in home.hots">
           <div class="card mx-4 mb-4">
-            <a href="#/{{hot.location}}">
+            <a href="#/techs/{{hot.id}}">
               <div class="card-body">
                 <div ng-if="hot.hasPicture">
                   <div class="max-logo d-flex align-items-center justify-content-center">
@@ -53,7 +53,7 @@
           <div class="row equal">
             <div ng-repeat="tech in home.interests">
               <div class="card mx-4 mb-4">
-                <a href=#/{{tech.location}}>
+                <a href=#/techs/{{tech.id}}>
                   <div class="card-body">
                     <div ng-if="tech.hasPicture">
                       <div class="max-logo d-flex align-items-center justify-content-center">

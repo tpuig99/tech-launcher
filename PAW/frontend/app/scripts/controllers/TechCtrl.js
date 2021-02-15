@@ -55,11 +55,9 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
     $scope.getTech = function() {
 
-      $scope.getUser();
-
       techsService.getTech($routeParams.id).then(function (tech) {
         $scope.tech = tech.data;
-
+        $scope.getUser();
         if ($scope.tech.author === $scope.username) {
           $scope.isOwner = true;
         }

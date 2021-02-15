@@ -104,14 +104,10 @@ public class UserProfileController {
             final Optional<Integer> commentsAmount = commentService.getCommentsCountByUser(userId);
 
             if (commentsList.size() > 0) {
-                List<CommentDTO> commentDTOList = commentsList.stream().map(CommentDTO::fromProfile).collect(Collectors.toList());
-                long pages = 0;
-                if (commentsAmount.isPresent()) {
-                    pages = (long) Math.ceil((double) commentsAmount.get() / PAGE_SIZE);
-                }
+                List<CommentDTO> commentDTOList = commentsList.stream().map((Comment comment) -> CommentDTO.fromProfile(comment,uriInfo)).collect(Collectors.toList());
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<CommentDTO>>(commentDTOList) {
                 });
-                return addPaginationLinks(response, PAGE, commentsPage, pages).build();
+                return addPaginationLinks(response, PAGE, commentsPage, us.getPagesInt(commentsAmount,PAGE_SIZE)).build();
             }
 
             return Response.noContent().build();
@@ -133,14 +129,10 @@ public class UserProfileController {
             final Optional<Long> contentsAmount = contentService.getContentCountByUser(userId);
 
             if (contentsList.size() > 0) {
-                List<ContentDTO> contentDTOList = contentsList.stream().map(ContentDTO::fromProfile).collect(Collectors.toList());
-                long pages = 0;
-                if (contentsAmount.isPresent()) {
-                    pages = (long) Math.ceil((double) contentsAmount.get() / PAGE_SIZE);
-                }
+                List<ContentDTO> contentDTOList = contentsList.stream().map((Content content) -> ContentDTO.fromProfile(content,uriInfo)).collect(Collectors.toList());
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ContentDTO>>(contentDTOList) {
                 });
-                return addPaginationLinks(response, PAGE, contentsPage, pages).build();
+                return addPaginationLinks(response, PAGE, contentsPage, us.getPagesLong(contentsAmount,PAGE_SIZE)).build();
             }
 
             return Response.noContent().build();
@@ -162,13 +154,9 @@ public class UserProfileController {
 
             if (postsList.size() > 0) {
                 List<PostDTO> postDTOList = postsList.stream().map((Post post) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList());
-                long pages = 0;
-                if (postsAmount.isPresent()) {
-                    pages = (long) Math.ceil((double) postsAmount.get() / PAGE_SIZE);
-                }
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<PostDTO>>(postDTOList) {
                 });
-                return addPaginationLinks(response, PAGE, postsPage, pages).build();
+                return addPaginationLinks(response, PAGE, postsPage, us.getPagesInt(postsAmount,PAGE_SIZE)).build();
             }
 
             return Response.noContent().build();
@@ -189,14 +177,10 @@ public class UserProfileController {
             final Optional<Integer> votesAmount = voteService.getAllCountByUser(userId);
 
             if (votesList.size() > 0) {
-                List<VoteDTO> voteDTOList = votesList.stream().map(VoteDTO::fromProfile).collect(Collectors.toList());
-                long pages = 0;
-                if (votesAmount.isPresent()) {
-                    pages = (long) Math.ceil((double) votesAmount.get() / VOTE_PAGE_SIZE);
-                }
+                List<VoteDTO> voteDTOList = votesList.stream().map((FrameworkVote vote) -> VoteDTO.fromProfile(vote,uriInfo)).collect(Collectors.toList());
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VoteDTO>>(voteDTOList) {
                 });
-                return addPaginationLinks(response, PAGE, votesPage, pages).build();
+                return addPaginationLinks(response, PAGE, votesPage, us.getPagesInt(votesAmount,VOTE_PAGE_SIZE)).build();
             }
 
             return Response.noContent().build();
@@ -218,13 +202,9 @@ public class UserProfileController {
 
             if (techsList.size() > 0) {
                 List<FrameworkDTO> frameworkDTOList = techsList.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework, uriInfo)).collect(Collectors.toList());
-                long pages = 0;
-                if (techsAmount.isPresent()) {
-                    pages = (long) Math.ceil((double) techsAmount.get() / FRAMEWORK_PAGE_SIZE);
-                }
                 Response.ResponseBuilder response = Response.ok(new GenericEntity<List<FrameworkDTO>>(frameworkDTOList) {
                 });
-                return addPaginationLinks(response, PAGE, techsPage, pages).build();
+                return addPaginationLinks(response, PAGE, techsPage, us.getPagesInt(techsAmount,FRAMEWORK_PAGE_SIZE)).build();
             }
 
             return Response.noContent().build();
@@ -270,23 +250,20 @@ public class UserProfileController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response changePasswordWithToken(PasswordDTO passwordDTO) {
 
-        String[] strings = passwordDTO.getToken().split("-a_d-ss-");
-        Long userId = Long.valueOf(strings[strings.length - 1]);
-
-        Optional<User> user = us.findById(userId);
+        Optional<User> user = us.findByToken(passwordDTO.getToken());
 
         if (user.isPresent()) {
             if (passwordDTO.getPassword() == null) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
-            us.updatePassword(userId, passwordDTO.getPassword());
-            LOGGER.info("Register: User {} updated its password successfully", userId);
+            us.updatePassword(user.get().getId(), passwordDTO.getPassword());
+            LOGGER.info("Register: User {} updated its password successfully", user.get().getId());
 
             return Response.ok().build();
         }
 
-        LOGGER.error("User Profile: User {} not found", userId);
+        LOGGER.error("User Profile: User not found with token {}", passwordDTO.getToken());
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
@@ -303,12 +280,7 @@ public class UserProfileController {
                 if (picture == null && description == null) {
                     return Response.status(Response.Status.BAD_REQUEST).build();
                 }
-
-                if (picture != null) {
-                    us.updateInformation(userId, description == null ? user.get().getDescription() : description, picture, true);
-                } else {
-                    us.updateInformation(userId, description == null ? user.get().getDescription() : description, user.get().getPicture(), false);
-                }
+                us.updateInformation(userId, description == null ? user.get().getDescription() : description, picture);
 
                 LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
                 return Response.ok().build();

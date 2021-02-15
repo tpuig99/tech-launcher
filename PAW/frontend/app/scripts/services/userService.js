@@ -9,10 +9,10 @@ define(['frontend'], function(frontend) {
       return Restangular.one('users/' + id + '/image').get();
     };
     this.getData = function(url) {
-      return Restangular.one(url).get();
+      return Restangular.oneUrl('data',url).get();
     };
     this.setMod = function(url,set) {
-      return Restangular.one(url + set).put();
+      return Restangular.oneUrl('data',url + set).put();
     };
     this.update = function(file,description,id) {
       var fd = new FormData();
@@ -47,39 +47,39 @@ define(['frontend'], function(frontend) {
     };
 
     this.deleteMod = (mod) => {
-      return Restangular.one(mod).remove();
+      return Restangular.oneUrl('mod',mod).remove();
     };
 
     this.acceptMod = (mod) => {
-      return Restangular.one(mod).post()
+      return Restangular.oneUrl('mod',mod).post()
     };
 
     this.rejectMod = (mod) => {
-      return Restangular.one(mod).remove();
+      return Restangular.oneUrl('mod',mod).remove();
     };
 
     this.applyForTech = (tech) => {
-      return Restangular.one(tech).post();
+      return Restangular.oneUrl('tech',tech).post();
     };
 
     this.quitTech = (tech) => {
-      return Restangular.one(tech).remove();
+      return Restangular.oneUrl('tech',tech).remove();
     };
 
     this.deleteCommentReport = (reportedComment) => {
-      return Restangular.one(reportedComment ).remove();
+      return Restangular.oneUrl('report',reportedComment ).remove();
     };
 
     this.acceptCommentReport = (reportedComment) => {
-      return Restangular.one(reportedComment).post();
+      return Restangular.oneUrl('report',reportedComment).post();
     }
 
     this.deleteContentReport = (reportedContent) => {
-      return Restangular.one(reportedContent).remove();
+      return Restangular.oneUrl('report',reportedContent).remove();
     }
 
     this.acceptContentReport = (reportedContent) => {
-      return Restangular.one(reportedContent).post();
+      return Restangular.oneUrl('report',reportedContent).post();
     }
   });
 });

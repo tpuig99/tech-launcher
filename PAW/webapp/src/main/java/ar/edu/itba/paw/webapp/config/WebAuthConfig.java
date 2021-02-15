@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.webapp.auth.JwtAuthenticationEntryPoint;
-import ar.edu.itba.paw.webapp.auth.JwtForbiddenEntryPoint;
-import ar.edu.itba.paw.webapp.auth.JwtRequestFilter;
-import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
+import ar.edu.itba.paw.webapp.auth.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -35,6 +32,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -102,17 +102,13 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE,"/api/techs/**")
                 .authenticated()
 
-                // Login Controller
-                // Authenticated User Controller
-                .antMatchers(HttpMethod.POST, "/api/login", "/api/login/")
-                .anonymous()
 
                 // Every request
                 .antMatchers("/api/**").permitAll()
 
             .and().csrf().disable()
-            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
+            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JWTAuthenticationFilter(authenticationManager(),jwtTokenUtil),UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

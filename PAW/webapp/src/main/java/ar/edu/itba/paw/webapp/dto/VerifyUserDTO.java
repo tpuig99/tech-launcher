@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.VerifyUser;
 
+import javax.ws.rs.core.UriInfo;
 import java.util.Date;
 
 
@@ -13,21 +14,25 @@ public class VerifyUserDTO {
     private String location, techLocation, userLocation;
     private String description;
     private Date timestamp;
+    private long userId;
+    private long techId;
 
-    public static VerifyUserDTO fromVerifyUser(VerifyUser verifyUser) {
+    public static VerifyUserDTO fromVerifyUser(VerifyUser verifyUser, UriInfo uriInfo) {
         VerifyUserDTO dto = new VerifyUserDTO();
         dto.username= verifyUser.getUser().getUsername();
         dto.admin = verifyUser.getUser().isAdmin();
         dto.pending = verifyUser.isPending();
         dto.frameworkName = verifyUser.getFrameworkName();
-        dto.techLocation = "techs/" + verifyUser.getFramework().getId();
+        dto.techLocation = uriInfo.getBaseUriBuilder().path("techs/" + verifyUser.getFramework().getId()).build().toString();
         if( !verifyUser.isPending()) {
-            dto.location = "mod/" + verifyUser.getVerificationId();
+            dto.location = uriInfo.getBaseUriBuilder().path("mod/" + verifyUser.getVerificationId()).build().toString();
         } else {
-            dto.location = "mod/pending/" + verifyUser.getVerificationId();
+            dto.location = uriInfo.getBaseUriBuilder().path("mod/pending/" + verifyUser.getVerificationId()).build().toString();
         }
-        dto.userLocation = "users/" + verifyUser.getUser().getId();
+        dto.userLocation = uriInfo.getBaseUriBuilder().path("users/" + verifyUser.getUser().getId()).build().toString();
         dto.description = verifyUser.getCommentDescription();
+        dto.userId = verifyUser.getUserId();
+        dto.techId = verifyUser.getFrameworkId();
         if( dto.description != null) {
             dto.timestamp = verifyUser.getComment().getTimestamp();
         }
@@ -113,5 +118,21 @@ public class VerifyUserDTO {
 
     public void setUserLocation(String userLocation) {
         this.userLocation = userLocation;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getTechId() {
+        return techId;
+    }
+
+    public void setTechId(long techId) {
+        this.techId = techId;
     }
 }

@@ -12,23 +12,23 @@ define(['frontend'], function(frontend) {
     };
 
     this.deletePost = function(post) {
-      return Restangular.one(post).remove();
+      return Restangular.oneUrl('post',post).remove();
     };
 
     this.upVote = function(location) {
-      return Restangular.one(location + '/up_vote').post();
+      return Restangular.oneUrl('vote',location + '/up_vote').post();
     };
 
     this.downVote = function(location) {
-      return Restangular.one(location + '/down_vote').post();
+      return Restangular.oneUrl('vote',location + '/down_vote').post();
     };
 
     this.upVoteAnswer = function(location) {
-      return Restangular.oneUrl('routeName', location + '/up_vote').post();
+      return Restangular.allUrl('vote', location + '/up_vote').post();
     };
 
     this.downVoteAnswer = function(location) {
-      return Restangular.oneUrl('routeName', location + '/down_vote').post();
+      return Restangular.allUrl('vote', location + '/down_vote').post();
     };
 
     this.commentPost = function(id, answer) {
@@ -51,7 +51,7 @@ define(['frontend'], function(frontend) {
     }
 
     this.editPost = (post, location) => {
-      return Restangular.one(location).customPUT(post);
+      return Restangular.oneUrl('post',location).customPUT(post);
     }
 	});
 });

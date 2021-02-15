@@ -10,6 +10,7 @@ public class VoteDTO {
     private String frameworkCategory;
     private Double count;
     private Integer vote;
+    private long techId;
 
     public static VoteDTO fromFrameworkVote (FrameworkVote vote, UriInfo uriInfo) {
         VoteDTO dto = new VoteDTO();
@@ -17,13 +18,15 @@ public class VoteDTO {
         dto.techName = vote.getFrameworkName();
         dto.frameworkCategory = vote.getCategory();
         dto.techLocation = uriInfo.getBaseUriBuilder().path("/techs/"+vote.getFrameworkId()).build().toString();
+        dto.techId = vote.getFrameworkId();
         return dto;
     }
-    public static VoteDTO fromProfile (FrameworkVote vote) {
+    public static VoteDTO fromProfile (FrameworkVote vote,UriInfo uriInfo) {
         VoteDTO dto = new VoteDTO();
         dto.vote =  vote.getStars();
         dto.techName = vote.getFrameworkName();
-        dto.techLocation = "techs/"+vote.getFrameworkId();
+        dto.techLocation = uriInfo.getBaseUriBuilder().path("/techs/"+vote.getFrameworkId()).build().toString();
+        dto.techId = vote.getFrameworkId();
         return dto;
     }
     public Double getCount() {
@@ -64,5 +67,13 @@ public class VoteDTO {
 
     public void setVote(Integer vote) {
         this.vote = vote;
+    }
+
+    public long getTechId() {
+        return techId;
+    }
+
+    public void setTechId(long techId) {
+        this.techId = techId;
     }
 }

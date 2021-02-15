@@ -42,7 +42,7 @@
             <a class="dropdown-item" href="#/mod">{{'BUTTON_MODERATE'|translate}}</a>
           </div>
           <div ng-if="username !== undefined">
-            <a class="dropdown-item" href="{{'#/'+userLocation}}">{{'BUTTON_PROFILE'|translate}}</a>
+            <a class="dropdown-item" href="{{'#/users/'+userId}}">{{'BUTTON_PROFILE'|translate}}</a>
             <a class="dropdown-item" ng-click="logout()">{{'BUTTON_LOGOUT'|translate}}</a>
           </div>
           <div ng-if="username == undefined">

@@ -2,24 +2,24 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
+import ar.edu.itba.paw.service.TokenExpiredException;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.webapp.auth.JwtTokenUtil;
 import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
-import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.JwtResponseDTO;
+import ar.edu.itba.paw.webapp.dto.UserAddDTO;
+import ar.edu.itba.paw.webapp.dto.UserDTO;
 import ar.edu.itba.paw.webapp.form.register.OnRegistrationCompleteEvent;
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -27,7 +27,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.Calendar;
 import java.util.Optional;
 
 @Path("register")
@@ -46,13 +45,7 @@ public class RegisterController {
     private MessageSource messageSource;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private PawUserDetailsService userDetailsService;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
 
     @Context
     private UriInfo uriInfo;
@@ -61,39 +54,17 @@ public class RegisterController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response register(final UserAddDTO userDTO) {
         try {
-            User registeredUser = us.create(userDTO.getUsername(), userDTO.getMail(), userDTO.getPassword());
+            User registeredUser = us.register(userDTO.getUsername(), userDTO.getMail(), userDTO.getPassword());
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, LocaleContextHolder.getLocale(), uriInfo.getRequestUri().toString(), false));
-            LOGGER.info("Register: User '{}' registered successfully with id {}", registeredUser.getUsername(), registeredUser.getId());
+            LOGGER.info("Register: User '{}' registered successfully with id '{}'", registeredUser.getUsername(), registeredUser.getId());
 
-            return login(new JwtRequestDTO(userDTO.getUsername(), userDTO.getPassword()));
+            String token = userDetailsService.generateToken(userDTO.getUsername());
+            return Response.ok(new JwtResponseDTO(token, registeredUser, uriInfo)).build();
+
         } catch (UserAlreadyExistException uaeEx) {
             return Response.status(Response.Status.CONFLICT).build();
-        }
-    }
-
-    private Response login(JwtRequestDTO jwtRequestDTO) {
-        try {
-            authenticate(jwtRequestDTO.getUsername(), jwtRequestDTO.getPassword());
-        } catch (Exception e) {
+        } catch (DisabledException | BadCredentialsException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(jwtRequestDTO.getUsername());
-
-        final String token = jwtTokenUtil.generateToken(userDetails);
-        Optional<User> user = us.findByUsername(jwtRequestDTO.getUsername());
-        return Response.ok(new JwtResponseDTO(token, user.get())).build();
-
-    }
-
-    private void authenticate(String username, String password) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
 
@@ -101,36 +72,14 @@ public class RegisterController {
     @Path("/confirm")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response confirmRegistration(@QueryParam("token") String token) {
-        Optional<VerificationToken> verificationToken = us.getVerificationToken(token);
-
-        LOGGER.info("Register: Confirming registration");
-        if (verificationToken.isPresent()) {
-            Optional<User> user = us.findById((int) verificationToken.get().getUserId());
-
-            if (user.isPresent()) {
-                if (user.get().isEnable()) {
-                    LOGGER.info("Register: User {} was already enabled", user.get().getId());
-                    return Response.ok().build();
-                }
-                Calendar cal = Calendar.getInstance();
-
-                if ((verificationToken.get().getExpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
-                    LOGGER.error("Register: Verification token for user {} expired", user.get().getId());
-                    return Response.status(Response.Status.GONE).build();
-                }
-
-                user.get().setEnable(true);
-                us.saveRegisteredUser(user.get());
-                LOGGER.info("Register: User {} is now verified", user.get().getId());
-                return Response.ok().build();
-            }
-
-            LOGGER.error("Register: User {} does not exist", verificationToken.get().getUserId());
+        try {
+            us.confirmRegistration(token);
+            return Response.ok().build();
+        } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (TokenExpiredException e) {
+            return Response.status(Response.Status.GONE).build();
         }
-
-        LOGGER.error("Register: There was a problem with the verification token");
-        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST
