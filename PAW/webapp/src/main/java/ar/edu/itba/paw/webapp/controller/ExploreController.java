@@ -379,7 +379,7 @@ public class ExploreController {
         tags.addAll(types);
 
         List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
-        searchResultsNumber = posts.size(); // ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order);
+        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order);
         LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
         int pages = (int) Math.ceil(((double)searchResultsNumber)/POSTS_PAGE_SIZE);
         search.setPosts(posts.stream().map((Post post) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList()));
