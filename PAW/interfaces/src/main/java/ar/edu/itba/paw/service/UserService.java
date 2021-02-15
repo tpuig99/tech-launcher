@@ -14,12 +14,13 @@ public interface UserService {
     Optional<User> findById(long id);
     Optional<User> findByUsername(String username);
     Optional<User> findByMail(String mail);
+    Optional<User> findByToken(String token);
     User create(String username,String mail,String password) throws UserAlreadyExistException;
     void delete(long userId);
     boolean quitModdingFromTech(User user, long frameworkId);
     void updatePassword(long userId,String password);
     int updateModAllow(long userId, boolean allow);
-    void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture);
+    void updateInformation(Long userId, String description, byte[] picture);
 
     /** register **/
     void createVerificationToken(User user, String token,String appUrl);
@@ -47,4 +48,7 @@ public interface UserService {
     List<VerifyUser> getVerifyByPendingAndFrameworks( boolean pending, List<Long> frameworkIds, long page );
 
     Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds);
+
+    long getPagesInt(Optional<Integer> count,long size);
+    long getPagesLong(Optional<Long> count,long size);
 }

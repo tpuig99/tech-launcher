@@ -21,6 +21,7 @@ public class CommentDTO {
     private String techName;
     private List<ReportDTO> reports;
     private List<CommentVoteDTO> votes;
+    private long techId;
 
     public static CommentDTO fromComment(Comment comment, UriInfo uriInfo) {
         final CommentDTO dto = new CommentDTO();
@@ -48,6 +49,7 @@ public class CommentDTO {
         dto.date = comment.getTimestamp().toLocaleString();
         dto.location =uriInfo.getBaseUriBuilder().path("techs/"+comment.getFrameworkId()).build().toString();
         dto.techName = comment.getFrameworkName();
+        dto.techId = comment.getFrameworkId();
         return dto;
     }
     public String getDescription() {
@@ -151,5 +153,13 @@ public class CommentDTO {
 
     public void setVotes(List<CommentVoteDTO> votes) {
         this.votes = votes;
+    }
+
+    public long getTechId() {
+        return techId;
+    }
+
+    public void setTechId(long techId) {
+        this.techId = techId;
     }
 }

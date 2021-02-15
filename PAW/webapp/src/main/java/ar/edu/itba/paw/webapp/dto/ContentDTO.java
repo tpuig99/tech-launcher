@@ -17,6 +17,7 @@ public class ContentDTO {
     private String type;
     private String techName;
     private List<ReportDTO> reports;
+    private long techId;
 
     public static ContentDTO fromContent(Content content, UriInfo uriInfo) {
         final ContentDTO dto = new ContentDTO();
@@ -40,6 +41,7 @@ public class ContentDTO {
         dto.type = content.getType().name();
         dto.location = uriInfo.getBaseUriBuilder().path("techs/"+content.getFrameworkId()).build().toString();
         dto.techName = content.getFrameworkName();
+        dto.techId = content.getFrameworkId();
         return dto;
     }
 
@@ -113,6 +115,14 @@ public class ContentDTO {
 
     public void setReportLocation(String reportLocation) {
         this.reportLocation = reportLocation;
+    }
+
+    public long getTechId() {
+        return techId;
+    }
+
+    public void setTechId(long techId) {
+        this.techId = techId;
     }
 }
 
