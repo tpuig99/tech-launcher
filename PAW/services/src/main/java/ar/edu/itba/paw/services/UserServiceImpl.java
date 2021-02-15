@@ -14,6 +14,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,14 +23,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.mail.Authenticator;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.UUID;
+import javax.mail.internet.MimeMessage;
+import java.util.*;
 
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
@@ -57,6 +59,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SpringTemplateEngine thymeleafTemplateEngine;
+
+
 
     @Transactional(readOnly = true)
     @Override
@@ -134,11 +141,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void createVerificationToken(User user, String token,String appUrl) {
+        String confirmationUrl = appUrl + "/confirm/" + token;
         tokenDao.insert(user.getId(),token);
-        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
-                "\r\n" +
-                appUrl + "/confirm/" + token;
-        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
+        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()), confirmationUrl, "confirm_registration.html");
     }
 
     @Transactional(readOnly = true)
@@ -158,10 +163,8 @@ public class UserServiceImpl implements UserService {
     public void generateNewVerificationToken(User user, String token,String appUrl) {
         Optional<VerificationToken> verificationToken = user.getVerificationToken();
         verificationToken.ifPresent(value -> tokenDao.change(value, token));
-        String message = messageSource.getMessage("email.body",new Object[]{}, LocaleContextHolder.getLocale()) +
-                "\r\n" +
-                appUrl + "/confirm/" + token;
-        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()),message);
+        String verificationUrl =  appUrl + "/confirm/" + token;
+        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()), verificationUrl, "confirm_registration.html");
     }
 
     @Transactional
@@ -242,23 +245,20 @@ public class UserServiceImpl implements UserService {
         String recipientAddress = user.getMail();
 
         String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
-        String confirmationUrl = "/forgot_password/" + token;
 
         String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
-        String inter_message = messageSource.getMessage("email.recovery.body",new Object[]{}, LocaleContextHolder.getLocale());
-        String message = inter_message+ "\r\n" + appUrl + confirmationUrl;
+        String recoveryPasswordUrl = appUrl + "/forgot_password/" + token;
 
-        sendEmail(recipientAddress,subject,message);
+        sendEmail(recipientAddress,subject,recoveryPasswordUrl, "recovery_password.html");
     }
 
     @Override
     public void modMailing(User user, String frameworkName) {
         String subject = messageSource.getMessage("email.moderator.subject",new Object[]{frameworkName}, LocaleContextHolder.getLocale());
-        String message = messageSource.getMessage("email.moderator.body",new Object[]{frameworkName}, LocaleContextHolder.getLocale());
-        sendEmail(user.getMail(),subject,message);
+        sendEmail(user.getMail(),subject,"", "moderator_acceptance.html");
     }
 
-    private void sendEmail(String recipientAddress,String subject,String message){
+    private void sendEmail(String recipientAddress,String subject,String message, String template){
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
@@ -274,13 +274,27 @@ public class UserServiceImpl implements UserService {
             }
         });
         mailSender.setSession(session);
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setFrom("confirmemailonly@gmail.com");
-        email.setTo(recipientAddress);
-        email.setSubject(subject);
 
-        email.setText(message);
-        mailSender.send(email);
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariable("message", message);
+        String htmlBody = thymeleafTemplateEngine.process(template, thymeleafContext);
+
+        final MimeMessage mimeMessage = mailSender.createMimeMessage();
+        try {
+            final MimeMessageHelper email =
+                    new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            email.setSubject(subject);
+            email.setFrom("confirmemailonly@gmail.com");
+            email.setTo(recipientAddress);
+
+            email.setText(htmlBody, true);
+
+            mailSender.send(mimeMessage);
+        }
+        catch(MessagingException e) {
+            throw new RuntimeException();
+       }
     }
 
     @Transactional(readOnly = true)
