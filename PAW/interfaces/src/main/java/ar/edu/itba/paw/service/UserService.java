@@ -16,7 +16,6 @@ public interface UserService {
     User create(String username,String mail,String password) throws UserAlreadyExistException;
     void delete(long userId);
     boolean quitModdingFromTech(User user, long frameworkId);
-    // void updateDescription(long userId, String description);
     void updatePassword(long userId,String password);
     int updateModAllow(long userId, boolean allow);
     void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture);
@@ -26,6 +25,7 @@ public interface UserService {
     Optional<VerificationToken> getVerificationToken(String token);
     void saveRegisteredUser(User user);
     void generateNewVerificationToken(User user, String token, String appUrl);
+    User register(String username,String mail,String password) throws UserAlreadyExistException;
 
     /** moderator **/
     VerifyUser createVerify(User user, Framework framework);
