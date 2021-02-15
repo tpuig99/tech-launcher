@@ -7,8 +7,12 @@ import ar.edu.itba.paw.models.VerifyUser;
 import ar.edu.itba.paw.persistence.UserDao;
 import ar.edu.itba.paw.persistence.VerificationTokenDao;
 import ar.edu.itba.paw.persistence.VerifyUserDao;
+import ar.edu.itba.paw.service.TokenExpiredException;
 import ar.edu.itba.paw.service.UserAlreadyExistException;
 import ar.edu.itba.paw.service.UserService;
+import javassist.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -29,17 +33,16 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final long PAGE_SIZE=5;
+    private final long PAGE_SIZE = 5;
     private static final long USER_NOT_EXISTS = -1;
     private static final int DELETE_VERIFICATIONS = -1;
     private static final int ALLOW_MOD = 1;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserDao userDao;
@@ -85,27 +88,28 @@ public class UserServiceImpl implements UserService {
     }
 
     private long geUserIdIfNotExists(String username, String mail) throws UserAlreadyExistException {
-        Optional<User> user = findByUsernameOrMail(username,mail);
-        if( user.isPresent() ){
-            if(user.get().getMail().equals(mail) && user.get().getPassword()==null)
+        Optional<User> user = findByUsernameOrMail(username, mail);
+        if (user.isPresent()) {
+            if (user.get().getMail().equals(mail) && user.get().getPassword() == null)
                 return user.get().getId();
-            if(user.get().getMail().equals(mail)){
-                throw new UserAlreadyExistException(messageSource.getMessage("uae.email",new Object[]{user.get().getMail()}, LocaleContextHolder.getLocale()));
+            if (user.get().getMail().equals(mail)) {
+                throw new UserAlreadyExistException(messageSource.getMessage("uae.email", new Object[]{user.get().getMail()}, LocaleContextHolder.getLocale()));
             }
-            throw new UserAlreadyExistException(messageSource.getMessage("uae.username",new Object[]{user.get().getUsername()},LocaleContextHolder.getLocale()));
+            throw new UserAlreadyExistException(messageSource.getMessage("uae.username", new Object[]{user.get().getUsername()}, LocaleContextHolder.getLocale()));
         }
         return USER_NOT_EXISTS;
     }
 
-    private Optional<User> findByUsernameOrMail(String username, String mail) { return userDao.findByUsernameOrMail(username,mail);
+    private Optional<User> findByUsernameOrMail(String username, String mail) {
+        return userDao.findByUsernameOrMail(username, mail);
     }
 
     @Transactional
     @Override
-    public User create(String username, String mail, String password) throws UserAlreadyExistException{
-        long aux= geUserIdIfNotExists(username,mail);
+    public User create(String username, String mail, String password) throws UserAlreadyExistException {
+        long aux = geUserIdIfNotExists(username, mail);
         String psw = passwordEncoder.encode(password);
-        if(aux==USER_NOT_EXISTS) {
+        if (aux == USER_NOT_EXISTS) {
             return userDao.create(username, mail, psw);
         }
         return update(aux, username, mail, psw).get();
@@ -113,14 +117,43 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User register(String username, String mail, String password) throws UserAlreadyExistException, DisabledException, BadCredentialsException{
-        User registeredUser =  create(username, mail, password);
+    public User register(String username, String mail, String password) throws UserAlreadyExistException, DisabledException, BadCredentialsException {
+        User registeredUser = create(username, mail, password);
         authenticate(username, password);
         return registeredUser;
     }
 
     private void authenticate(String username, String password) throws DisabledException, BadCredentialsException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+    }
+
+    @Override
+    public void confirmRegistration(String token) throws TokenExpiredException, NotFoundException {
+
+        Optional<VerificationToken> verificationToken = getVerificationToken(token);
+        if (!verificationToken.isPresent()) throw new NotFoundException("Token not found");
+
+        Optional<User> user = findById((int) verificationToken.get().getUserId());
+        if (user.isPresent()) {
+            if (user.get().isEnable()) {
+                LOGGER.info("Register: User {} was already enabled", user.get().getId());
+
+            }
+            Calendar cal = Calendar.getInstance();
+
+            if ((verificationToken.get().getExpiryDay().getTime() - cal.getTime().getTime()) <= 0) {
+
+                LOGGER.error("Register: Verification token for user {} expired", user.get().getId());
+                throw new TokenExpiredException("Token expired");
+            }
+
+            user.get().setEnable(true);
+            saveRegisteredUser(user.get());
+            LOGGER.info("Register: User {} is now verified", user.get().getId());
+
+        }
+        LOGGER.error("Register: User {} does not exist", verificationToken.get().getUserId());
+        throw new NotFoundException("User not found");
     }
 
     @Transactional
@@ -131,16 +164,16 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void  updatePassword(long userId, String password) {
+    public void updatePassword(long userId, String password) {
         String psw = passwordEncoder.encode(password);
-        userDao.updatePassword(userId,psw);
+        userDao.updatePassword(userId, psw);
     }
 
     @Transactional
     @Override
     public int updateModAllow(long userId, boolean allow) {
         userDao.updateModAllow(userId, allow);
-        if(!allow){
+        if (!allow) {
             deleteVerificationByUser(userId);
             return DELETE_VERIFICATIONS;
         }
@@ -148,15 +181,15 @@ public class UserServiceImpl implements UserService {
     }
 
     private Optional<User> update(long userId, String username, String mail, String password) {
-        return userDao.update(userId,username,mail,password);
+        return userDao.update(userId, username, mail, password);
     }
 
     @Transactional
     @Override
-    public void createVerificationToken(User user, String token,String appUrl) {
+    public void createVerificationToken(User user, String token, String appUrl) {
         String confirmationUrl = appUrl + "/confirm/" + token;
-        tokenDao.insert(user.getId(),token);
-        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()), confirmationUrl, "confirm_registration.html");
+        tokenDao.insert(user.getId(), token);
+        sendEmail(user.getMail(), messageSource.getMessage("email.subject", new Object[]{}, LocaleContextHolder.getLocale()), confirmationUrl, "confirm_registration.html");
     }
 
     @Transactional(readOnly = true)
@@ -173,17 +206,17 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void generateNewVerificationToken(User user, String token,String appUrl) {
+    public void generateNewVerificationToken(User user, String token, String appUrl) {
         Optional<VerificationToken> verificationToken = user.getVerificationToken();
         verificationToken.ifPresent(value -> tokenDao.change(value, token));
-        String verificationUrl =  appUrl + "/confirm/" + token;
-        sendEmail(user.getMail(),messageSource.getMessage("email.subject",new Object[]{}, LocaleContextHolder.getLocale()), verificationUrl, "confirm_registration.html");
+        String verificationUrl = appUrl + "/confirm/" + token;
+        sendEmail(user.getMail(), messageSource.getMessage("email.subject", new Object[]{}, LocaleContextHolder.getLocale()), verificationUrl, "confirm_registration.html");
     }
 
     @Transactional
     @Override
     public boolean quitModdingFromTech(User user, long frameworkId) {
-        for( VerifyUser verifyUser : user.getVerifications() ){
+        for (VerifyUser verifyUser : user.getVerifications()) {
             if (verifyUser.getFrameworkId() == frameworkId) {
                 deleteVerification(verifyUser.getVerificationId());
                 return true;
@@ -195,7 +228,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public VerifyUser createVerify(User user, Framework framework) {
-        return verifyUserDao.create(user,framework,null);
+        return verifyUserDao.create(user, framework, null);
     }
 
     @Transactional(readOnly = true)
@@ -219,7 +252,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public Optional<Integer> getVerifyByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
-        return verifyUserDao.getVerifyForCommentByFrameworkAmount(frameworksIds,pending);
+        return verifyUserDao.getVerifyForCommentByFrameworkAmount(frameworksIds, pending);
     }
 
     @Transactional(readOnly = true)
@@ -231,7 +264,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public Optional<Integer> getApplicantsByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
-        return verifyUserDao.getApplicantsByFrameworkAmount(frameworksIds,pending);
+        return verifyUserDao.getApplicantsByFrameworkAmount(frameworksIds, pending);
     }
 
     @Transactional
@@ -257,21 +290,21 @@ public class UserServiceImpl implements UserService {
 
         String recipientAddress = user.getMail();
 
-        String token = UUID.randomUUID().toString()+"-a_d-ss-"+user.getId();
+        String token = UUID.randomUUID().toString() + "-a_d-ss-" + user.getId();
 
-        String subject = messageSource.getMessage("email.recovery.subject",new Object[]{}, LocaleContextHolder.getLocale());
+        String subject = messageSource.getMessage("email.recovery.subject", new Object[]{}, LocaleContextHolder.getLocale());
         String recoveryPasswordUrl = appUrl + "/forgot_password/" + token;
 
-        sendEmail(recipientAddress,subject,recoveryPasswordUrl, "recovery_password.html");
+        sendEmail(recipientAddress, subject, recoveryPasswordUrl, "recovery_password.html");
     }
 
     @Override
     public void modMailing(User user, String frameworkName) {
-        String subject = messageSource.getMessage("email.moderator.subject",new Object[]{frameworkName}, LocaleContextHolder.getLocale());
-        sendEmail(user.getMail(),subject,"", "moderator_acceptance.html");
+        String subject = messageSource.getMessage("email.moderator.subject", new Object[]{frameworkName}, LocaleContextHolder.getLocale());
+        sendEmail(user.getMail(), subject, "", "moderator_acceptance.html");
     }
 
-    private void sendEmail(String recipientAddress,String subject,String message, String template){
+    private void sendEmail(String recipientAddress, String subject, String message, String template) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
@@ -304,10 +337,9 @@ public class UserServiceImpl implements UserService {
             email.setText(htmlBody, true);
 
             mailSender.send(mimeMessage);
-        }
-        catch(MessagingException e) {
+        } catch (MessagingException e) {
             throw new RuntimeException();
-       }
+        }
     }
 
     @Transactional(readOnly = true)
@@ -330,13 +362,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<VerifyUser> getVerifyByPendingAndFrameworks( boolean pending, List<Long> frameworkIds, long page ){
-        return verifyUserDao.getVerifyByPendingAndFramework( pending, frameworkIds, page, PAGE_SIZE);
+    public List<VerifyUser> getVerifyByPendingAndFrameworks(boolean pending, List<Long> frameworkIds, long page) {
+        return verifyUserDao.getVerifyByPendingAndFramework(pending, frameworkIds, page, PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds){
-        return verifyUserDao.getVerifyByPendingAndFrameworksAmount( pending, frameworkIds);
+    public Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds) {
+        return verifyUserDao.getVerifyByPendingAndFrameworksAmount(pending, frameworkIds);
     }
 }

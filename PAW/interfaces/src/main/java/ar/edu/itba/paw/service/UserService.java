@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.models.VerificationToken;
 import ar.edu.itba.paw.models.VerifyUser;
+import javassist.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,7 @@ public interface UserService {
     void saveRegisteredUser(User user);
     void generateNewVerificationToken(User user, String token, String appUrl);
     User register(String username,String mail,String password) throws UserAlreadyExistException;
+    void confirmRegistration(String token) throws TokenExpiredException, NotFoundException;
 
     /** moderator **/
     VerifyUser createVerify(User user, Framework framework);
