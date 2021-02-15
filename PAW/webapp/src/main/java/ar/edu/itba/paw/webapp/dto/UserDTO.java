@@ -38,7 +38,6 @@ public class UserDTO {
         UserDTO dto = new UserDTO();
         dto.username = user.getUsername();
         dto.description = user.getDescription();
-        dto.mail = user.getMail();
         dto.verify = false;
         if (user.getVerifications() != null && !user.getVerifications().isEmpty()) {
             dto.verifications = user.getVerifications().stream().map(VerifyUserDTO::fromProfile).collect(Collectors.toList());

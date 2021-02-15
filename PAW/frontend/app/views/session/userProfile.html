@@ -40,8 +40,7 @@
                    title="{{'TECH_TOOLTIP_MODERATOR'|translate}}"></i>
               </div>
             </div>
-            <p><strong>{{'PROFILE_EMAIL' | translate}}</strong> {{profile.mail}}</p>
-            <div ng-if="profile.description !== '' ">
+            <div ng-if="profile.description !== '' " class="ml-2 mt-2">
               <p><strong>{{'PROFILE_DESCRIPTION' | translate}}</strong> {{profile.description}}</p>
             </div>
             <div ng-if="profile.username == username && !profile.admin">
@@ -61,7 +60,7 @@
             </div>
           </div>
         </div>
-        <div class="row mx-2 justify-content-center">
+        <div class="row mx-2 justify-content-center my-3" >
           <div class="col emphasis">
             <h2><strong>{{profile.contentAmount}}</strong></h2>
             <p><small>{{'PROFILE_UPLOADED_CONTENTS' | translate}}</small></p>
