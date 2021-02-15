@@ -17,6 +17,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         $scope.isEnable = response.data.enabled;
         $scope.isPresent = true;
         $scope.userVerifications = response.data.verifications;
+      }).catch((error) => {
+        $location.path('/404');
       });
     }
 
@@ -24,15 +26,21 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       techsService.getTech($routeParams.id).then(function (tech) {
         $scope.tech = tech.data;
         $scope.tech.picture = undefined;
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
 
     techsService.getCategories().then(function (cats) {
       $scope.categories = cats.data;
+    }).catch((error) => {
+      $location.path('/404');
     });
 
     techsService.getTypes().then(function (cats) {
       $scope.types = cats.data;
+    }).catch((error) => {
+      $location.path('/404');
     });
 
     $scope.getTech();
@@ -43,19 +51,13 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
     $scope.editTech = function () {
       $scope.techNameError = false;
-      techsService.checkNameEdit($scope.tech.name, $routeParams.id).then(function (response) {
+      techsService.editTech($routeParams.id, $scope.tech).then(function (response) {
         if (response.status === 200) {
-          techsService.editTech($routeParams.id, $scope.tech).then(function (response) {
-            if (response.status === 200) {
-              $location.path($scope.tech.location);
-            }
-          });
+          $location.path($scope.tech.location);
         }
       }).catch(function () {
         $scope.techNameError = true;
-      })
+      });
     };
-
   });
-
 });

@@ -35,18 +35,18 @@ public class CommentDTO {
         if(!comment.getCommentVotes().isEmpty()) {
             dto.votes = comment.getCommentVotes().stream().map(CommentVoteDTO::fromCommentVote).collect(Collectors.toList());
         }
-        dto.location = "techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId();
-        dto.reportLocation = dto.location + "/report";
+        dto.location = uriInfo.getBaseUriBuilder().path("techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId()).build().toString();
+        dto.reportLocation = uriInfo.getBaseUriBuilder().path("techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId()+ "/report").build().toString();
         if (comment.getReports() != null) {
             dto.reports = comment.getReports().stream().map((ReportComment report) -> ReportDTO.fromReportComment(report, uriInfo)).collect(Collectors.toList());
         }
         return dto;
     }
-    public static CommentDTO fromProfile(Comment comment){
+    public static CommentDTO fromProfile(Comment comment, UriInfo uriInfo){
         final CommentDTO dto = new CommentDTO();
         dto.description = comment.getDescription();
         dto.date = comment.getTimestamp().toLocaleString();
-        dto.location = "techs/"+comment.getFrameworkId();
+        dto.location =uriInfo.getBaseUriBuilder().path("techs/"+comment.getFrameworkId()).build().toString();
         dto.techName = comment.getFrameworkName();
         return dto;
     }

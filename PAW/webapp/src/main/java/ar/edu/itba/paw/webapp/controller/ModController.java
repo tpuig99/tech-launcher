@@ -104,7 +104,7 @@ public class ModController {
         }
 
         if (userList.size() > 0) {
-            verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
+            verifyUserDTOList = userList.stream().map((VerifyUser verifyUser) -> VerifyUserDTO.fromVerifyUser(verifyUser,uriInfo)).collect(Collectors.toList());
             long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList) {
             });
@@ -138,7 +138,7 @@ public class ModController {
         }
 
         if (userList.size() > 0) {
-            verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
+            verifyUserDTOList = userList.stream().map((VerifyUser verifyUser) -> VerifyUserDTO.fromVerifyUser(verifyUser,uriInfo)).collect(Collectors.toList());
             long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList) {
             });
@@ -151,7 +151,7 @@ public class ModController {
     @GET
     @Path("/verified")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response verified(@QueryParam("verifyPage") @DefaultValue(START_PAGE) Long verifyPage) {
+    public Response verified(@QueryParam("page") @DefaultValue(START_PAGE) Long verifyPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
         List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int modsAmount = 0;
@@ -172,7 +172,7 @@ public class ModController {
         }
 
         if (userList.size() > 0) {
-            verifyUserDTOList = userList.stream().map(VerifyUserDTO::fromVerifyUser).collect(Collectors.toList());
+            verifyUserDTOList = userList.stream().map((VerifyUser verifyUser) -> VerifyUserDTO.fromVerifyUser(verifyUser,uriInfo)).collect(Collectors.toList());
             long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList) {
             });
@@ -185,7 +185,7 @@ public class ModController {
     @GET
     @Path("/reported_comments")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response reportedComments(@QueryParam("rComPage") @DefaultValue(START_PAGE) Long rComPage) {
+    public Response reportedComments(@QueryParam("page") @DefaultValue(START_PAGE) Long rComPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
         List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int reportsAmount = 0;
@@ -219,7 +219,7 @@ public class ModController {
     @GET
     @Path("/reported_contents")
     @Produces(value = {MediaType.APPLICATION_JSON})
-    public Response reportedContents(@QueryParam("rConPage") @DefaultValue(START_PAGE) Long rConPage) {
+    public Response reportedContents(@QueryParam("page") @DefaultValue(START_PAGE) Long rConPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
         List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int reportsAmount = 0;

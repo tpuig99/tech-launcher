@@ -53,7 +53,6 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         return query.getResultList();
     }
 
-    /* TODO: when Content is ready, update this query */
     @Override
     public List<Framework> getUserInterests(long userId) {
         final TypedQuery<Framework> query = em.createQuery("select distinct f from Framework f inner join Content c on f.id=c.framework.id where c.user.id = :userId", Framework.class);
@@ -125,8 +124,7 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
             return query.getResultList();
         }
 
-        StringBuilder sb = new StringBuilder(" select f from Framework f left outer join f.frameworkVotes v on f.id = v.framework.id left outer join f.comments c on f.id = c.framework.id");
-        //TypedQuery<Framework> query2 = em.createQuery("select f from Framework f left outer join f.frameworkVotes v on f.id = v.framework.id left outer join f.comments c on f.id = c.framework.id", Framework.class);
+        StringBuilder sb = new StringBuilder(" select f.framework_id from frameworks f left outer join framework_votes v on f.framework_id = v.framework_id left outer join comments c on f.framework_id = c.framework_id");
         if(toSearch!=null || categories!=null || types != null || lastUpdated!=null) {
             sb.append(" where ");
         }
@@ -134,47 +132,45 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         String search = "";
 
         if(toSearch != null && !toSearch.isEmpty()){
-            search = "%"+toSearch.toLowerCase()+"%";
+            search = "'%"+toSearch.toLowerCase()+"%'";
             if(nameFlag || toSearch.length() < 3) {
-                sb.append(" lower(f.name) like :search ");
+                sb.append(" lower(f.framework_name) like "+search+" ");
             }
             else {
-                sb.append(" lower(f.name) like :search ");
-                sb.append(" or lower(f.description) like :search ");
-                sb.append(" or lower(f.introduction) like :search ");
+                sb.append(" lower(f.framework_name) like "+search+" ");
+                sb.append(" or lower(f.description) like "+search+" ");
+                sb.append(" or lower(f.introduction) like "+search+" ");
             }
         }
 
         if (categories != null) {
+            String parsedCategories = categories.stream().map(String::valueOf).collect(Collectors.joining("','","'","'"));
             if(!sb.toString().substring(sb.length()-6).contains("where")){
                 sb.append(" and ");
             }
-            sb.append(" f.category in (:categories) ");
+            sb.append(" f.category in ("+parsedCategories+") ");
         }
 
         if (types != null) {
+            String parsedTypes = types.stream().map(String::valueOf).collect(Collectors.joining("','","'","'"));
+
             if(!sb.toString().substring(sb.length()-6).contains("where")){
                 sb.append(" and ");
             }
-          /*  if(!sb.toString().contains("where")) {
-                sb.append(" and ");
-            }*/
-            sb.append(" f.type in (:types) ");
+            sb.append(" f.type in ("+parsedTypes+") ");
         }
 
         if (lastUpdated != null) {
             if(!sb.toString().substring(sb.length()-6).contains("where")){
                 sb.append(" and ");
             }
-            sb.append(" f.publishDate >= :lastUpdated ");
+            sb.append(" f.date >= '"+lastUpdated+"' ");
         }
 
-
-
-        sb.append(" group by f having coalesce(avg(v.stars),0) >= :starsLeft and coalesce(avg(v.stars),0) <= :starsRight and count(distinct c.commentId) >= :commentAmount ");
+        sb.append(" group by f.framework_id having coalesce(avg(v.stars),0) >= "+starsLeft+" and coalesce(avg(v.stars),0) <= "+starsRight+" and count(distinct c.comment_id) >= "+commentAmount+" ");
 
         if(lastComment!=null) {
-            sb.append(" and max(c.timestamp) >= :lastComment ");
+            sb.append(" and max(c.tstamp) >= '"+lastComment+"' ");
         }
 
         if(order != null && order != 0){
@@ -185,37 +181,38 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
                     sb.append(" coalesce(avg(v.stars),0) ").append(order > 0 ?" desc ":" asc ");
                     break;
                 case 2:
-                    sb.append(" count(distinct c.commentId) ").append(order > 0 ?" desc ":" asc ");
+                    sb.append(" count(distinct c.comment_id) ").append(order > 0 ?" desc ":" asc ");
                     break;
                 case 3:
-                    sb.append(" f.publishDate ").append(order > 0 ?" desc ":" asc ");
+                    sb.append(" f.date ").append(order > 0 ?" desc ":" asc ");
                     break;
                 case 4:
-                    sb.append(" max(c.timestamp) ").append(order > 0 ?" desc ":" asc ");
+                    sb.append(" max(c.tstamp) ").append(order > 0 ?" desc ":" asc ");
                     break;
             }
         }
 
-        final TypedQuery<Framework> query = em.createQuery(sb.toString(), Framework.class);
-        if (page != -1 || pageSize != -1) {
-            query.setFirstResult((int) ((page-1) * pageSize));
-            query.setMaxResults((int) pageSize);
-        }
-        if(toSearch != null && !toSearch.isEmpty())
-            query.setParameter("search", search);
-        if(categories != null)
-            query.setParameter("categories", categories);
-        if(types != null)
-            query.setParameter("types", types);
-        if(lastUpdated != null)
-            query.setParameter("lastUpdated", lastUpdated);
-        query.setParameter("starsLeft", Double.valueOf(starsLeft));
-        query.setParameter("starsRight", Double.valueOf(starsRight));
-        query.setParameter("commentAmount", Long.valueOf(commentAmount));
-        if(lastComment != null)
-            query.setParameter("lastComment", lastComment);
 
-        return query.getResultList();
+
+        Query pagingQuery;
+        if(pageSize > 0){
+            pagingQuery = em.createNativeQuery(sb.toString() + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        } else {
+            pagingQuery = em.createNativeQuery(sb.toString());
+        }
+
+
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<Framework> query = em.createQuery("from Framework as f where f.id in (:resultList)", Framework.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return Collections.emptyList();
+        }
+
     }
 
     @Override

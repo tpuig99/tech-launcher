@@ -102,18 +102,13 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE,"/api/techs/**")
                 .authenticated()
 
-                // Login Controller
-                // Authenticated User Controller
-                .antMatchers(HttpMethod.POST, "/api/login", "/api/login/")
-                .anonymous()
 
                 // Every request
                 .antMatchers("/api/**").permitAll()
 
             .and().csrf().disable()
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilter(new JWTAuthenticationFilter(authenticationManager(),jwtTokenUtil));
-
+            .addFilterBefore(new JWTAuthenticationFilter(authenticationManager(),jwtTokenUtil),UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

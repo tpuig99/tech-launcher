@@ -19,11 +19,11 @@ public class VoteDTO {
         dto.techLocation = uriInfo.getBaseUriBuilder().path("/techs/"+vote.getFrameworkId()).build().toString();
         return dto;
     }
-    public static VoteDTO fromProfile (FrameworkVote vote) {
+    public static VoteDTO fromProfile (FrameworkVote vote,UriInfo uriInfo) {
         VoteDTO dto = new VoteDTO();
         dto.vote =  vote.getStars();
         dto.techName = vote.getFrameworkName();
-        dto.techLocation = "techs/"+vote.getFrameworkId();
+        dto.techLocation = uriInfo.getBaseUriBuilder().path("/techs/"+vote.getFrameworkId()).build().toString();
         return dto;
     }
     public Double getCount() {

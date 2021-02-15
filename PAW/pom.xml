@@ -38,6 +38,7 @@
         <com-sun-mail.version>1.6.4</com-sun-mail.version>
         <jersey.version>3.0-SNAPSHOT</jersey.version>
         <io.jsonwebtoken.version>0.11.2</io.jsonwebtoken.version>
+        <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -69,6 +70,18 @@
                         <artifactId>bean-validator</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.thymeleaf</groupId>
+                <artifactId>thymeleaf</artifactId>
+                <version>${thymeleaf.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.thymeleaf</groupId>
+                <artifactId>thymeleaf-spring4</artifactId>
+                <version>${thymeleaf.version}</version>
             </dependency>
 
             <dependency>

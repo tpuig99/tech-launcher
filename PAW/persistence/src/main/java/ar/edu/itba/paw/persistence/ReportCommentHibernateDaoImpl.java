@@ -66,8 +66,8 @@ public class ReportCommentHibernateDaoImpl implements ReportCommentDao{
 
     @Override
     public List<ReportComment> getByFrameworks( List<Long> frameworksIds, long page, long pageSize){
-
-      /*  Query pagingQuery = em.createNativeQuery("SELECT report_id from comment_report as rc where rc.framework_id = " +  String.valueOf(frameworkId) + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        String ids = frameworksIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        Query pagingQuery = em.createNativeQuery("SELECT report_id from comment_report as cr join comments as c ON c.comment_id = cr.comment_id WHERE c.framework_id IN (" + ids + ") LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
 
         @SuppressWarnings("unchecked")
         List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
@@ -78,13 +78,7 @@ public class ReportCommentHibernateDaoImpl implements ReportCommentDao{
             return query.getResultList();
         }else{
             return Collections.emptyList();
-        }*/
-
-        final TypedQuery<ReportComment> query = em.createQuery("from ReportComment as rc WHERE rc.comment.framework.id in (:frameworksIds)", ReportComment.class);
-        query.setParameter("frameworksIds", frameworksIds);
-        query.setMaxResults((int)pageSize);
-        query.setFirstResult((int) ((page-1)*pageSize));
-        return  query.getResultList();
+        }
     }
 
     @Override

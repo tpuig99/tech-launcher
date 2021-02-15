@@ -1,7 +1,7 @@
 'use strict';
 define(['frontend', 'services/exploreService', 'services/techsService'], function(frontend) {
 
-    frontend.controller('ExploreCtrl', function($scope, $rootScope, exploreService,techsService) {
+    frontend.controller('ExploreCtrl', function($location, $scope, $rootScope, exploreService,techsService) {
 
       /* Hide search bar in navbar */
       $scope.$parent.searchPage = true;
@@ -14,6 +14,8 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
          $scope.matchingTechs = response.data;
          $scope.techsPaging = response.headers('link');
          $scope.navbarNameToSearch = $scope.$parent.navbarSearch;
+       }).catch((error) => {
+         $location.path('/404');
        });
      } else if ($rootScope.tagToSearch !== undefined) {
        $scope.isExplore = false;
@@ -27,12 +29,16 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
            exploreService.search('P', '', $scope.categories, $rootScope.tagToSearch, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
              $scope.posts = response.data;
              $scope.postsPaging = response.headers('link');
+           }).catch((error) => {
+             $location.path('/404');
            });
            break;
          case 'tech_category':
            exploreService.search('P', '', $rootScope.tagToSearch, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
              $scope.posts = response.data;
              $scope.postsPaging = response.headers('link');
+           }).catch((error) => {
+             $location.path('/404');
            });
            break;
          default:
@@ -40,6 +46,8 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
              $scope.posts = response.data;
              $scope.postsPaging = response.headers('link');
              $scope.navbarNameToSearch = $rootScope.tagToSearch;
+           }).catch((error) => {
+             $location.path('/404');
            });
 
        }
@@ -50,11 +58,15 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
        exploreService.getTechs().then(function (response) {
          $scope.matchingTechs = response.data;
          $scope.techsPaging = response.headers('link');
+       }).catch((error) => {
+         $location.path('/404');
        });
 
        exploreService.getPosts().then(function (response) {
          $scope.posts = response.data;
          $scope.postsPaging = response.headers('link');
+       }).catch((error) => {
+         $location.path('/404');
        });
      }
 
@@ -68,12 +80,16 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
          exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
            $scope.matchingTechs = response.data;
            $scope.techsPaging = response.headers('link');
+         }).catch((error) => {
+           $location.path('/404');
          });
        } else if ($scope.activeTab === 'T' && tab === 'P') {
          $scope.activeTab = 'P';
          exploreService.search($scope.activeTab, $scope.nameToSearch, $scope.categories, $scope.types, $scope.starsLeft, $scope.starsRight, $scope.nameFlag === undefined ? false : $scope.nameFlag.selected, $scope.commentAmount, $scope.lastComment, $scope.lastUpdate, $scope.groupBy, $scope.orderValue).then(function (response) {
            $scope.posts = response.data;
            $scope.postsPaging = response.headers('link');
+         }).catch((error) => {
+           $location.path('/404');
          });
        }
      };
@@ -96,6 +112,8 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
 
           $scope.navbarNameToSearch = undefined;
           $rootScope.tagToSearch = undefined;
+        }).catch((error) => {
+          $location.path('/404');
         });
       };
 
@@ -103,9 +121,13 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
 
       techsService.getCategories().then(function (response) {
         $scope.categories = response.data;
+      }).catch((error) => {
+        $location.path('/404');
       });
       techsService.getTypes().then(function (response) {
         $scope.types = response.data;
+      }).catch((error) => {
+        $location.path('/404');
       });
 
       /* Show more or less categories and types */

@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public interface VerifyUserDao {
     VerifyUser create(User user, Framework framework, Comment comment);
-    List<VerifyUser> getVerifyForCommentByFrameworks(List<Long> frameworksIds, boolean pending, long page, long pageSize );
     Optional<VerifyUser> getById(long verificationId);
     List<VerifyUser> getVerifyForCommentByPending(boolean pending, long page, long pageSize);
     List<VerifyUser> getApplicantsByPending(boolean pending, long page, long pageSize);

@@ -27,6 +27,8 @@ public class FrameworkDTO {
     private String competitors;
     private String modLocation;
     private int loggedStars;
+    private long id;
+    private long authorId;
 
     public static FrameworkDTO fromFramework(Framework framework, UriInfo uriInfo) {
         final FrameworkDTO dto = new FrameworkDTO();
@@ -35,22 +37,24 @@ public class FrameworkDTO {
         dto.introduction = framework.getIntroduction();
         dto.category = framework.getCategory().name();
         dto.author = framework.getAuthor().getUsername();
-        dto.authorLocation = "users/"+framework.getAuthor().getId();
+        dto.authorLocation = uriInfo.getBaseUriBuilder().path("users/"+framework.getAuthor().getId()).build().toString();
+        dto.authorId = framework.getAuthor().getId();
         dto.type = framework.getType().name();
         dto.date = framework.getPublishDate().toLocaleString();
         dto.votesCant = framework.getVotesCant();
         dto.stars = (float) framework.getStars();
         dto.commentsAmount = framework.getCommentsAmount();
         dto.hasPicture = framework.getPicture() != null;
-        dto.location = "techs/"+framework.getId();
+        dto.location = uriInfo.getBaseUriBuilder().path("techs/"+framework.getId()).build().toString();
         dto.picture = "api/techs/"+framework.getId()+"/image";
-        dto.comments = "techs/"+framework.getId()+"/comment";
-        dto.books = "techs/"+framework.getId()+"/content?type=book";
-        dto.courses = "techs/"+framework.getId()+"/content?type=course";
-        dto.tutorials = "techs/"+framework.getId()+"/content?type=tutorial";
+        dto.comments = uriInfo.getBaseUriBuilder().path("techs/"+framework.getId()+"/comment").build().toString();
+        dto.books = uriInfo.getBaseUriBuilder().path("techs/"+framework.getId()).build().toString()+"/content?type=book";
+        dto.courses = uriInfo.getBaseUriBuilder().path("techs/"+framework.getId()).build().toString()+"/content?type=course";
+        dto.tutorials = uriInfo.getBaseUriBuilder().path("techs/"+framework.getId()).build().toString()+"/content?type=tutorial";
         dto.relatedPosts = "explore?toSearch="+framework.getName()+"&isPost=true";
-        dto.competitors = "techs/"+framework.getId()+"/competitors";
-        dto.modLocation = "mod/tech/"+framework.getId();
+        dto.competitors = uriInfo.getBaseUriBuilder().path("techs/"+framework.getId()+"/competitors").build().toString();
+        dto.modLocation = uriInfo.getBaseUriBuilder().path("mod/tech/"+framework.getId()).build().toString();
+        dto.id = framework.getId();
         return dto;
     }
 
@@ -59,7 +63,9 @@ public class FrameworkDTO {
         dto.name = framework.getName();
         dto.hasPicture = framework.getPicture() != null;
         dto.picture = "api/techs/"+framework.getId()+"/image";
-        dto.location = "techs/"+framework.getId();
+        dto.authorId = framework.getAuthor().getId();
+        dto.id = framework.getId();
+        dto.location = uriInfo.getBaseUriBuilder().path("techs/"+framework.getId()).build().toString();
         dto.stars = (float) framework.getStars();
         return dto;
     }
@@ -237,5 +243,21 @@ public class FrameworkDTO {
 
     public void setModLocation(String modLocation) {
         this.modLocation = modLocation;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(long authorId) {
+        this.authorId = authorId;
     }
 }
