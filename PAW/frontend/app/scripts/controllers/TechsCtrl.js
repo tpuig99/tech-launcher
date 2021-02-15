@@ -13,21 +13,28 @@ define(['frontend','services/techsService','services/sessionService'], function(
           $scope.isMod = response.data.verify;
           $scope.isAdmin = response.data.admin;
           $scope.isPresent = true;
+        }).catch((error) => {
+          $location.path('/404');
         });
-        $scope.getInfo();
       }
     });
     techsService.getCategories().then(function (cats) {
       $scope.categories = cats.data;
+    }).catch((error) => {
+      $location.path('/404');
     });
 
     techsService.getTypes().then(function (cats) {
       $scope.types = cats.data;
+    }).catch((error) => {
+      $location.path('/404');
     });
 
     $scope.getInfo = function() {
       techsService.getHomeInfo().then(function (techs) {
         $scope.home = techs.data;
+      }).catch((error) => {
+        $location.path('/404');
       });
     };
     $scope.getInfo();

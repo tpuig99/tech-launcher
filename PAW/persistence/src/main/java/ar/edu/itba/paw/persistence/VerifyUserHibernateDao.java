@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.models.Comment;
-import ar.edu.itba.paw.models.Framework;
-import ar.edu.itba.paw.models.User;
-import ar.edu.itba.paw.models.VerifyUser;
+import ar.edu.itba.paw.models.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -17,32 +14,16 @@ import java.util.stream.Collectors;
 
 @Repository
 public class VerifyUserHibernateDao implements VerifyUserDao {
-    static private final boolean PENDING_DEFAULT =true;
+    static private final boolean PENDING_DEFAULT = true;
 
     @PersistenceContext
     private EntityManager em;
 
     @Override
     public VerifyUser create(User user, Framework framework, Comment comment) {
-        final VerifyUser verifyUser = new VerifyUser(user,framework,comment,PENDING_DEFAULT);
+        final VerifyUser verifyUser = new VerifyUser(user, framework, comment, PENDING_DEFAULT);
         em.persist(verifyUser);
         return verifyUser;
-    }
-
-
-    @Override
-    public List<VerifyUser> getVerifyForCommentByFrameworks(List<Long> frameworksIds, boolean pending, long page, long pageSize) {
-        final TypedQuery<VerifyUser> query;
-        if(!pending){
-            query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.pending = :pending", VerifyUser.class);
-        } else {
-             query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.pending = :pending and vu.comment is not null", VerifyUser.class);
-        }
-        query.setParameter("frameworksIds", frameworksIds);
-        query.setParameter("pending", pending);
-        query.setFirstResult((int) ((page-1) * pageSize));
-        query.setMaxResults((int) pageSize);
-        return query.getResultList();
     }
 
     @Override
@@ -55,12 +36,36 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
 
         Query pagingQuery;
 
-        if(!pending){
-            pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu where vu.pending = " +  String.valueOf(pending) + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        if (!pending) {
+            pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu where vu.pending = " + String.valueOf(pending) + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page - 1) * pageSize));
 
-        } else{
-            pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu where vu.pending = " +  String.valueOf(pending) + " and vu.comment_id is not null LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        } else {
+            pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu where vu.pending = " + String.valueOf(pending) + " and vu.comment_id is not null LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page - 1) * pageSize));
         }
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>) pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if (!resultList.isEmpty()) {
+            TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.verificationId in (:resultList)", VerifyUser.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        } else {
+            return Collections.emptyList();
+        }
+
+    }
+
+    @Override
+    public List<VerifyUser> getVerifyByPendingAndFramework(boolean pending, List<Long> frameworkIds, long page, long pageSize) {
+
+        String ids = frameworkIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        Query pagingQuery;
+        if(!pending) {
+            pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu WHERE vu.framework_id IN (" + ids + ") and vu.pending = " + pending + " LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page - 1) * pageSize));
+        } else {
+            pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu WHERE vu.framework_id IN (" + ids + ") and vu.pending = " + pending + " and vu.comment_id is not null LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page - 1) * pageSize));
+        }
+
         @SuppressWarnings("unchecked")
         List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
 
@@ -68,40 +73,24 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
             TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.verificationId in (:resultList)", VerifyUser.class);
             query.setParameter("resultList", resultList);
             return query.getResultList();
-        }else{
+        }else {
             return Collections.emptyList();
         }
-
-    }
-
-    @Override
-    public List<VerifyUser> getVerifyByPendingAndFramework( boolean pending, List<Long> frameworkIds, long page, long pageSize){
-        final TypedQuery<VerifyUser> query;
-        if(!pending) {
-            query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.framework.id in (:frameworksIds)", VerifyUser.class);
-        } else {
-            query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.framework.id in (:frameworksIds) and vu.comment is not null", VerifyUser.class);
-        }
-        query.setParameter("frameworksIds", frameworkIds);
-        query.setParameter("pending", pending);
-        query.setFirstResult((int) ((page-1) * pageSize));
-        query.setMaxResults((int) pageSize);
-        return  query.getResultList();
     }
 
     @Override
     public List<VerifyUser> getApplicantsByPending(boolean pending, long page, long pageSize) {
 
-        Query  pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu where vu.pending = " +  String.valueOf(pending) + " and vu.comment_id is null LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+        Query pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu where vu.pending = " + String.valueOf(pending) + " and vu.comment_id is null LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page - 1) * pageSize));
 
         @SuppressWarnings("unchecked")
-        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+        List<Long> resultList = ((List<Number>) pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
 
-            if(!resultList.isEmpty()) {
+        if (!resultList.isEmpty()) {
             TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.verificationId in (:resultList)", VerifyUser.class);
             query.setParameter("resultList", resultList);
             return query.getResultList();
-        }else{
+        } else {
             return Collections.emptyList();
         }
 
@@ -110,18 +99,26 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     @Override
     public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
 
+        String ids = frameworksIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        Query pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu WHERE vu.framework_id IN (" + ids + ") and vu.pending = true and vu.comment_id is not null LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page - 1) * pageSize));
 
-        final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.comment is null and vu.pending = true", VerifyUser.class);
-        query.setParameter("frameworksIds", frameworksIds);
-        query.setFirstResult((int) ((page-1) * pageSize));
-        query.setMaxResults((int) pageSize);
-        return query.getResultList();
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>) pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if (!resultList.isEmpty()) {
+            TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.verificationId in (:resultList)", VerifyUser.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        } else {
+            return Collections.emptyList();
+        }
+
     }
 
     @Override
     public Optional<Integer> getVerifyForCommentByPendingAmount(boolean pending) {
         final TypedQuery<VerifyUser> query;
-        if(!pending)
+        if (!pending)
             query = em.createQuery("from VerifyUser as vu where vu.pending = :pending", VerifyUser.class);
         else
             query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.comment is not null", VerifyUser.class);
@@ -148,13 +145,13 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     public Optional<Integer> getApplicantsByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
         final TypedQuery<VerifyUser> query = em.createQuery("from VerifyUser as vu where vu.framework.id in :frameworksIds and vu.comment is null and vu.pending = :pending", VerifyUser.class);
         query.setParameter("frameworksIds", frameworksIds);
-        query.setParameter("pending",pending);
+        query.setParameter("pending", pending);
         return Optional.of(query.getResultList().size());
     }
 
     @Override
     public void delete(long verificationId) {
-        em.remove(em.getReference(VerifyUser.class,verificationId));
+        em.remove(em.getReference(VerifyUser.class, verificationId));
     }
 
     @Override
@@ -166,15 +163,15 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
 
     @Override
     public void verify(long verificationId) {
-        VerifyUser verifyUser = em.find(VerifyUser.class,verificationId);
+        VerifyUser verifyUser = em.find(VerifyUser.class, verificationId);
         verifyUser.setPending(false);
         em.merge(verifyUser);
     }
 
     @Override
-    public Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds){
+    public Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds) {
         final TypedQuery<VerifyUser> query;
-        if(!pending)
+        if (!pending)
             query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.framework.id in (:frameworksIds)", VerifyUser.class);
         else
             query = em.createQuery("from VerifyUser as vu where vu.pending = :pending and vu.comment is not null and vu.framework.id in (:frameworksIds)", VerifyUser.class);

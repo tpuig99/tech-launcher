@@ -13,15 +13,15 @@ define(['frontend', 'services/sessionService'], function(frontend) {
         $scope.status = response.status;
       }
     }).catch((error) => {
-      if(error.status === 410 ){
-        $scope.title = $filter('translate')('REGISTER_REQUEST_NEW_TOKEN_TITLE');
-        $scope.message = $filter('translate')('REGISTER_REQUEST_NEW_TOKEN_DESCRIPTION');
-        $scope.button = $filter('translate')('BUTTON_REQUEST_NEW_TOKEN')
-        $scope.status = error.status;
-      }
-      else if( error.status === 404 ) {
-        $location.path('/error');
-      }
+        if(error.status === 410 ){
+          $scope.title = $filter('translate')('REGISTER_REQUEST_NEW_TOKEN_TITLE');
+          $scope.message = $filter('translate')('REGISTER_REQUEST_NEW_TOKEN_DESCRIPTION');
+          $scope.button = $filter('translate')('BUTTON_REQUEST_NEW_TOKEN')
+          $scope.status = error.status;
+        }
+        else if( error.status === 404 ) {
+          $location.path('/404');
+        }
     });
     $scope.goHome = () => {
       if( $scope.status === 200 ) {

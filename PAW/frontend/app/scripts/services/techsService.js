@@ -26,11 +26,11 @@ define(['frontend'], function(frontend) {
     };
 
     this.getData = function(url) {
-      return Restangular.one(url).get();
+      return Restangular.oneUrl('data',url).get();
     };
 
     this.deleteData = function(url) {
-      return Restangular.one(url).remove();
+      return Restangular.oneUrl('data',url).remove();
     };
 
     this.addContent = function (id, title, type, link) {
@@ -53,22 +53,22 @@ define(['frontend'], function(frontend) {
       var reply = {
         'description': input
       };
-      return Restangular.all(location).post(reply);
+      return Restangular.allUrl('comment',location).post(reply);
     };
 
     this.report = function (url, description) {
       var report = {
         'description': description
       };
-      return Restangular.all(url).post(report);
+      return Restangular.allUrl('report',url).post(report);
     };
 
     this.vote = function (url, type) {
       switch(type) {
         case 'up':
-          return Restangular.all(url+'/upvote').post();
+          return Restangular.oneUrl('comments',url+'/upvote').post();
         case 'down':
-          return Restangular.all(url+'/downvote').post();
+          return Restangular.oneUrl('comments',url+'/downvote').post();
         default:
           break;
       }
@@ -84,29 +84,6 @@ define(['frontend'], function(frontend) {
     this.addTech = function(add) {
       return Restangular.all('techs').post(add);
     };
-
-    this.checkName = function (name) {
-      var toPost = {
-        'name' : name
-      }
-      return Restangular.all('techs/check-name').post(toPost);
-    }
-
-    this.checkNameEdit = function (name, id) {
-      var toPost = {
-        'name' : name,
-        'id': id
-      }
-      return Restangular.all('techs/check-name').post(toPost);
-    }
-
-    this.checkTitle = function (id, title, type) {
-      var toPost = {
-        'title' : title,
-        'type' : type,
-      }
-      return Restangular.all('techs/'+id+'/content/check-title').post(toPost);
-    }
 
     this.addTech = function(add) {
       var fd = new FormData();
@@ -137,11 +114,11 @@ define(['frontend'], function(frontend) {
     };
 
     this.applyForMod = function (location) {
-      return Restangular.all(location).post();
+      return Restangular.allUrl('mod',location).post();
     };
 
     this.stopBeingAMod = function (location) {
-      return Restangular.one(location).remove();
+      return Restangular.oneUrl('mod',location).remove();
     };
 
   });
