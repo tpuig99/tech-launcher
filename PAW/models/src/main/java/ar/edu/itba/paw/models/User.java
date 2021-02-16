@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.models;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +8,9 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "users")
 public class User {
+
+    public static final long DEFAULT_PICTURE_ID = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_user_id_seq")
     @SequenceGenerator(sequenceName = "users_user_id_seq", name = "users_user_id_seq", allocationSize = 1)
@@ -32,9 +33,10 @@ public class User {
     @Column(name = "allow_moderator", nullable = false)
     private boolean allowMod;
 
-    @Lob
-    @Type(type = "org.hibernate.type.BinaryType")
-    private byte[] picture;
+    /* Refers other relation mapped in UserBlob */
+    @OneToOne(optional = true, fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "picture_id", referencedColumnName = "blob_id")
+    private Blob picture;
 
     /*this refers to the other relation mapped in Admin*/
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user",cascade = CascadeType.REMOVE)
@@ -95,13 +97,18 @@ public class User {
 
     public User() {
     }
-    public User(String username, String mail, String password, boolean enable, String description, boolean allowMod,byte[] picture) {
+
+    public User(String username, String mail, String password, boolean enable, String description, boolean allowMod) {
         this.username = username;
         this.mail = mail;
         this.password = password;
         this.enable = enable;
         this.description = description;
         this.allowMod = allowMod;
+    }
+
+    public User(String username, String mail, String password, boolean enable, String description, boolean allowMod, Blob picture) {
+        this(username, mail, password, enable, description, allowMod);
         this.picture = picture;
     }
 
@@ -159,14 +166,6 @@ public class User {
 
     public void setAllowMod(boolean allowMod) {
         this.allowMod = allowMod;
-    }
-
-    public byte[] getPicture() {
-        return picture;
-    }
-
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
     }
 
     public boolean isAdmin() {
@@ -339,5 +338,16 @@ public class User {
     public int getVoteForPost(long id){
         Optional<PostVote> vote =postVotes.stream().filter((x)->x.getPost().getPostId() == id).findFirst();
         return vote.isPresent() ? vote.get().getVote() : 0;
+    }
+
+    public long getPictureId() {
+        if(picture != null) {
+            return picture.getId();
+        }
+        return DEFAULT_PICTURE_ID;
+    }
+
+    public void setPicture(Blob picture) {
+        this.picture = picture;
     }
 }

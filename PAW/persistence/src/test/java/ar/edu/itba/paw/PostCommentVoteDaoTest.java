@@ -57,7 +57,7 @@ public class PostCommentVoteDaoTest {
 
 
         for (int i = 0; i < 2; i++) {
-            User user = new User("user" + i, "mail" + i, null, true, "", true, null);
+            User user = new User("user" + i, "mail" + i, null, true, "", true);
             em.persist(user);
             Post post = new Post();
             post.setUser(user);

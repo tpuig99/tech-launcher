@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -39,6 +37,9 @@ public class UserProfileController {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private PictureService pictureService;
 
     @Autowired
     private UserService us;
@@ -238,7 +239,7 @@ public class UserProfileController {
     @Path("/{id}/image")
     @Produces({"image/jpg", "image/png", "image/gif"})
     public Response getImage(@PathParam("id") Long id) {
-        return Response.ok(us.findById(id).map(User::getPicture).orElse(null)).build();
+        return Response.ok(us.findById(id).map(value -> pictureService.findPictureById(value.getPictureId()))).build();
     }
 
     @POST
@@ -307,7 +308,7 @@ public class UserProfileController {
                 if (picture != null) {
                     us.updateInformation(userId, description == null ? user.get().getDescription() : description, picture, true);
                 } else {
-                    us.updateInformation(userId, description == null ? user.get().getDescription() : description, user.get().getPicture(), false);
+                    us.updateInformation(userId, description == null ? user.get().getDescription() : description, null, false);
                 }
 
                 LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
