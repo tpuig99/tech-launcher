@@ -37,13 +37,11 @@ import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final long PAGE_SIZE = 5;
     private static final long USER_NOT_EXISTS = -1;
     private static final int DELETE_VERIFICATIONS = -1;
     private static final int ALLOW_MOD = 1;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-
+    private final long PAGE_SIZE = 5;
     @Autowired
     private UserDao userDao;
 
@@ -95,32 +93,32 @@ public class UserServiceImpl implements UserService {
         return userDao.findById(userId);
     }
 
-    private long geUserIdIfNotExists(String username, String mail) throws UserAlreadyExistException {
-        Optional<User> user = findByUsernameOrMail(username, mail);
-        if (user.isPresent()) {
-            if (user.get().getMail().equals(mail) && user.get().getPassword() == null)
-                return user.get().getId();
-            if (user.get().getMail().equals(mail)) {
-                throw new UserAlreadyExistException(messageSource.getMessage("uae.email", new Object[]{user.get().getMail()}, LocaleContextHolder.getLocale()));
-            }
-            throw new UserAlreadyExistException(messageSource.getMessage("uae.username", new Object[]{user.get().getUsername()}, LocaleContextHolder.getLocale()));
-        }
-        return USER_NOT_EXISTS;
-    }
-
     private Optional<User> findByUsernameOrMail(String username, String mail) {
         return userDao.findByUsernameOrMail(username, mail);
+    }
+
+    private boolean userMustBeUpdated(User user, String mail){
+        return user.getMail().equals(mail) && user.getPassword() == null;
     }
 
     @Transactional
     @Override
     public User create(String username, String mail, String password) throws UserAlreadyExistException {
-        long aux = geUserIdIfNotExists(username, mail);
+        Optional<User> user = findByUsernameOrMail(username, mail);
         String psw = passwordEncoder.encode(password);
-        if (aux == USER_NOT_EXISTS) {
+
+        if (!user.isPresent()) {
             return userDao.create(username, mail, psw);
         }
-        return update(aux, username, mail, psw).get();
+
+        if (userMustBeUpdated(user.get(), mail)) {
+            return update(user.get().getId(), username, mail, psw).get();
+        }
+
+        if (user.get().getMail().equals(mail)) {
+            throw new UserAlreadyExistException(messageSource.getMessage("uae.email", new Object[]{user.get().getMail()}, LocaleContextHolder.getLocale()));
+        }
+        throw new UserAlreadyExistException(messageSource.getMessage("uae.username", new Object[]{user.get().getUsername()}, LocaleContextHolder.getLocale()));
     }
 
     @Transactional
