@@ -219,7 +219,18 @@ public class UserProfileController {
     @Path("/{id}/image")
     @Produces({"image/jpg", "image/png", "image/gif"})
     public Response getImage(@PathParam("id") Long id) {
-        return Response.ok(us.findById(id).map(value -> pictureService.findPictureById(value.getPictureId()))).build();
+        Optional<User> user = us.findById(id);
+
+        if (user.isPresent()) {
+            Optional<byte []> picture = pictureService.findPictureById(user.get().getPictureId());
+            if (picture.isPresent()) {
+                return Response.ok(picture.get()).build();
+            } else {
+                return Response.noContent().build();
+            }
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST
