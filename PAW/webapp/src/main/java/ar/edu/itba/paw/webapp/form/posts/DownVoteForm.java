@@ -3,13 +3,11 @@ package ar.edu.itba.paw.webapp.form.posts;
 import javax.validation.constraints.NotNull;
 
 public class DownVoteForm {
-    @NotNull
+
     private long downVotePostId;
 
-    @NotNull
     private long postCommentDownVoteId;
 
-    @NotNull
     private long downVoteCommentPostId;
 
     public long getDownVotePostId() {
