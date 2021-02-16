@@ -360,7 +360,19 @@ public class FrameworkController {
     @Path("/{id}/image")
     @Produces(value = {"image/jpg", "image/png", "image/gif"})
     public Response getImage(@PathParam("id") long id) throws IOException {
-        return Response.ok(fs.findById(id).map(value -> pictureService.findPictureById(value.getPictureId()))).build();
+
+        Optional<Framework> framework = fs.findById(id);
+
+        if (framework.isPresent()) {
+            Optional<byte []> picture = pictureService.findPictureById(framework.get().getPictureId());
+            if (picture.isPresent()) {
+                return Response.ok(picture.get()).build();
+            } else {
+                return Response.noContent().build();
+            }
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST

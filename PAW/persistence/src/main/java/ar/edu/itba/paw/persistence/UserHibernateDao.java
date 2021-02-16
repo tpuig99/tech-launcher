@@ -52,6 +52,9 @@ public class UserHibernateDao implements UserDao {
     public void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture) {
         User user = em.find(User.class, userId);
         if (updatePicture) {
+            if (user.getPictureId() != User.DEFAULT_PICTURE_ID) {
+                em.remove(em.getReference(Blob.class, user.getPictureId()));
+            }
             Blob blob = new Blob(picture);
             em.persist(blob);
             user.setPicture(blob);
@@ -63,9 +66,15 @@ public class UserHibernateDao implements UserDao {
     @Override
     public void updatePicture(long id, byte[] picture) {
         User user = em.find(User.class,id);
-        Blob blob = new Blob(picture);
-        em.persist(blob);
-        user.setPicture(blob);
+        if (user.getPictureId() != User.DEFAULT_PICTURE_ID) {
+            Blob blob = em.find(Blob.class, user.getPictureId());
+            blob.setPicture(picture);
+            em.merge(blob);
+        } else {
+            Blob blob = new Blob(picture);
+            em.persist(blob);
+            user.setPicture(blob);
+        }
         em.merge(user);
     }
 

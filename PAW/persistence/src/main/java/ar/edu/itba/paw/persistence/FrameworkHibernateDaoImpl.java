@@ -249,9 +249,15 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         framework.setPublishDate(ts);
 
         if (picture!=null && picture.length>0) {
-            Blob blob = new Blob(picture);
-            em.persist(blob);
-            framework.setPicture(blob);
+            if (framework.getPictureId() != Framework.DEFAULT_PICTURE_ID) {
+                Blob blob = em.find(Blob.class, framework.getPictureId());
+                blob.setPicture(picture);
+                em.merge(blob);
+            } else {
+                Blob blob = new Blob(picture);
+                em.persist(blob);
+                framework.setPicture(blob);
+            }
         }
 //        }  else {
 //            framework.setPicture(framework.getPicture());
