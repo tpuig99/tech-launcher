@@ -3,8 +3,9 @@ package ar.edu.itba.paw.webapp.form.frameworks;
 import javax.validation.constraints.NotNull;
 
 public class CommentForm {
-    @NotNull
+
     private long commentFrameworkId;
+
     @NotNull
     private String comment;
     private Long commentId;

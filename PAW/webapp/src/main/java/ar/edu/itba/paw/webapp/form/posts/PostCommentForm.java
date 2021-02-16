@@ -5,7 +5,6 @@ import javax.validation.constraints.Size;
 
 public class PostCommentForm {
 
-    @NotNull
     private long commentPostId;
 
     @NotNull
