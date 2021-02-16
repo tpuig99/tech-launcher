@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.form.frameworks;
 import javax.validation.constraints.NotNull;
 
 public class ReplyForm {
-    @NotNull
+
     private long replyFrameworkId;
     @NotNull
     private String replyComment;

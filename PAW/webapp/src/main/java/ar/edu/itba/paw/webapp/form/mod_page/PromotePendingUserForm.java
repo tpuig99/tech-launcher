@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.form.mod_page;
 import javax.validation.constraints.NotNull;
 
 public class PromotePendingUserForm {
-    @NotNull
+
     private long promotePendingUserVerificationId;
 
     public long getPromotePendingUserVerificationId() {

@@ -12,9 +12,9 @@ public class ReportForm {
     @NotEmpty
     @Size(min=4, max=500)
     private String description;
-    @NotNull
+
     private long id;
-    @NotNull
+
     private long reportFrameworkId;
 
 
