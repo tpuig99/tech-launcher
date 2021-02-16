@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 public class RatingForm {
 
     private long frameworkId;
-    @NotNull
+
     private int rating;
 
     public long getFrameworkId() {

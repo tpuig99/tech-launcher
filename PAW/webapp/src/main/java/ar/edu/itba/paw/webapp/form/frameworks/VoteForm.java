@@ -5,9 +5,9 @@ import javax.validation.constraints.NotNull;
 public class VoteForm {
 
     private long frameworkId;
-    @NotNull
+
     private int commentId;
-    @NotNull
+
     private int vote;
 
     public long getFrameworkId() {
