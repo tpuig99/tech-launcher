@@ -27,9 +27,6 @@ import java.util.stream.Collectors;
 public class ModController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModController.class);
-    private static final String DEFAULT_PROMOTE_TAB = "promote";
-    private static final String DEFAULT_DEMOTE_TAB = "demote";
-    private static final String DEFAULT_REPORT_TAB = "reports";
 
     @Autowired
     private UserService us;
@@ -46,38 +43,21 @@ public class ModController {
     @Context
     private UriInfo uriInfo;
 
-    private final long pageStart = 1;
     private final long PAGE_SIZE = 5;
     private final String START_PAGE = "1";
-    private final String PAGE = "page";
 
-    private static final String MOD_VIEW = "/mod?tabs=";
-
-    private Response.ResponseBuilder addPaginationLinks(Response.ResponseBuilder responseBuilder, String parameterName, long currentPage, long pages) {
+    private Response.ResponseBuilder addPaginationLinks(Response.ResponseBuilder responseBuilder, long currentPage, long pages) {
         responseBuilder
-                .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, 1).build(), "first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, pages).build(), "last");
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", 1).build(), "first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam("page", pages).build(), "last");
         if (currentPage < pages) {
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, currentPage + 1).build(), "next");
+            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", currentPage + 1).build(), "next");
         }
         if (currentPage != 1) {
-            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, currentPage - 1).build(), "prev");
+            responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam("page", currentPage - 1).build(), "prev");
         }
 
         return responseBuilder;
-    }
-
-    private void getVerifiedAndOwnedFrameworks(User user, List<Long> frameworkIds, List<Long> frameworkIdsForReportedComments) {
-
-        user.getVerifications().forEach(verifyUser -> {
-            if (!verifyUser.isPending())
-                frameworkIds.add(verifyUser.getFrameworkId());
-        });
-
-        user.getOwnedFrameworks().forEach(framework -> {
-            frameworkIds.add(framework.getId());
-            frameworkIdsForReportedComments.add(framework.getId());
-        });
     }
 
     @GET
@@ -85,30 +65,33 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response moderators(@QueryParam("page") @DefaultValue(START_PAGE) Long modsPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int modsAmount = 0;
         List<VerifyUser> userList = Collections.emptyList();
         List<VerifyUserDTO> verifyUserDTOList;
 
-        if (user.isAdmin()) {
+        if (us.isAdmin(user)) {
             userList = us.getVerifyByPending(false, modsPage);
             modsAmount = us.getVerifyByPendingAmount(false).get();
 
-        } else if (ownedFrameworks.size() > 0) {
+        } else if (us.isOwner(user)) {
             List<Long> frameworkIds = new ArrayList<>();
             List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
-
+            us.getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
             userList = us.getVerifyByPendingAndFrameworks(false, frameworkIdsForReportedComments, modsPage);
             modsAmount = us.getVerifyByPendingAndFrameworksAmount(false, frameworkIdsForReportedComments);
         }
 
+        return createUserListResponse(modsPage, modsAmount, userList);
+    }
+
+    private Response createUserListResponse(@DefaultValue(START_PAGE) @QueryParam("page") Long modsPage, double modsAmount, List<VerifyUser> userList) {
+        List<VerifyUserDTO> verifyUserDTOList;
         if (userList.size() > 0) {
             verifyUserDTOList = userList.stream().map((VerifyUser verifyUser) -> VerifyUserDTO.fromVerifyUser(verifyUser,uriInfo)).collect(Collectors.toList());
-            long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
+            long pages = (long) Math.ceil(modsAmount / PAGE_SIZE);
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList) {
             });
-            return addPaginationLinks(response, PAGE, modsPage, pages).build();
+            return addPaginationLinks(response, modsPage, pages).build();
         }
 
         return Response.noContent().build();
@@ -119,33 +102,24 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response applicants(@QueryParam("page") @DefaultValue(START_PAGE) Long applicantsPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int modsAmount = 0;
         List<VerifyUser> userList = Collections.emptyList();
         List<VerifyUserDTO> verifyUserDTOList;
 
-        if (user.isAdmin()) {
+        if (us.isAdmin(user)) {
             userList = us.getApplicantsByPending(true, applicantsPage);
             modsAmount = us.getApplicantsByPendingAmount(true).get();
 
-        } else if (ownedFrameworks.size() > 0 || user.isVerify()) {
+        } else if (us.isOwner(user) || us.isVerify(user)) {
             List<Long> frameworkIds = new ArrayList<>();
             List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            us.getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
 
             userList = us.getApplicantsByFrameworks(frameworkIds, applicantsPage);
             modsAmount = us.getApplicantsByFrameworkAmount(frameworkIds, true).get();
         }
 
-        if (userList.size() > 0) {
-            verifyUserDTOList = userList.stream().map((VerifyUser verifyUser) -> VerifyUserDTO.fromVerifyUser(verifyUser,uriInfo)).collect(Collectors.toList());
-            long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
-            Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList) {
-            });
-            return addPaginationLinks(response, PAGE, applicantsPage, pages).build();
-        }
-
-        return Response.noContent().build();
+        return createUserListResponse(applicantsPage, modsAmount, userList);
     }
 
     @GET
@@ -153,33 +127,24 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response verified(@QueryParam("page") @DefaultValue(START_PAGE) Long verifyPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int modsAmount = 0;
         List<VerifyUser> userList = Collections.emptyList();
         List<VerifyUserDTO> verifyUserDTOList = null;
 
-        if (user.isAdmin()) {
+        if (us.isAdmin(user)) {
             userList = us.getVerifyByPending(true, verifyPage);
             modsAmount = us.getVerifyByPendingAmount(true).get();
 
-        } else if (ownedFrameworks.size() > 0 || user.isVerify()) {
+        } else if (us.isOwner(user) || us.isVerify(user)) {
             List<Long> frameworkIds = new ArrayList<>();
             List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            us.getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
 
             userList = us.getVerifyByPendingAndFrameworks(true, frameworkIdsForReportedComments, verifyPage);
             modsAmount = us.getVerifyByPendingAndFrameworksAmount(true, frameworkIdsForReportedComments);
         }
 
-        if (userList.size() > 0) {
-            verifyUserDTOList = userList.stream().map((VerifyUser verifyUser) -> VerifyUserDTO.fromVerifyUser(verifyUser,uriInfo)).collect(Collectors.toList());
-            long pages = (long) Math.ceil(((double) modsAmount) / PAGE_SIZE);
-            Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VerifyUserDTO>>(verifyUserDTOList) {
-            });
-            return addPaginationLinks(response, PAGE, verifyPage, pages).build();
-        }
-
-        return Response.noContent().build();
+        return createUserListResponse(verifyPage, modsAmount, userList);
     }
 
     @GET
@@ -187,19 +152,18 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response reportedComments(@QueryParam("page") @DefaultValue(START_PAGE) Long rComPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int reportsAmount = 0;
         List<ReportComment> commentList = Collections.emptyList();
         List<ReportDTO> reportDTOList;
 
-        if (user.isAdmin()) {
+        if (us.isAdmin(user)) {
             commentList = commentService.getAllReport(rComPage);
             reportsAmount = commentService.getAllReportsAmount().get();
 
-        } else if (ownedFrameworks.size() > 0) {
+        } else if (us.isOwner(user)) {
             List<Long> frameworkIds = new ArrayList<>();
             List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            us.getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
 
             commentList = commentService.getReportsByFrameworks(frameworkIdsForReportedComments, rComPage);
             reportsAmount = commentService.getReportsAmountByFrameworks(frameworkIds);
@@ -210,7 +174,7 @@ public class ModController {
             long pages = (long) Math.ceil(((double) reportsAmount) / PAGE_SIZE);
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOList) {
             });
-            return addPaginationLinks(response, PAGE, rComPage, pages).build();
+            return addPaginationLinks(response, rComPage, pages).build();
         }
 
         return Response.noContent().build();
@@ -221,19 +185,18 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON})
     public Response reportedContents(@QueryParam("page") @DefaultValue(START_PAGE) Long rConPage) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        List<Framework> ownedFrameworks = user.getOwnedFrameworks();
         int reportsAmount = 0;
         List<ReportContent> contentList = Collections.emptyList();
         List<ReportDTO> reportDTOList;
 
-        if (user.isAdmin()) {
+        if (us.isAdmin(user)) {
             contentList = contentService.getAllReports(rConPage);
             reportsAmount = contentService.getAllReportsAmount().get();
 
-        } else if (ownedFrameworks.size() > 0 || user.isVerify()) {
+        } else if (us.isOwner(user) || us.isVerify(user)) {
             List<Long> frameworkIds = new ArrayList<>();
             List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            us.getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
 
             contentList = contentService.getReportsByFrameworks(frameworkIds, rConPage);
             reportsAmount = contentService.getReportsAmount(frameworkIds).get();
@@ -244,7 +207,7 @@ public class ModController {
             long pages = (long) Math.ceil(((double) reportsAmount) / PAGE_SIZE);
             Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ReportDTO>>(reportDTOList) {
             });
-            return addPaginationLinks(response, PAGE, rConPage, pages).build();
+            return addPaginationLinks(response, rConPage, pages).build();
         }
 
         return Response.noContent().build();
@@ -258,7 +221,7 @@ public class ModController {
         Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         Optional<VerifyUser> vu = us.getVerifyById(verificationId);
 
-        if (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty()) {
+        if (user.isPresent() && (us.isAdmin(user.get()) || !us.isOwner(user.get()))) {
             if (vu.isPresent()) {
                 if (!vu.get().isPending()) {
                     us.deleteVerification(verificationId);
@@ -277,7 +240,7 @@ public class ModController {
     public Response acceptMod(@PathParam("id") Long verificationId) {
         Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         Optional<VerifyUser> vu = us.getVerifyById(verificationId);
-        if (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty()) {
+        if (user.isPresent() && (us.isAdmin(user.get()) || !us.isOwner(user.get()))) {
             if (vu.isPresent()) {
                 if (vu.get().isPending()) {
                     us.verify(verificationId);
@@ -298,7 +261,7 @@ public class ModController {
         Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         Optional<VerifyUser> vu = us.getVerifyById(verificationId);
 
-        if (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty()) {
+        if (user.isPresent() && (us.isAdmin(user.get()) || !us.isOwner(user.get()))) {
             if (vu.isPresent() && vu.get().isPending()) {
                 if (vu.get().isPending()) {
                     us.deleteVerification(verificationId);
@@ -315,7 +278,7 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response applyForTech(@PathParam("id") Long techId) {
         Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-        if (!user.get().hasAppliedToFramework(techId)) {
+        if ( user.isPresent() && !user.get().hasAppliedToFramework(techId)) {
             Optional<Framework> framework = fs.findById(techId);
             if (framework.isPresent()) {
                 us.createVerify(user.get(), framework.get());
@@ -331,7 +294,7 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response quitModdingFromTech(@PathParam("id") Long techId) {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (us.quitModdingFromTech(user.get(), techId)) {
+        if (user.isPresent() && us.quitModdingFromTech(user.get(), techId)) {
             LOGGER.info("Tech {}: User {} is no longer a Mod", techId, user.get().getId());
             return Response.ok().build();
         }
@@ -344,7 +307,7 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response deleteCommentReport(@PathParam("id") Long commentId) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (user.isAdmin() || user.getOwnedFrameworks().size() > 0) {
+        if (us.isAdmin(user) || us.isOwner(user)) {
             commentService.denyReport(commentId);
             LOGGER.info("User: Comment {} was removed from its report", commentId);
             return Response.ok().build();
@@ -358,7 +321,7 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response acceptCommentReport(@PathParam("id") Long commentId) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (user.isAdmin() || user.getOwnedFrameworks().size() > 0) {
+        if (us.isAdmin(user) || us.isOwner(user)) {
             Optional<Comment> commentOptional = commentService.getById(commentId);
             if (commentOptional.isPresent()) {
                 commentService.acceptReport(commentId);
@@ -376,7 +339,7 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response deleteContentReport(@PathParam("id") Long contentId) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (user.isAdmin() || user.getOwnedFrameworks().size() > 0) {
+        if (us.isAdmin(user) || us.isOwner(user)) {
             contentService.denyReport(contentId);
             LOGGER.info("User: Content {} was removed from its report", contentId);
             return Response.ok().build();
@@ -390,7 +353,7 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response acceptContentReport(@PathParam("id") Long contentId) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (user.isAdmin() || user.getOwnedFrameworks().size() > 0) {
+        if (us.isAdmin(user) || us.isOwner(user)) {
             Optional<Content> contentOptional = contentService.getById(contentId);
             if (contentOptional.isPresent()) {
                 contentService.acceptReport(contentId);

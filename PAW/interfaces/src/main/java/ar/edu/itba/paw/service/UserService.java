@@ -48,7 +48,10 @@ public interface UserService {
     List<VerifyUser> getVerifyByPendingAndFrameworks( boolean pending, List<Long> frameworkIds, long page );
 
     Integer getVerifyByPendingAndFrameworksAmount(boolean pending, List<Long> frameworkIds);
-
+    void getVerifiedAndOwnedFrameworks(User user, List<Long> frameworkIds, List<Long> frameworkIdsForReportedComments);
+    boolean isOwner(User user);
+    boolean isVerify(User user);
+    boolean isAdmin(User user);
     long getPagesInt(Optional<Integer> count,long size);
     long getPagesLong(Optional<Long> count,long size);
 }

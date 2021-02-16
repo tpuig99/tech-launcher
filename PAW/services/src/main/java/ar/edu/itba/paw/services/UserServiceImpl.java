@@ -95,6 +95,21 @@ public class UserServiceImpl implements UserService {
         return userDao.findById(userId);
     }
 
+    @Override
+    public boolean isOwner(User user) {
+        return user.getOwnedFrameworks().size() > 0;
+    }
+
+    @Override
+    public boolean isVerify(User user) {
+        return user.isVerify();
+    }
+
+    @Override
+    public boolean isAdmin(User user) {
+        return user.isAdmin();
+    }
+
     private long geUserIdIfNotExists(String username, String mail) throws UserAlreadyExistException {
         Optional<User> user = findByUsernameOrMail(username, mail);
         if (user.isPresent()) {
@@ -273,6 +288,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<Integer> getApplicantsByFrameworkAmount(List<Long> frameworksIds, boolean pending) {
         return verifyUserDao.getApplicantsByFrameworkAmount(frameworksIds, pending);
+    }
+
+    @Override
+    public void getVerifiedAndOwnedFrameworks(User user, List<Long> frameworkIds, List<Long> frameworkIdsForReportedComments) {
+
+        user.getVerifications().forEach(verifyUser -> {
+            if (!verifyUser.isPending())
+                frameworkIds.add(verifyUser.getFrameworkId());
+        });
+
+        user.getOwnedFrameworks().forEach(framework -> {
+            frameworkIds.add(framework.getId());
+            frameworkIdsForReportedComments.add(framework.getId());
+        });
     }
 
     @Transactional
