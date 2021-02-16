@@ -1,17 +1,21 @@
 package ar.edu.itba.paw.webapp.controller;
 
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Framework;
+import ar.edu.itba.paw.models.FrameworkCategories;
+import ar.edu.itba.paw.models.FrameworkType;
+import ar.edu.itba.paw.models.Post;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.FrameworkDTO;
+import ar.edu.itba.paw.webapp.dto.PostDTO;
+import ar.edu.itba.paw.webapp.dto.SearchDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
-
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -22,7 +26,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("explore")

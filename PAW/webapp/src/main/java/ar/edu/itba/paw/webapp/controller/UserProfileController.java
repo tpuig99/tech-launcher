@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,6 +54,27 @@ public class UserProfileController {
     final private String START_PAGE = "1";
     private final String PAGE = "page";
 
+    private static Response.ResponseBuilder setConditionalCacheHeaders(Object resource, int hashcode, Request request) {
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(86400);
+
+        EntityTag etag = new EntityTag(Integer.toString(hashcode));
+        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+        if(builder == null){
+            builder = Response.ok(resource);
+            builder.tag(etag);
+        }
+
+        builder.cacheControl(cc);
+        return builder;
+    }
+
+    private static Response.ResponseBuilder setCacheHeaders(Object resource) {
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(300);
+        return Response.ok(resource).cacheControl(cc);
+    }
 
     private Response.ResponseBuilder addPaginationLinks(Response.ResponseBuilder responseBuilder, String parameterName, long currentPage, long pages) {
         responseBuilder
@@ -71,7 +93,7 @@ public class UserProfileController {
     @GET
     @Path("{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response getUser(@PathParam("id") Long userId) {
+    public Response getUser(@PathParam("id") Long userId, @Context Request request) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
@@ -86,7 +108,8 @@ public class UserProfileController {
             dto.setPostsAmount(postService.getPostsCountByUser(userId).orElse(0));
 
             LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
-            return Response.ok(dto).build();
+
+            return setCacheHeaders(dto).build();
         }
 
         LOGGER.error("User Profile: Nonexistant user");
@@ -106,8 +129,9 @@ public class UserProfileController {
 
             if (commentsList.size() > 0) {
                 List<CommentDTO> commentDTOList = commentsList.stream().map((Comment comment) -> CommentDTO.fromProfile(comment,uriInfo)).collect(Collectors.toList());
-                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<CommentDTO>>(commentDTOList) {
+                Response.ResponseBuilder response = setCacheHeaders(new GenericEntity<List<CommentDTO>>(commentDTOList) {
                 });
+
                 return addPaginationLinks(response, PAGE, commentsPage, us.getPagesInt(commentsAmount,PAGE_SIZE)).build();
             }
 
@@ -131,7 +155,7 @@ public class UserProfileController {
 
             if (contentsList.size() > 0) {
                 List<ContentDTO> contentDTOList = contentsList.stream().map((Content content) -> ContentDTO.fromProfile(content,uriInfo)).collect(Collectors.toList());
-                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ContentDTO>>(contentDTOList) {
+                Response.ResponseBuilder response = setCacheHeaders(new GenericEntity<List<ContentDTO>>(contentDTOList) {
                 });
                 return addPaginationLinks(response, PAGE, contentsPage, us.getPagesLong(contentsAmount,PAGE_SIZE)).build();
             }
@@ -155,7 +179,7 @@ public class UserProfileController {
 
             if (postsList.size() > 0) {
                 List<PostDTO> postDTOList = postsList.stream().map((Post post) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList());
-                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<PostDTO>>(postDTOList) {
+                Response.ResponseBuilder response = setCacheHeaders(new GenericEntity<List<PostDTO>>(postDTOList) {
                 });
                 return addPaginationLinks(response, PAGE, postsPage, us.getPagesInt(postsAmount,PAGE_SIZE)).build();
             }
@@ -179,7 +203,7 @@ public class UserProfileController {
 
             if (votesList.size() > 0) {
                 List<VoteDTO> voteDTOList = votesList.stream().map((FrameworkVote vote) -> VoteDTO.fromProfile(vote,uriInfo)).collect(Collectors.toList());
-                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VoteDTO>>(voteDTOList) {
+                Response.ResponseBuilder response = setCacheHeaders(new GenericEntity<List<VoteDTO>>(voteDTOList) {
                 });
                 return addPaginationLinks(response, PAGE, votesPage, us.getPagesInt(votesAmount,VOTE_PAGE_SIZE)).build();
             }
@@ -203,7 +227,7 @@ public class UserProfileController {
 
             if (techsList.size() > 0) {
                 List<FrameworkDTO> frameworkDTOList = techsList.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework, uriInfo)).collect(Collectors.toList());
-                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<FrameworkDTO>>(frameworkDTOList) {
+                Response.ResponseBuilder response = setCacheHeaders(new GenericEntity<List<FrameworkDTO>>(frameworkDTOList) {
                 });
                 return addPaginationLinks(response, PAGE, techsPage, us.getPagesInt(techsAmount,FRAMEWORK_PAGE_SIZE)).build();
             }
@@ -218,13 +242,13 @@ public class UserProfileController {
     @GET
     @Path("/{id}/image")
     @Produces({"image/jpg", "image/png", "image/gif"})
-    public Response getImage(@PathParam("id") Long id) {
+    public Response getImage(@PathParam("id") Long id, @Context Request request) {
         Optional<User> user = us.findById(id);
 
         if (user.isPresent()) {
             Optional<byte []> picture = pictureService.findPictureById(user.get().getPictureId());
             if (picture.isPresent()) {
-                return Response.ok(picture.get()).build();
+                return setConditionalCacheHeaders(picture.get(), Arrays.hashCode(picture.get()), request).build();
             } else {
                 return Response.noContent().build();
             }

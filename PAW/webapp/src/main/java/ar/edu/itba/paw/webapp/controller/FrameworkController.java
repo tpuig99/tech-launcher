@@ -50,6 +50,29 @@ public class FrameworkController {
     private final int PAGE_SIZE = 5;
     private final int CATEGORY_PAGE_SIZE = 7;
 
+    private static Response.ResponseBuilder setConditionalCacheHeaders(Object resource, int hashcode, Request request) {
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(86400);
+
+        EntityTag etag = new EntityTag(Integer.toString(hashcode));
+        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+        if(builder == null){
+            builder = Response.ok(resource);
+            builder.tag(etag);
+        }
+
+        builder.cacheControl(cc);
+        return builder;
+    }
+
+    private static Response.ResponseBuilder setCacheHeaders(Object resource) {
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(300);
+        return Response.ok(resource).cacheControl(cc);
+    }
+
+
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response frameworksHome() {
@@ -59,7 +82,7 @@ public class FrameworkController {
         user.ifPresent(value -> {
             dto.setInterests(fs.getUserInterests(value.getId()).stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework, uriInfo)).collect(Collectors.toList()));
         });
-        return Response.ok(dto).build();
+        return setCacheHeaders(dto).build();
     }
 
     @GET
@@ -68,7 +91,7 @@ public class FrameworkController {
     public Response getCategories() {
         final List<String> enumCategory = Arrays.stream(FrameworkCategories.values()).map(Enum::name).collect(Collectors.toList());
         List<CategoriesDTO> dto = enumCategory.stream().map(x -> CategoriesDTO.fromSideBar(x, uriInfo)).collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<CategoriesDTO>>(dto) {
+        return setCacheHeaders(new GenericEntity<List<CategoriesDTO>>(dto) {
         }).build();
     }
 
@@ -77,7 +100,7 @@ public class FrameworkController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response getTypes() {
         List<TypesDTO> types = fs.getAllTypes().stream().map(TypesDTO::fromTypes).collect(Collectors.toList());
-        return Response.ok(new GenericEntity<List<TypesDTO>>(types) {
+        return setCacheHeaders(new GenericEntity<List<TypesDTO>>(types) {
         }).build();
     }
 
@@ -103,6 +126,9 @@ public class FrameworkController {
             response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
         if (page != 1)
             response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(300);
+        response = response.cacheControl(cc);
         return response.build();
     }
 
@@ -177,6 +203,9 @@ public class FrameworkController {
                 response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).queryParam("type", type).build(), "next");
             if (page != 1)
                 response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).queryParam("type", type).build(), "prev");
+            CacheControl cc = new CacheControl();
+            cc.setMaxAge(300);
+            response = response.cacheControl(cc);
             return response.build();
         }
         LOGGER.error("Tech {}: Requested and not found", id);
@@ -197,7 +226,7 @@ public class FrameworkController {
                 Optional<FrameworkVote> vote = user.get().getVoteForFramework(id);
                 vote.ifPresent(frameworkVote -> dto.setLoggedStars(frameworkVote.getStars()));
             }
-            return Response.ok(dto).build();
+            return setCacheHeaders(dto).build();
         }
         LOGGER.error("Tech {}: Requested and not found", id);
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -359,14 +388,14 @@ public class FrameworkController {
     @GET
     @Path("/{id}/image")
     @Produces(value = {"image/jpg", "image/png", "image/gif"})
-    public Response getImage(@PathParam("id") long id) throws IOException {
+    public Response getImage(@PathParam("id") long id, @Context Request request) throws IOException {
 
         Optional<Framework> framework = fs.findById(id);
 
         if (framework.isPresent()) {
             Optional<byte []> picture = pictureService.findPictureById(framework.get().getPictureId());
             if (picture.isPresent()) {
-                return Response.ok(picture.get()).build();
+                return setConditionalCacheHeaders(picture.get(), Arrays.hashCode(picture.get()), request).build();
             } else {
                 return Response.noContent().build();
             }

@@ -63,8 +63,9 @@ public class ModController {
         if (currentPage != 1) {
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, currentPage - 1).build(), "prev");
         }
-
-        return responseBuilder;
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(300);
+        return responseBuilder.cacheControl(cc);
     }
 
     private void getVerifiedAndOwnedFrameworks(User user, List<Long> frameworkIds, List<Long> frameworkIdsForReportedComments) {
