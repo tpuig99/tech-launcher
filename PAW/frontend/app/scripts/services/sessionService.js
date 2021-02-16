@@ -26,7 +26,7 @@ define(['frontend'], function(frontend) {
 
     /* User Status */
     this.getCurrentUser = function (location) {
-      return Restangular.oneUrl('user',location).get();
+      return Restangular.one(location).get();
     };
 
 

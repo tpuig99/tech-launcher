@@ -99,7 +99,7 @@
           <div class="card emphasis emph-comment row mb-2">
             <div class="card-body row mt-1">
               <div class="col-3 secondary-font">
-                <a href="{{'#/'+comment.location}}">
+                <a href="{{'#/techs/'+comment.techId}}">
                   {{comment.techName}}
                 </a>
               </div>
@@ -130,7 +130,7 @@
           <div class="card emphasis emph-content row mb-2">
             <div class="card-body row mt-1">
               <div class="col-3 secondary-font">
-                <a href="{{'#/'+content.location}}">
+                <a href="{{'#/techs/'+content.techId}}">
                   {{content.techName}}
                 </a>
               </div>
@@ -164,7 +164,7 @@
           <div class="card col d-flex emphasis emph-votes mb-2 mx-2">
             <div class="card-body row mt-1">
               <div class="col secondary-font">
-                <a href="{{'#/'+vote.techLocation}}">
+                <a href="{{'#/techs/'+vote.techId}}">
                   {{vote.techName}}
                 </a>
               </div>
@@ -192,7 +192,7 @@
       <div class="container row equal justify-content-center" style="margin: auto;">
         <div ng-repeat="tech in profile.techs track by $index" class="mb-1">
           <div class="card mx-4 mb-4">
-            <a href="{{'#/'+tech.location}}">
+            <a href="{{'#/techs/'+tech.id}}">
               <div class="card-body">
                 <div ng-if="tech.hasPicture">
                   <div class="max-logo d-flex align-items-center justify-content-center">
@@ -230,7 +230,7 @@
           <div class="card emphasis emph-post row mb-2">
             <div class="card-body row mt-1">
               <div class="col-3 secondary-font">
-                <a href="{{'#/'+post.location}}">
+                <a href="{{'#/posts/'+post.id}}">
                   {{post.postTitle}}
                 </a>
               </div>
