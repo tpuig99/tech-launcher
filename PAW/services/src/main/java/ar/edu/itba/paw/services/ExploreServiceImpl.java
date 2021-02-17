@@ -66,9 +66,7 @@ public class ExploreServiceImpl implements ExploreService {
         List<String> tags = new ArrayList<>();
         tags.addAll(categories);
         tags.addAll(types);
-        if(tags.isEmpty()){
-            return null;
-        }
+        
         return tags;
     }
 
