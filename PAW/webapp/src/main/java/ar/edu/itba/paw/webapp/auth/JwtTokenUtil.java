@@ -74,7 +74,7 @@ public class JwtTokenUtil {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String loginResponse(String token,String username){
-        return "{\"token\":\""+token+"\",\"location\":\"/users/"+us.findByUsername(username).get().getId()+"\"}";
+    public String loginResponse(UserDetails userDetails){
+        return us.responseOnLogin(generateToken(userDetails),userDetails.getUsername());
     }
 }

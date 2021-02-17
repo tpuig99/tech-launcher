@@ -63,8 +63,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication auth) throws IOException {
 
-        String token = jwtTokenUtil.generateToken(((UserDetails) auth.getPrincipal()));
-        String response = jwtTokenUtil.loginResponse(token,((UserDetails) auth.getPrincipal()).getUsername());
+        String response = jwtTokenUtil.loginResponse((UserDetails) auth.getPrincipal());
         res.getWriter().write(response);
         res.setContentType("application/json");
         res.getWriter().flush();

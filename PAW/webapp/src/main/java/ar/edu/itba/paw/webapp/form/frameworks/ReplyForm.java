@@ -1,11 +1,14 @@
 package ar.edu.itba.paw.webapp.form.frameworks;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
 public class ReplyForm {
 
     private long replyFrameworkId;
+
     @NotNull
+    @Max(500)
     private String replyComment;
     @NotNull
     private Long replyCommentId;
