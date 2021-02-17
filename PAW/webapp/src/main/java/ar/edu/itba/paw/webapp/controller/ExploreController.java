@@ -85,7 +85,6 @@ public class ExploreController {
         List<String> categoriesQuery = new ArrayList<>();
         List<FrameworkType> typesList = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
-        final int DAYS = 1, WEEK = 2, MONTH = 3, MONTHS = 4, YEAR = 5;
         SearchDTO search = new SearchDTO();
 
         LOGGER.info("Explore: Searching results for: {}", toSearch);
@@ -167,10 +166,14 @@ public class ExploreController {
        /* --------------------- TECHS --------------------- */
         List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page);
         searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate);
+
         LOGGER.info("Explore: Found {} matching techs", searchResultsNumber);
+
         int pages = (int) Math.ceil(((double)searchResultsNumber)/TECHS_PAGE_SIZE);
+
         search.setFrameworksAmount(searchResultsNumber);
         search.setFrameworks(frameworks.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
+
         return pagination(uriInfo, page == 0 ? 1 : page, pages, search);
         /* -------------------------------------------------- */
     }
@@ -189,9 +192,8 @@ public class ExploreController {
                                    @QueryParam("last_update") final Integer lastUpdate,
                                    @QueryParam("page") final int page) {
 
-        List<FrameworkCategories> categoriesList = new ArrayList<>();
+
         List<String> categoriesQuery = new ArrayList<>();
-        List<FrameworkType> typesList = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
 
         SearchDTO search = new SearchDTO();
@@ -204,40 +206,15 @@ public class ExploreController {
         LOGGER.info("Explore: Searching by comment amount = {}", commentAmount);
 
         if (categories.size() != 1 || !categories.get(0).equals("")) {
-            for (String c : categories) {
-                categoriesQuery.add(c);
-
-                try {
-                    categoriesList.add(FrameworkCategories.valueOf(c));
-                } catch (Exception e) {
-                    return Response.status(Response.Status.BAD_REQUEST).build();
-                }
-            }
+            categoriesQuery.addAll(categories);
         }
 
         if (types.size() != 1 || !types.get(0).equals("")) {
-            for (String c : types) {
-
-                typesQuery.add(c);
-
-                try {
-                    typesList.add(FrameworkType.valueOf(c));
-                } catch (Exception e) {
-                    return Response.status(Response.Status.BAD_REQUEST).build();
-                }
-            }
+            typesQuery.addAll(types);
         }
 
         List<String> allCategories = fs.getAllCategories();
         List<String> allTypes = fs.getAllTypes();
-
-        if (allCategories.contains(toSearch)) {
-            categoriesList.add(FrameworkCategories.valueOf(toSearch));
-            toSearch = "";
-        } else if (allTypes.contains(toSearch)) {
-            toSearch = "";
-        }
-
 
         Date parsedLastComment = null;
         Date parsedLastUpdate = null;
@@ -281,9 +258,12 @@ public class ExploreController {
         List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
         searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order);
         LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
+
         int pages = (int) Math.ceil(((double)searchResultsNumber)/POSTS_PAGE_SIZE);
+
         search.setPosts(posts.stream().map((Post post) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList()));
         search.setPostsAmount(searchResultsNumber);
+
         return pagination(uriInfo, page == 0 ? 1 : page, pages, search);
         /* -------------------------------------------------- */
     }
@@ -315,6 +295,16 @@ public class ExploreController {
         return null;
 
     }
+
+   /* private List<FrameworkCategories> parseCategories(List<String> categories){
+
+        if (categories.size() != 1 || !categories.get(0).equals("")) {
+            for (String c : categories) {
+                categoriesQuery.add(c);
+            }
+        }
+
+    }*/
 
 }
 
