@@ -8,7 +8,6 @@ import ar.edu.itba.paw.webapp.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -86,6 +85,7 @@ public class ExploreController {
         List<FrameworkType> typesList = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
         SearchDTO search = new SearchDTO();
+        Integer searchResultsNumber;
 
         LOGGER.info("Explore: Searching results for: {}", toSearch);
         LOGGER.info("Explore: Searching categories among: {}", categories);
@@ -93,6 +93,10 @@ public class ExploreController {
         LOGGER.info("Explore: Searching stars between: {} and {}", starsLeft, starsRight);
         LOGGER.info("Explore: Using search only by name: {}", nameFlag);
         LOGGER.info("Explore: Searching by comment amount = {}", commentAmount);
+
+        if (order != null && (order < -4 || order > 4)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
 
         if( categories.size() != 1 || !categories.get(0).equals("")) {
             for (String c : categories) {
@@ -142,28 +146,9 @@ public class ExploreController {
             parsedLastUpdate = parseToDate(lastUpdate);
         }
 
-        search.setToSearch(toSearch);
-        search.setCategories(categoriesQuery);
-        search.setTypes(typesQuery);
-        search.setStarsLeft(starsLeft);
-        search.setStarsRight(starsRight);
-        search.setNameFlag(nameFlag);
-        search.setLastComment(lastComment);
-        search.setLastUpdate(lastUpdate);
+        setExploreParams(search, toSearch, categoriesQuery, typesQuery, starsLeft, starsRight, nameFlag, lastComment, lastUpdate, order);
 
-        Integer searchResultsNumber;
-        if (order != null) {
-            if( order < -4 || order > 4 ){
-                return Response.status(Response.Status.BAD_REQUEST).build();
-            }
-            search.setOrder((int) Math.signum(order));
-            search.setSort(Math.abs(order));
-        }  else {
-            search.setOrder(1);
-            search.setSort(0);
-        }
-
-       /* --------------------- TECHS --------------------- */
+        /* --------------------- TECHS --------------------- */
         List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page);
         searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate);
 
@@ -195,8 +180,11 @@ public class ExploreController {
 
         List<String> categoriesQuery = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
-
+        Date parsedLastComment = null;
+        Date parsedLastUpdate = null;
         SearchDTO search = new SearchDTO();
+        Integer searchResultsNumber;
+        List<String> tags = new ArrayList<>();
 
         LOGGER.info("Explore: Searching results for: {}", toSearch);
         LOGGER.info("Explore: Searching categories among: {}", categories);
@@ -204,6 +192,10 @@ public class ExploreController {
         LOGGER.info("Explore: Searching stars between: {} and {}", starsLeft, starsRight);
         LOGGER.info("Explore: Using search only by name: {}", nameFlag);
         LOGGER.info("Explore: Searching by comment amount = {}", commentAmount);
+
+        if (order != null && (order < -4 || order > 4)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
 
         if (categories.size() != 1 || !categories.get(0).equals("")) {
             categoriesQuery.addAll(categories);
@@ -213,11 +205,7 @@ public class ExploreController {
             typesQuery.addAll(types);
         }
 
-        List<String> allCategories = fs.getAllCategories();
-        List<String> allTypes = fs.getAllTypes();
-
-        Date parsedLastComment = null;
-        Date parsedLastUpdate = null;
+        setExploreParams(search, toSearch, categoriesQuery, typesQuery, null, null, null, lastComment, lastUpdate, order);
 
         if (lastComment != null) {
             LOGGER.info("Explore: Searching 'last comment' according to criteria {}", lastComment);
@@ -229,29 +217,6 @@ public class ExploreController {
             parsedLastUpdate = parseToDate(lastUpdate);
         }
 
-
-        search.setToSearch(toSearch);
-        search.setCategories(categoriesQuery);
-        search.setTypes(typesQuery);
-        search.setStarsLeft(starsLeft);
-        search.setStarsRight(starsRight);
-        search.setNameFlag(nameFlag);
-        search.setLastComment(lastComment);
-        search.setLastUpdate(lastUpdate);
-
-        Integer searchResultsNumber;
-        if (order != null) {
-            if (order < -4 || order > 4) {
-                return Response.status(Response.Status.BAD_REQUEST).build();
-            }
-            search.setOrder((int) Math.signum(order));
-            search.setSort(Math.abs(order));
-        } else {
-            search.setOrder(1);
-            search.setSort(0);
-        }
-        /* --------------------- POSTS --------------------- */
-        List<String> tags = new ArrayList<>();
         tags.addAll(categories);
         tags.addAll(types);
 
@@ -265,7 +230,7 @@ public class ExploreController {
         search.setPostsAmount(searchResultsNumber);
 
         return pagination(uriInfo, page == 0 ? 1 : page, pages, search);
-        /* -------------------------------------------------- */
+
     }
 
 
@@ -296,15 +261,31 @@ public class ExploreController {
 
     }
 
-   /* private List<FrameworkCategories> parseCategories(List<String> categories){
+   private void setExploreParams(SearchDTO searchDTO, String toSearch, List<String> categories, List<String> types, Integer starsLeft, Integer starsRight, Boolean nameFlag, Integer lastComment, Integer lastUpdate, Integer order){
+       searchDTO.setToSearch(toSearch);
+       searchDTO.setCategories(categories);
+       searchDTO.setTypes(types);
+       searchDTO.setLastComment(lastComment);
+       searchDTO.setLastUpdate(lastUpdate);
 
-        if (categories.size() != 1 || !categories.get(0).equals("")) {
-            for (String c : categories) {
-                categoriesQuery.add(c);
-            }
-        }
+       if(starsLeft != null){
+           searchDTO.setStarsLeft(starsLeft);
+       }
+       if(starsRight != null){
+           searchDTO.setStarsRight(starsRight);
+       }
+       if(nameFlag != null){
+           searchDTO.setNameFlag(nameFlag);
+       }
 
-    }*/
+       if (order != null) {
+           searchDTO.setOrder((int) Math.signum(order));
+           searchDTO.setSort(Math.abs(order));
+       } else {
+           searchDTO.setOrder(1);
+           searchDTO.setSort(0);
+       }
+   }
 
 }
 
