@@ -1,5 +1,7 @@
-package ar.edu.itba.paw.webapp.form.register;
+package ar.edu.itba.paw.webapp.dto.custom_validators;
 
+
+import ar.edu.itba.paw.webapp.dto.custom_constraints.ValidEmail;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

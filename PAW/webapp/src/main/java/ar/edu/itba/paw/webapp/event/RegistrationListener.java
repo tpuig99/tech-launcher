@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.form.register;
+package ar.edu.itba.paw.webapp.event;
 
 import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.service.UserService;
