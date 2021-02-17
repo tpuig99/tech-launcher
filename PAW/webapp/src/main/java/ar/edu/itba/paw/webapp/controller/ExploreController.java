@@ -202,8 +202,8 @@ public class ExploreController {
 
         tags = getTagsToExplore(categories, types);
 
-        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
-        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order);
+        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
+        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order);
         LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
 
         int pages = (int) Math.ceil(((double)searchResultsNumber)/POSTS_PAGE_SIZE);
@@ -314,9 +314,6 @@ public class ExploreController {
         List<String> tags = new ArrayList<>();
         tags.addAll(categories);
         tags.addAll(types);
-        if(tags.isEmpty()){
-            return null;
-        }
         return tags;
     }
 }
