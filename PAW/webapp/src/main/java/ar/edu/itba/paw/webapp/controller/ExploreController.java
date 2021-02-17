@@ -8,6 +8,7 @@ import ar.edu.itba.paw.webapp.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,7 @@ public class ExploreController {
     private final long START_PAGE = 1;
     private final long TECHS_PAGE_SIZE = 24;
     private final long POSTS_PAGE_SIZE = 5;
+    final int DAYS = 1, WEEK = 2, MONTH = 3, MONTHS = 4, YEAR = 5;
 
     private String getMessageWithoutArguments(String code) {
         return messageSource.getMessage(code, Collections.EMPTY_LIST.toArray(), LocaleContextHolder.getLocale());
@@ -128,69 +130,17 @@ public class ExploreController {
             toSearch="";
         }
 
-        Date tscomment = null;
-        Date tsUpdated = null;
-        LocalDate dateComment = null;
-        LocalDate dateUpdate = null;
+        Date parsedLastComment = null;
+        Date parsedLastUpdate = null;
 
-        String dateCommentTranslation = "";
-        if(lastComment!=null) {
+        if (lastComment != null) {
             LOGGER.info("Explore: Searching 'last comment' according to criteria {}", lastComment);
-            switch (lastComment) {
-                case DAYS:
-                    dateCommentTranslation = getMessageWithoutArguments("explore.last_days");
-                    dateComment = LocalDate.now().minusDays(3);
-                    break;
-                case WEEK:
-                    dateCommentTranslation = getMessageWithoutArguments("explore.last_week");
-                    dateComment = LocalDate.now().minusWeeks(1);
-                    break;
-                case MONTH:
-                    dateCommentTranslation = getMessageWithoutArguments("explore.last_month");
-                    dateComment = LocalDate.now().minusMonths(1);
-                    break;
-                case MONTHS:
-                    dateCommentTranslation = getMessageWithoutArguments("explore.last_months");
-                    dateComment = LocalDate.now().minusMonths(3);
-                    break;
-                case YEAR:
-                    dateCommentTranslation = getMessageWithoutArguments("explore.last_year");
-                    dateComment = LocalDate.now().minusYears(1);
-                    break;
-            }
+            parsedLastComment = parseToDate(lastComment);
         }
 
-        String dateUpdateTranslation = "";
-        if(lastUpdate!=null) {
+        if (lastUpdate != null) {
             LOGGER.info("Explore: Searching 'last update' according to criteria {}", lastUpdate);
-            switch (lastUpdate) {
-                case DAYS:
-                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_days");
-                    dateUpdate = LocalDate.now().minusDays(3);
-                    break;
-                case WEEK:
-                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_week");
-                    dateUpdate = LocalDate.now().minusWeeks(1);
-                    break;
-                case MONTH:
-                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_month");
-                    dateUpdate = LocalDate.now().minusMonths(1);
-                    break;
-                case MONTHS:
-                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_months");
-                    dateUpdate = LocalDate.now().minusMonths(3);
-                    break;
-                case YEAR:
-                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_year");
-                    dateUpdate = LocalDate.now().minusYears(1);
-                    break;
-            }
-        }
-        if(dateComment!=null){
-            tscomment= Date.from(dateComment.atStartOfDay().toInstant(ZoneOffset.UTC));
-        }
-        if(dateUpdate!=null){
-            tsUpdated=Date.from(dateUpdate.atStartOfDay().toInstant(ZoneOffset.UTC));
+            parsedLastUpdate = parseToDate(lastUpdate);
         }
 
         search.setToSearch(toSearch);
@@ -215,8 +165,8 @@ public class ExploreController {
         }
 
        /* --------------------- TECHS --------------------- */
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == 0 ? 1 : page);
-        searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated);
+        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page);
+        searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate);
         LOGGER.info("Explore: Found {} matching techs", searchResultsNumber);
         int pages = (int) Math.ceil(((double)searchResultsNumber)/TECHS_PAGE_SIZE);
         search.setFrameworksAmount(searchResultsNumber);
@@ -243,7 +193,7 @@ public class ExploreController {
         List<String> categoriesQuery = new ArrayList<>();
         List<FrameworkType> typesList = new ArrayList<>();
         List<String> typesQuery = new ArrayList<>();
-        final int DAYS = 1, WEEK = 2, MONTH = 3, MONTHS = 4, YEAR = 5;
+
         SearchDTO search = new SearchDTO();
 
         LOGGER.info("Explore: Searching results for: {}", toSearch);
@@ -288,70 +238,20 @@ public class ExploreController {
             toSearch = "";
         }
 
-        Date tscomment = null;
-        Date tsUpdated = null;
-        LocalDate dateComment = null;
-        LocalDate dateUpdate = null;
 
-        String dateCommentTranslation = "";
+        Date parsedLastComment = null;
+        Date parsedLastUpdate = null;
+
         if (lastComment != null) {
             LOGGER.info("Explore: Searching 'last comment' according to criteria {}", lastComment);
-            switch (lastComment) {
-                case DAYS:
-                    dateCommentTranslation = getMessageWithoutArguments("explore.last_days");
-                    dateComment = LocalDate.now().minusDays(3);
-                    break;
-                case WEEK:
-                    dateCommentTranslation = getMessageWithoutArguments("explore.last_week");
-                    dateComment = LocalDate.now().minusWeeks(1);
-                    break;
-                case MONTH:
-                    dateCommentTranslation = getMessageWithoutArguments("explore.last_month");
-                    dateComment = LocalDate.now().minusMonths(1);
-                    break;
-                case MONTHS:
-                    dateCommentTranslation = getMessageWithoutArguments("explore.last_months");
-                    dateComment = LocalDate.now().minusMonths(3);
-                    break;
-                case YEAR:
-                    dateCommentTranslation = getMessageWithoutArguments("explore.last_year");
-                    dateComment = LocalDate.now().minusYears(1);
-                    break;
-            }
+            parsedLastComment = parseToDate(lastComment);
         }
 
-        String dateUpdateTranslation = "";
         if (lastUpdate != null) {
             LOGGER.info("Explore: Searching 'last update' according to criteria {}", lastUpdate);
-            switch (lastUpdate) {
-                case DAYS:
-                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_days");
-                    dateUpdate = LocalDate.now().minusDays(3);
-                    break;
-                case WEEK:
-                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_week");
-                    dateUpdate = LocalDate.now().minusWeeks(1);
-                    break;
-                case MONTH:
-                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_month");
-                    dateUpdate = LocalDate.now().minusMonths(1);
-                    break;
-                case MONTHS:
-                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_months");
-                    dateUpdate = LocalDate.now().minusMonths(3);
-                    break;
-                case YEAR:
-                    dateUpdateTranslation = getMessageWithoutArguments("explore.last_year");
-                    dateUpdate = LocalDate.now().minusYears(1);
-                    break;
-            }
+            parsedLastUpdate = parseToDate(lastUpdate);
         }
-        if (dateComment != null) {
-            tscomment = Date.from(dateComment.atStartOfDay().toInstant(ZoneOffset.UTC));
-        }
-        if (dateUpdate != null) {
-            tsUpdated = Date.from(dateUpdate.atStartOfDay().toInstant(ZoneOffset.UTC));
-        }
+
 
         search.setToSearch(toSearch);
         search.setCategories(categoriesQuery);
@@ -378,14 +278,42 @@ public class ExploreController {
         tags.addAll(categories);
         tags.addAll(types);
 
-        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
-        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, tscomment, tsUpdated, order);
+        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
+        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order);
         LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
         int pages = (int) Math.ceil(((double)searchResultsNumber)/POSTS_PAGE_SIZE);
         search.setPosts(posts.stream().map((Post post) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList()));
         search.setPostsAmount(searchResultsNumber);
         return pagination(uriInfo, page == 0 ? 1 : page, pages, search);
         /* -------------------------------------------------- */
+    }
+
+
+    private Date parseToDate(Integer lastComment){
+        LocalDate localDate = null;
+        switch (lastComment) {
+            case DAYS:
+                localDate = LocalDate.now().minusDays(3);
+                break;
+            case WEEK:
+                localDate = LocalDate.now().minusWeeks(1);
+                break;
+            case MONTH:
+                localDate = LocalDate.now().minusMonths(1);
+                break;
+            case MONTHS:
+                localDate = LocalDate.now().minusMonths(3);
+                break;
+            case YEAR:
+                localDate = LocalDate.now().minusYears(1);
+                break;
+        }
+
+        if(localDate != null){
+            return Date.from(localDate.atStartOfDay().toInstant(ZoneOffset.UTC));
+        }
+        return null;
+
     }
 
 }
