@@ -42,9 +42,6 @@ public class RegisterController {
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
     private PawUserDetailsService userDetailsService;
 
     @Context
