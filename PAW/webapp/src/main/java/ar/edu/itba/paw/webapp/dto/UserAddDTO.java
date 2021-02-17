@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.webapp.dto;
 
-import ar.edu.itba.paw.webapp.dto.custom_constraints.ValidEmail;
+import ar.edu.itba.paw.webapp.dto.custom_constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -16,7 +16,7 @@ public class UserAddDTO {
 
     @NotNull
     @NotEmpty
-    @ValidEmail
+    @Email
     private String mail;
 
     @NotNull
