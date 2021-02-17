@@ -8,10 +8,13 @@ public class LoginForm {
     @NotNull
     @Size(min = 3, max = 100)
     private String username;
+
     @NotNull
     @Size(min = 6, max = 100)
     private String password;
+
     private Boolean rememberme = false;
+
     public String getUsername() {
         return username;
     }

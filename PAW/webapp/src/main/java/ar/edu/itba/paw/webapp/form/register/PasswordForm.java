@@ -9,20 +9,25 @@ public class PasswordForm {
     @NotNull
     @Size(min = 6, max = 100)
     private String password;
+
     @NotNull
     @Size(min = 6, max = 100)
     private String repeatPassword;
+
+    private long userId;
+
     public String getPassword() {
         return password;
     }
-    private long userId;
 
     public void setPassword(String password) {
         this.password = password;
     }
+
     public String getRepeatPassword() {
         return repeatPassword;
     }
+
     public void setRepeatPassword(String repeatPassword)
     {
         this.repeatPassword = repeatPassword;

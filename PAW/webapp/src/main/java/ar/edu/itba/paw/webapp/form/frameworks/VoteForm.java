@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.form.frameworks;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class VoteForm {
@@ -8,6 +10,8 @@ public class VoteForm {
 
     private int commentId;
 
+    @Min(0)
+    @Max(5)
     private int vote;
 
     public long getFrameworkId() {
