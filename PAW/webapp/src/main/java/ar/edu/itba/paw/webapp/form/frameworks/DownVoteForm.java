@@ -3,9 +3,9 @@ package ar.edu.itba.paw.webapp.form.frameworks;
 import javax.validation.constraints.NotNull;
 
 public class DownVoteForm {
-    @NotNull
+
     private long downVoteFrameworkId;
-    @NotNull
+
     private int downVoteCommentId;
 
     public long getDownVoteFrameworkId() {

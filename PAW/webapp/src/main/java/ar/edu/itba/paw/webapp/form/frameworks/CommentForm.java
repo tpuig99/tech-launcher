@@ -1,12 +1,16 @@
 package ar.edu.itba.paw.webapp.form.frameworks;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class CommentForm {
-    @NotNull
+
     private long commentFrameworkId;
+
     @NotNull
+    @Size(max=500)
     private String comment;
+
     private Long commentId;
 
     public long getCommentFrameworkId() {

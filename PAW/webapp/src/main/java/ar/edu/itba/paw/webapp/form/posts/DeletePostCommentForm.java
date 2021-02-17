@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.form.posts;
 import javax.validation.constraints.NotNull;
 
 public class DeletePostCommentForm {
-    @NotNull
+
     private long commentDeletePostId;
     @NotNull
     private Long commentDeleteId;

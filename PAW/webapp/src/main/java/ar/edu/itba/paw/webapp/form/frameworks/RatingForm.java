@@ -1,11 +1,15 @@
 package ar.edu.itba.paw.webapp.form.frameworks;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class RatingForm {
-    @NotNull
+
     private long frameworkId;
-    @NotNull
+
+    @Min(0)
+    @Max(5)
     private int rating;
 
     public long getFrameworkId() {
