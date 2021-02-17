@@ -21,4 +21,6 @@ public interface PostService {
 
     void vote(long postId, long userId, int voteSign);
     int getPostsAmount();
+
+    public boolean isPostInvalid(String title, String description, List<String> names, List<String> categories, List<String> types);
 }
