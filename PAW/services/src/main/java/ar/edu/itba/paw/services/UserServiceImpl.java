@@ -37,7 +37,6 @@ import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private static final long USER_NOT_EXISTS = -1;
     private static final int DELETE_VERIFICATIONS = -1;
     private static final int ALLOW_MOD = 1;
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -50,9 +49,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private VerifyUserDao verifyUserDao;
-
-    @Autowired
-    private AuthenticationManager authManager;
 
     @Autowired
     private MessageSource messageSource;
@@ -91,6 +87,12 @@ public class UserServiceImpl implements UserService {
         long userId = Long.parseLong(strings[strings.length - 1]);
 
         return userDao.findById(userId);
+    }
+
+    @Transactional
+    @Override
+    public String responseOnLogin(String token, String username) {
+        return "{\"token\":\""+token+"\",\"location\":\"/users/"+findByUsername(username).get().getId()+"\"}";
     }
 
     private Optional<User> findByUsernameOrMail(String username, String mail) {

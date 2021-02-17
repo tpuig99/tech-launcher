@@ -15,6 +15,7 @@ public interface UserService {
     Optional<User> findByUsername(String username);
     Optional<User> findByMail(String mail);
     Optional<User> findByToken(String token);
+    String responseOnLogin(String token, String username);
     User create(String username,String mail,String password) throws UserAlreadyExistException;
     void delete(long userId);
     boolean quitModdingFromTech(User user, long frameworkId);
