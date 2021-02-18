@@ -13,7 +13,11 @@ define([], function() {
               controller: 'ExploreCtrl'
             },
             '/404': {
-              templateUrl: 'views/error.html',
+              templateUrl: '404.html',
+              controller: 'ErrorCtrl'
+            },
+            '/500': {
+              templateUrl: '500.html',
               controller: 'ErrorCtrl'
             },
             '/login': {

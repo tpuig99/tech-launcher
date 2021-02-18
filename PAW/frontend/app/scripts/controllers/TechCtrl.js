@@ -374,6 +374,23 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       );
     };
 
+    // Form Validations
+    $scope.techNameValidator = {
+      minLen: 1,
+      maxLen: 50,
+      pattern: /[a-zA-Z0-9 -+#*]+/
+    };
+
+    $scope.techIntroValidator = {
+      minLen: 1,
+      maxLen: 5000,
+    };
+
+    $scope.techDescriptionValidator = {
+      minLen: 1,
+      maxLen: 500,
+    };
+
   });
 
 });
