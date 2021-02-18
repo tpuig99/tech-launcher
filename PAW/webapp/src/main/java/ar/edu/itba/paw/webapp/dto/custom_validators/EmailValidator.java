@@ -1,5 +1,7 @@
-package ar.edu.itba.paw.webapp.form.register;
+package ar.edu.itba.paw.webapp.dto.custom_validators;
 
+
+import ar.edu.itba.paw.webapp.dto.custom_constraints.Email;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -7,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
+public class EmailValidator implements ConstraintValidator<Email, String> {
 
     private Pattern pattern;
     private Matcher matcher;
@@ -15,7 +17,7 @@ public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-+]+(.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(.[A-Za-z0-9]+)*(.[A-Za-z]{2,})$";
 
     @Override
-    public void initialize(ValidEmail constraintAnnotation) {
+    public void initialize(Email constraintAnnotation) {
     }
 
     @Override
