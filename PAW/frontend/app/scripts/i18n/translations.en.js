@@ -77,6 +77,10 @@ define([], function () {
 
     EDIT_TECH: 'Edit Tech',
     ERROR_DESCRIPTION: 'Ooops, an error occurred',
+    ERROR_NOT_FOUND_DESCRIPTION: 'Sorry, but the page you were trying to view does not exist.',
+    ERROR_NOT_FOUND: 'Not Found',
+    ERROR_SERVER_DESCRIPTION: 'Sorry, but we are currently unable to handle this request ',
+    ERROR_SERVER: 'Internal Server Error',
 
     EXPLORE_ANY_DATE: 'Any date',
     EXPLORE_CATEGORIES: 'Categories',
