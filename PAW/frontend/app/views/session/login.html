@@ -22,10 +22,10 @@
         {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group row ml-2">
       <label><input ng-model="rememberMe" type="checkbox"/>{{'LOGIN_REMEMBER_ME' | translate}}</label>
     </div>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center mb-4">
       <input ng-if="loginForm.$valid" class="btn primary-button" type="submit" value="{{'LOGIN_TITLE' | translate}}" ng-click="login()"/>
       <input ng-if="loginForm.$invalid" disabled class="btn primary-button" type="submit" value="{{'LOGIN_TITLE' | translate}}"/>
     </div>

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
-    final private Integer minTitleLength = 3, minDescriptionLength = 0, maxTitleLength = 200, maxDescriptionLength = 5000;
+
 
     @Autowired
     private PostService ps;
@@ -122,24 +122,7 @@ public class PostController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    private boolean postIsInvalid(final PostAddDTO post) {
-        if (post.getTitle() == null) {
-            return true;
-        }
-        if (post.getTitle().length() < minTitleLength || post.getTitle().length() > maxTitleLength) {
-            return true;
-        }
 
-        if (post.getDescription() == null) {
-            return true;
-        }
-
-        if (post.getDescription().length() < minDescriptionLength || post.getDescription().length() > maxDescriptionLength) {
-            return true;
-        }
-
-        return post.getTypes().isEmpty() && post.getCategories().isEmpty() && post.getNames().isEmpty();
-    }
 
     @GET
     @Path("/tags")
@@ -162,7 +145,7 @@ public class PostController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response addPost(final PostAddDTO form) {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (postIsInvalid(form)) {
+        if (ps.isPostInvalid(form.getTitle(),form.getDescription(),form.getNames(), form.getCategories(), form.getTypes())) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
@@ -195,7 +178,7 @@ public class PostController {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         final Optional<Post> post = ps.findById(id);
         if (post.isPresent()) {
-            if (postIsInvalid(form)) {
+            if (ps.isPostInvalid(form.getTitle(),form.getDescription(),form.getNames(), form.getCategories(), form.getTypes())) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
