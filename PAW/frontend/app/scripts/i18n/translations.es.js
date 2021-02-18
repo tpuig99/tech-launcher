@@ -125,6 +125,9 @@ define([], function() {
     FORM_ERROR_EMPTY: 'No debe estar vacío',
     FORM_ERROR_LENGTH: 'Debe tener entre {{ min }} y {{ max }} caracteres',
     FORM_ERROR_PASSWORDS_MATCHING: 'Las contraseñas deben ser iguales',
+    FORM_ERROR_USERNAME_PATTERN: 'El nombre de usuario solo puede tener letras y números',
+    FORM_ERROR_TECH_NAME_PATTERN: 'El nombre de la tecnología es inválido',
+    FORM_ERROR_POST_NAME_PATTERN: 'El nombre del post es inválido',
 
     FORUM_ADD_POST: '¡Añade una nueva pregunta a nuestro foro!',
     FORUM_EMPTY_POSTS: 'No hay post para mostrar aún!',

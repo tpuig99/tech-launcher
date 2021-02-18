@@ -24,12 +24,13 @@
                ng-maxlength="{{techNameValidator.maxLen}}"
                ng-pattern="techNameValidator.pattern"
                />
-        <div ng-show="frameworkForm.techNameInput.$dirty && frameworkForm.techNameInput.$error.required">
+        <div class="formError" ng-show="frameworkForm.techNameInput.$dirty && frameworkForm.techNameInput.$error.required">
           {{ 'FORM_ERROR_EMPTY' | translate}}
         </div>
-        <div ng-show="frameworkForm.techNameInput.$error.minlength || frameworkForm.techNameInput.$error.maxlength">
+        <div class="formError" ng-show="frameworkForm.techNameInput.$error.minlength || frameworkForm.techNameInput.$error.maxlength">
           {{ 'FORM_ERROR_LENGTH' | translate: '{min: 1, max: 50}'}}
         </div>
+        <div class="formError" ng-show="frameworkForm.techNameInput.$error.pattern">{{ 'FORM_ERROR_TECH_NAME_PATTERN' | translate}}</div>
       </div>
 
       <div class="form-group">
@@ -40,7 +41,7 @@
             {{ "CATEGORY_" + category.category | uppercase | translate}}
           </option>
         </select>
-        <div ng-show="frameworkForm.techCategoryInput.$dirty && frameworkForm.techNameInput.$error.required">
+        <div class="formError" ng-show="frameworkForm.techCategoryInput.$dirty && frameworkForm.techNameInput.$error.required">
           {{ 'FORM_ERROR_EMPTY' | translate}}
         </div>
       </div>
@@ -52,7 +53,7 @@
           <option ng-repeat="type in types track by $index" ng-selected="$index == 0" value="{{type.type}}">{{ "TYPE_" + type.type | uppercase | translate}}
           </option>
         </select>
-        <div ng-show="frameworkForm.techTypeInput.$dirty && frameworkForm.techTypeInput.$error.required">
+        <div class="formError" ng-show="frameworkForm.techTypeInput.$dirty && frameworkForm.techTypeInput.$error.required">
           {{ 'FORM_ERROR_EMPTY' | translate}}
         </div>
       </div>
@@ -63,11 +64,11 @@
                   ng-minlength="{{techDescriptionValidator.minLen}}"
                   ng-maxlength="{{techDescriptionValidator.maxLen}}"
                   placeholder="{{'ADD_TECH_DESCRIPTION_PLACEHOLDER' | translate}}"></textarea>
-        <div
+        <div class="formError"
           ng-show="frameworkForm.techDescriptionInput.$dirty && frameworkForm.techDescriptionInput.$error.required">
           {{ 'FORM_ERROR_EMPTY' | translate}}
         </div>
-        <div
+        <div class="formError"
           ng-show="frameworkForm.techDescriptionInput.$error.minlength || frameworkForm.techDescriptionInput.$error.maxlength">
           {{ 'FORM_ERROR_LENGTH' | translate: '{min: 1, max: 500}'}}
         </div>
@@ -79,11 +80,11 @@
                   ng-minlength="{{techIntroValidator.minLen}}"
                   ng-maxlength="{{techIntroValidator.maxLen}}"
                   placeholder="{{'ADD_TECH_INTRODUCTION_PLACEHOLDER' | translate}}"></textarea>
-        <div
+        <div class="formError"
           ng-show="frameworkForm.techIntroductionInput.$dirty && frameworkForm.techIntroductionInput.$error.required">
           {{ 'FORM_ERROR_EMPTY' | translate}}
         </div>
-        <div
+        <div class="formError"
           ng-show="frameworkForm.techIntroductionInput.$error.minlength || frameworkForm.techIntroductionInput.$error.maxlength">
           {{ 'FORM_ERROR_LENGTH' | translate: '{min: 1, max: 5000}'}}
         </div>
