@@ -77,6 +77,10 @@ define([], function () {
 
     EDIT_TECH: 'Edit Tech',
     ERROR_DESCRIPTION: 'Ooops, an error occurred',
+    ERROR_NOT_FOUND_DESCRIPTION: 'Sorry, but the page you were trying to view does not exist.',
+    ERROR_NOT_FOUND: 'Not Found',
+    ERROR_SERVER_DESCRIPTION: 'Sorry, but we are currently unable to handle this request ',
+    ERROR_SERVER: 'Internal Server Error',
 
     EXPLORE_ANY_DATE: 'Any date',
     EXPLORE_CATEGORIES: 'Categories',
@@ -125,6 +129,9 @@ define([], function () {
     FORM_ERROR_EMPTY: 'Must not be empty',
     FORM_ERROR_LENGTH: 'Must be between {{ min }} and {{ max }} characters',
     FORM_ERROR_PASSWORDS_MATCHING: 'Passwords do not match',
+    FORM_ERROR_USERNAME_PATTERN: 'Username can have only letters and numbers',
+    FORM_ERROR_TECH_NAME_PATTERN: 'Tech name invalid',
+    FORM_ERROR_POST_NAME_PATTERN: 'Post name invalid',
 
     FORUM_ADD_POST: 'Add a new Question to our Forum!',
     FORUM_EMPTY_POSTS: 'There are no posts here yet!',
