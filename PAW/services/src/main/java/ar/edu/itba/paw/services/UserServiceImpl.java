@@ -388,4 +388,28 @@ public class UserServiceImpl implements UserService {
     public long getPagesLong(Optional<Long> count, long size) {
         return count.map(integer -> (long) Math.ceil((double) integer / size)).orElse(0L);
     }
+
+    @Override
+    public List<Long> getOwnedFrameworks(User user ) {
+        List<Long> frameworkIdsForReportedComments = new LinkedList<>();
+        user.getOwnedFrameworks().forEach(framework -> {
+            frameworkIdsForReportedComments.add(framework.getId());
+        });
+        return frameworkIdsForReportedComments;
+    }
+
+    @Override
+    public List<Long> getVerifiedFrameworks( User user ) {
+        List<Long> frameworkIds = new LinkedList<>();
+        user.getVerifications().forEach(verifyUser -> {
+            if (!verifyUser.isPending())
+                frameworkIds.add(verifyUser.getFrameworkId());
+        });
+
+        user.getOwnedFrameworks().forEach(framework -> {
+            frameworkIds.add(framework.getId());
+        });
+
+        return frameworkIds;
+    }
 }

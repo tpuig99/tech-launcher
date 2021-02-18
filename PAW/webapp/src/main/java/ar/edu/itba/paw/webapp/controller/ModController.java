@@ -16,10 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Path("mod")
@@ -67,18 +64,7 @@ public class ModController {
         return responseBuilder;
     }
 
-    private void getVerifiedAndOwnedFrameworks(User user, List<Long> frameworkIds, List<Long> frameworkIdsForReportedComments) {
 
-        user.getVerifications().forEach(verifyUser -> {
-            if (!verifyUser.isPending())
-                frameworkIds.add(verifyUser.getFrameworkId());
-        });
-
-        user.getOwnedFrameworks().forEach(framework -> {
-            frameworkIds.add(framework.getId());
-            frameworkIdsForReportedComments.add(framework.getId());
-        });
-    }
 
     @GET
     @Path("/moderators")
@@ -95,12 +81,10 @@ public class ModController {
             modsAmount = us.getVerifyByPendingAmount(false).get();
 
         } else if (ownedFrameworks.size() > 0) {
-            List<Long> frameworkIds = new ArrayList<>();
-            List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            List<Long> frameworkIds = us.getOwnedFrameworks(user);
 
-            userList = us.getVerifyByPendingAndFrameworks(false, frameworkIdsForReportedComments, modsPage);
-            modsAmount = us.getVerifyByPendingAndFrameworksAmount(false, frameworkIdsForReportedComments);
+            userList = us.getVerifyByPendingAndFrameworks(false, frameworkIds, modsPage);
+            modsAmount = us.getVerifyByPendingAndFrameworksAmount(false, frameworkIds);
         }
 
         if (userList.size() > 0) {
@@ -129,9 +113,7 @@ public class ModController {
             modsAmount = us.getApplicantsByPendingAmount(true).get();
 
         } else if (ownedFrameworks.size() > 0 || user.isVerify()) {
-            List<Long> frameworkIds = new ArrayList<>();
-            List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            List<Long> frameworkIds = us.getVerifiedFrameworks(user);
 
             userList = us.getApplicantsByFrameworks(frameworkIds, applicantsPage);
             modsAmount = us.getApplicantsByFrameworkAmount(frameworkIds, true).get();
@@ -163,12 +145,10 @@ public class ModController {
             modsAmount = us.getVerifyByPendingAmount(true).get();
 
         } else if (ownedFrameworks.size() > 0 || user.isVerify()) {
-            List<Long> frameworkIds = new ArrayList<>();
-            List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            List<Long> frameworkIds = us.getVerifiedFrameworks(user);
 
-            userList = us.getVerifyByPendingAndFrameworks(true, frameworkIdsForReportedComments, verifyPage);
-            modsAmount = us.getVerifyByPendingAndFrameworksAmount(true, frameworkIdsForReportedComments);
+            userList = us.getVerifyByPendingAndFrameworks(true, frameworkIds, verifyPage);
+            modsAmount = us.getVerifyByPendingAndFrameworksAmount(true, frameworkIds);
         }
 
         if (userList.size() > 0) {
@@ -197,12 +177,10 @@ public class ModController {
             reportsAmount = commentService.getAllReportsAmount().get();
 
         } else if (ownedFrameworks.size() > 0) {
-            List<Long> frameworkIds = new ArrayList<>();
-            List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            List<Long> frameworkIdsForReportedComments = us.getOwnedFrameworks(user);
 
             commentList = commentService.getReportsByFrameworks(frameworkIdsForReportedComments, rComPage);
-            reportsAmount = commentService.getReportsAmountByFrameworks(frameworkIds);
+            reportsAmount = commentService.getReportsAmountByFrameworks(frameworkIdsForReportedComments);
         }
 
         if (commentList.size() > 0) {
@@ -231,9 +209,7 @@ public class ModController {
             reportsAmount = contentService.getAllReportsAmount().get();
 
         } else if (ownedFrameworks.size() > 0 || user.isVerify()) {
-            List<Long> frameworkIds = new ArrayList<>();
-            List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            List<Long> frameworkIds = us.getVerifiedFrameworks(user);
 
             contentList = contentService.getReportsByFrameworks(frameworkIds, rConPage);
             reportsAmount = contentService.getReportsAmount(frameworkIds).get();
