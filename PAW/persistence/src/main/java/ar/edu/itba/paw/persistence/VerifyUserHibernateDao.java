@@ -100,7 +100,7 @@ public class VerifyUserHibernateDao implements VerifyUserDao {
     public List<VerifyUser> getApplicantsByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
 
         String ids = frameworksIds.stream().map(String::valueOf).collect(Collectors.joining(","));
-        Query pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu WHERE vu.framework_id IN (" + ids + ") and vu.pending = true and vu.comment_id is not null LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page - 1) * pageSize));
+        Query pagingQuery = em.createNativeQuery("SELECT verification_id from verify_users as vu WHERE vu.framework_id IN (" + ids + ") and vu.pending = true and vu.comment_id is null LIMIT " + pageSize + " OFFSET " + (page - 1) * pageSize);
 
         @SuppressWarnings("unchecked")
         List<Long> resultList = ((List<Number>) pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());

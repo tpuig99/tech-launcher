@@ -16,9 +16,7 @@ define(['frontend','services/userService','services/sessionService'], function(f
           $scope.isPresent = true;
           $scope.getCurrentMods();
           $scope.getCurrentApplicants();
-          if( $scope.isAdmin || $scope.isOwner ) {
-            $scope.getVerified();
-          }
+          $scope.getVerified();
           $scope.getReportedComments();
           $scope.getReportedContents();
         }).catch((error) => {
