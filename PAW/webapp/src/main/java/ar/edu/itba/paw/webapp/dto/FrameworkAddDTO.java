@@ -35,6 +35,8 @@ public class FrameworkAddDTO {
     @NotEmpty
     @Size(min = 1, max = 100)
     private String type;
+
+    @Size(max=1024 * 1024)
     private byte[] picture;
 
     public String getTechName() {
