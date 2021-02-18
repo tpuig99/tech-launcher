@@ -199,6 +199,19 @@ define(['frontend', 'services/postService', 'services/sessionService'], function
 
     $scope.getPost();
     $scope.getAnswers();
+
+
+    // Form Validations
+    $scope.postTitleValidator = {
+      minLen: 3,
+      maxLen: 200,
+    };
+
+    $scope.postDescriptionValidator = {
+      minLen: 1,
+      maxLen: 5000,
+    };
+
   });
 
 });

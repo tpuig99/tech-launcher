@@ -8,18 +8,27 @@
   <form name="postForm" enctype="application/x-www-form-urlencoded" ng-submit="editPost()" novalidate>
     <div class="form-group">
       <label for="postTitleInput">{{'POST_EDIT_ADD_TITLE' | translate}}</label>
-      <input class="form-control" id="postTitleInput" ng-model="postTitleInput" name="postTitleInput" required ng-minlength="3" ng-maxlength="200" type="text" value="{{post.postTitle}}" placeholder="{{post.postTitle}}"/>
+      <input class="form-control" id="postTitleInput" ng-model="postTitleInput" name="postTitleInput" value="{{post.postTitle}}" placeholder="{{post.postTitle}}"
+             required
+             ng-minlength="{{postTitleValidator.minLen}}"
+             ng-maxlength="{{postTitleValidator.maxLen}}"
+             type="text"/>
       <div class="page-description"></div>
-      <div ng-show="postForm.postTitleInput.$error.minlength || postForm.postTitleInput.$error.maxlength" class="alert alert-danger">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 200}'}}</div>
+      <div  class="formError" ng-show="postForm.postTitleInput.$error.minlength || postForm.postTitleInput.$error.maxlength" class="alert alert-danger">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 200}'}}</div>
     </div>
 
     <div class="form-group">
       <label for="postDescriptionInput">{{'POST_EDIT_ADD_DESCRIPTION' | translate}}</label>
-      <textarea  name="postDescriptionInput"  class="form-control" id="postDescriptionInput" ng-model="postDescriptionInput" required ng-maxlength="5000">
+      <textarea  name="postDescriptionInput"  class="form-control" id="postDescriptionInput" ng-model="postDescriptionInput"
+                 required
+                 ng-minlength="{{postDescriptionValidator.minLen}}"
+                 ng-maxlength="{{postDescriptionValidator.maxLen}}">
           {{post.postDescription}}
         </textarea>
       <div class="page-description"></div>
-      <div ng-show="postForm.postDescriptionInput.$error.maxlength" class="alert alert-danger">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 0,max: 5000}'}}</div>
+      <div class="formError" ng-show="postForm.postDescriptionInput.$error.minlength || postForm.postDescriptionInput.$error.maxlength">
+        {{ 'FORM_ERROR_LENGTH' | translate: '{min: 1, max: 5000}'}}
+      </div>
     </div>
 
     <!-- Tags Start -->

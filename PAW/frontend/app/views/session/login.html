@@ -9,14 +9,26 @@
   <form name="loginForm" enctype="application/x-www-form-urlencoded" novalidate>
     <div class="form-group">
       <label for="username">{{'LOGIN_USERNAME' | translate}}</label>
-      <input class="form-control" id="username" ng-model="usernameInput" name="usernameInput" required ng-minlength="3" ng-maxlength="100"  type="text" placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
+      <input class="form-control" id="username" ng-model="usernameInput" name="usernameInput"
+             required
+             ng-minlength="{{usernameValidator.minLen}}"
+             ng-maxlength="{{usernameValidator.maxLen}}"
+             ng-pattern="usernameValidator.pattern"
+             type="text"
+             placeholder="{{'LOGIN_USERNAME_PLACEHOLDER' | translate}}"/>
       <div class="formError" ng-show="loginForm.usernameInput.$dirty && loginForm.usernameInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
       <div class="formError" ng-show="loginForm.usernameInput.$error.minlength || loginForm.usernameInput.$error.maxlength">{{ 'FORM_ERROR_LENGTH' | translate : '{min: 3, max: 100}'}}</div>
+      <div class="formError" ng-show="loginForm.usernameInput.$error.pattern">{{ 'FORM_ERROR_USERNAME_PATTERN' | translate}}</div>
     </div>
 
     <div class="form-group">
       <label for="password">{{'LOGIN_PASSWORD' | translate}}</label>
-      <input class="form-control" id="password" ng-model="passwordInput" name="passwordInput" required ng-minlength="6" ng-maxlength="100" type="password" placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
+      <input class="form-control" id="password" ng-model="passwordInput" name="passwordInput"
+             required
+             ng-minlength="{{passwordValidator.minLen}}"
+             ng-maxlength="{{passwordValidator.maxLen}}"
+             type="password"
+             placeholder="{{'LOGIN_PASSWORD_PLACEHOLDER' | translate}}"/>
       <div class="formError" ng-show="loginForm.passwordInput.$dirty && loginForm.passwordInput.$error.required ">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
       <div class="formError" ng-show="loginForm.passwordInput.$error.minlength || loginForm.passwordInput.$error.maxlength">
         {{ 'FORM_ERROR_LENGTH' | translate : '{min: 6, max: 100}'}}</div>
