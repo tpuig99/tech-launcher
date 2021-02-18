@@ -44,9 +44,6 @@ public class ExploreController {
     @Autowired
     private UserService us;
 
-    @Autowired
-    private PostService ps;
-
     @Context
     private UriInfo uriInfo;
 
@@ -142,8 +139,8 @@ public class ExploreController {
         setExploreParams(search, toSearch, categories, types, starsLeft, starsRight, nameFlag, lastComment, lastUpdate, order);
 
         /* --------------------- TECHS --------------------- */
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page);
-        searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate);
+        List<Framework> frameworks = es.searchFrameworks(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page);
+        searchResultsNumber = es.getFrameworksResultNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate);
 
         LOGGER.info("Explore: Found {} matching techs", searchResultsNumber);
 
@@ -206,8 +203,8 @@ public class ExploreController {
 
         tags = es.getTags(categories, types);
 
-        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
-        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order);
+        List<Post> posts = es.searchPosts(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
+        searchResultsNumber = es.getPostsResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order);
         LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
 
         int pages = (int) Math.ceil(((double)searchResultsNumber)/POSTS_PAGE_SIZE);

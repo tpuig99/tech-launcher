@@ -55,20 +55,6 @@ public class PostServiceImpl implements PostService {
         return postDao.getByTagName(category,page, pageSize);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<Post> search(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page, long pageSize) {
-        return postDao.search(toSearch,tags,starsLeft,starsRight,commentAmount,lastComment,lastUpdated,order,page,pageSize);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Integer searchResultsNumber(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order){
-        if(starsLeft<starsRight)
-            return postDao.searchResultsNumber(toSearch,tags,starsLeft,starsRight,commentAmount,lastComment,lastUpdated, order);
-        return postDao.searchResultsNumber(toSearch,tags,starsRight,starsLeft,commentAmount,lastComment,lastUpdated, order);
-    }
-
     @Transactional
     @Override
     public Post insertPost( long userId, String title, String description) {
