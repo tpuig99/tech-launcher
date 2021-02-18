@@ -2,7 +2,7 @@
 
 define([], function() {
     return {
-        defaultRoutePath: '/',
+        defaultRoutePath: '/404',
         routes: {
             '/': {
                 templateUrl: 'views/home.html',
@@ -12,8 +12,12 @@ define([], function() {
               templateUrl: 'views/explore.html',
               controller: 'ExploreCtrl'
             },
-            '/error': {
-              templateUrl: 'views/error.html',
+            '/404': {
+              templateUrl: '404.html',
+              controller: 'ErrorCtrl'
+            },
+            '/500': {
+              templateUrl: '500.html',
               controller: 'ErrorCtrl'
             },
             '/login': {
@@ -62,7 +66,7 @@ define([], function() {
             },
             '/techs/add_tech': {
               templateUrl: 'views/techs/add_tech.html',
-              controller: 'TechCtrl'
+              controller: 'EditTechCtrl'
             },
             '/techs/:id/edit_tech': {
               templateUrl: 'views/techs/edit_tech.html',

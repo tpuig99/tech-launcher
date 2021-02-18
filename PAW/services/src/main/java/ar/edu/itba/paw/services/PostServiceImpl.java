@@ -17,6 +17,7 @@ import java.util.Optional;
 public class PostServiceImpl implements PostService {
 
     private final long PAGE_SIZE_USER_PROFILE = 5;
+    final private Integer MIN_TITLE_LEN = 3, MIN_DESCRIPTION_LEN = 0, MAX_TITLE_LEN = 200, MAX_DESCRIPTION_LEN = 5000;
 
     @Autowired
     private PostDao postDao;
@@ -52,20 +53,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getByTagName(String category, long page, long pageSize) {
         return postDao.getByTagName(category,page, pageSize);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Post> search(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page, long pageSize) {
-        return postDao.search(toSearch,tags,starsLeft,starsRight,commentAmount,lastComment,lastUpdated,order,page,pageSize);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Integer searchResultsNumber(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order){
-        if(starsLeft<starsRight)
-            return postDao.searchResultsNumber(toSearch,tags,starsLeft,starsRight,commentAmount,lastComment,lastUpdated, order);
-        return postDao.searchResultsNumber(toSearch,tags,starsRight,starsLeft,commentAmount,lastComment,lastUpdated, order);
     }
 
     @Transactional
@@ -105,5 +92,25 @@ public class PostServiceImpl implements PostService {
     @Override
     public int getPostsAmount() {
         return postDao.getAmount();
+    }
+
+    @Override
+    public boolean isPostInvalid(String title, String description, List<String> names, List<String> categories, List<String> types) {
+        if (title == null) {
+            return true;
+        }
+        if (title.length() < MIN_TITLE_LEN || title.length() > MAX_TITLE_LEN) {
+            return true;
+        }
+
+        if (description == null) {
+            return true;
+        }
+
+        if (description.length() < MIN_DESCRIPTION_LEN || description.length() > MAX_DESCRIPTION_LEN) {
+            return true;
+        }
+
+        return types.isEmpty() && categories.isEmpty() && names.isEmpty();
     }
 }

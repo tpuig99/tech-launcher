@@ -12,13 +12,12 @@ public interface PostService {
     List<Post> getPostsByUser(long userId, long page);
     Optional<Integer> getPostsCountByUser(long userId);
     List<Post> getByTagName(String tagName, long page, long pageSize);
-    List<Post> search(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page, long pageSize);
-
     Post insertPost(long userId, String title, String description);
     void deletePost(long postId);
     Optional<Post> update(long postId, String title, String description);
-    Integer searchResultsNumber(String toSearch, List<String> tags, Integer starsLeft, Integer starsRight, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order);
 
     void vote(long postId, long userId, int voteSign);
     int getPostsAmount();
+
+    public boolean isPostInvalid(String title, String description, List<String> names, List<String> categories, List<String> types);
 }

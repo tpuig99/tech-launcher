@@ -13,6 +13,7 @@ public class ReportDTO {
     private String owner;
     private String reported;
     private String location, userLocation, techLocation;
+    private long techId,userId;
 
     public static ReportDTO fromReportComment (ReportComment reportComment, UriInfo uriInfo) {
         ReportDTO dto = new ReportDTO();
@@ -21,10 +22,11 @@ public class ReportDTO {
         dto.frameworkName = reportComment.getFrameworkName();
         dto.owner = reportComment.getUserNameOwner();
         dto.reported = reportComment.getUserReporterName();
-        dto.location = "mod/reports/comment/" + reportComment.getCommentId();
-        dto.techLocation = "techs/" + reportComment.getFrameworkId();
-        dto.userLocation = "users/" + reportComment.getUserId();
-
+        dto.location = uriInfo.getBaseUriBuilder().path("mod/reports/comment/" + reportComment.getCommentId()).build().toString();
+        dto.techLocation = uriInfo.getBaseUriBuilder().path("techs/" + reportComment.getFrameworkId()).build().toString();
+        dto.userLocation = uriInfo.getBaseUriBuilder().path("users/" + reportComment.getUserId()).build().toString();
+        dto.userId = reportComment.getUserId();
+        dto.techId = reportComment.getFrameworkId();
         return dto;
     }
 
@@ -35,9 +37,11 @@ public class ReportDTO {
         dto.frameworkName = reportContent.getFrameworkName();
         dto.owner = reportContent.getUserNameOwner();
         dto.reported = reportContent.getUserReporterName();
-        dto.location = "mod/reports/content/" + reportContent.getContentId();
-        dto.techLocation = "techs/" + reportContent.getFrameworkId();
-        dto.userLocation = "users/" + reportContent.getUserId();
+        dto.location = uriInfo.getBaseUriBuilder().path("mod/reports/content/" + reportContent.getContentId()).build().toString();
+        dto.techLocation = uriInfo.getBaseUriBuilder().path("techs/" + reportContent.getFrameworkId()).build().toString();
+        dto.userLocation = uriInfo.getBaseUriBuilder().path("users/" + reportContent.getUserId()).build().toString();
+        dto.userId = reportContent.getUserId();
+        dto.techId = reportContent.getFrameworkId();
         return dto;
     }
 
@@ -77,6 +81,22 @@ public class ReportDTO {
         return commentDescription;
     }
 
+    public long getTechId() {
+        return techId;
+    }
+
+    public void setTechId(long techId) {
+        this.techId = techId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
     public void setCommentDescription(String commentDescription) {
         this.commentDescription = commentDescription;
     }
@@ -112,4 +132,5 @@ public class ReportDTO {
     public void setReported(String reported) {
         this.reported = reported;
     }
+
 }

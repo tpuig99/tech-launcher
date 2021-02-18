@@ -15,11 +15,8 @@ define(['frontend', 'services/sessionService'], function(frontend) {
               } else {
                 $sessionStorage.currentUser = {location: response.data.location, token: response.data.token};
               }
-              // add jwt token to auth header for all requests made by the $http service
-              // $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
-              $scope.$parent.checkUser();
 
-             // $location.path('/');
+              $scope.$parent.checkUser();
              $window.location.href = '#/';
             }
         }, function(response) {
@@ -28,6 +25,17 @@ define(['frontend', 'services/sessionService'], function(frontend) {
       };
 
 
+      // Form Validations
+      $scope.usernameValidator = {
+        minLen: 3,
+        maxLen: 100,
+        pattern: /[a-zA-Z0-9]+/
+      };
+
+      $scope.passwordValidator = {
+        minLen: 6,
+        maxLen: 100,
+      };
 
 
     });

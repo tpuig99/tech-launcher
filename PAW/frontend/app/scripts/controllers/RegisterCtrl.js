@@ -2,7 +2,7 @@
 define(['frontend','services/sessionService'], function(frontend) {
 
 
-    frontend.controller('RegisterCtrl', function($scope, sessionService) {
+    frontend.controller('RegisterCtrl', function($location, $scope, sessionService) {
       $('.modal-backdrop').hide();
       $scope.userAlreadyExists = false;
       $scope.registered = false;
@@ -14,7 +14,21 @@ define(['frontend','services/sessionService'], function(frontend) {
         }, function (response) {
           $scope.registered = false;
           $scope.userAlreadyExists = true;
+        }).catch((error) => {
+          $location.path('/404');
         });
+      };
+
+      // Form Validations
+      $scope.usernameValidator = {
+        minLen: 3,
+        maxLen: 100,
+        pattern: /[a-zA-Z0-9]+/
+      };
+
+      $scope.passwordValidator = {
+        minLen: 6,
+        maxLen: 100,
       };
 
     });

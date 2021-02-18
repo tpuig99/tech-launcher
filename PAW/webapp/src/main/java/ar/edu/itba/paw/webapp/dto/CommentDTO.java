@@ -21,6 +21,7 @@ public class CommentDTO {
     private String techName;
     private List<ReportDTO> reports;
     private List<CommentVoteDTO> votes;
+    private long techId;
 
     public static CommentDTO fromComment(Comment comment, UriInfo uriInfo) {
         final CommentDTO dto = new CommentDTO();
@@ -35,19 +36,20 @@ public class CommentDTO {
         if(!comment.getCommentVotes().isEmpty()) {
             dto.votes = comment.getCommentVotes().stream().map(CommentVoteDTO::fromCommentVote).collect(Collectors.toList());
         }
-        dto.location = "techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId();
-        dto.reportLocation = dto.location + "/report";
+        dto.location = uriInfo.getBaseUriBuilder().path("techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId()).build().toString();
+        dto.reportLocation = uriInfo.getBaseUriBuilder().path("techs/"+comment.getFrameworkId()+"/comment/"+comment.getCommentId()+ "/report").build().toString();
         if (comment.getReports() != null) {
             dto.reports = comment.getReports().stream().map((ReportComment report) -> ReportDTO.fromReportComment(report, uriInfo)).collect(Collectors.toList());
         }
         return dto;
     }
-    public static CommentDTO fromProfile(Comment comment){
+    public static CommentDTO fromProfile(Comment comment, UriInfo uriInfo){
         final CommentDTO dto = new CommentDTO();
         dto.description = comment.getDescription();
         dto.date = comment.getTimestamp().toLocaleString();
-        dto.location = "techs/"+comment.getFrameworkId();
+        dto.location =uriInfo.getBaseUriBuilder().path("techs/"+comment.getFrameworkId()).build().toString();
         dto.techName = comment.getFrameworkName();
+        dto.techId = comment.getFrameworkId();
         return dto;
     }
     public String getDescription() {
@@ -151,5 +153,13 @@ public class CommentDTO {
 
     public void setVotes(List<CommentVoteDTO> votes) {
         this.votes = votes;
+    }
+
+    public long getTechId() {
+        return techId;
+    }
+
+    public void setTechId(long techId) {
+        this.techId = techId;
     }
 }

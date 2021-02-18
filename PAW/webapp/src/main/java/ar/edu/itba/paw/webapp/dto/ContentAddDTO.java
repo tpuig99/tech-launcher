@@ -1,8 +1,23 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class ContentAddDTO {
+
+    @NotNull
     private String link;
+
+    @NotNull
+    @Size(max=10)
     private String type;
+
+    @NotNull
+    @NotEmpty
+    @Size(min=4, max=40)
     private String title;
 
     public String getLink() {

@@ -17,6 +17,7 @@ public class ContentDTO {
     private String type;
     private String techName;
     private List<ReportDTO> reports;
+    private long techId;
 
     public static ContentDTO fromContent(Content content, UriInfo uriInfo) {
         final ContentDTO dto = new ContentDTO();
@@ -25,21 +26,22 @@ public class ContentDTO {
         dto.user = SimpleUserDTO.fromUser(content.getUser(), content.getFramework(),uriInfo);
         dto.title = content.getTitle();
         dto.type = content.getType().name();
-        dto.location = "techs/"+content.getFrameworkId()+"/content/"+content.getContentId();
-        dto.reportLocation = dto.location + "/report";
+        dto.location = uriInfo.getBaseUriBuilder().path("techs/"+content.getFrameworkId()+"/content/"+content.getContentId()).build().toString();
+        dto.reportLocation = uriInfo.getBaseUriBuilder().path("techs/"+content.getFrameworkId()+"/content/"+content.getContentId()+"/report").build().toString();
         if (content.getReports() != null) {
             dto.reports = content.getReports().stream().map((ReportContent report) -> ReportDTO.fromReportContent(report, uriInfo)).collect(Collectors.toList());
         }
         return dto;
     }
-    public static ContentDTO fromProfile(Content content) {
+    public static ContentDTO fromProfile(Content content,UriInfo uriInfo) {
         final ContentDTO dto = new ContentDTO();
         dto.date = content.getTimestamp().toLocaleString();
         dto.link = content.getLink();
         dto.title = content.getTitle();
         dto.type = content.getType().name();
-        dto.location = "techs/"+content.getFrameworkId();
+        dto.location = uriInfo.getBaseUriBuilder().path("techs/"+content.getFrameworkId()).build().toString();
         dto.techName = content.getFrameworkName();
+        dto.techId = content.getFrameworkId();
         return dto;
     }
 
@@ -113,6 +115,14 @@ public class ContentDTO {
 
     public void setReportLocation(String reportLocation) {
         this.reportLocation = reportLocation;
+    }
+
+    public long getTechId() {
+        return techId;
+    }
+
+    public void setTechId(long techId) {
+        this.techId = techId;
     }
 }
 

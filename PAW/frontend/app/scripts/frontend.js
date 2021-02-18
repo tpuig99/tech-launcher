@@ -51,6 +51,12 @@ define(['routes',
 
           RestangularProvider.setBaseUrl('api');
           RestangularProvider.setFullResponse(true);
+          RestangularProvider.setRequestInterceptor(function(elem, operation) {
+            if (operation === "remove") {
+              return null;
+            }
+            return elem;
+          });
 
         }]);
 		return frontend;

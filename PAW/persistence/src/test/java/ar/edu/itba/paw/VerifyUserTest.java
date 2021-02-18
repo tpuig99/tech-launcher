@@ -47,7 +47,7 @@ public class VerifyUserTest {
 
 
         for (int i = 1; i < 6; i++) {
-            User user = new User("user"+i,"mail"+i,null,true,"",true,null);
+            User user = new User("user"+i,"mail"+i,null,true,"",true);
             em.persist(user);
 
             em.flush();

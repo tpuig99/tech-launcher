@@ -9,12 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,6 +40,9 @@ public class UserProfileController {
     private PostService postService;
 
     @Autowired
+    private PictureService pictureService;
+
+    @Autowired
     private UserService us;
 
     @Context
@@ -52,15 +54,36 @@ public class UserProfileController {
     final private String START_PAGE = "1";
     private final String PAGE = "page";
 
+    private static Response.ResponseBuilder setConditionalCacheHeaders(Object resource, int hashcode, Request request) {
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(86400);
 
-    private Response.ResponseBuilder addPaginationLinks (Response.ResponseBuilder responseBuilder, String parameterName, long currentPage, long pages) {
+        EntityTag etag = new EntityTag(Integer.toString(hashcode));
+        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+
+        if(builder == null){
+            builder = Response.ok(resource);
+            builder.tag(etag);
+        }
+
+        builder.cacheControl(cc);
+        return builder;
+    }
+
+    private static Response.ResponseBuilder setCacheHeaders(Object resource) {
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(300);
+        return Response.ok(resource).cacheControl(cc);
+    }
+
+    private Response.ResponseBuilder addPaginationLinks(Response.ResponseBuilder responseBuilder, String parameterName, long currentPage, long pages) {
         responseBuilder
-                .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName,1).build(),"first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName,pages).build(),"last");
-        if(currentPage < pages) {
+                .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, 1).build(), "first")
+                .link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, pages).build(), "last");
+        if (currentPage < pages) {
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, currentPage + 1).build(), "next");
         }
-        if(currentPage != 1) {
+        if (currentPage != 1) {
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, currentPage - 1).build(), "prev");
         }
 
@@ -70,14 +93,14 @@ public class UserProfileController {
     @GET
     @Path("{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response getUser(@PathParam("id") Long userId) {
+    public Response getUser(@PathParam("id") Long userId, @Context Request request) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
 
             LOGGER.info("User Profile: Requested user {} exists, retrieving data", userId);
 
-            UserDTO dto = UserDTO.fromUser(user.get(),uriInfo);
+            UserDTO dto = UserDTO.fromUser(user.get(), uriInfo);
             dto.setCommentAmount(commentService.getCommentsCountByUser(userId).orElse(0));
             dto.setContentAmount((int) (long) contentService.getContentCountByUser(userId).orElse(0L));
             dto.setTechsAmount(frameworkService.getByUserCount(userId).orElse(0));
@@ -85,7 +108,8 @@ public class UserProfileController {
             dto.setPostsAmount(postService.getPostsCountByUser(userId).orElse(0));
 
             LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
-            return Response.ok(dto).build();
+
+            return setCacheHeaders(dto).build();
         }
 
         LOGGER.error("User Profile: Nonexistant user");
@@ -95,7 +119,7 @@ public class UserProfileController {
     @GET
     @Path("{id}/comments")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response getUserComments (@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long commentsPage) {
+    public Response getUserComments(@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long commentsPage) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
@@ -103,14 +127,12 @@ public class UserProfileController {
             final List<Comment> commentsList = commentService.getCommentsByUser(userId, commentsPage);
             final Optional<Integer> commentsAmount = commentService.getCommentsCountByUser(userId);
 
-            if(commentsList.size() > 0) {
-                List<CommentDTO> commentDTOList = commentsList.stream().map(CommentDTO::fromProfile).collect(Collectors.toList());
-                long pages = 0;
-                if (commentsAmount.isPresent()) {
-                    pages = (long) Math.ceil((double) commentsAmount.get() / PAGE_SIZE);
-                }
-                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<CommentDTO>>(commentDTOList){});
-                return addPaginationLinks(response, PAGE, commentsPage, pages).build();
+            if (commentsList.size() > 0) {
+                List<CommentDTO> commentDTOList = commentsList.stream().map((Comment comment) -> CommentDTO.fromProfile(comment,uriInfo)).collect(Collectors.toList());
+                Response.ResponseBuilder response = setCacheHeaders(new GenericEntity<List<CommentDTO>>(commentDTOList) {
+                });
+
+                return addPaginationLinks(response, PAGE, commentsPage, us.getPagesInt(commentsAmount,PAGE_SIZE)).build();
             }
 
             return Response.noContent().build();
@@ -124,21 +146,18 @@ public class UserProfileController {
     @GET
     @Path("{id}/contents")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response getUserContents (@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long contentsPage) {
+    public Response getUserContents(@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long contentsPage) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
             final List<Content> contentsList = contentService.getContentByUser(userId, contentsPage);
             final Optional<Long> contentsAmount = contentService.getContentCountByUser(userId);
 
-            if(contentsList.size() > 0) {
-                List<ContentDTO> contentDTOList = contentsList.stream().map(ContentDTO::fromProfile).collect(Collectors.toList());
-                long pages = 0;
-                if (contentsAmount.isPresent()) {
-                    pages = (long) Math.ceil((double) contentsAmount.get() / PAGE_SIZE);
-                }
-                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<ContentDTO>>(contentDTOList){});
-                return addPaginationLinks(response, PAGE, contentsPage, pages).build();
+            if (contentsList.size() > 0) {
+                List<ContentDTO> contentDTOList = contentsList.stream().map((Content content) -> ContentDTO.fromProfile(content,uriInfo)).collect(Collectors.toList());
+                Response.ResponseBuilder response = setCacheHeaders(new GenericEntity<List<ContentDTO>>(contentDTOList) {
+                });
+                return addPaginationLinks(response, PAGE, contentsPage, us.getPagesLong(contentsAmount,PAGE_SIZE)).build();
             }
 
             return Response.noContent().build();
@@ -151,21 +170,18 @@ public class UserProfileController {
     @GET
     @Path("{id}/posts")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response getUserPosts (@PathParam("id") Long userId,@QueryParam("page") @DefaultValue(START_PAGE) Long postsPage) {
+    public Response getUserPosts(@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long postsPage) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
             final List<Post> postsList = postService.getPostsByUser(userId, postsPage);
             final Optional<Integer> postsAmount = postService.getPostsCountByUser(userId);
 
-            if(postsList.size() > 0) {
-                List<PostDTO> postDTOList = postsList.stream().map((Post post ) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList());
-                long pages = 0;
-                if (postsAmount.isPresent()) {
-                    pages = (long) Math.ceil((double) postsAmount.get() / PAGE_SIZE);
-                }
-                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<PostDTO>>(postDTOList){});
-                return addPaginationLinks(response, PAGE, postsPage, pages).build();
+            if (postsList.size() > 0) {
+                List<PostDTO> postDTOList = postsList.stream().map((Post post) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList());
+                Response.ResponseBuilder response = setCacheHeaders(new GenericEntity<List<PostDTO>>(postDTOList) {
+                });
+                return addPaginationLinks(response, PAGE, postsPage, us.getPagesInt(postsAmount,PAGE_SIZE)).build();
             }
 
             return Response.noContent().build();
@@ -178,21 +194,18 @@ public class UserProfileController {
     @GET
     @Path("{id}/votes")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response getUserVotes (@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long votesPage) {
+    public Response getUserVotes(@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long votesPage) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
             final List<FrameworkVote> votesList = voteService.getAllByUser(userId, votesPage);
             final Optional<Integer> votesAmount = voteService.getAllCountByUser(userId);
 
-            if(votesList.size() > 0) {
-                List<VoteDTO> voteDTOList = votesList.stream().map(VoteDTO::fromProfile).collect(Collectors.toList());
-                long pages = 0;
-                if (votesAmount.isPresent()) {
-                    pages = (long) Math.ceil((double) votesAmount.get() / VOTE_PAGE_SIZE);
-                }
-                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<VoteDTO>>(voteDTOList){});
-                return addPaginationLinks(response, PAGE, votesPage, pages).build();
+            if (votesList.size() > 0) {
+                List<VoteDTO> voteDTOList = votesList.stream().map((FrameworkVote vote) -> VoteDTO.fromProfile(vote,uriInfo)).collect(Collectors.toList());
+                Response.ResponseBuilder response = setCacheHeaders(new GenericEntity<List<VoteDTO>>(voteDTOList) {
+                });
+                return addPaginationLinks(response, PAGE, votesPage, us.getPagesInt(votesAmount,VOTE_PAGE_SIZE)).build();
             }
 
             return Response.noContent().build();
@@ -205,21 +218,18 @@ public class UserProfileController {
     @GET
     @Path("{id}/techs")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response getUserTechs (@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE)Long techsPage) {
+    public Response getUserTechs(@PathParam("id") Long userId, @QueryParam("page") @DefaultValue(START_PAGE) Long techsPage) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
             final List<Framework> techsList = frameworkService.getByUser(userId, techsPage);
             final Optional<Integer> techsAmount = frameworkService.getByUserCount(userId);
 
-            if(techsList.size() > 0) {
-                List<FrameworkDTO> frameworkDTOList = techsList.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList());
-                long pages = 0;
-                if (techsAmount.isPresent()) {
-                    pages = (long) Math.ceil((double) techsAmount.get() / FRAMEWORK_PAGE_SIZE);
-                }
-                Response.ResponseBuilder response = Response.ok(new GenericEntity<List<FrameworkDTO>>(frameworkDTOList){});
-                return addPaginationLinks(response, PAGE, techsPage, pages).build();
+            if (techsList.size() > 0) {
+                List<FrameworkDTO> frameworkDTOList = techsList.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework, uriInfo)).collect(Collectors.toList());
+                Response.ResponseBuilder response = setCacheHeaders(new GenericEntity<List<FrameworkDTO>>(frameworkDTOList) {
+                });
+                return addPaginationLinks(response, PAGE, techsPage, us.getPagesInt(techsAmount,FRAMEWORK_PAGE_SIZE)).build();
             }
 
             return Response.noContent().build();
@@ -232,14 +242,25 @@ public class UserProfileController {
     @GET
     @Path("/{id}/image")
     @Produces({"image/jpg", "image/png", "image/gif"})
-    public Response getImage(@PathParam("id") Long id) {
-        return Response.ok(us.findById(id).map(User::getPicture).orElse(null)).build();
+    public Response getImage(@PathParam("id") Long id, @Context Request request) {
+        Optional<User> user = us.findById(id);
+
+        if (user.isPresent()) {
+            Optional<byte []> picture = pictureService.findPictureById(user.get().getPictureId());
+            if (picture.isPresent()) {
+                return setConditionalCacheHeaders(picture.get(), Arrays.hashCode(picture.get()), request).build();
+            } else {
+                return Response.noContent().build();
+            }
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST
     @Path("/{id}/password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response changePassword(@PathParam("id") Long userId ,final UserAddDTO form) {
+    public Response changePassword(@PathParam("id") Long userId, final UserAddDTO form) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
@@ -265,23 +286,20 @@ public class UserProfileController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response changePasswordWithToken(PasswordDTO passwordDTO) {
 
-        String[] strings = passwordDTO.getToken().split("-a_d-ss-");
-        Long userId = Long.valueOf(strings[strings.length - 1]);
-
-        Optional<User> user = us.findById(userId);
+        Optional<User> user = us.findByToken(passwordDTO.getToken());
 
         if (user.isPresent()) {
             if (passwordDTO.getPassword() == null) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
-            us.updatePassword(userId, passwordDTO.getPassword());
-            LOGGER.info("Register: User {} updated its password successfully", userId);
+            us.updatePassword(user.get().getId(), passwordDTO.getPassword());
+            LOGGER.info("Register: User {} updated its password successfully", user.get().getId());
 
             return Response.ok().build();
         }
 
-        LOGGER.error("User Profile: User {} not found", userId);
+        LOGGER.error("User Profile: User not found with token {}", passwordDTO.getToken());
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
@@ -298,12 +316,7 @@ public class UserProfileController {
                 if (picture == null && description == null) {
                     return Response.status(Response.Status.BAD_REQUEST).build();
                 }
-
-                if (picture != null) {
-                    us.updateInformation(userId, description == null ? user.get().getDescription() :description, picture, true);
-                } else {
-                    us.updateInformation(userId, description == null ? user.get().getDescription() :description, user.get().getPicture(), false);
-                }
+                us.updateInformation(userId, description == null ? user.get().getDescription() : description, picture);
 
                 LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
                 return Response.ok().build();
@@ -331,8 +344,8 @@ public class UserProfileController {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        LOGGER.error("User Profile: Unauthorized user attempted to update a Mod Status");
-        return Response.status(Response.Status.UNAUTHORIZED).build();
+        LOGGER.error("User Profile: User {} does not exist", userId);
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
 }

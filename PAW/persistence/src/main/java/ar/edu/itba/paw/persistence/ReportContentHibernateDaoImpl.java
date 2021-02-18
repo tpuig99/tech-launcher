@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Content;
+import ar.edu.itba.paw.models.ReportComment;
 import ar.edu.itba.paw.models.ReportContent;
 import ar.edu.itba.paw.models.User;
 import org.springframework.stereotype.Repository;
@@ -37,11 +38,21 @@ public class ReportContentHibernateDaoImpl implements ReportContentDao {
 
     @Override
     public List<ReportContent> getByFrameworks(List<Long> frameworksIds, long page, long pageSize) {
-        final TypedQuery<ReportContent> query = em.createQuery("FROM ReportContent rc where rc.content.framework.id in :frameworksIds", ReportContent.class);
-        query.setParameter("frameworksIds", frameworksIds);
-        query.setFirstResult((int) ((page-1) * pageSize));
-        query.setMaxResults((int) pageSize);
-        return query.getResultList();
+
+        String ids = frameworksIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        Query pagingQuery = em.createNativeQuery("SELECT report_id from content_report as cr join content as c ON c.content_id = cr.content_id WHERE c.framework_id IN (" + ids + ") LIMIT " + String.valueOf(pageSize) + " OFFSET " + String.valueOf((page-1)*pageSize));
+
+        @SuppressWarnings("unchecked")
+        List<Long> resultList = ((List<Number>)pagingQuery.getResultList()).stream().map(Number::longValue).collect(Collectors.toList());
+
+        if(!resultList.isEmpty()) {
+            TypedQuery<ReportContent> query = em.createQuery("from ReportContent as rc where rc.reportId in (:resultList)", ReportContent.class);
+            query.setParameter("resultList", resultList);
+            return query.getResultList();
+        }else{
+            return Collections.emptyList();
+        }
+
     }
 
     @Override

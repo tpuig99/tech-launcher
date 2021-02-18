@@ -1,11 +1,15 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.service.UserService;
+import ar.edu.itba.paw.webapp.dto.JwtResponseDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +17,8 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil {
+    @Autowired
+    private UserService us;
 
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
@@ -66,5 +72,9 @@ public class JwtTokenUtil {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public String loginResponse(UserDetails userDetails){
+        return us.responseOnLogin(generateToken(userDetails),userDetails.getUsername());
     }
 }
