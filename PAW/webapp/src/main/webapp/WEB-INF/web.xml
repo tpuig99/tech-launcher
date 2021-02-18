@@ -75,5 +75,14 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <filter>
+    <filter-name>CustomCacheFilter</filter-name>
+    <filter-class>ar.edu.itba.paw.webapp.config.CustomCacheFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CustomCacheFilter</filter-name>
+    <url-pattern>/resources/*</url-pattern>
+  </filter-mapping>
+
 </web-app>
 

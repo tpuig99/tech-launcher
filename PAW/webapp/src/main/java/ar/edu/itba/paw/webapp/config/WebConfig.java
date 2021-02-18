@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
@@ -51,13 +50,13 @@ public class WebConfig{
 //        ds.setPassword("uygwr2BX7");
 
 //        Uncomment when deploying (Ctrl + '/')
-        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
-        ds.setUsername("paw-2020b-1");
-        ds.setPassword("uygwr2BX7");
-
-//        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
-//        ds.setUsername("postgres");
+//        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
+//        ds.setUsername("paw-2020b-1");
 //        ds.setPassword("uygwr2BX7");
+
+        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
+        ds.setUsername("postgres");
+        ds.setPassword("uygwr2BX7");
         return ds;
     }
 
