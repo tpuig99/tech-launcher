@@ -44,7 +44,7 @@ public class FrameworkDTO {
         dto.votesCant = framework.getVotesCant();
         dto.stars = (float) framework.getStars();
         dto.commentsAmount = framework.getCommentsAmount();
-        dto.hasPicture = framework.getPicture() != null;
+        dto.hasPicture = framework.getPictureId() != 0;
         dto.location = uriInfo.getBaseUriBuilder().path("techs/"+framework.getId()).build().toString();
         dto.picture = "api/techs/"+framework.getId()+"/image";
         dto.comments = uriInfo.getBaseUriBuilder().path("techs/"+framework.getId()+"/comment").build().toString();
@@ -61,7 +61,7 @@ public class FrameworkDTO {
     public static FrameworkDTO fromExtern(Framework framework,UriInfo uriInfo) {
         final FrameworkDTO dto = new FrameworkDTO();
         dto.name = framework.getName();
-        dto.hasPicture = framework.getPicture() != null;
+        dto.hasPicture = framework.getPictureId() != 0;
         dto.picture = "api/techs/"+framework.getId()+"/image";
         dto.authorId = framework.getAuthor().getId();
         dto.id = framework.getId();

@@ -122,7 +122,10 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           $location.path('/404');
         });
 
-        $scope.tech.stars = $scope.tech.stars.toFixed(2);
+        if ($scope.tech.stars !== undefined) {
+          $scope.tech.stars = $scope.tech.stars.toFixed(2);
+        }
+
       }).catch(function () {
         $window.location.href = '#/404';
       });
@@ -339,17 +342,6 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
 
     $scope.setPic = function(file) {
       $scope.add.picture = file;
-    };
-
-    $scope.addTech = function () {
-      $scope.techNameError = false;
-      techsService.addTech($scope.add).then(function (response) {
-        if (response.status === 201) {
-          $location.path('/techs');
-        }
-      }).catch(function () {
-        $scope.techNameError = true;
-      });
     };
 
     $scope.applyForMod = function (location) {
