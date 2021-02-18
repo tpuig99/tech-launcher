@@ -118,26 +118,6 @@ public class FrameworkDaoImplTest {
         Assert.assertEquals(false,framework.isPresent());
     }
 
-    @Test
-    public void testCreate() {
-        //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
-
-        //Class under test
-        final Optional<Framework> framework = frameworkDao.create(FRAMEWORK_NAME,CATEGORY,DESCRIPTION,INTRODUCTION,TYPE, USER_ID,PICTURE);
-        em.flush();
-
-        //Asserts
-        Assert.assertNotNull(framework);
-        Assert.assertEquals(FRAMEWORK_NAME, framework.get().getName());
-        Assert.assertEquals(CATEGORY, framework.get().getCategory());
-        Assert.assertEquals(DESCRIPTION, framework.get().getDescription());
-        Assert.assertEquals(INTRODUCTION, framework.get().getIntroduction());
-        Assert.assertEquals(TYPE, framework.get().getType());
-        Assert.assertEquals(USER_ID, framework.get().getAuthor().getId().longValue());;
-        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "frameworks","framework_id ="+framework.get().getId()));
-    }
-
     @Test(expected = Exception.class)
     public void testCreateAlreadyExists() {
 
