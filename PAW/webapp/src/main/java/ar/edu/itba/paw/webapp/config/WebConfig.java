@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 @EnableTransactionManagement
-@ComponentScan({ "ar.edu.itba.paw.webapp.controller","ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence","ar.edu.itba.paw.webapp.form"})
+@ComponentScan({ "ar.edu.itba.paw.webapp.controller","ar.edu.itba.paw.services", "ar.edu.itba.paw.persistence","ar.edu.itba.paw.webapp.event"})
 @Configuration
 public class WebConfig{
     @Value("classpath:schema.sql")
