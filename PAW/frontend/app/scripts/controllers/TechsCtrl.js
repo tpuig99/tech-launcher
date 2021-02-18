@@ -2,7 +2,7 @@
 define(['frontend','services/techsService','services/sessionService'], function(frontend) {
 
   frontend.controller('TechsCtrl', function($scope, $localStorage, sessionService,techsService) {
-
+    $('.modal-backdrop').hide();
     $scope.isAdmin = false;
     $scope.isMod = false;
     $scope.isPresent = false;
