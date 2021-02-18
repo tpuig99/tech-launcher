@@ -21,10 +21,9 @@ CREATE TABLE IF NOT EXISTS users (
 --ALTER TABLE users ADD COLUMN  user_description varchar(200) default '' not null ;
 --ALTER TABLE users ADD COLUMN  allow_moderator boolean default true not null ;
 --ALTER TABLE users ADD COLUMN picture bytea default null;
--- ALTER TABLE users DROP COLUMN picture;
--- DROP TABLE IF EXISTS user_blobs;
--- ALTER TABLE users ADD COLUMN picture_id integer;
--- ALTER TABLE users ADD FOREIGN KEY (picture_id) REFERENCES blobs(blob_id);
+--ALTER TABLE users DROP COLUMN picture;
+--ALTER TABLE users ADD COLUMN picture_id integer;
+--ALTER TABLE users ADD FOREIGN KEY (picture_id) REFERENCES blobs(blob_id);
 
 
 CREATE TABLE IF NOT EXISTS verification_token(
@@ -53,7 +52,8 @@ CREATE TABLE IF NOT EXISTS frameworks (
 --ALTER TABLE frameworks ADD COLUMN author int NOT NULL default 1 REFERENCES users ON DELETE set default
 --ALTER TABLE frameworks ADD COLUMN date timestamp NOT NULL default '2020-08-03 16:56:37.125000'
 --ALTER TABLE frameworks ADD COLUMN picture bytea default null;
--- ALTER TABLE frameworks ADD COLUMN picture_id integer;
+ALTER TABLE frameworks DROP COLUMN picture;
+--ALTER TABLE frameworks ADD COLUMN picture_id integer;
 -- ALTER TABLE frameworks ADD FOREIGN KEY (picture_id) REFERENCES blobs(blob_id);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_framework on frameworks(framework_name);

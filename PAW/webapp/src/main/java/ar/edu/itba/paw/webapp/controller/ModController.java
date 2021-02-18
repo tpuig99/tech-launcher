@@ -254,16 +254,14 @@ public class ModController {
     public Response acceptMod(@PathParam("id") Long verificationId) {
         Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         Optional<VerifyUser> vu = us.getVerifyById(verificationId);
-        if (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty()) {
-            if (vu.isPresent()) {
-                if (vu.get().isPending()) {
-                    us.verify(verificationId);
-                    Optional<User> u = us.findById(vu.get().getUserId());
-                    u.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
-                    return Response.ok().build();
-                }
-                return Response.notModified().build();
+        if (user.isPresent() && vu.isPresent() && (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty() || user.get().isVerifyForFramework(vu.get().getFrameworkId()))) {
+            if (vu.get().isPending()) {
+                us.verify(verificationId);
+                Optional<User> u = us.findById(vu.get().getUserId());
+                u.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
+                return Response.ok().build();
             }
+            return Response.notModified().build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
@@ -275,8 +273,8 @@ public class ModController {
         Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         Optional<VerifyUser> vu = us.getVerifyById(verificationId);
 
-        if (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty()) {
-            if (vu.isPresent() && vu.get().isPending()) {
+        if (user.isPresent() && vu.isPresent() && (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty() || user.get().isVerifyForFramework(vu.get().getFrameworkId()))) {
+            if (vu.get().isPending()) {
                 if (vu.get().isPending()) {
                     us.deleteVerification(verificationId);
                     return Response.ok().build();
@@ -353,7 +351,8 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response deleteContentReport(@PathParam("id") Long contentId) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (user.isAdmin() || user.getOwnedFrameworks().size() > 0) {
+        Optional<Content> content = contentService.getById(contentId);
+        if ( content.isPresent() && (user.isAdmin() || user.getOwnedFrameworks().size() > 0 || user.isVerifyForFramework(content.get().getFrameworkId()))) {
             contentService.denyReport(contentId);
             LOGGER.info("User: Content {} was removed from its report", contentId);
             return Response.ok().build();
@@ -367,7 +366,8 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response acceptContentReport(@PathParam("id") Long contentId) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (user.isAdmin() || user.getOwnedFrameworks().size() > 0) {
+        Optional<Content> content = contentService.getById(contentId);
+        if ( content.isPresent() && (user.isAdmin() || user.getOwnedFrameworks().size() > 0 || user.isVerifyForFramework(content.get().getFrameworkId()))) {
             Optional<Content> contentOptional = contentService.getById(contentId);
             if (contentOptional.isPresent()) {
                 contentService.acceptReport(contentId);
