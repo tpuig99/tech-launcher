@@ -18,8 +18,12 @@
 
       <div class="form-group">
         <label for="techName">{{'ADD_TECH_NAME' | translate}}</label>
-        <input class="form-control" type="text" id="techName" ng-model="add.name" name="name" required
-               ng-minlength="1" ng-maxlength="50" placeholder="{{'ADD_TECH_NAME_PLACEHOLDER' | translate}}"/>
+        <input class="form-control" type="text" id="techName" ng-model="add.name" name="name" placeholder="{{'ADD_TECH_NAME_PLACEHOLDER' | translate}}"
+               required
+               ng-minlength="{{techNameValidator.minLen}}"
+               ng-maxlength="{{techNameValidator.maxLen}}"
+               ng-pattern="techNameValidator.pattern"
+               />
         <div ng-show="frameworkForm.techNameInput.$dirty && frameworkForm.techNameInput.$error.required">
           {{ 'FORM_ERROR_EMPTY' | translate}}
         </div>
@@ -56,7 +60,8 @@
       <div class="form-group">
         <label for="techDescription">{{'ADD_TECH_DESCRIPTION' | translate}}</label>
         <textarea class="form-control" id="techDescription" ng-model="add.description" name="description" required
-                  ng-minlength="1" ng-maxlength="500"
+                  ng-minlength="{{techDescriptionValidator.minLen}}"
+                  ng-maxlength="{{techDescriptionValidator.maxLen}}"
                   placeholder="{{'ADD_TECH_DESCRIPTION_PLACEHOLDER' | translate}}"></textarea>
         <div
           ng-show="frameworkForm.techDescriptionInput.$dirty && frameworkForm.techDescriptionInput.$error.required">
@@ -71,7 +76,8 @@
       <div class="form-group">
         <label for="techIntroduction">{{'ADD_TECH_INTRODUCTION' | translate}}</label>
         <textarea class="form-control" id="techIntroduction" ng-model="add.introduction" name="introduction" required
-                  ng-minlength="1" ng-maxlength="5000"
+                  ng-minlength="{{techIntroValidator.minLen}}"
+                  ng-maxlength="{{techIntroValidator.maxLen}}"
                   placeholder="{{'ADD_TECH_INTRODUCTION_PLACEHOLDER' | translate}}"></textarea>
         <div
           ng-show="frameworkForm.techIntroductionInput.$dirty && frameworkForm.techIntroductionInput.$error.required">
@@ -86,14 +92,16 @@
       <div class="form-group">
         <label for="techPicture">{{'ADD_TECH_PICTURE' | translate}}</label>
         <div class="text-center">
-          <input ng-model="add.picture" name="picture" id="techPicture" class="form-control" type="file"
-                 ngf-select="setPic($file)" accept="image/*"/>
+          <input ng-model="add.picture" name="picture" id="techPicture" class="form-control"
+                 type="file"
+                 ngf-select="setPic($file)"
+                 accept="image/*"/>
         </div>
       </div>
 
       <button ng-if="frameworkForm.$valid" class="btn primary-button" type="submit">{{'BUTTON_SUBMIT' | translate}}
       </button>
-      <button ng-if="frameworkForm.$invalid" disabled class="btn primary-button" type="submit">
+      <button ng-if="frameworkForm.$invalid" disabled class="btn primary-button">
         {{'BUTTON_SUBMIT' | translate}}
       </button>
       <div class="btn primary-button disabled" id="addTechLoading" hidden>
