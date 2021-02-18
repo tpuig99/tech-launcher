@@ -40,21 +40,6 @@ public class FrameworkServiceImpl implements FrameworkService {
         return frameworkDao.getByCategory(category, page, PAGE_SIZE);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<Framework> search(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Date lastComment, Date lastUpdated, Integer order, long page) {
-        if(starsLeft<starsRight)
-            return frameworkDao.search(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated,order, page, PAGE_SIZE_SEARCH);
-        return frameworkDao.search(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated,order, page, PAGE_SIZE_SEARCH);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Integer searchResultsNumber(String toSearch, List<FrameworkCategories> categories, List<FrameworkType> types, Integer starsLeft, Integer starsRight, boolean nameFlag, Integer commentAmount, Date lastComment, Date lastUpdated){
-        if(starsLeft<starsRight)
-            return frameworkDao.searchResultsNumber(toSearch,categories,types,starsLeft,starsRight,nameFlag,commentAmount,lastComment,lastUpdated);
-        return frameworkDao.searchResultsNumber(toSearch,categories,types,starsRight,starsLeft,nameFlag,commentAmount,lastComment,lastUpdated);
-    }
 
     @Transactional(readOnly = true)
     @Override
