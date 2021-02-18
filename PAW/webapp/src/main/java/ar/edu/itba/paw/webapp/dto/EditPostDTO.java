@@ -2,13 +2,23 @@ package ar.edu.itba.paw.webapp.dto;
 
 import ar.edu.itba.paw.models.Post;
 import ar.edu.itba.paw.models.PostTag;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class EditPostDTO {
+
+    @NotEmpty
+    @Size(min = 3, max = 200)
     private String postTitle;
+
+    @NotEmpty
+    @Size(min=1, max = 5000)
     private String postDescription;
+
     private List<PostTagDTO> postTags;
 
     private List<PostTagDTO> allTags;
