@@ -9,7 +9,7 @@ import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
 import ar.edu.itba.paw.webapp.dto.JwtResponseDTO;
 import ar.edu.itba.paw.webapp.dto.UserAddDTO;
 import ar.edu.itba.paw.webapp.dto.UserDTO;
-import ar.edu.itba.paw.webapp.form.register.OnRegistrationCompleteEvent;
+import ar.edu.itba.paw.webapp.event.OnRegistrationCompleteEvent;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +40,6 @@ public class RegisterController {
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
-
-    @Autowired
-    private MessageSource messageSource;
 
     @Autowired
     private PawUserDetailsService userDetailsService;
