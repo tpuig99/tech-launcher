@@ -19,6 +19,18 @@ define(['frontend','services/sessionService'], function(frontend) {
         });
       };
 
+      // Form Validations
+      $scope.usernameValidator = {
+        minLen: 3,
+        maxLen: 100,
+        pattern: /[a-zA-Z0-9]+/
+      };
+
+      $scope.passwordValidator = {
+        minLen: 6,
+        maxLen: 100,
+      };
+
     });
 
 });

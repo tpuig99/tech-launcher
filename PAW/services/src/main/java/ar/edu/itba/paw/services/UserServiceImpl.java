@@ -135,13 +135,14 @@ public class UserServiceImpl implements UserService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 
+    @Transactional
     @Override
     public void confirmRegistration(String token) throws TokenExpiredException, NotFoundException {
 
         Optional<VerificationToken> verificationToken = getVerificationToken(token);
         if (!verificationToken.isPresent()) throw new NotFoundException("Token not found");
-
         Optional<User> user = findById((int) verificationToken.get().getUserId());
+
         if (user.isPresent()) {
             if (user.get().isEnable()) {
                 LOGGER.info("Register: User {} was already enabled", user.get().getId());
@@ -158,7 +159,7 @@ public class UserServiceImpl implements UserService {
             user.get().setEnable(true);
             saveRegisteredUser(user.get());
             LOGGER.info("Register: User {} is now verified", user.get().getId());
-
+            return;
         }
         LOGGER.error("Register: User {} does not exist", verificationToken.get().getUserId());
         throw new NotFoundException("User not found");
@@ -387,5 +388,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public long getPagesLong(Optional<Long> count, long size) {
         return count.map(integer -> (long) Math.ceil((double) integer / size)).orElse(0L);
+    }
+
+    @Override
+    public List<Long> getOwnedFrameworks(User user ) {
+        List<Long> frameworkIdsForReportedComments = new LinkedList<>();
+        user.getOwnedFrameworks().forEach(framework -> {
+            frameworkIdsForReportedComments.add(framework.getId());
+        });
+        return frameworkIdsForReportedComments;
+    }
+
+    @Override
+    public List<Long> getVerifiedFrameworks( User user ) {
+        List<Long> frameworkIds = new LinkedList<>();
+        user.getVerifications().forEach(verifyUser -> {
+            if (!verifyUser.isPending())
+                frameworkIds.add(verifyUser.getFrameworkId());
+        });
+
+        user.getOwnedFrameworks().forEach(framework -> {
+            frameworkIds.add(framework.getId());
+        });
+
+        return frameworkIds;
     }
 }

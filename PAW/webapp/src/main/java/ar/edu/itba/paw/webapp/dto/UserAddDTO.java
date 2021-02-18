@@ -28,6 +28,7 @@ public class UserAddDTO {
     @Size(max = 200)
     private String description;
 
+    @Size(max=1024 * 1024)
     private byte[] picture;
 
     public String getUsername() {
