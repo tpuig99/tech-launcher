@@ -56,7 +56,7 @@ public class PostCommentDaoTest {
                 .usingGeneratedKeyColumns("post_comment_id");
 
 
-        User user = new User("user","mail",null,true,"",true,null);
+        User user = new User("user","mail",null,true,"",true);
         em.persist(user);
         em.flush();
         USER_ID = user.getId();

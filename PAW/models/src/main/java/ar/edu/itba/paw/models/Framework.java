@@ -1,13 +1,14 @@
 package ar.edu.itba.paw.models;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.util.*;
 
 @Entity
 @Table(name = "frameworks")
 public class Framework {
+
+    public static final long DEFAULT_PICTURE_ID = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "frameworks_framework_id_seq")
     @SequenceGenerator(sequenceName = "frameworks_framework_id_seq", name = "frameworks_framework_id_seq", allocationSize = 1)
@@ -40,9 +41,10 @@ public class Framework {
     @Temporal(TemporalType.TIMESTAMP)
     private Date publishDate;
 
-    @Lob
-    @Type(type = "org.hibernate.type.BinaryType")
-    private byte[] picture;
+    /* Refers other relation mapped in UserBlob */
+    @OneToOne(optional = true, fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "picture_id", referencedColumnName = "blob_id")
+    private Blob picture;
 
     /* Relationships */
 
@@ -90,7 +92,12 @@ public class Framework {
         return Objects.hash(id, name);
     }
 
-    public Framework(User author, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, Date publishDate, byte[] picture) {
+    public Framework(User author, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, Date publishDate, Blob picture) {
+        this(author, name, category, description, introduction, type, publishDate);
+        this.picture = picture;
+    }
+
+    public Framework(User author, String name, FrameworkCategories category, String description, String introduction, FrameworkType type, Date publishDate) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -98,7 +105,6 @@ public class Framework {
         this.type = type;
         this.author = author;
         this.publishDate = publishDate;
-        this.picture = picture;
     }
 
     public Framework(){
@@ -184,14 +190,6 @@ public class Framework {
 
     public void setPublishDate(Date publishDate) {
         this.publishDate = publishDate;
-    }
-
-    public byte[] getPicture() {
-        return picture;
-    }
-
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
     }
 
     public List<Comment> getComments() {
@@ -282,5 +280,16 @@ public class Framework {
     }
     public Optional<FrameworkVote> getVoteOfUser(long userId){
         return frameworkVotes.stream().filter((x)->x.getUserId()==userId).findFirst();
+    }
+
+    public long getPictureId() {
+        if(picture != null) {
+            return picture.getId();
+        }
+        return DEFAULT_PICTURE_ID;
+    }
+
+    public void setPicture(Blob picture) {
+        this.picture = picture;
     }
 }

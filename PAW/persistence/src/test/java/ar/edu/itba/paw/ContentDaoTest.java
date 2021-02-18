@@ -55,7 +55,7 @@ public class ContentDaoTest {
                 .usingGeneratedKeyColumns("content_id");
 
         for (int i = 1; i < 6; i++) {
-            User user = new User("user"+i,"mail"+i,null,true,"",true,null);
+            User user = new User("user"+i,"mail"+i,null,true,"",true);
             em.persist(user);
             Framework framework = new Framework();
             framework.setName("framework"+i);

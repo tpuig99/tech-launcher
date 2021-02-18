@@ -61,7 +61,7 @@ public class UserDTO {
         dto.posts = uriInfo.getBaseUriBuilder().path("users/"+user.getId()+"/posts").build().toString();
         dto.modLocation = uriInfo.getBaseUriBuilder().path("users/"+user.getId()+"/enable_modding/").build().toString();
         dto.id = user.getId();
-        if(user.getPicture() != null)
+        if(user.getPictureId() != 0)
             dto.image = uriInfo.getBaseUriBuilder().path("/users/"+user.getId()+"/image").build().toString();
         return dto;
     }

@@ -55,7 +55,7 @@ public class CommentVoteDaoTest {
                 .usingGeneratedKeyColumns("vote_id");
 
         for (int i = 1; i < SIZE+1; i++) {
-            User user = new User("user"+i, "mail"+i, null, true, DESCRIPTION, false, null);
+            User user = new User("user"+i, "mail"+i, null, true, DESCRIPTION, false);
             em.persist(user);
 
             Framework framework = new Framework();

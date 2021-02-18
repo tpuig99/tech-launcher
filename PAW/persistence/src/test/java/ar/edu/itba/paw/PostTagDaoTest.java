@@ -49,7 +49,7 @@ public class PostTagDaoTest {
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(ds);
 
-        User user = new User("user","mail",null,true,"",true,null);
+        User user = new User("user","mail",null,true,"",true);
         em.persist(user);
         USER_ID = user.getId();
         for (int i = 0; i < 2; i++) {

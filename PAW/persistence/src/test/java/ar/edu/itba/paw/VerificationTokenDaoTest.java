@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -55,7 +54,7 @@ public class VerificationTokenDaoTest {
                 .usingGeneratedKeyColumns("token_id");
 
         for (int i = 0; i < USERS; i++) {
-            User user = new User("user"+i,"mail"+i,null,true,"",true,null);
+            User user = new User("user"+i,"mail"+i,null,true,"",true);
             em.persist(user);
 
             em.flush();
