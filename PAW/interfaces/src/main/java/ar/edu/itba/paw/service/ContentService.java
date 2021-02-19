@@ -30,4 +30,5 @@ public interface ContentService {
     void acceptReport(long contentId);
     void denyReport(long contentId);
     void deleteReport(long reportId);
+    boolean titleIsAvailable(long id, String title, String contentType);
 }
