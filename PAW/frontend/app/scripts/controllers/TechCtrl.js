@@ -331,13 +331,23 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     techsService.getCategories().then(function (cats) {
       $scope.categories = cats.data;
     }).catch((error) => {
-      $location.path('/404');
+      if(error.status === 404) {
+        $location.path('/404');
+      }
+      else {
+        $location.path('/500');
+      }
     });
 
     techsService.getTypes().then(function (cats) {
       $scope.types = cats.data;
     }).catch((error) => {
-      $location.path('/404');
+      if(error.status === 404) {
+        $location.path('/404');
+      }
+      else {
+        $location.path('/500');
+      }
     });
 
     $scope.setPic = function(file) {
@@ -351,7 +361,12 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           $scope.getTech();
         }
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       })
     };
 

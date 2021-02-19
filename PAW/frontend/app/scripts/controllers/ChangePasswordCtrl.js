@@ -16,7 +16,12 @@ define(['frontend', 'services/sessionService'], function(frontend) {
             $scope.isPresent = true;
             $scope.userLocation = user.location;
           }).catch((error) => {
-            $location.path('/404');
+            if(error.status === 404) {
+              $location.path('/404');
+            }
+            else {
+              $location.path('/500');
+            }
           });
         }
       });
@@ -36,7 +41,12 @@ define(['frontend', 'services/sessionService'], function(frontend) {
           }
 
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       };
 
@@ -47,7 +57,12 @@ define(['frontend', 'services/sessionService'], function(frontend) {
           }
 
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       };
 

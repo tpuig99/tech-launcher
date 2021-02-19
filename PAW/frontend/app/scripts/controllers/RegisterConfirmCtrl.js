@@ -21,6 +21,8 @@ define(['frontend', 'services/sessionService'], function(frontend) {
         }
         else if( error.status === 404 ) {
           $location.path('/404');
+        } else {
+          $location.path('/500');
         }
     });
     $scope.goHome = () => {

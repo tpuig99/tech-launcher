@@ -18,7 +18,12 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         $scope.isPresent = true;
         $scope.userVerifications = response.data.verifications;
       }).catch((error) => {
-        $location.path('/404');
+        if(response.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     }
 
@@ -27,20 +32,35 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         $scope.tech = tech.data;
         $scope.tech.picture = undefined;
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     };
 
     techsService.getCategories().then(function (cats) {
       $scope.categories = cats.data;
     }).catch((error) => {
-      $location.path('/404');
+      if(error.status === 404) {
+        $location.path('/404');
+      }
+      else {
+        $location.path('/500');
+      }
     });
 
     techsService.getTypes().then(function (cats) {
       $scope.types = cats.data;
     }).catch((error) => {
-      $location.path('/404');
+      if(error.status === 404) {
+        $location.path('/404');
+      }
+      else {
+        $location.path('/500');
+      }
     });
 
     $scope.getTech();

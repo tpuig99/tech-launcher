@@ -25,7 +25,12 @@ define(['frontend','services/sessionService'], function(frontend) {
           $scope.userLocation = user.location;
           $scope.userId = response.data.id;
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       }
     };

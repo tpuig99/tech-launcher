@@ -11,7 +11,12 @@ define(['frontend','services/techsService','services/sessionService'], function(
         $scope.isAdmin = response.data.admin;
         $scope.isPresent = true;
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     }
 
@@ -20,7 +25,12 @@ define(['frontend','services/techsService','services/sessionService'], function(
     techsService.getCategories().then(function (cats) {
       $scope.categories = cats.data;
     }).catch((error) => {
-      $location.path('/404');
+      if(error.status === 404) {
+        $location.path('/404');
+      }
+      else {
+        $location.path('/500');
+      }
     });
 
 
@@ -28,7 +38,12 @@ define(['frontend','services/techsService','services/sessionService'], function(
       $scope.techs = techs.data;
       $scope.pagingLinks = techs.headers('link');
     }).catch((error) => {
-      $location.path('/404');
+      if(error.status === 404) {
+        $location.path('/404');
+      }
+      else {
+        $location.path('/500');
+      }
     });
 
     $scope.setData = function(response) {

@@ -118,26 +118,6 @@ public class FrameworkDaoImplTest {
         Assert.assertEquals(false,framework.isPresent());
     }
 
-    @Test
-    public void testCreate() {
-        //Preconditions
-        JdbcTestUtils.deleteFromTables(jdbcTemplate,"frameworks");
-
-        //Class under test
-        final Optional<Framework> framework = frameworkDao.create(FRAMEWORK_NAME,CATEGORY,DESCRIPTION,INTRODUCTION,TYPE, USER_ID,PICTURE);
-        em.flush();
-
-        //Asserts
-        Assert.assertNotNull(framework);
-        Assert.assertEquals(FRAMEWORK_NAME, framework.get().getName());
-        Assert.assertEquals(CATEGORY, framework.get().getCategory());
-        Assert.assertEquals(DESCRIPTION, framework.get().getDescription());
-        Assert.assertEquals(INTRODUCTION, framework.get().getIntroduction());
-        Assert.assertEquals(TYPE, framework.get().getType());
-        Assert.assertEquals(USER_ID, framework.get().getAuthor().getId().longValue());;
-        Assert.assertEquals(1, JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "frameworks","framework_id ="+framework.get().getId()));
-    }
-
     @Test(expected = Exception.class)
     public void testCreateAlreadyExists() {
 
@@ -194,110 +174,6 @@ public class FrameworkDaoImplTest {
 
     }
 
-
-    /*@Test
-    public void testSearchOnlyByName(){
-        //Preconditions
-
-
-        Date date = new Date(System.currentTimeMillis());
-
-        List<Framework> results = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            Framework framework = new Framework();
-            framework.setCategory(CATEGORY);
-            framework.setType(TYPE);
-            framework.setIntroduction(INTRODUCTION);
-            framework.setAuthor(em.find(User.class, USER_ID));
-            framework.setPublishDate(date);
-
-            switch(i) {
-                case 0:
-                    framework.setName("html");
-                    framework.setDescription("html is great");
-                    results.add(framework);
-                    break;
-                case 1:
-                    framework.setName("canvas");
-                    framework.setDescription("canvas works with html");
-                    break;
-                case 2:
-                    framework.setName("css");
-                    framework.setDescription("cascade style sheet");
-                    break;
-                case 3:
-                    framework.setName("html5");
-                    framework.setDescription("use vue with css and html");
-                    results.add(framework);
-                     break;
-            }
-
-            em.persist(framework);
-
-        }
-
-
-        em.flush();
-        //Class under test
-        List<Framework> matchingFrameworks = frameworkDao.search("html", null, null,0,5,true,0,null,null,0,1,5);
-
-        //Asserts
-        Assert.assertFalse(matchingFrameworks.isEmpty());
-        Assert.assertEquals(results, matchingFrameworks);
-    }
-
-    @Test
-    public void testSearchByNameAndDescription(){
-        //Preconditions
-
-        Date date = new Date(System.currentTimeMillis());
-
-        List<Framework> results = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            Framework framework = new Framework();
-            framework.setCategory(CATEGORY);
-            framework.setType(TYPE);
-            framework.setIntroduction(INTRODUCTION);
-            framework.setAuthor(em.find(User.class, USER_ID));
-            framework.setPublishDate(date);
-
-            switch(i) {
-                case 0:
-                    framework.setName("html");
-                    framework.setDescription("html is great");
-                    results.add(framework);
-                    break;
-                case 1:
-                    framework.setName("canvas");
-                    framework.setDescription("canvas works with html");
-                    results.add(framework);
-                    break;
-                case 2:
-                    framework.setName("css");
-                    framework.setDescription("cascade style sheet");
-                    break;
-                case 3:
-                    framework.setName("html5");
-                    framework.setDescription("use vue with css and html");
-                    results.add(framework);
-                    break;
-            }
-
-            em.persist(framework);
-
-        }
-
-
-        em.flush();
-        //Class under test
-        List<Framework> matchingFrameworks = frameworkDao.search("html", null, null,0,5,false,0,null,null,0,1,5);
-
-        //Asserts
-        Assert.assertFalse(matchingFrameworks.isEmpty());
-        Assert.assertEquals(results, matchingFrameworks);
-    }*/
 
     @Test
     public void testSearchByCategory(){

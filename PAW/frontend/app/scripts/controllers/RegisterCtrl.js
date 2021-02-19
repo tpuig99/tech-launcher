@@ -15,7 +15,12 @@ define(['frontend','services/sessionService'], function(frontend) {
           $scope.registered = false;
           $scope.userAlreadyExists = true;
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       };
 

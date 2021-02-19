@@ -20,7 +20,12 @@ define(['frontend','services/userService','services/sessionService'], function(f
           $scope.getReportedComments();
           $scope.getReportedContents();
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       }
       if( user === undefined || ($scope.isMod === false && $scope.isAdmin === false && $scope.isEnable === false && $scope.isOwner === false) ) {
