@@ -18,14 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
-
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
 @Rollback
@@ -59,7 +55,7 @@ public class FrameworkVoteDaoImplTest {
                 .withTableName("framework_votes")
                 .usingGeneratedKeyColumns("vote_id");
         for (int i = 1; i < 4; i++) {
-            User user = new User("user"+i,"mail"+i,null,true,"",true,null);
+            User user = new User("user"+i,"mail"+i,null,true,"",true);
             em.persist(user);
             Framework framework = new Framework();
             framework.setName("framework"+i);

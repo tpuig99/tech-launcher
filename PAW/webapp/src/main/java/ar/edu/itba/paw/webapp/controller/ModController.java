@@ -16,10 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Path("mod")
@@ -63,22 +60,12 @@ public class ModController {
         if (currentPage != 1) {
             responseBuilder.link(uriInfo.getAbsolutePathBuilder().queryParam(parameterName, currentPage - 1).build(), "prev");
         }
-
-        return responseBuilder;
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(300);
+        return responseBuilder.cacheControl(cc);
     }
 
-    private void getVerifiedAndOwnedFrameworks(User user, List<Long> frameworkIds, List<Long> frameworkIdsForReportedComments) {
 
-        user.getVerifications().forEach(verifyUser -> {
-            if (!verifyUser.isPending())
-                frameworkIds.add(verifyUser.getFrameworkId());
-        });
-
-        user.getOwnedFrameworks().forEach(framework -> {
-            frameworkIds.add(framework.getId());
-            frameworkIdsForReportedComments.add(framework.getId());
-        });
-    }
 
     @GET
     @Path("/moderators")
@@ -95,12 +82,10 @@ public class ModController {
             modsAmount = us.getVerifyByPendingAmount(false).get();
 
         } else if (ownedFrameworks.size() > 0) {
-            List<Long> frameworkIds = new ArrayList<>();
-            List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            List<Long> frameworkIds = us.getOwnedFrameworks(user);
 
-            userList = us.getVerifyByPendingAndFrameworks(false, frameworkIdsForReportedComments, modsPage);
-            modsAmount = us.getVerifyByPendingAndFrameworksAmount(false, frameworkIdsForReportedComments);
+            userList = us.getVerifyByPendingAndFrameworks(false, frameworkIds, modsPage);
+            modsAmount = us.getVerifyByPendingAndFrameworksAmount(false, frameworkIds);
         }
 
         if (userList.size() > 0) {
@@ -129,9 +114,7 @@ public class ModController {
             modsAmount = us.getApplicantsByPendingAmount(true).get();
 
         } else if (ownedFrameworks.size() > 0 || user.isVerify()) {
-            List<Long> frameworkIds = new ArrayList<>();
-            List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            List<Long> frameworkIds = us.getVerifiedFrameworks(user);
 
             userList = us.getApplicantsByFrameworks(frameworkIds, applicantsPage);
             modsAmount = us.getApplicantsByFrameworkAmount(frameworkIds, true).get();
@@ -163,12 +146,10 @@ public class ModController {
             modsAmount = us.getVerifyByPendingAmount(true).get();
 
         } else if (ownedFrameworks.size() > 0 || user.isVerify()) {
-            List<Long> frameworkIds = new ArrayList<>();
-            List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            List<Long> frameworkIds = us.getVerifiedFrameworks(user);
 
-            userList = us.getVerifyByPendingAndFrameworks(true, frameworkIdsForReportedComments, verifyPage);
-            modsAmount = us.getVerifyByPendingAndFrameworksAmount(true, frameworkIdsForReportedComments);
+            userList = us.getVerifyByPendingAndFrameworks(true, frameworkIds, verifyPage);
+            modsAmount = us.getVerifyByPendingAndFrameworksAmount(true, frameworkIds);
         }
 
         if (userList.size() > 0) {
@@ -197,12 +178,10 @@ public class ModController {
             reportsAmount = commentService.getAllReportsAmount().get();
 
         } else if (ownedFrameworks.size() > 0) {
-            List<Long> frameworkIds = new ArrayList<>();
-            List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            List<Long> frameworkIdsForReportedComments = us.getOwnedFrameworks(user);
 
             commentList = commentService.getReportsByFrameworks(frameworkIdsForReportedComments, rComPage);
-            reportsAmount = commentService.getReportsAmountByFrameworks(frameworkIds);
+            reportsAmount = commentService.getReportsAmountByFrameworks(frameworkIdsForReportedComments);
         }
 
         if (commentList.size() > 0) {
@@ -231,9 +210,7 @@ public class ModController {
             reportsAmount = contentService.getAllReportsAmount().get();
 
         } else if (ownedFrameworks.size() > 0 || user.isVerify()) {
-            List<Long> frameworkIds = new ArrayList<>();
-            List<Long> frameworkIdsForReportedComments = new ArrayList<>();
-            getVerifiedAndOwnedFrameworks(user, frameworkIds, frameworkIdsForReportedComments);
+            List<Long> frameworkIds = us.getVerifiedFrameworks(user);
 
             contentList = contentService.getReportsByFrameworks(frameworkIds, rConPage);
             reportsAmount = contentService.getReportsAmount(frameworkIds).get();
@@ -277,16 +254,14 @@ public class ModController {
     public Response acceptMod(@PathParam("id") Long verificationId) {
         Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         Optional<VerifyUser> vu = us.getVerifyById(verificationId);
-        if (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty()) {
-            if (vu.isPresent()) {
-                if (vu.get().isPending()) {
-                    us.verify(verificationId);
-                    Optional<User> u = us.findById(vu.get().getUserId());
-                    u.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
-                    return Response.ok().build();
-                }
-                return Response.notModified().build();
+        if (user.isPresent() && vu.isPresent() && (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty() || user.get().isVerifyForFramework(vu.get().getFrameworkId()))) {
+            if (vu.get().isPending()) {
+                us.verify(verificationId);
+                Optional<User> u = us.findById(vu.get().getUserId());
+                u.ifPresent(value -> us.modMailing(value, vu.get().getFrameworkName()));
+                return Response.ok().build();
             }
+            return Response.notModified().build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
@@ -298,8 +273,8 @@ public class ModController {
         Optional<User> user = us.findByUsername(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         Optional<VerifyUser> vu = us.getVerifyById(verificationId);
 
-        if (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty()) {
-            if (vu.isPresent() && vu.get().isPending()) {
+        if (user.isPresent() && vu.isPresent() && (user.get().isAdmin() || !user.get().getOwnedFrameworks().isEmpty() || user.get().isVerifyForFramework(vu.get().getFrameworkId()))) {
+            if (vu.get().isPending()) {
                 if (vu.get().isPending()) {
                     us.deleteVerification(verificationId);
                     return Response.ok().build();
@@ -376,7 +351,8 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response deleteContentReport(@PathParam("id") Long contentId) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (user.isAdmin() || user.getOwnedFrameworks().size() > 0) {
+        Optional<Content> content = contentService.getById(contentId);
+        if ( content.isPresent() && (user.isAdmin() || user.getOwnedFrameworks().size() > 0 || user.isVerifyForFramework(content.get().getFrameworkId()))) {
             contentService.denyReport(contentId);
             LOGGER.info("User: Content {} was removed from its report", contentId);
             return Response.ok().build();
@@ -390,7 +366,8 @@ public class ModController {
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response acceptContentReport(@PathParam("id") Long contentId) {
         User user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-        if (user.isAdmin() || user.getOwnedFrameworks().size() > 0) {
+        Optional<Content> content = contentService.getById(contentId);
+        if ( content.isPresent() && (user.isAdmin() || user.getOwnedFrameworks().size() > 0 || user.isVerifyForFramework(content.get().getFrameworkId()))) {
             Optional<Content> contentOptional = contentService.getById(contentId);
             if (contentOptional.isPresent()) {
                 contentService.acceptReport(contentId);

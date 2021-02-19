@@ -54,7 +54,16 @@ public class PostController {
             response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
         if (page != 1)
             response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(300);
+        response = response.cacheControl(cc);
         return response.build();
+    }
+
+    private static Response.ResponseBuilder setCacheHeaders(Object resource) {
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(300);
+        return Response.ok(resource).cacheControl(cc);
     }
 
     @GET
@@ -89,7 +98,7 @@ public class PostController {
             final Optional<User> optionalUser = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             optionalUser.ifPresent(value -> dto.setLoggedVote(value.getVoteForPost(id)));
 
-            return Response.ok(dto).build();
+            return setCacheHeaders(dto).build();
         }
         LOGGER.error("Post {}: Requested and not found", id);
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -138,7 +147,7 @@ public class PostController {
         for (String tag : fs.getFrameworkNames()) {
             dto.addName(PostTagDTO.fromString(tag, PostTagType.tech_name.name()));
         }
-        return Response.ok(dto).build();
+        return setCacheHeaders(dto).build();
     }
 
     @POST

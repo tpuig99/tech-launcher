@@ -122,7 +122,10 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
           $location.path('/404');
         });
 
-        $scope.tech.stars = $scope.tech.stars.toFixed(2);
+        if ($scope.tech.stars !== undefined) {
+          $scope.tech.stars = $scope.tech.stars.toFixed(2);
+        }
+
       }).catch(function () {
         $window.location.href = '#/404';
       });
@@ -341,17 +344,6 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       $scope.add.picture = file;
     };
 
-    $scope.addTech = function () {
-      $scope.techNameError = false;
-      techsService.addTech($scope.add).then(function (response) {
-        if (response.status === 201) {
-          $location.path('/techs');
-        }
-      }).catch(function () {
-        $scope.techNameError = true;
-      });
-    };
-
     $scope.applyForMod = function (location) {
       techsService.applyForMod(location).then(function (response) {
         if (response.status === 200) {
@@ -372,6 +364,23 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       }).catch( () =>
         $location.path($scope.tech.location)
       );
+    };
+
+    // Form Validations
+    $scope.techNameValidator = {
+      minLen: 1,
+      maxLen: 50,
+      pattern: /[a-zA-Z0-9 -+#*]+/
+    };
+
+    $scope.techIntroValidator = {
+      minLen: 1,
+      maxLen: 5000,
+    };
+
+    $scope.techDescriptionValidator = {
+      minLen: 1,
+      maxLen: 500,
     };
 
   });

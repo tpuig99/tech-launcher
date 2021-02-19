@@ -53,11 +53,41 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       $scope.techNameError = false;
       techsService.editTech($routeParams.id, $scope.tech).then(function (response) {
         if (response.status === 200) {
-          $location.path($scope.tech.location);
+          $window.location.href = '#/techs/' + $routeParams.id;
         }
       }).catch(function () {
         $scope.techNameError = true;
       });
+    };
+
+    $scope.addTech = function () {
+      $scope.techNameError = false;
+      techsService.addTech($scope.add).then(function (response) {
+        if (response.status === 201) {
+          let startIndex = response.headers('location').indexOf("api/");
+          let location = response.headers('location').substring(startIndex + 4);
+          $location.path(location);
+        }
+      }).catch(function () {
+        $scope.techNameError = true;
+      });
+    };
+
+    // Form Validations
+    $scope.techNameValidator = {
+      minLen: 1,
+      maxLen: 50,
+      pattern: /[a-zA-Z0-9 -+#*]+/
+    };
+
+    $scope.techIntroValidator = {
+      minLen: 1,
+      maxLen: 5000,
+    };
+
+    $scope.techDescriptionValidator = {
+      minLen: 1,
+      maxLen: 500,
     };
   });
 });

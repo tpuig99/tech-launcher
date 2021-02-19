@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -18,9 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -53,7 +50,7 @@ public class ReportContentDaoTest {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
 
         for (int i = 1; i < 7; i++) {
-            User user = new User("user"+i,"mail"+i,null,true,"",true,null);
+            User user = new User("user"+i,"mail"+i,null,true,"",true);
             em.persist(user);
             Framework framework = new Framework();
             framework.setName("framework"+i);

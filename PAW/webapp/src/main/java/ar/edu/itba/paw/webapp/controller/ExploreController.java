@@ -1,17 +1,19 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.service.ExploreService;
 import ar.edu.itba.paw.service.FrameworkService;
 import ar.edu.itba.paw.service.PostService;
 import ar.edu.itba.paw.service.UserService;
-import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.FrameworkDTO;
+import ar.edu.itba.paw.webapp.dto.PostDTO;
+import ar.edu.itba.paw.webapp.dto.SearchDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
-
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -22,7 +24,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("explore")
@@ -38,10 +43,10 @@ public class ExploreController {
     private FrameworkService fs;
 
     @Autowired
-    private UserService us;
+    private ExploreService es;
 
     @Autowired
-    private PostService ps;
+    private UserService us;
 
     @Context
     private UriInfo uriInfo;
@@ -96,17 +101,17 @@ public class ExploreController {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        if(isExploringByMultiple(categories)) {
+        if(es.isExploringByMultiple(categories)) {
             try {
-                categoriesList = parseCategories(categories);
+                categoriesList = es.getParsedCategories(categories);
             } catch (Exception e){
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
         }
 
-        if(isExploringByMultiple(types)) {
+        if(es.isExploringByMultiple(types)) {
             try {
-                typesList = parseTypes(types);
+                typesList = es.getParsedTypes(types);
             } catch (Exception e){
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
@@ -127,19 +132,19 @@ public class ExploreController {
 
         if (lastComment != null) {
             LOGGER.info("Explore: Searching 'last comment' according to criteria {}", lastComment);
-            parsedLastComment = parseToDate(lastComment);
+            parsedLastComment = es.getParsedDateOption(lastComment);
         }
 
         if (lastUpdate != null) {
             LOGGER.info("Explore: Searching 'last update' according to criteria {}", lastUpdate);
-            parsedLastUpdate = parseToDate(lastUpdate);
+            parsedLastUpdate = es.getParsedDateOption(lastUpdate);
         }
 
         setExploreParams(search, toSearch, categories, types, starsLeft, starsRight, nameFlag, lastComment, lastUpdate, order);
 
         /* --------------------- TECHS --------------------- */
-        List<Framework> frameworks = fs.search(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page);
-        searchResultsNumber = fs.searchResultsNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate);
+        List<Framework> frameworks = es.searchFrameworks(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page);
+        searchResultsNumber = es.getFrameworksResultNumber(!toSearch.equals("") ? toSearch : null, categoriesList.isEmpty() ? null : categoriesList, typesList.isEmpty() ? null : typesList, starsLeft == null ? 0 : starsLeft, starsRight == null ? 5 : starsRight, nameFlag, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate);
 
         LOGGER.info("Explore: Found {} matching techs", searchResultsNumber);
 
@@ -192,18 +197,18 @@ public class ExploreController {
 
         if (lastComment != null) {
             LOGGER.info("Explore: Searching 'last comment' according to criteria {}", lastComment);
-            parsedLastComment = parseToDate(lastComment);
+            parsedLastComment = es.getParsedDateOption(lastComment);
         }
 
         if (lastUpdate != null) {
             LOGGER.info("Explore: Searching 'last update' according to criteria {}", lastUpdate);
-            parsedLastUpdate = parseToDate(lastUpdate);
+            parsedLastUpdate = es.getParsedDateOption(lastUpdate);
         }
 
-        tags = getTagsToExplore(categories, types);
+        tags = es.getTags(categories, types);
 
-        List<Post> posts = ps.search(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
-        searchResultsNumber = ps.searchResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order);
+        List<Post> posts = es.searchPosts(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order, page == 0 ? 1 : page, POSTS_PAGE_SIZE);
+        searchResultsNumber = es.getPostsResultsNumber(!toSearch.equals("") ? toSearch : null, tags.isEmpty() ? null : tags, 0, 0, commentAmount == null ? 0 : commentAmount, parsedLastComment, parsedLastUpdate, order);
         LOGGER.info("Explore: Found {} matching posts", searchResultsNumber);
 
         int pages = (int) Math.ceil(((double)searchResultsNumber)/POSTS_PAGE_SIZE);
@@ -216,32 +221,7 @@ public class ExploreController {
     }
 
 
-    private Date parseToDate(Integer lastComment){
-        LocalDate localDate = null;
-        switch (lastComment) {
-            case DAYS:
-                localDate = LocalDate.now().minusDays(3);
-                break;
-            case WEEK:
-                localDate = LocalDate.now().minusWeeks(1);
-                break;
-            case MONTH:
-                localDate = LocalDate.now().minusMonths(1);
-                break;
-            case MONTHS:
-                localDate = LocalDate.now().minusMonths(3);
-                break;
-            case YEAR:
-                localDate = LocalDate.now().minusYears(1);
-                break;
-        }
 
-        if(localDate != null){
-            return Date.from(localDate.atStartOfDay().toInstant(ZoneOffset.UTC));
-        }
-        return null;
-
-    }
 
    private void setExploreParams(SearchDTO searchDTO, String toSearch, List<String> categories, List<String> types, Integer starsLeft, Integer starsRight, Boolean nameFlag, Integer lastComment, Integer lastUpdate, Integer order){
 
@@ -288,34 +268,6 @@ public class ExploreController {
         return  (order != null && (order < -4 || order > 4));
    }
 
-
-   private List<FrameworkCategories> parseCategories(List<String> categories){
-       List<FrameworkCategories> parsedCategories = new ArrayList<>();
-       for (String c : categories) {
-           parsedCategories.add(FrameworkCategories.valueOf(c));
-       }
-       return parsedCategories;
-   }
-
-    private List<FrameworkType> parseTypes(List<String> types){
-        List<FrameworkType> parsedTypes = new ArrayList<>();
-        for (String t : types) {
-            parsedTypes.add(FrameworkType.valueOf(t));
-        }
-        return parsedTypes;
-    }
-
-
-    private boolean isExploringByMultiple(List<String> list){
-        return (list.size() != 1 || !list.get(0).equals(""));
-    }
-
-    private List<String> getTagsToExplore(List<String> categories, List<String> types){
-        List<String> tags = new ArrayList<>();
-        tags.addAll(categories);
-        tags.addAll(types);
-        return tags;
-    }
 }
 
 

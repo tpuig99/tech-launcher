@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Blob;
 import ar.edu.itba.paw.models.User;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +21,7 @@ public class UserHibernateDao implements UserDao {
 
     @Override
     public User create(String username, String mail, String password) {
-        final User user = new User(username,mail,password,ENABLED_DEFAULT,DESC_DEFAULT,ALLOW_DEFAULT,PICTURE_DEFAULT);
+        final User user = new User(username,mail,password,ENABLED_DEFAULT,DESC_DEFAULT,ALLOW_DEFAULT);
         em.persist(user);
         return user;
     }
@@ -51,7 +52,12 @@ public class UserHibernateDao implements UserDao {
     public void updateInformation(Long userId, String description, byte[] picture, boolean updatePicture) {
         User user = em.find(User.class, userId);
         if (updatePicture) {
-            user.setPicture(picture);
+            if (user.getPictureId() != User.DEFAULT_PICTURE_ID) {
+                em.remove(em.getReference(Blob.class, user.getPictureId()));
+            }
+            Blob blob = new Blob(picture);
+            em.persist(blob);
+            user.setPicture(blob);
         }
         user.setDescription(description);
         em.merge(user);
@@ -60,7 +66,15 @@ public class UserHibernateDao implements UserDao {
     @Override
     public void updatePicture(long id, byte[] picture) {
         User user = em.find(User.class,id);
-        user.setPicture(picture);
+        if (user.getPictureId() != User.DEFAULT_PICTURE_ID) {
+            Blob blob = em.find(Blob.class, user.getPictureId());
+            blob.setPicture(picture);
+            em.merge(blob);
+        } else {
+            Blob blob = new Blob(picture);
+            em.persist(blob);
+            user.setPicture(blob);
+        }
         em.merge(user);
     }
 

@@ -227,7 +227,10 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         framework.setType(type);
         framework.setAuthor(em.getReference(User.class, userId));
         framework.setPublishDate(ts);
-        framework.setPicture(picture);
+
+        Blob blob = new Blob(picture);
+        em.persist(blob);
+        framework.setPicture(blob);
 
         em.persist(framework);
         return Optional.of(framework);
@@ -246,10 +249,19 @@ public class FrameworkHibernateDaoImpl implements FrameworkDao {
         framework.setPublishDate(ts);
 
         if (picture!=null && picture.length>0) {
-            framework.setPicture(picture);
-        }  else {
-            framework.setPicture(framework.getPicture());
+            if (framework.getPictureId() != Framework.DEFAULT_PICTURE_ID) {
+                Blob blob = em.find(Blob.class, framework.getPictureId());
+                blob.setPicture(picture);
+                em.merge(blob);
+            } else {
+                Blob blob = new Blob(picture);
+                em.persist(blob);
+                framework.setPicture(blob);
+            }
         }
+//        }  else {
+//            framework.setPicture(framework.getPicture());
+//        }
 
         em.merge(framework);
         return Optional.of(framework);

@@ -131,9 +131,9 @@
                     <div class="card-body my-auto">
                       <div class="border-bottom">
                         <p class="my-1">{{'MOD_REPORT_COMMENT_OWNER' | translate}}:&nbsp;<a
-                          ng-href="#/{{comment.userLocation}}">{{comment.reported}}</a></p>
+                          ng-href="#/users/{{comment.userId}}">{{comment.reported}}</a></p>
                         <p class="my-1">{{'MOD_REPORT_TECH' | translate}}:&nbsp;<a
-                          ng-href="#/{{comment.techLocation}}">{{comment.frameworkName}}</a></p>
+                          ng-href="#/techs/{{comment.techId}}">{{comment.frameworkName}}</a></p>
                         <p class="my-1">
                           {{'MOD_COMMENT_DESCRIPTION' | translate}}:&nbsp;{{comment.commentDescription}}</p>
                       </div>
@@ -170,9 +170,9 @@
                     <div class="card-body my-auto">
                       <div class="border-bottom">
                         <p class="my-1">{{'MOD_REPORT_CONTENT_OWNER' | translate}}:&nbsp;<a
-                          ng-href="#/{{content.userLocation}}">{{content.reported}}</a></p>
+                          ng-href="#/users/{{content.userId}}">{{content.reported}}</a></p>
                         <p class="my-1">{{'MOD_REPORT_TECH' | translate}}:&nbsp;<a
-                          ng-href="#/{{content.techLocation}}">{{content.frameworkName}}</a></p>
+                          ng-href="#/techs/{{content.techId}}">{{content.frameworkName}}</a></p>
                         <p class="my-1">{{'MOD_CONTENT_DESCRIPTION' | translate}}:&nbsp;<a
                           href="{{content.contentLink}}" target="_blank">{{content.contentLink}}</a></p>
                       </div>

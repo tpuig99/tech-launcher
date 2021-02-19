@@ -1,10 +1,21 @@
 package ar.edu.itba.paw.webapp.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public class PostAddDTO {
     List<String> types, categories, names;
-    String title, description;
+
+    @NotEmpty
+    @Size(min = 3, max = 200)
+    String title;
+
+    @NotEmpty
+    @Size(min=1, max = 5000)
+    String description;
 
     public List<String> getTypes() {
         return types;
