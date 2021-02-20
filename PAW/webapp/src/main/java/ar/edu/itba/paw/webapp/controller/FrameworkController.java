@@ -34,6 +34,7 @@ public class FrameworkController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrameworkController.class);
     private static final int MAX_FILE_SIZE = 5 * 1024 * 1024;
+    private static final int MIN_FILE_SIZE = 16;
 
     @Autowired
     private FrameworkService fs;
@@ -247,7 +248,7 @@ public class FrameworkController {
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response createTech(
             @Valid @FormDataParam("body") ValidatedFrameworkDTO dto,
-            @NotEmpty(message = "{ar.edu.itba.paw.validation.constraints.NotNullPicture.message}") @Size(max = MAX_FILE_SIZE, message = "{ar.edu.itba.paw.validation.constraints.DefaultPicture.message}") @FormDataParam("picture") byte[] picture ) {
+            @Size(min = MIN_FILE_SIZE, max = MAX_FILE_SIZE, message = "{ar.edu.itba.paw.validation.constraints.TechPicture.message}") @FormDataParam("picture") byte[] picture ) {
 
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         FrameworkType fType;
