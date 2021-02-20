@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = ContentValidator.class)
 @Documented
 public @interface Content {
-    String message() default "Content title is already being used";
+    String message() default "{ar.edu.itba.paw.validation.constraints.Content.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

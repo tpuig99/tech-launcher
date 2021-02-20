@@ -16,7 +16,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = DefaultFrameworkCategoryValidator.class)
 @Documented
 public @interface DefaultFrameworkCategory {
-    String message() default "Invalid tech category";
+    String message() default "{ar.edu.itba.paw.validation.constraints.DefaultFrameworkCategory.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

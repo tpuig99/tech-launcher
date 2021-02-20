@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = FrameworkValidator.class)
 @Documented
 public @interface Framework {
-    String message() default "Framework name is already being used";
+    String message() default "{ar.edu.itba.paw.validation.constraints.Framework.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

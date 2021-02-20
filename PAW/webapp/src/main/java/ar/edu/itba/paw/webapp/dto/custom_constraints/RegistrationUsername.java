@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = RegistrationUsernameValidator.class)
 @Documented
 public @interface RegistrationUsername {
-    String message() default "Username already being used";
+    String message() default "{ar.edu.itba.paw.validation.constraints.RegistrationUsername.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

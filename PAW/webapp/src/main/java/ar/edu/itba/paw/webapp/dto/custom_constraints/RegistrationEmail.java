@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = RegistrationEmailValidator.class)
 @Documented
 public @interface RegistrationEmail {
-    String message() default "Email already being used";
+    String message() default "{ar.edu.itba.paw.validation.constraints.RegistrationEmail.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

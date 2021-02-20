@@ -16,7 +16,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = DefaultContentTypeValidator.class)
 @Documented
 public @interface DefaultContentType {
-    String message() default "Invalid content type";
+    String message() default "{ar.edu.itba.paw.validation.constraints.DefaultContentType.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
