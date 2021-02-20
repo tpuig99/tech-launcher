@@ -55,7 +55,7 @@
             <div ng-if="profile.verify">
               <p>
                 <strong>{{'PROFILE_MODERATOR' | translate}}</strong>
-              <div class="mb-1" ng-repeat="verifyTech in profile.verifications"><a class="tags" href="{{'#/'+verifyTech.location}}">{{verifyTech.frameworkName}}</a></div>
+              <div class="mb-1" ng-repeat="verifyTech in profile.verifications"><a class="tags" href="{{'#/techs/'+verifyTech.techId}}">{{verifyTech.frameworkName}}</a></div>
               </p>
             </div>
           </div>

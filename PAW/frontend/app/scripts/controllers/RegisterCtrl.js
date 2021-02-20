@@ -4,18 +4,20 @@ define(['frontend','services/sessionService'], function(frontend) {
 
     frontend.controller('RegisterCtrl', function($location, $scope, sessionService) {
       $('.modal-backdrop').hide();
-      $scope.userAlreadyExists = false;
       $scope.registered = false;
+      $scope.error = false;
+      $scope.errorDetails = undefined;
 
       $scope.register = function(email, username, password) {
         sessionService.createUser(email, username, password).then(function(response) {
-          $scope.userAlreadyExists = false;
           $scope.registered = true;
-        }, function (response) {
-          $scope.registered = false;
-          $scope.userAlreadyExists = true;
+          $scope.error = false;
+          $scope.errorDetails = undefined;
         }).catch((error) => {
-          if(error.status === 404) {
+          if( error.status === 400 ) {
+            $scope.error = true;
+            $scope.errorDetails = error.data;
+          } else if(error.status === 404) {
             $location.path('/404');
           }
           else {
