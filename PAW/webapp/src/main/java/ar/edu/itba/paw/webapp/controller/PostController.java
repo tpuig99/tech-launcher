@@ -205,8 +205,15 @@ public class PostController {
                     pts.update(id, names, categories, types);
 
                     LOGGER.info("Post {}: Updated successfully with new information", id);
+                    PostDTO dto = new PostDTO();
+                    dto.setId(updatedPost.get().getPostId());
+                    dto.setPostDescription(updatedPost.get().getDescription());
+                    dto.setPostTitle(updatedPost.get().getDescription());
+                    List<PostTagDTO> postTags = new LinkedList<>();
+                    updatedPost.get().getPostTags().forEach((postTag) -> postTags.add(PostTagDTO.fromPostTag(postTag)));
+                    dto.setPostTags(postTags);
 
-                    return Response.ok(form).build();
+                    return Response.ok(dto).build();
                 }
                 LOGGER.error("Posts: A problem occurred while creating the new Post");
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
