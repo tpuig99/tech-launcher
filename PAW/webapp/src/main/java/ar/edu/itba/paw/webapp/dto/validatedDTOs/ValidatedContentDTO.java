@@ -1,23 +1,34 @@
-package ar.edu.itba.paw.webapp.dto;
+package ar.edu.itba.paw.webapp.dto.validatedDTOs;
 
+import ar.edu.itba.paw.webapp.dto.custom_constraints.Content;
+import ar.edu.itba.paw.webapp.dto.custom_constraints.DefaultContentType;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class ContentAddDTO {
+@Content
+public class ValidatedContentDTO {
+
+    private static final int MAX_RECOMMENDED_URL_SIZE = 2048;
 
     @NotNull
+    @Min(value = 1)
+    private Integer id;
+
+    @NotNull
+    @Size(min = 3,max = MAX_RECOMMENDED_URL_SIZE)
     private String link;
 
     @NotNull
-    @Size(max=10)
+    @DefaultContentType
+    @Size(max = 10)
     private String type;
 
     @NotNull
     @NotEmpty
-    @Size(min=4, max=40)
+    @Size(min = 4, max=40)
     private String title;
 
     public String getLink() {
@@ -42,5 +53,13 @@ public class ContentAddDTO {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

@@ -378,7 +378,7 @@
                 <div class="form-group">
                   <label for="replyComment--{{$index}}"> {{'TECH_REPLY_COMMENT' | translate}}</label>
                   <input class="form-control" type="text" id="replyComment--{{$index}}" ng-model="commentInput"
-                         name="commentInput" required ng-minlength="3" ng-maxlength="100"
+                         name="commentInput" required ng-minlength="3" ng-maxlength="500"
                          placeholder="{{'TECH_REPLY_PLACEHOLDER' | translate}}"/>
                   <div ng-show="registerForm.commentInput.$dirty && registerForm.commentInput.$error.required">
                     {{ 'FORM_ERROR_EMPTY' | translate}}

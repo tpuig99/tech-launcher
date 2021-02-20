@@ -36,7 +36,7 @@
 
           <div class="form-group">
             <label for="addContentLink">{{'ADD_CONTENT_LINK' | translate}}</label>
-            <input class="form-control" type="text" id="addContentLink" ng-model="linkInput" name="linkInput" required placeholder="{{'ADD_CONTENT_LINK_PLACEHOLDER' | translate}}"/>
+            <input class="form-control" type="text" id="addContentLink" ng-model="linkInput" name="linkInput"  required ng-minlength="3" ng-maxlength="2048" placeholder="{{'ADD_CONTENT_LINK_PLACEHOLDER' | translate}}"/>
             <div ng-show="addContentForm.titleInput.$dirty && addContentForm.titleInput.$error.required">{{ 'FORM_ERROR_EMPTY' | translate}}</div>
           </div>
 

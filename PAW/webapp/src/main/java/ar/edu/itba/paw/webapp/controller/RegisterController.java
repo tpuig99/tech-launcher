@@ -9,6 +9,8 @@ import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
 import ar.edu.itba.paw.webapp.dto.JwtResponseDTO;
 import ar.edu.itba.paw.webapp.dto.UserAddDTO;
 import ar.edu.itba.paw.webapp.dto.UserDTO;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedEmail;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedUserRegistrationDTO;
 import ar.edu.itba.paw.webapp.event.OnRegistrationCompleteEvent;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -49,13 +52,13 @@ public class RegisterController {
 
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response register(final UserAddDTO userDTO) {
+    public Response register(@Valid final ValidatedUserRegistrationDTO newUser) {
         try {
-            User registeredUser = us.register(userDTO.getUsername(), userDTO.getMail(), userDTO.getPassword());
+            User registeredUser = us.register(newUser.getUsername(), newUser.getMail(), newUser.getPassword());
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, LocaleContextHolder.getLocale(), uriInfo.getRequestUri().toString(), false));
             LOGGER.info("Register: User '{}' registered successfully with id '{}'", registeredUser.getUsername(), registeredUser.getId());
 
-            String token = userDetailsService.generateToken(userDTO.getUsername());
+            String token = userDetailsService.generateToken(newUser.getUsername());
             return Response.ok(new JwtResponseDTO(token, registeredUser, uriInfo)).build();
 
         } catch (UserAlreadyExistException uaeEx) {
@@ -106,7 +109,7 @@ public class RegisterController {
     @POST
     @Path("forgot_password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response forgotPassword(final UserDTO userDTO) {
+    public Response forgotPassword(@Valid final ValidatedEmail userDTO) {
         Optional<User> optionalUser = us.findByMail(userDTO.getMail());
         if (!optionalUser.isPresent()) {
             LOGGER.error("Register: No user found with mail {}", userDTO.getMail());

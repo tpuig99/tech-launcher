@@ -1,17 +1,12 @@
-package ar.edu.itba.paw.webapp.dto;
-
-import ar.edu.itba.paw.models.Comment;
+package ar.edu.itba.paw.webapp.dto.validatedDTOs;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
-public class CommentAddDTO {
+public class ValidatedCommentDTO {
 
     @NotNull
-    @Size(max=500)
+    @Size(min = 3, max = 500)
     private String description;
 
     public String getDescription() {
@@ -22,3 +17,4 @@ public class CommentAddDTO {
         this.description = description;
     }
 }
+
