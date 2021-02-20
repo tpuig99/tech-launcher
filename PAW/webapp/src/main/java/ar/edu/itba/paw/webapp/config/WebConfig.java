@@ -51,13 +51,13 @@ public class WebConfig{
 //        ds.setPassword("uygwr2BX7");
 
 //        Uncomment when deploying (Ctrl + '/')
-//        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
-//        ds.setUsername("paw-2020b-1");
-//        ds.setPassword("uygwr2BX7");
-
-        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
-        ds.setUsername("postgres");
+        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
+        ds.setUsername("paw-2020b-1");
         ds.setPassword("uygwr2BX7");
+
+//        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
+//        ds.setUsername("postgres");
+//        ds.setPassword("uygwr2BX7");
         return ds;
     }
 
