@@ -375,6 +375,7 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
         if (response.status === 200) {
           $scope.getTech();
           $scope.getUser();
+          $scope.isVerify = false;
         }
       }).catch( () =>
         $location.path($scope.tech.location)

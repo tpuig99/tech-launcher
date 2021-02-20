@@ -118,7 +118,7 @@
                   <button class="btn btn-link" ng-click="setDel(book.location)" data-toggle="modal"
                           data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                 </div>
-                <div ng-if="isPresent && isEnable && book.user.username!=username && !isReporter(book, username) && isEnable && !isAdmin && !isOwner">
+                <div ng-if="isPresent && isEnable && book.user.username!=username && !isReporter(book, username) && !isVerify && !isAdmin && !isOwner">
                   <button class="btn btn-link" ng-click="setReport(book.reportLocation)" data-toggle="modal"
                           data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                 </div>
@@ -150,7 +150,7 @@
                   <button class="btn btn-link" ng-click="setDel(course.location)" data-toggle="modal"
                           data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                 </div>
-                <div ng-if="isPresent && course.user.username!=username && !isReporter(course, username) && isEnable && !isAdmin && !isOwner ">
+                <div ng-if="isPresent && course.user.username!=username && !isReporter(course, username) && isEnable && !isAdmin && !isOwner && !isVerify">
                   <button class="btn btn-link" ng-click="setReport(course.reportLocation)" data-toggle="modal"
                           data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                 </div>
@@ -182,7 +182,7 @@
                   <button class="btn btn-link" ng-click="setDel(tutorial.location)" data-toggle="modal"
                           data-target="#deleteContentModal"><i class="fa fa-trash"></i></button>
                 </div>
-                <div ng-if="isPresent && tutorial.user.username!=username && !isReporter(tutorial, username) && isEnable && !isAdmin && !isOwner">
+                <div ng-if="isPresent && tutorial.user.username!=username && !isReporter(tutorial, username) && isEnable && !isVerify && !isAdmin && !isOwner">
                   <button class="btn btn-link" ng-click="setReport(tutorial.reportLocation)" data-toggle="modal"
                           data-target="#reportContentModal"><i class="fa fa-exclamation"></i></button>
                 </div>
