@@ -119,3 +119,8 @@
 .hidden-no-space {
   display: none;
 }
+
+.tags {
+  display: flex;
+  flex-direction: row;
+}

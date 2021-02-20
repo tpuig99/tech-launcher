@@ -364,7 +364,7 @@
                     <packagingExcludes>**/logback-test.xml</packagingExcludes>
                     <webResources>
                         <resource>
-                            <directory>..\frontend\dist</directory>
+                            <directory>../frontend/dist</directory>
                         </resource>
                     </webResources>
                 </configuration>
