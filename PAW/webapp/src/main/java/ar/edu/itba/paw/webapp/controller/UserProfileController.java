@@ -3,6 +3,8 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedPasswordAndTokenDTO;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedPasswordDTO;
 import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedUserUpdateDTO;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -262,11 +264,10 @@ public class UserProfileController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    // TODO: ADD VALIDATION
     @POST
     @Path("/{id}/password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response changePassword(@PathParam("id") Long userId, final UserAddDTO form) {
+    public Response changePassword(@PathParam("id") Long userId, @Valid final ValidatedPasswordDTO form) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
@@ -287,11 +288,10 @@ public class UserProfileController {
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    // TODO: ADD VALIDATION
     @POST
     @Path("password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response changePasswordWithToken(PasswordDTO passwordDTO) {
+    public Response changePasswordWithToken(@Valid ValidatedPasswordAndTokenDTO passwordDTO) {
 
         Optional<User> user = us.findByToken(passwordDTO.getToken());
 

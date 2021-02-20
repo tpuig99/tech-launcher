@@ -3,12 +3,14 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedCommentDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
@@ -329,16 +331,17 @@ public class PostController {
     }
 
 
-    // TODO: ADD VALIDATION, DEBE SER IGUAL AL VALIDATECOMMENTDTO DE TECHS
     @POST
     @Path("/{id}/answers")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response commentPost(final PostCommentAddDTO form, @PathParam("id") long postId) {
+    public Response commentPost(@Valid final ValidatedCommentDTO form, @PathParam("id") long postId) {
         final Optional<Post> post = ps.findById(postId);
         if (post.isPresent()) {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            commentService.insertPostComment(postId, user.get().getId(), form.getDescription(), null);
-            return Response.ok(form).build();
+            if( user.isPresent()){
+                commentService.insertPostComment(postId, user.get().getId(), form.getDescription(), null);
+                return Response.ok(form).build();
+            }
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }

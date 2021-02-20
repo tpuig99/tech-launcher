@@ -9,6 +9,7 @@ import ar.edu.itba.paw.webapp.auth.PawUserDetailsService;
 import ar.edu.itba.paw.webapp.dto.JwtResponseDTO;
 import ar.edu.itba.paw.webapp.dto.UserAddDTO;
 import ar.edu.itba.paw.webapp.dto.UserDTO;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedEmail;
 import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedUserRegistrationDTO;
 import ar.edu.itba.paw.webapp.event.OnRegistrationCompleteEvent;
 import javassist.NotFoundException;
@@ -105,11 +106,10 @@ public class RegisterController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    // TODO: ADD VALIDATION
     @POST
     @Path("forgot_password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response forgotPassword(final UserDTO userDTO) {
+    public Response forgotPassword(@Valid final ValidatedEmail userDTO) {
         Optional<User> optionalUser = us.findByMail(userDTO.getMail());
         if (!optionalUser.isPresent()) {
             LOGGER.error("Register: No user found with mail {}", userDTO.getMail());
