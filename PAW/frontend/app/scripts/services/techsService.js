@@ -88,6 +88,7 @@ define(['frontend'], function(frontend) {
 
     this.addTech = function(add) {
       var fd = new FormData();
+
       var body = {
         'name': add.name,
         'category': add.category,
@@ -95,7 +96,13 @@ define(['frontend'], function(frontend) {
         'description': add.description,
         'introduction': add.introduction,
       }
-      fd.append('body', body);
+
+      var bodyBlob = new Blob(
+        [angular.toJson(body)],
+        {type: 'application/json'}
+      );
+
+      fd.append('body', bodyBlob);
       fd.append('picture', add.picture);
 
       return Restangular.one('techs/').withHttpConfig({transformRequest: angular.identity})
@@ -104,11 +111,23 @@ define(['frontend'], function(frontend) {
 
     this.editTech = function(id, edit) {
       var fd = new FormData();
-      fd.append('name', edit.name);
-      fd.append('category', edit.category);
-      fd.append('type', edit.type);
-      fd.append('description', edit.description);
-      fd.append('introduction', edit.introduction);
+
+      var body = {
+        'id': id,
+        'name': edit.name,
+        'category': edit.category,
+        'type': edit.type,
+        'description': edit.description,
+        'introduction': edit.introduction,
+      }
+
+      var bodyBlob = new Blob(
+        [angular.toJson(body)],
+        {type: 'application/json'}
+      );
+
+      fd.append('body', bodyBlob);
+
       if (edit.picture !== undefined) {
         fd.append('picture', edit.picture);
       }

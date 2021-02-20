@@ -22,7 +22,7 @@ public class DefaultFrameworkTypeValidator implements ConstraintValidator<Defaul
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return acceptedValues.contains(value.toLowerCase());
+        return acceptedValues.contains(value);
     }
 
 }

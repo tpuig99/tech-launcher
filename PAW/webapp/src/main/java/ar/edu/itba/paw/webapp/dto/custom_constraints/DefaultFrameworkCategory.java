@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.dto.custom_constraints;
 
-import ar.edu.itba.paw.webapp.dto.custom_validators.DefaultContentTypeValidator;
-import ar.edu.itba.paw.webapp.dto.validatedDTOs.DefaultFrameworkCategoryValidator;
+import ar.edu.itba.paw.webapp.dto.custom_validators.DefaultFrameworkCategoryValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.dto.validatedDTOs;
+package ar.edu.itba.paw.webapp.dto.custom_validators;
 
 import ar.edu.itba.paw.models.FrameworkCategories;
 import ar.edu.itba.paw.webapp.dto.custom_constraints.DefaultFrameworkCategory;
@@ -22,7 +22,7 @@ public class DefaultFrameworkCategoryValidator implements ConstraintValidator<De
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return acceptedValues.contains(value.toLowerCase());
+        return acceptedValues.contains(value);
     }
 
 }
