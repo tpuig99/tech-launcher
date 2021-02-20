@@ -185,11 +185,17 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $('#editProfileModal').modal('hide');
         }
       }).catch((error) => {
-        if(error.status === 404) {
-          $location.path('/404');
-        }
-        else {
-          $location.path('/500');
+        if( error.status === 400 ) {
+          $scope.error = true;
+          $scope.errorDetails = error.data;
+        } else {
+          $('#editProfileModal').modal('hide');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         }
       });
     };

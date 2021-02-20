@@ -12,7 +12,11 @@
 
       <div class="modal-body">
 
-        <div class="mt-2 text-danger text-center" ng-if="contentNameError">{{'TECH_CONTENT_NAME_ERROR' | translate}}</div>
+        <div class="mt-2 text-danger text-center" ng-if="error">
+          <div ng-repeat="errorDetail in errorDetails">
+            {{errorDetail.message}}
+          </div>
+        </div>
 
         <form name="addContentForm">
 

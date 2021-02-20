@@ -50,7 +50,7 @@ public class VerifyUserDTO {
     public static VerifyUserDTO fromProfile(VerifyUser verifyUser) {
         VerifyUserDTO dto = new VerifyUserDTO();
         dto.frameworkName = verifyUser.getFrameworkName();
-        dto.location = "techs/"+verifyUser.getFrameworkId();
+        dto.techId = verifyUser.getFrameworkId();
         dto.pending = verifyUser.isPending();
 
         return dto;

@@ -5,6 +5,7 @@ import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.dto.validatedDTOs.*;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class FrameworkController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrameworkController.class);
     private static final int MAX_FILE_SIZE = 5 * 1024 * 1024;
+    private static final int MIN_FILE_SIZE = 16;
 
     @Autowired
     private FrameworkService fs;
@@ -241,52 +243,12 @@ public class FrameworkController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-//    @POST
-//    @Produces(value = {MediaType.APPLICATION_JSON,})
-//    @Consumes({MediaType.MULTIPART_FORM_DATA})
-//    public Response createTech(
-//            @FormDataParam("name") final String name,
-//            @FormDataParam("category") final String category,
-//            @FormDataParam("type") final String type,
-//            @FormDataParam("description") final String description,
-//            @FormDataParam("introduction") final String introduction,
-//            @FormDataParam("picture") final byte[] picture
-//    ) throws IOException {
-//        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-//        FrameworkType fType;
-//        FrameworkCategories fCategory;
-//        if (name == null || description == null || introduction == null || picture == null || category == null || type == null) {
-//            return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
-//        }
-//        try {
-//            fType = FrameworkType.valueOf(type);
-//            fCategory = FrameworkCategories.valueOf(category);
-//        } catch (IllegalArgumentException e) {
-//            return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
-//        }
-//
-//        if (!fs.nameAvailable(name, null)) {
-//            return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
-//        }
-//        Optional<Framework> framework = fs.create(name, fCategory, description, introduction, fType, user.get().getId(), picture);
-//
-//        if (framework.isPresent()) {
-//            LOGGER.info("Techs: User {} added a new Tech with id: {}", user.get().getId(), framework.get().getId());
-//            final URI uri = uriInfo.getAbsolutePathBuilder()
-//                    .path(String.valueOf(framework.get().getId())).build();
-//            return Response.created(uri).build();
-//        }
-//
-//        LOGGER.error("Techs: A problem occurred while creating the new Tech");
-//        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-//    }
-
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response createTech(
             @Valid @FormDataParam("body") ValidatedFrameworkDTO dto,
-            @NotNull @Size(max = MAX_FILE_SIZE) @FormDataParam("picture") byte[] picture ) {
+            @Size(min = MIN_FILE_SIZE, max = MAX_FILE_SIZE, message = "{ar.edu.itba.paw.validation.constraints.TechPicture.message}") @FormDataParam("picture") byte[] picture ) {
 
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         FrameworkType fType;
@@ -311,64 +273,13 @@ public class FrameworkController {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
-//    @PUT
-//    @Path("/{id}")
-//    @Produces(value = {MediaType.APPLICATION_JSON,})
-//    @Consumes({MediaType.MULTIPART_FORM_DATA})
-//    public Response updateTech(@PathParam("id") long id,
-//                               @FormDataParam("name") final String name,
-//                               @FormDataParam("category") final String category,
-//                               @FormDataParam("type") final String type,
-//                               @FormDataParam("description") final String description,
-//                               @FormDataParam("introduction") final String introduction,
-//                               @FormDataParam("picture") final byte[] picture) throws IOException {
-//        if( !fs.nameAvailable(name, id)) {
-//            return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
-//        }
-//
-//        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-//        final Optional<Framework> framework = fs.findById(id);
-//        if (framework.isPresent()) {
-//            if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
-//
-//                FrameworkType fType;
-//                FrameworkCategories fCategory;
-//                if (name == null || description == null || introduction == null || category == null || type == null) {
-//                    return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
-//                }
-//                try {
-//                    fType = FrameworkType.valueOf(type);
-//                    fCategory = FrameworkCategories.valueOf(category);
-//                } catch (IllegalArgumentException e) {
-//                    return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
-//                }
-//
-//                final Optional<Framework> updatedFramework = fs.update(id, name, fCategory, description, introduction, fType, picture);
-//
-//                if (updatedFramework.isPresent()) {
-//                    LOGGER.info("Tech {}: User {} updated the Tech", id, user.get().getId());
-//                    return Response.ok(FrameworkDTO.fromFramework(updatedFramework.get(), uriInfo)).build();
-//                }
-//
-//                LOGGER.error("Tech {}: A problem occurred while updating the Tech", id);
-//                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-//            }
-//
-//            LOGGER.error("Tech {}: User without enough privileges attempted to update tech", id);
-//            return Response.status(Response.Status.FORBIDDEN).build();
-//        }
-//
-//        LOGGER.error("Tech {}: Requested for updating tech and not found", id);
-//        return Response.status(Response.Status.NOT_FOUND).build();
-//    }
-
     @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response updateTech( @PathParam("id") long id,
                                 @Valid @FormDataParam("body") ValidatedFrameworkDTO dto,
-                                @Size(max = MAX_FILE_SIZE) @FormDataParam("picture") byte[] picture) {
+                                @Size(max = MAX_FILE_SIZE, message = "{ar.edu.itba.paw.validation.constraints.DefaultPicture.message}") @FormDataParam("picture") byte[] picture) {
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         final Optional<Framework> framework = fs.findById(id);

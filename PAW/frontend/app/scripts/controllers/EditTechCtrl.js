@@ -6,6 +6,8 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     $scope.isPresent = false;
     $scope.isVerify = false;
     $scope.isOwner = false;
+    $scope.errorDetails = undefined;
+    $scope.error = false;
 
     var user = sessionService.getStorageUser();
 
@@ -70,26 +72,44 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
     };
 
     $scope.editTech = function () {
-      $scope.techNameError = false;
+      $scope.error = false;
+      $scope.errorDetails = undefined;
       techsService.editTech($routeParams.id, $scope.tech).then(function (response) {
         if (response.status === 200) {
           $window.location.href = '#/techs/' + $routeParams.id;
         }
-      }).catch(function () {
-        $scope.techNameError = true;
+      }).catch(function (error) {
+        if( error.status === 400 ) {
+          $scope.error = true;
+          $scope.errorDetails = error.data;
+        } else if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     };
 
     $scope.addTech = function () {
-      $scope.techNameError = false;
+      $scope.error = false;
+      $scope.errorDetails = undefined;
       techsService.addTech($scope.add).then(function (response) {
         if (response.status === 201) {
           let startIndex = response.headers('location').indexOf("api/");
           let location = response.headers('location').substring(startIndex + 4);
           $location.path(location);
         }
-      }).catch(function () {
-        $scope.techNameError = true;
+      }).catch(function (error) {
+        if( error.status === 400 ) {
+          $scope.error = true;
+          $scope.errorDetails = error.data;
+        } else if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     };
 
