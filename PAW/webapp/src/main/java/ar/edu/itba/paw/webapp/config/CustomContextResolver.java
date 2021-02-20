@@ -17,26 +17,8 @@ public class CustomContextResolver implements ContextResolver<ValidationConfig> 
     @Override
     public ValidationConfig getContext(Class<?> type) {
         final ValidationConfig configuration = new ValidationConfig();
-        configuration.messageInterpolator(new CustomMessageInterpolator());
+        configuration.messageInterpolator(new LocaleSpecificMessageInterpolator());
         return configuration;
     }
 
-    private static class CustomMessageInterpolator implements MessageInterpolator {
-
-        private final MessageInterpolator messageInterpolator;
-
-        public CustomMessageInterpolator() {
-            this.messageInterpolator = Validation.byDefaultProvider().configure().getDefaultMessageInterpolator();
-        }
-
-        @Override
-        public String interpolate(String messageTemplate, Context context) {
-            return messageInterpolator.interpolate(messageTemplate, context, LocaleContextHolder.getLocale());
-        }
-
-        @Override
-        public String interpolate(String messageTemplate, Context context, Locale locale) {
-            return messageInterpolator.interpolate(messageTemplate, context, LocaleContextHolder.getLocale());
-        }
-    }
 }
