@@ -16,12 +16,24 @@ define(['frontend'], function(frontend) {
     };
     this.update = function(file,description,id) {
       var fd = new FormData();
+
       if (file !== undefined) {
         fd.append('picture', file);
       }
+
       if (description !== undefined) {
-        fd.append('description', description);
+        var body = {
+          'description': description
+        }
+
+        var bodyBlob = new Blob(
+          [angular.toJson(body)],
+          {type: 'application/json'}
+        );
+
+        fd.append('body', bodyBlob);
       }
+
       return Restangular.one('users/' + id).withHttpConfig({transformRequest: angular.identity})
         .customPUT(fd, '', undefined, {'Content-Type': undefined});
     };

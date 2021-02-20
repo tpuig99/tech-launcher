@@ -28,4 +28,6 @@ public interface FrameworkService {
     List<String> getAllCategories();
 
     List<String> getAllTypes();
+
+    boolean nameAvailable(String tech, Long id);
 }

@@ -3,6 +3,9 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedPasswordAndTokenDTO;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedPasswordDTO;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedUserUpdateDTO;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
@@ -23,6 +28,8 @@ import java.util.stream.Collectors;
 public class UserProfileController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserProfileController.class);
+
+    private static final int MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     @Autowired
     private CommentService commentService;
@@ -260,7 +267,7 @@ public class UserProfileController {
     @POST
     @Path("/{id}/password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response changePassword(@PathParam("id") Long userId, final UserAddDTO form) {
+    public Response changePassword(@PathParam("id") Long userId, @Valid final ValidatedPasswordDTO form) {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
@@ -284,7 +291,7 @@ public class UserProfileController {
     @POST
     @Path("password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response changePasswordWithToken(PasswordDTO passwordDTO) {
+    public Response changePasswordWithToken(@Valid ValidatedPasswordAndTokenDTO passwordDTO) {
 
         Optional<User> user = us.findByToken(passwordDTO.getToken());
 
@@ -307,16 +314,18 @@ public class UserProfileController {
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public Response updateProfile(@PathParam("id") Long userId, @FormDataParam("description") final String description, @FormDataParam("picture") final byte[] picture) throws IOException {
+    public Response updateProfile(@PathParam("id") Long userId,
+                                  @Valid @FormDataParam("body") final ValidatedUserUpdateDTO dto,
+                                  @Size(max = MAX_FILE_SIZE) @FormDataParam("picture") final byte[] picture) throws IOException {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
             if (SecurityContextHolder.getContext().getAuthentication().getName().equals(user.get().getUsername())) {
 
-                if (picture == null && description == null) {
+                if (picture == null && dto == null) {
                     return Response.status(Response.Status.BAD_REQUEST).build();
                 }
-                us.updateInformation(userId, description == null ? user.get().getDescription() : description, picture);
+                us.updateInformation(userId, dto == null ? user.get().getDescription() : dto.getDescription(), picture);
 
                 LOGGER.info("User Profile: User {} updated its profile successfully", user.get().getId());
                 return Response.ok().build();

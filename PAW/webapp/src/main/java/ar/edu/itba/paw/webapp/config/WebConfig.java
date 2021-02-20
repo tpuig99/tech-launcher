@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
@@ -18,6 +17,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
@@ -51,13 +51,13 @@ public class WebConfig{
 //        ds.setPassword("uygwr2BX7");
 
 //        Uncomment when deploying (Ctrl + '/')
-        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
-        ds.setUsername("paw-2020b-1");
-        ds.setPassword("uygwr2BX7");
-
-//        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
-//        ds.setUsername("postgres");
+//        ds.setUrl("jdbc:postgresql://10.16.1.110/paw-2020b-1");
+//        ds.setUsername("paw-2020b-1");
 //        ds.setPassword("uygwr2BX7");
+
+        ds.setUrl("jdbc:postgresql://localhost:5433/postgres");
+        ds.setUsername("postgres");
+        ds.setPassword("uygwr2BX7");
         return ds;
     }
 
@@ -77,7 +77,7 @@ public class WebConfig{
     @Bean
     public MessageSource messageSource() {
         final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setFallbackToSystemLocale(false);
+        //messageSource.setFallbackToSystemLocale(false);
         messageSource.setBasename("classpath:i18n/messages");
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
         messageSource.setCacheSeconds(5);

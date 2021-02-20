@@ -3,13 +3,21 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.*;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
@@ -24,6 +32,7 @@ import java.util.stream.Collectors;
 public class FrameworkController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FrameworkController.class);
+    private static final int MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     @Autowired
     private FrameworkService fs;
@@ -232,48 +241,64 @@ public class FrameworkController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    public boolean nameAvailable(final String tech, final Long id) {
-        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (user.isPresent() && (user.get().isAdmin() || user.get().isVerify())) {
-            if (tech == null) {
-                return false;
-            }
-            Optional<Framework> framework = fs.getByName(tech);
-            if (id == null)
-                return !framework.isPresent();
-            return !framework.filter(value -> value.getId() != id).isPresent();
-        }
-        return false;
-    }
+//    @POST
+//    @Produces(value = {MediaType.APPLICATION_JSON,})
+//    @Consumes({MediaType.MULTIPART_FORM_DATA})
+//    public Response createTech(
+//            @FormDataParam("name") final String name,
+//            @FormDataParam("category") final String category,
+//            @FormDataParam("type") final String type,
+//            @FormDataParam("description") final String description,
+//            @FormDataParam("introduction") final String introduction,
+//            @FormDataParam("picture") final byte[] picture
+//    ) throws IOException {
+//        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//        FrameworkType fType;
+//        FrameworkCategories fCategory;
+//        if (name == null || description == null || introduction == null || picture == null || category == null || type == null) {
+//            return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
+//        }
+//        try {
+//            fType = FrameworkType.valueOf(type);
+//            fCategory = FrameworkCategories.valueOf(category);
+//        } catch (IllegalArgumentException e) {
+//            return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
+//        }
+//
+//        if (!fs.nameAvailable(name, null)) {
+//            return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
+//        }
+//        Optional<Framework> framework = fs.create(name, fCategory, description, introduction, fType, user.get().getId(), picture);
+//
+//        if (framework.isPresent()) {
+//            LOGGER.info("Techs: User {} added a new Tech with id: {}", user.get().getId(), framework.get().getId());
+//            final URI uri = uriInfo.getAbsolutePathBuilder()
+//                    .path(String.valueOf(framework.get().getId())).build();
+//            return Response.created(uri).build();
+//        }
+//
+//        LOGGER.error("Techs: A problem occurred while creating the new Tech");
+//        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+//    }
 
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response createTech(
-            @FormDataParam("name") final String name,
-            @FormDataParam("category") final String category,
-            @FormDataParam("type") final String type,
-            @FormDataParam("description") final String description,
-            @FormDataParam("introduction") final String introduction,
-            @FormDataParam("picture") final byte[] picture
-    ) throws IOException {
+            @Valid @FormDataParam("body") ValidatedFrameworkDTO dto,
+            @NotNull @Size(max = MAX_FILE_SIZE) @FormDataParam("picture") byte[] picture ) {
+
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         FrameworkType fType;
         FrameworkCategories fCategory;
-        if (name == null || description == null || introduction == null || picture == null || category == null || type == null) {
-            return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
-        }
         try {
-            fType = FrameworkType.valueOf(type);
-            fCategory = FrameworkCategories.valueOf(category);
+            fType = FrameworkType.valueOf(dto.getType());
+            fCategory = FrameworkCategories.valueOf(dto.getCategory());
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
         }
 
-        if (!nameAvailable(name, null)) {
-            return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
-        }
-        Optional<Framework> framework = fs.create(name, fCategory, description, introduction, fType, user.get().getId(), picture);
+        Optional<Framework> framework = fs.create(dto.getName(), fCategory, dto.getDescription(), dto.getIntroduction(), fType, user.get().getId(), picture);
 
         if (framework.isPresent()) {
             LOGGER.info("Techs: User {} added a new Tech with id: {}", user.get().getId(), framework.get().getId());
@@ -286,20 +311,64 @@ public class FrameworkController {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
+//    @PUT
+//    @Path("/{id}")
+//    @Produces(value = {MediaType.APPLICATION_JSON,})
+//    @Consumes({MediaType.MULTIPART_FORM_DATA})
+//    public Response updateTech(@PathParam("id") long id,
+//                               @FormDataParam("name") final String name,
+//                               @FormDataParam("category") final String category,
+//                               @FormDataParam("type") final String type,
+//                               @FormDataParam("description") final String description,
+//                               @FormDataParam("introduction") final String introduction,
+//                               @FormDataParam("picture") final byte[] picture) throws IOException {
+//        if( !fs.nameAvailable(name, id)) {
+//            return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
+//        }
+//
+//        final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//        final Optional<Framework> framework = fs.findById(id);
+//        if (framework.isPresent()) {
+//            if (framework.get().getAuthor().getUsername().equals(user.get().getUsername()) || user.get().isAdmin()) {
+//
+//                FrameworkType fType;
+//                FrameworkCategories fCategory;
+//                if (name == null || description == null || introduction == null || category == null || type == null) {
+//                    return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
+//                }
+//                try {
+//                    fType = FrameworkType.valueOf(type);
+//                    fCategory = FrameworkCategories.valueOf(category);
+//                } catch (IllegalArgumentException e) {
+//                    return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
+//                }
+//
+//                final Optional<Framework> updatedFramework = fs.update(id, name, fCategory, description, introduction, fType, picture);
+//
+//                if (updatedFramework.isPresent()) {
+//                    LOGGER.info("Tech {}: User {} updated the Tech", id, user.get().getId());
+//                    return Response.ok(FrameworkDTO.fromFramework(updatedFramework.get(), uriInfo)).build();
+//                }
+//
+//                LOGGER.error("Tech {}: A problem occurred while updating the Tech", id);
+//                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+//            }
+//
+//            LOGGER.error("Tech {}: User without enough privileges attempted to update tech", id);
+//            return Response.status(Response.Status.FORBIDDEN).build();
+//        }
+//
+//        LOGGER.error("Tech {}: Requested for updating tech and not found", id);
+//        return Response.status(Response.Status.NOT_FOUND).build();
+//    }
+
     @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public Response updateTech(@PathParam("id") long id,
-                               @FormDataParam("name") final String name,
-                               @FormDataParam("category") final String category,
-                               @FormDataParam("type") final String type,
-                               @FormDataParam("description") final String description,
-                               @FormDataParam("introduction") final String introduction,
-                               @FormDataParam("picture") final byte[] picture) throws IOException {
-        if( !nameAvailable(name, id)) {
-            return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
-        }
+    public Response updateTech( @PathParam("id") long id,
+                                @Valid @FormDataParam("body") ValidatedFrameworkDTO dto,
+                                @Size(max = MAX_FILE_SIZE) @FormDataParam("picture") byte[] picture) {
 
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         final Optional<Framework> framework = fs.findById(id);
@@ -308,20 +377,15 @@ public class FrameworkController {
 
                 FrameworkType fType;
                 FrameworkCategories fCategory;
-                if (name == null || description == null || introduction == null || category == null || type == null) {
-                    return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
-                }
+
                 try {
-                    fType = FrameworkType.valueOf(type);
-                    fCategory = FrameworkCategories.valueOf(category);
+                    fType = FrameworkType.valueOf(dto.getType());
+                    fCategory = FrameworkCategories.valueOf(dto.getCategory());
                 } catch (IllegalArgumentException e) {
                     return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
                 }
 
-                if (fs.getByName(name).isPresent() && !framework.get().getName().equals(name)) {
-                    return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
-                }
-                final Optional<Framework> updatedFramework = fs.update(id, name, fCategory, description, introduction, fType, picture);
+                final Optional<Framework> updatedFramework = fs.update(id, dto.getName(), fCategory, dto.getDescription(), dto.getIntroduction(), fType, picture);
 
                 if (updatedFramework.isPresent()) {
                     LOGGER.info("Tech {}: User {} updated the Tech", id, user.get().getId());
@@ -339,6 +403,7 @@ public class FrameworkController {
         LOGGER.error("Tech {}: Requested for updating tech and not found", id);
         return Response.status(Response.Status.NOT_FOUND).build();
     }
+
 
     @DELETE
     @Path("/{id}")
@@ -366,20 +431,22 @@ public class FrameworkController {
     @POST
     @Path("/{id}/stars")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response rateTech(@PathParam("id") long id, final VoteDTO vote) {
+    public Response rateTech(@PathParam("id") long id, @Valid final ValidatedVoteDTO vote) {
 
         final Optional<Framework> framework = fs.findById(id);
 
         if (framework.isPresent()) {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            if (vote == null || vote.getCount() == null) {
+            if (vote == null || vote.getValue() == null) {
                 return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
             }
-            frameworkVoteService.insert(framework.get(), user.get().getId(), (int) Math.round(vote.getCount()));
+            FrameworkVote insertedVote = frameworkVoteService.insert(framework.get(), user.get().getId(), vote.getValue());
             LOGGER.info("Tech {}: User {} rated the Tech", id, user.get().getId());
-            /*TODO:CHECKEAR SI ASÍ SIRVE O HAY QUE LLAMAR PARA ACTUALIZAR VALOR*/
-            vote.setCount(framework.get().getStars());
-            return Response.ok(vote).build();
+            if (insertedVote != null) {
+                VoteDTO newVote = VoteDTO.fromFrameworkVote(insertedVote, uriInfo);
+                return Response.ok(newVote).build();
+            }
+            return Response.noContent().build();
         }
         LOGGER.error("Tech {}: Requested for rating and not found", id);
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -407,7 +474,7 @@ public class FrameworkController {
     @POST
     @Path("/{id}/comment")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response saveComment(@PathParam("id") long id, final CommentAddDTO form) {
+    public Response saveComment(@PathParam("id") long id, @Valid final ValidatedCommentDTO form) {
         final Optional<Framework> framework = fs.findById(id);
 
         if (framework.isPresent()) {
@@ -427,7 +494,7 @@ public class FrameworkController {
     @POST
     @Path("/{id}/comment/{commentId}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response replyComment(@PathParam("id") long id, @PathParam("commentId") long commentId, final CommentAddDTO form) {
+    public Response replyComment(@PathParam("id") long id, @PathParam("commentId") long commentId, @Valid final ValidatedCommentDTO form) {
         final Optional<Framework> framework = fs.findById(id);
 
         if (framework.isPresent()) {
@@ -516,7 +583,7 @@ public class FrameworkController {
     @POST
     @Path("/{id}/comment/{commentId}/report")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response reportComment(@PathParam("id") long id, @PathParam("commentId") long commentId, final CommentAddDTO report) {
+    public Response reportComment(@PathParam("id") long id, @PathParam("commentId") long commentId, @Valid final ValidatedReportDTO report) {
         final Optional<Framework> framework = fs.findById(id);
         Optional<Comment> comment = commentService.getById(commentId);
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -537,28 +604,12 @@ public class FrameworkController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-
-    public boolean titleIsAvailable( long id, final String title, final String contentType) {
-        if (title == null ) {
-            return false;
-        }
-        ContentTypes type;
-        try {
-            type = Enum.valueOf(ContentTypes.class, contentType);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-        List<Content> ls = contentService.getContentByFrameworkAndTypeAndTitle(id, type, title);
-        return ls.isEmpty();
-
-    }
-
     @POST
     @Path("/{id}/content")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response addContent(@PathParam("id") long id, final ContentAddDTO content) {
+    public Response addContent(@PathParam("id") long id, @Valid final ValidatedContentDTO content) {
         final Optional<Framework> framework = fs.findById(id);
-        if( !titleIsAvailable(id, content.getTitle(), content.getType())) {
+        if( !contentService.titleIsAvailable(id, content.getTitle(), content.getType())) {
             return Response.status(Response.Status.CONFLICT).entity("Already exists.").build();
         }
         if (framework.isPresent()) {
@@ -620,7 +671,7 @@ public class FrameworkController {
     @POST
     @Path("/{id}/content/{contentId}/report")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response reportContent(@PathParam("id") long id, @PathParam("contentId") long contentId, final CommentDTO report) {
+    public Response reportContent(@PathParam("id") long id, @PathParam("contentId") long contentId, @Valid final ValidatedReportDTO report) {
         final Optional<Framework> framework = fs.findById(id);
         Optional<Content> content = contentService.getById(contentId);
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

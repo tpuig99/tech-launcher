@@ -118,4 +118,21 @@ public class ContentServiceImpl implements ContentService {
     public List<ReportContent> getReportsByFrameworks(List<Long> frameworksIds, long page) {
         return rc.getByFrameworks(frameworksIds, page, PAGE_SIZE);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean titleIsAvailable( long id, final String title, final String contentType) {
+        if (title == null ) {
+            return false;
+        }
+        ContentTypes type;
+        try {
+            type = Enum.valueOf(ContentTypes.class, contentType);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        List<Content> ls = getContentByFrameworkAndTypeAndTitle(id, type, title);
+        return ls.isEmpty();
+
+    }
 }

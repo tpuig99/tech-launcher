@@ -14,7 +14,12 @@ define(['frontend','services/postService','services/sessionService'], function(f
           $scope.isEnable = response.data.enabled;
           $scope.isPresent = true;
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       }
     });
@@ -24,7 +29,12 @@ define(['frontend','services/postService','services/sessionService'], function(f
         $scope.posts = posts.data;
         $scope.pagingLinks = posts.headers('link');
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     };
     $scope.setData = function(response) {
@@ -44,7 +54,12 @@ define(['frontend','services/postService','services/sessionService'], function(f
         $scope.cleanDel();
         $('#deletePostModal').modal('hide');
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     };
     $('#deletePostModal').on('hide.bs.modal',function () {
@@ -54,7 +69,12 @@ define(['frontend','services/postService','services/sessionService'], function(f
       postService.upVote(location).then(function () {
         $scope.getPosts();
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     };
 
@@ -62,7 +82,12 @@ define(['frontend','services/postService','services/sessionService'], function(f
       postService.downVote(location).then(function() {
         $scope.getPosts();
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     };
 
@@ -74,7 +99,12 @@ define(['frontend','services/postService','services/sessionService'], function(f
          $scope.categories = tags.data.categories;
          $scope.types = tags.data.types;
        })).catch((error) => {
-         $location.path('/404');
+         if(error.status === 404) {
+           $location.path('/404');
+         }
+         else {
+           $location.path('/500');
+         }
        });
     }
     $scope.getTags();
@@ -136,7 +166,12 @@ define(['frontend','services/postService','services/sessionService'], function(f
         let location = response.headers('location').substring(startIndex + 4);
         $location.path(location);
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
 
     }

@@ -13,7 +13,12 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $scope.username = response.data.username;
           $scope.id = $routeParams.id;
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       }
     });
@@ -25,7 +30,12 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $scope.profile.comments = comments.data;
           $scope.commentPaging = comments.headers('link');
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       }
       if (user.contentAmount !== 0) {
@@ -33,7 +43,12 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $scope.profile.content = content.data;
           $scope.contentPaging = content.headers('link');
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       }
       if (user.postsAmount !== 0) {
@@ -41,7 +56,12 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $scope.profile.posts = posts.data;
           $scope.postsPaging = posts.headers('link');
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       }
       if (user.techsAmount !== 0) {
@@ -49,7 +69,12 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $scope.profile.techs = techs.data;
           $scope.techsPaging = techs.headers('link');
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       }
       if (user.votesAmount !== 0) {
@@ -58,7 +83,12 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
           $scope.votesPaging = votes.headers('link');
 
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       }
     });
@@ -99,12 +129,22 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
               $('#stopBeingAModModal').modal('hide');
             }
           }).catch((error) => {
-            $location.path('/404');
+            if(error.status === 404) {
+              $location.path('/404');
+            }
+            else {
+              $location.path('/500');
+            }
           });
 
         }
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     };
     $scope.changeMod = function() {
@@ -135,12 +175,22 @@ define(['frontend','services/userService','services/sessionService','ng-file-upl
             $('profilePicture').get();
           }).catch((error) => {
             $('#editProfileModal').modal('hide');
-            $location.path('/404');
+            if(error.status === 404) {
+              $location.path('/404');
+            }
+            else {
+              $location.path('/500');
+            }
           });
           $('#editProfileModal').modal('hide');
         }
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
     };
     $scope.changePass = function() {

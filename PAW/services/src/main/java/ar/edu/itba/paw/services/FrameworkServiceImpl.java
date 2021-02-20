@@ -3,9 +3,11 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.models.Framework;
 import ar.edu.itba.paw.models.FrameworkCategories;
 import ar.edu.itba.paw.models.FrameworkType;
+import ar.edu.itba.paw.models.User;
 import ar.edu.itba.paw.persistence.FrameworkDao;
 import ar.edu.itba.paw.service.FrameworkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -118,6 +120,19 @@ public class FrameworkServiceImpl implements FrameworkService {
             frameworkTypes.add(frameworkType.name());
         }
         return frameworkTypes;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean nameAvailable(final String tech, final Long id) {
+        if (tech == null) {
+            return false;
+        }
+        Optional<Framework> framework = getByName(tech);
+        if (id == null) {
+            return !framework.isPresent();
+        }
+        return !framework.filter(value -> value.getId() != id).isPresent();
     }
 
 }

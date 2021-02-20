@@ -10,7 +10,12 @@ define(['frontend', 'services/sessionService'], function(frontend) {
         sessionService.setPasswordToken(mail).then(function (response) {
           $scope.emailSent = true;
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       };
 

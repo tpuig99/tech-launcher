@@ -15,7 +15,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
          $scope.techsPaging = response.headers('link');
          $scope.navbarNameToSearch = $scope.$parent.navbarSearch;
        }).catch((error) => {
-         $location.path('/404');
+         if(error.status === 404) {
+           $location.path('/404');
+         }
+         else {
+           $location.path('/500');
+         }
        });
      } else if ($rootScope.tagToSearch !== undefined) {
        $scope.isExplore = false;
@@ -30,7 +35,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
              $scope.posts = response.data;
              $scope.postsPaging = response.headers('link');
            }).catch((error) => {
-             $location.path('/404');
+             if(error.status === 404) {
+               $location.path('/404');
+             }
+             else {
+               $location.path('/500');
+             }
            });
            break;
          case 'tech_category':
@@ -38,7 +48,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
              $scope.posts = response.data;
              $scope.postsPaging = response.headers('link');
            }).catch((error) => {
-             $location.path('/404');
+             if(error.status === 404) {
+               $location.path('/404');
+             }
+             else {
+               $location.path('/500');
+             }
            });
            break;
          default:
@@ -47,7 +62,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
              $scope.postsPaging = response.headers('link');
              $scope.navbarNameToSearch = $rootScope.tagToSearch;
            }).catch((error) => {
-             $location.path('/404');
+             if(error.status === 404) {
+               $location.path('/404');
+             }
+             else {
+               $location.path('/500');
+             }
            });
 
        }
@@ -66,7 +86,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
          $scope.posts = response.data;
          $scope.postsPaging = response.headers('link');
        }).catch((error) => {
-         $location.path('/404');
+         if(error.status === 404) {
+           $location.path('/404');
+         }
+         else {
+           $location.path('/500');
+         }
        });
      }
 
@@ -81,7 +106,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
            $scope.matchingTechs = response.data;
            $scope.techsPaging = response.headers('link');
          }).catch((error) => {
-           $location.path('/404');
+           if(error.status === 404) {
+             $location.path('/404');
+           }
+           else {
+             $location.path('/500');
+           }
          });
        } else if ($scope.activeTab === 'T' && tab === 'P') {
          $scope.activeTab = 'P';
@@ -89,7 +119,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
            $scope.posts = response.data;
            $scope.postsPaging = response.headers('link');
          }).catch((error) => {
-           $location.path('/404');
+           if(error.status === 404) {
+             $location.path('/404');
+           }
+           else {
+             $location.path('/500');
+           }
          });
        }
      };
@@ -113,7 +148,12 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
           $scope.navbarNameToSearch = undefined;
           $rootScope.tagToSearch = undefined;
         }).catch((error) => {
-          $location.path('/404');
+          if(error.status === 404) {
+            $location.path('/404');
+          }
+          else {
+            $location.path('/500');
+          }
         });
       };
 
@@ -122,12 +162,22 @@ define(['frontend', 'services/exploreService', 'services/techsService'], functio
       techsService.getCategories().then(function (response) {
         $scope.categories = response.data;
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
       techsService.getTypes().then(function (response) {
         $scope.types = response.data;
       }).catch((error) => {
-        $location.path('/404');
+        if(error.status === 404) {
+          $location.path('/404');
+        }
+        else {
+          $location.path('/500');
+        }
       });
 
       /* Show more or less categories and types */
