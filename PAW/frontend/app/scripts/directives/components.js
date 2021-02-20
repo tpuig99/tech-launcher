@@ -23,6 +23,11 @@ define(['angular'], function(angular) {
     };
     $scope.refreshData();
 
+    $scope.$watch('paging',function () {
+      $scope.data = $scope.paging;
+      $scope.refreshData();
+    });
+
     $scope.getPrev = function () {
       Restangular.oneUrl('routeName',$scope.prev).get().then( function (response) {
         if($scope.id === undefined) {

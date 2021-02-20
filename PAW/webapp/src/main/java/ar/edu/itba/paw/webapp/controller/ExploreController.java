@@ -21,6 +21,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -45,29 +46,83 @@ public class ExploreController {
     @Autowired
     private ExploreService es;
 
-    @Autowired
-    private UserService us;
-
     @Context
     private UriInfo uriInfo;
 
-    private final long START_PAGE = 1;
     private final long TECHS_PAGE_SIZE = 24;
     private final long POSTS_PAGE_SIZE = 5;
-    final int DAYS = 1, WEEK = 2, MONTH = 3, MONTHS = 4, YEAR = 5;
 
-    private String getMessageWithoutArguments(String code) {
-        return messageSource.getMessage(code, Collections.EMPTY_LIST.toArray(), LocaleContextHolder.getLocale());
+    private UriBuilder addFilters( UriInfo uriInfo, int page, String toSearch,
+                                   List<String> categories,
+                                   List<String> types,
+                                   Integer starsLeft,
+                                   Integer starsRight,
+                                   boolean nameFlag,
+                                   Integer order,
+                                   Integer commentAmount,
+                                   Integer lastComment,
+                                   Integer lastUpdate,
+                                   boolean isPost){
+
+        UriBuilder path = uriInfo.getAbsolutePathBuilder().queryParam("page",page).queryParam("to_search", toSearch);
+        if( !isPost ){
+            path = path.queryParam("name_flag", nameFlag);
+        } else {
+            path = path.queryParam("is_post", isPost);
+        }
+        if( !categories.isEmpty() && !categories.get(0).equals("")){
+            for (String category : categories) {
+                path = path.queryParam("categories", category);
+            }
+        }
+
+        if( !types.isEmpty() && !categories.get(0).equals("")){
+            for (String type : types) {
+                path = path.queryParam("types", type);
+            }
+        }
+
+        if( order != null ){
+            path = path.queryParam("order", order);
+        }
+        if( starsLeft != null ){
+            path = path.queryParam("stars_left", starsLeft);
+        }
+        if( starsRight != null ){
+            path = path.queryParam("stars_right", starsRight);
+        }
+        if(commentAmount != null ){
+            path = path.queryParam("comment_amount", commentAmount);
+        }
+        if(lastComment != null) {
+            path = path.queryParam("last_comment", lastComment);
+        }
+        if(lastUpdate != null) {
+            path = path.queryParam("last_update", lastUpdate);
+        }
+        return path;
     }
-
-    private Response pagination(UriInfo uriInfo,int page,int pages,Object dto){
+    private Response pagination(UriInfo uriInfo,int page,int pages,Object dto, String toSearch,
+                                List<String> categories,
+                                List<String> types,
+                                Integer starsLeft,
+                                Integer starsRight,
+                                boolean nameFlag,
+                                Integer order,
+                                Integer commentAmount,
+                                Integer lastComment,
+                                Integer lastUpdate,
+                                boolean isPost){
         Response.ResponseBuilder response = Response.ok(dto)
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",1).build(),"first")
-                .link(uriInfo.getAbsolutePathBuilder().queryParam("page",pages).build(),"last");
-        if(page < pages)
-            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page+1).build(),"next");
-        if(page != 1)
-            response = response.link(uriInfo.getAbsolutePathBuilder().queryParam("page",page-1).build(),"prev");
+                .link(addFilters(uriInfo, 1, toSearch, categories, types, starsLeft, starsRight, nameFlag, order, commentAmount, lastComment, lastUpdate, isPost).build(),"first")
+                .link(addFilters(uriInfo, pages, toSearch, categories, types, starsLeft, starsRight, nameFlag, order, commentAmount, lastComment, lastUpdate, isPost).build(),"last");
+        if(page < pages){
+            response = response.link(addFilters(uriInfo, page+1, toSearch, categories, types, starsLeft, starsRight, nameFlag, order, commentAmount, lastComment, lastUpdate, isPost).build(),"next");
+        }
+
+        if(page != 1) {
+            response = response.link(addFilters(uriInfo, page-1, toSearch, categories, types, starsLeft, starsRight, nameFlag, order, commentAmount, lastComment, lastUpdate, isPost).build(),"prev");
+        }
         return  response.build();
     }
 
@@ -153,7 +208,7 @@ public class ExploreController {
         search.setFrameworksAmount(searchResultsNumber);
         search.setFrameworks(frameworks.stream().map((Framework framework) -> FrameworkDTO.fromExtern(framework,uriInfo)).collect(Collectors.toList()));
 
-        return pagination(uriInfo, page == 0 ? 1 : page, pages, search);
+        return pagination(uriInfo, page == 0 ? 1 : page, pages, search, toSearch, categories, types, starsLeft, starsRight, nameFlag, order, commentAmount, lastComment, lastUpdate, false);
         /* -------------------------------------------------- */
     }
 
@@ -171,14 +226,11 @@ public class ExploreController {
                                    @QueryParam("last_update") final Integer lastUpdate,
                                    @QueryParam("page") final int page) {
 
-
-        List<String> categoriesQuery = new ArrayList<>();
-        List<String> typesQuery = new ArrayList<>();
         Date parsedLastComment = null;
         Date parsedLastUpdate = null;
         SearchDTO search = new SearchDTO();
         Integer searchResultsNumber;
-        List<String> tags = new ArrayList<>();
+        List<String> tags;
 
         LOGGER.info("Explore: Searching results for: {}", toSearch);
         LOGGER.info("Explore: Searching categories among: {}", categories);
@@ -216,7 +268,7 @@ public class ExploreController {
         search.setPosts(posts.stream().map((Post post) -> PostDTO.fromPost(post, uriInfo)).collect(Collectors.toList()));
         search.setPostsAmount(searchResultsNumber);
 
-        return pagination(uriInfo, page == 0 ? 1 : page, pages, search);
+        return pagination(uriInfo, page == 0 ? 1 : page, pages, search, toSearch, categories, types, starsLeft, starsRight, nameFlag, order, commentAmount, lastComment, lastUpdate, true);
 
     }
 
