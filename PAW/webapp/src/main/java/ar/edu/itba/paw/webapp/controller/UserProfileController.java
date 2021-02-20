@@ -316,7 +316,7 @@ public class UserProfileController {
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public Response updateProfile(@PathParam("id") Long userId,
                                   @Valid @FormDataParam("body") final ValidatedUserUpdateDTO dto,
-                                  @Size(max = MAX_FILE_SIZE) @FormDataParam("picture") final byte[] picture) throws IOException {
+                                  @Size(max = MAX_FILE_SIZE, message = "{ar.edu.itba.paw.validation.constraints.DefaultPicture.message}") @FormDataParam("picture") final byte[] picture) throws IOException {
         Optional<User> user = us.findById(userId);
 
         if (user.isPresent()) {
