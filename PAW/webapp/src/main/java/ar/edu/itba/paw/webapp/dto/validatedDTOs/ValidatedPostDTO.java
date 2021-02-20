@@ -1,25 +1,37 @@
 package ar.edu.itba.paw.webapp.dto.validatedDTOs;
 
+import ar.edu.itba.paw.webapp.dto.custom_constraints.DefaultFrameworkCategories;
+import ar.edu.itba.paw.webapp.dto.custom_constraints.DefaultFrameworkNames;
+import ar.edu.itba.paw.webapp.dto.custom_constraints.DefaultFrameworkTypes;
+import ar.edu.itba.paw.webapp.dto.custom_constraints.Post;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+@Post
 public class ValidatedPostDTO {
-    List<String> types;
-    List<String> categories;
-    List<String> names;
+    
+    @DefaultFrameworkTypes
+    private List<String> types;
+
+
+    @DefaultFrameworkCategories
+    private List<String> categories;
+
+    @DefaultFrameworkNames
+    private List<String> names;
 
     @NotNull
     @NotEmpty
     @Size(min = 3, max = 200)
-    String title;
+    private String title;
 
     @NotNull
     @NotEmpty
     @Size(min=1, max = 5000)
-    String description;
+    private String description;
 
     public List<String> getTypes() {
         return types;

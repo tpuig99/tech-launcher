@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
 import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedCommentDTO;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.ValidatedPostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,10 +153,9 @@ public class PostController {
         return setCacheHeaders(dto).build();
     }
 
-    // TODO: ADD VALIDATION
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response addPost(final PostAddDTO form) {
+    public Response addPost(@Valid final ValidatedPostDTO form) {
         Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if (ps.isPostInvalid(form.getTitle(),form.getDescription(),form.getNames(), form.getCategories(), form.getTypes())) {
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -183,11 +183,10 @@ public class PostController {
         return Response.created(uri).build();
     }
 
-    // TODO: ADD VALIDATION
     @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response editPost(final PostAddDTO form, @PathParam("id") long id) {
+    public Response editPost(@Valid final ValidatedPostDTO form, @PathParam("id") long id) {
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         final Optional<Post> post = ps.findById(id);
         if (post.isPresent()) {
