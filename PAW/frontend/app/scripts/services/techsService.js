@@ -35,6 +35,7 @@ define(['frontend'], function(frontend) {
 
     this.addContent = function (id, title, type, link) {
       var content = {
+        'id': id,
         'title': title,
         'type': type,
         'link': link
@@ -76,7 +77,7 @@ define(['frontend'], function(frontend) {
 
     this.rate = function (id, stars) {
       var vote = {
-        'count': stars
+        'value': stars
       }
       return Restangular.all('techs/'+id+'/stars').post(vote);
     }
@@ -87,11 +88,14 @@ define(['frontend'], function(frontend) {
 
     this.addTech = function(add) {
       var fd = new FormData();
-      fd.append('name', add.name);
-      fd.append('category', add.category);
-      fd.append('type', add.type);
-      fd.append('description', add.description);
-      fd.append('introduction', add.introduction);
+      var body = {
+        'name': add.name,
+        'category': add.category,
+        'type': add.type,
+        'description': add.description,
+        'introduction': add.introduction,
+      }
+      fd.append('body', body);
       fd.append('picture', add.picture);
 
       return Restangular.one('techs/').withHttpConfig({transformRequest: angular.identity})

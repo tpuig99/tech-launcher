@@ -3,13 +3,19 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.service.*;
 import ar.edu.itba.paw.webapp.dto.*;
+import ar.edu.itba.paw.webapp.dto.validatedDTOs.*;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
@@ -232,45 +238,75 @@ public class FrameworkController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    @POST
-    @Produces(value = {MediaType.APPLICATION_JSON,})
-    @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public Response createTech(
-            @FormDataParam("name") final String name,
-            @FormDataParam("category") final String category,
-            @FormDataParam("type") final String type,
-            @FormDataParam("description") final String description,
-            @FormDataParam("introduction") final String introduction,
-            @FormDataParam("picture") final byte[] picture
-    ) throws IOException {
-        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        FrameworkType fType;
-        FrameworkCategories fCategory;
-        if (name == null || description == null || introduction == null || picture == null || category == null || type == null) {
-            return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
-        }
-        try {
-            fType = FrameworkType.valueOf(type);
-            fCategory = FrameworkCategories.valueOf(category);
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
-        }
+//    @POST
+//    @Produces(value = {MediaType.APPLICATION_JSON,})
+//    @Consumes({MediaType.MULTIPART_FORM_DATA})
+//    public Response createTech(
+//            @FormDataParam("name") final String name,
+//            @FormDataParam("category") final String category,
+//            @FormDataParam("type") final String type,
+//            @FormDataParam("description") final String description,
+//            @FormDataParam("introduction") final String introduction,
+//            @FormDataParam("picture") final byte[] picture
+//    ) throws IOException {
+//        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//        FrameworkType fType;
+//        FrameworkCategories fCategory;
+//        if (name == null || description == null || introduction == null || picture == null || category == null || type == null) {
+//            return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
+//        }
+//        try {
+//            fType = FrameworkType.valueOf(type);
+//            fCategory = FrameworkCategories.valueOf(category);
+//        } catch (IllegalArgumentException e) {
+//            return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
+//        }
+//
+//        if (!fs.nameAvailable(name, null)) {
+//            return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
+//        }
+//        Optional<Framework> framework = fs.create(name, fCategory, description, introduction, fType, user.get().getId(), picture);
+//
+//        if (framework.isPresent()) {
+//            LOGGER.info("Techs: User {} added a new Tech with id: {}", user.get().getId(), framework.get().getId());
+//            final URI uri = uriInfo.getAbsolutePathBuilder()
+//                    .path(String.valueOf(framework.get().getId())).build();
+//            return Response.created(uri).build();
+//        }
+//
+//        LOGGER.error("Techs: A problem occurred while creating the new Tech");
+//        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+//    }
 
-        if (!fs.nameAvailable(name, null)) {
-            return Response.status(Response.Status.CONFLICT).entity("Name already exists.").build();
-        }
-        Optional<Framework> framework = fs.create(name, fCategory, description, introduction, fType, user.get().getId(), picture);
-
-        if (framework.isPresent()) {
-            LOGGER.info("Techs: User {} added a new Tech with id: {}", user.get().getId(), framework.get().getId());
-            final URI uri = uriInfo.getAbsolutePathBuilder()
-                    .path(String.valueOf(framework.get().getId())).build();
-            return Response.created(uri).build();
-        }
-
-        LOGGER.error("Techs: A problem occurred while creating the new Tech");
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-    }
+//    @POST
+//    @Produces(value = {MediaType.APPLICATION_JSON,})
+//    @Consumes({MediaType.MULTIPART_FORM_DATA})
+//    public Response createTech(
+//            @RequestPart(value = "body") ValidatedFrameworkDTO dto,
+//            @RequestParam(value = "picture") MultipartFile picture) throws IOException {
+//
+//        Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//        FrameworkType fType;
+//        FrameworkCategories fCategory;
+//        try {
+//            fType = FrameworkType.valueOf(dto.getType());
+//            fCategory = FrameworkCategories.valueOf(dto.getCategory());
+//        } catch (IllegalArgumentException e) {
+//            return Response.status(Response.Status.CONFLICT).entity("Category or type incorrect.").build();
+//        }
+//
+//        Optional<Framework> framework = fs.create(dto.getName(), fCategory, dto.getDescription(), dto.getIntroduction(), fType, user.get().getId(), picture.getBytes());
+//
+//        if (framework.isPresent()) {
+//            LOGGER.info("Techs: User {} added a new Tech with id: {}", user.get().getId(), framework.get().getId());
+//            final URI uri = uriInfo.getAbsolutePathBuilder()
+//                    .path(String.valueOf(framework.get().getId())).build();
+//            return Response.created(uri).build();
+//        }
+//
+//        LOGGER.error("Techs: A problem occurred while creating the new Tech");
+//        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+//    }
 
     @PUT
     @Path("/{id}")
@@ -349,16 +385,16 @@ public class FrameworkController {
     @POST
     @Path("/{id}/stars")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response rateTech(@PathParam("id") long id, final VoteDTO vote) {
+    public Response rateTech(@PathParam("id") long id, @Valid final ValidatedVoteDTO vote) {
 
         final Optional<Framework> framework = fs.findById(id);
 
         if (framework.isPresent()) {
             final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-            if (vote == null || vote.getCount() == null) {
+            if (vote == null || vote.getValue() == null) {
                 return Response.status(Response.Status.CONFLICT).entity("There should not be empty inputs.").build();
             }
-            FrameworkVote insertedVote = frameworkVoteService.insert(framework.get(), user.get().getId(), (int) Math.round(vote.getCount()));
+            FrameworkVote insertedVote = frameworkVoteService.insert(framework.get(), user.get().getId(), vote.getValue());
             LOGGER.info("Tech {}: User {} rated the Tech", id, user.get().getId());
             if (insertedVote != null) {
                 VoteDTO newVote = VoteDTO.fromFrameworkVote(insertedVote, uriInfo);
@@ -392,7 +428,7 @@ public class FrameworkController {
     @POST
     @Path("/{id}/comment")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response saveComment(@PathParam("id") long id, final CommentAddDTO form) {
+    public Response saveComment(@PathParam("id") long id, @Valid final ValidatedCommentDTO form) {
         final Optional<Framework> framework = fs.findById(id);
 
         if (framework.isPresent()) {
@@ -412,7 +448,7 @@ public class FrameworkController {
     @POST
     @Path("/{id}/comment/{commentId}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response replyComment(@PathParam("id") long id, @PathParam("commentId") long commentId, final CommentAddDTO form) {
+    public Response replyComment(@PathParam("id") long id, @PathParam("commentId") long commentId, @Valid final ValidatedCommentDTO form) {
         final Optional<Framework> framework = fs.findById(id);
 
         if (framework.isPresent()) {
@@ -501,7 +537,7 @@ public class FrameworkController {
     @POST
     @Path("/{id}/comment/{commentId}/report")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response reportComment(@PathParam("id") long id, @PathParam("commentId") long commentId, final CommentAddDTO report) {
+    public Response reportComment(@PathParam("id") long id, @PathParam("commentId") long commentId, @Valid final ValidatedReportDTO report) {
         final Optional<Framework> framework = fs.findById(id);
         Optional<Comment> comment = commentService.getById(commentId);
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -525,7 +561,7 @@ public class FrameworkController {
     @POST
     @Path("/{id}/content")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response addContent(@PathParam("id") long id, final ContentAddDTO content) {
+    public Response addContent(@PathParam("id") long id, @Valid final ValidatedContentDTO content) {
         final Optional<Framework> framework = fs.findById(id);
         if( !contentService.titleIsAvailable(id, content.getTitle(), content.getType())) {
             return Response.status(Response.Status.CONFLICT).entity("Already exists.").build();
@@ -589,7 +625,7 @@ public class FrameworkController {
     @POST
     @Path("/{id}/content/{contentId}/report")
     @Produces(value = {MediaType.APPLICATION_JSON,})
-    public Response reportContent(@PathParam("id") long id, @PathParam("contentId") long contentId, final CommentDTO report) {
+    public Response reportContent(@PathParam("id") long id, @PathParam("contentId") long contentId, @Valid final ValidatedReportDTO report) {
         final Optional<Framework> framework = fs.findById(id);
         Optional<Content> content = contentService.getById(contentId);
         final Optional<User> user = us.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());

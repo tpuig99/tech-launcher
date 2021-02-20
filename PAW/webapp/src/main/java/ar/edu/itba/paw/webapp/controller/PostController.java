@@ -150,6 +150,7 @@ public class PostController {
         return setCacheHeaders(dto).build();
     }
 
+    // TODO: ADD VALIDATION
     @POST
     @Produces(value = {MediaType.APPLICATION_JSON,})
     public Response addPost(final PostAddDTO form) {
@@ -180,6 +181,7 @@ public class PostController {
         return Response.created(uri).build();
     }
 
+    // TODO: ADD VALIDATION
     @PUT
     @Path("/{id}")
     @Produces(value = {MediaType.APPLICATION_JSON,})
@@ -327,6 +329,7 @@ public class PostController {
     }
 
 
+    // TODO: ADD VALIDATION, DEBE SER IGUAL AL VALIDATECOMMENTDTO DE TECHS
     @POST
     @Path("/{id}/answers")
     @Produces(value = {MediaType.APPLICATION_JSON,})

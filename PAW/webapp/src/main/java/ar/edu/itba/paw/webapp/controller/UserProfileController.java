@@ -257,6 +257,7 @@ public class UserProfileController {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
+    // TODO: ADD VALIDATION
     @POST
     @Path("/{id}/password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
@@ -281,6 +282,7 @@ public class UserProfileController {
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
+    // TODO: ADD VALIDATION
     @POST
     @Path("password")
     @Produces(value = {MediaType.APPLICATION_JSON,})
