@@ -132,7 +132,8 @@ define(['angular'], function(angular) {
       restrict: 'E',
       scope: {
         add: '=',
-        contentNameError: '='
+        error: '=',
+        errorDetails: '='
       },
       templateUrl: 'views/components/add_content_modal.html'
     };

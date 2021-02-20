@@ -262,7 +262,6 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-
         <h4 class="modal-title" id="editProfileLabel"><strong>{{'PROFILE_EDIT_TITLE'|translate}}</strong></h4>
 
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -270,6 +269,11 @@
         <span aria-hidden="true">&times;</span>
       </div>
       <div class="modal-body">
+        <div class="mt-2 text-danger text-center" ng-if="error">
+          <div ng-repeat="errorDetail in errorDetails">
+            {{errorDetail.message}}
+          </div>
+        </div>
         <!-- Change Picture and Description-->
         <form  ng-submit="updateProfile()" name="updateForm" enctype="multipart/form-data">
           <div class="form-group">

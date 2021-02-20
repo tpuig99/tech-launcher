@@ -220,26 +220,26 @@ define(['frontend', 'services/techsService', 'services/sessionService'], functio
       });
     };
 
-    $scope.addContent = function(title, type, link) {
-      techsService.addContent($routeParams.id, title, type, link).then(function () {
-        $scope.getTech();
-        $('#addContentModal').modal('hide');
-      }).catch((error) => {
-        $location.path('/404');
-      });
-    }
-
     $scope.addContent = function (title, type, link) {
-      $scope.contentNameError = false;
+      $scope.error = false;
+      $scope.errorDetails = undefined;
           techsService.addContent($routeParams.id, title, type, link).then(function () {
             $scope.getTech();
             $('#addContentModal').modal('hide');
             $('#addContentTitle').val('');
             $('#addContentType').val('');
             $('#addContentLink').val('');
-          }).catch(function () {
-        $scope.contentNameError = true;
-      });
+          }).catch(function (error) {
+            if( error.status === 400 ) {
+              $scope.error = true;
+              $scope.errorDetails = error.data;
+            } else if(error.status === 404) {
+              $location.path('/404');
+            }
+            else {
+              $location.path('/500');
+            }
+          });
     };
 
 
